@@ -1,0 +1,235 @@
+{
+	"assets": {
+		"about": "This card explains the assets page.",
+		"columns": {
+			"name": "Name",
+			"type": "Type",
+			"value": "Value"
+		},
+		"edit": "Edit {assetName}",
+		"listControls": {
+			"addOne": "New asset",
+			"filterPlaceholder": "Type here to search…"
+		},
+		"title": "Assets & liabilities",
+		"types": {
+			"fixedAsset": "Fixed {plural, select, no {asset} other {assets}}",
+			"liquidAsset": "Liquid {plural, select, no {asset} other {assets}}",
+			"longTermLiability": "Long-term {plural, select, no {liability} other {liabilities}}",
+			"personalAsset": "Personal {plural, select, no {item} other {items}}",
+			"shortTermLiability": "Short-term {plural, select, no {liability} other {liabilities}}"
+		}
+	},
+	"budget": {
+		"about": "This card explains the budget page.",
+		"categoriesView": {
+			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+			"title": "Breakdown by category"
+		},
+		"columns": {
+			"budget": "Budget",
+			"label": "Label"
+		},
+		"durations": {
+			"multipleMonths": "since {month}",
+			"oneMonth": "in {month}",
+			"periodMonths": "{months} {months, plural, =1 {month} other {months}}"
+		},
+		"editCategories": "Edit categories",
+		"overBudget": "{amount} over budget",
+		"overBudgetCount": "{count} over budget",
+		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
+		"spentOverall": "<bold>{spent}</bold> {period}",
+		"summary": {
+			"cardTitle": "Budget score",
+			"description": "Here is an overview of your budget. These summarized numbers show <bold>the last {months} months</bold> as of <bold>{endDate}</bold>. The overall score is based on how well you stayed in your budget, and left wiggle room between your budget and income.",
+			"explanations": {
+				"score0": "This period had no financial foundation. Whether you're just starting out or hit a rough patch, there's always room to rebuild.",
+				"score1": "This was a very challenging period financially. Even experienced budgeters have tough months—what matters is moving forward.",
+				"score2": "Significant struggles this period. Life happens, and sometimes expenses pile up. Focus on small wins as you recover.",
+				"score3": "Below average stability this time around. Whether it's unexpected costs or a learning curve, improvement is within reach.",
+				"score4": "Getting by this period, but things felt tight. You're keeping your head above water—now let's build some cushion.",
+				"score5": "Average financial health for this period. You're managing the basics and moving in a positive direction.",
+				"score6": "A solid period overall. You handled most things well, with just a few areas that could use fine-tuning.",
+				"score7": "Strong performance this period. You're managing money confidently, with only minor opportunities for optimization.",
+				"score8": "Excellent work this period. You're well ahead of typical budgeting challenges and making smart decisions.",
+				"score9": "Outstanding financial management this period. You navigated expenses skillfully with very few missteps.",
+				"score10": "Exceptional period. You demonstrated mastery over your finances and made consistently smart choices throughout."
+			},
+			"overview": "Cash flow breakdown",
+			"subtitleBudget": "Total budget",
+			"subtitleIncome": "{income} income",
+			"subtitleRemaining": "Total saved",
+			"subtitleSpending": "Total spending",
+			"title": "Budget overview"
+		},
+		"title": "Budget",
+		"underBudget": "On target"
+	},
+	"common": {
+		"actions": {
+			"cancel": "Cancel",
+			"delete": "Delete",
+			"edit": "Edit",
+			"ok": "OK",
+			"save": "Save"
+		},
+		"charts": {
+			"tooltipPercentage": "Percentage: <bold>{value}</bold>",
+			"tooltipValue": "Value: <bold>{value}</bold>"
+		},
+		"table": {
+			"error": "Unable to load table data.",
+			"errorBody": "We ran into a problem while loading the data for this table."
+		}
+	},
+	"help": {
+		"link": "About {subject}"
+	},
+	"netWorth": {
+		"about": "This card explains the netWorth page.",
+		"assetDistribution": "Asset distribution",
+		"liabilityDistribution": "Liability distribution",
+		"title": "Net worth"
+	},
+	"retirement": {
+		"about": "This card explains the retirement page.",
+		"chart": {
+			"title": "Cumulative retirement savings",
+			"tooltipTitle": "Age {age}"
+		},
+		"inputs": {
+			"assumedAnnualRaise": "Annual raise",
+			"assumedInflationRatePercent": "Inflation rate (% annual)",
+			"assumedInvestmentReturnPercent": "Investment return (% annual)",
+			"assumedPostRetirementIncomeNeeded": "Post-retirement expenses",
+			"contributionPercent": "Contribution (% of income)",
+			"currentAge": "Current age",
+			"currentPreTaxIncome": "Current pre-tax income",
+			"currentRetirementInvestments": "Current retirement",
+			"lifeExpectancy": "Life expectancy",
+			"retirementAge": "Retirement age",
+			"title": "Calculator inputs"
+		},
+		"summary": {
+			"retirementLeftAt": "Estimated retirement at {age}"
+		},
+		"table": {
+			"columns": {
+				"addedToRetirement": "Added to retirement",
+				"age": "Age",
+				"assumedIncome": "Assumed income",
+				"compoundInflation": "Compound inflation (× today’s)",
+				"distributedFromRetirement": "Distributed from retirement",
+				"retirementAmount": "Retirement amount",
+				"retirementAmountToday": "Retirement amount (today’s money)",
+				"year": "Year"
+			},
+			"title": "Retirement by year"
+		},
+		"title": "Retirement"
+	},
+	"rules": {
+		"about": "This card explains the rules page.",
+		"columns": {
+			"category": "Category",
+			"merchant": "Merchant name",
+			"regex": "Expression to match"
+		},
+		"edit": {
+			"basedOnTitle": "Based on merchant description:",
+			"failureBody": "An error occurred while saving your rule. Please try again later.",
+			"failureTitle": "Saving rule failed",
+			"regexCaseSensitive": "Case-sensitive?",
+			"regexMismatch": "The expression you've provided does not match this description.",
+			"title": "Edit {ruleName}"
+		},
+		"listControls": {
+			"addOne": "New rule",
+			"deleteAction": "Yes, delete it",
+			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
+			"deleteTitle": "Delete rule",
+			"filterPlaceholder": "Type here to search…"
+		},
+		"title": "Transaction rules"
+	},
+	"settings": {
+		"title": "Settings"
+	},
+	"summary": {
+		"about": "This card explains the summary page.",
+		"spendCard": {
+			"earnedMonthly": "Income this month",
+			"earnedYearly": "Income this year",
+			"spendMonthly": "Spending this month",
+			"spendYearly": "Spending this year"
+		},
+		"spendChart": {
+			"earned": "Income",
+			"spending": "Expenses",
+			"titleMonthly": "Monthly spending",
+			"titleYearly": "Annual spending"
+		},
+		"title": "Summary"
+	},
+	"transactions": {
+		"about": "This card explains the transactions page.",
+		"columns": {
+			"account": "Account",
+			"amount": "Amount",
+			"category": "Category",
+			"date": "Date",
+			"merchant": "Merchant",
+			"notes": "Notes",
+			"type": "Type"
+		},
+		"edit": {
+			"failureBody": "An error occurred while saving your transaction. Please try again later.",
+			"failureTitle": "Saving transaction failed",
+			"title": "Edit {amount} transaction with {merchantName}"
+		},
+		"filter": {
+			"accountsAll": "All accounts",
+			"accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
+			"categoriesAll": "All categories",
+			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}"
+		},
+		"listControls": {
+			"addOne": "Add transaction",
+			"filterPlaceholder": "Type here to search…"
+		},
+		"rules": {
+			"edit": "Edit rules"
+		},
+		"title": "Transactions",
+		"types": {
+			"credit": "Income",
+			"debit": "Expense"
+		},
+		"upload": {
+			"action": "Upload file",
+			"confirmUpload": "Confirm & save",
+			"createRule": "Auto-categorize",
+			"dropFile": "Drag and drop a file here, or click to browse",
+			"dropFileRules": "You must select a <bold>CSV file</bold> which matches the format for the chosen account.",
+			"dropFileSelected": "You've selected <bold>{fileName}</bold>.",
+			"failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
+			"failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
+			"failureTitle": "File upload failed",
+			"resultCard": {
+				"countCategorized": "{count} categorized",
+				"countFailed": "{count} failed",
+				"countIgnored": "{count} ignored",
+				"countUncategorized": "{count} uncategorized",
+				"descriptionUnprocessed": "The items below are shown as they appeared in the file you uploaded.",
+				"titleFailed": "Failed transactions",
+				"titleIgnored": "Ignored transactions",
+				"titleUncategorized": "Uncategorized transactions"
+			},
+			"selectAccount": "Please select an account associated with a known financial provider.",
+			"selectedProvider": "This account is associated with <bold>{provider}</bold>.",
+			"validateAgain": "Re-run categorization",
+			"waitingForFile": "Waiting for transactions to upload…"
+		}
+	}
+}
