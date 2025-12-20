@@ -5,6 +5,12 @@
 		"build": "turbo run build",
 		"check-types": "turbo run check-types",
 		"dev": "turbo run dev",
+		"dev:db": "docker compose -f deployment/docker-compose.yml -f deployment/docker-compose.dev.yml up db",
+		"dev:db:down": "docker compose -f deployment/docker-compose.yml -f deployment/docker-compose.dev.yml down",
+		"docker:build": "docker compose -f deployment/docker-compose.yml build",
+		"docker:down": "docker compose -f deployment/docker-compose.yml down",
+		"docker:logs": "docker compose -f deployment/docker-compose.yml logs -f",
+		"docker:up": "docker compose -f deployment/docker-compose.yml up -d",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"lint": "turbo run lint",
 		"test": "pnpm -r test",
@@ -19,6 +25,6 @@
 	},
 	"packageManager": "pnpm@9.0.0",
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	}
 }

@@ -1,0 +1,6 @@
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tally_dev_password}
+    ports:
+      - "5432:5432"

@@ -1,0 +1,198 @@
+{
+	"assets": {
+		"columns": {
+			"name": "名前",
+			"type": "種類",
+			"value": "金額"
+		},
+		"edit": "{assetName}を編集",
+		"listControls": {
+			"addOne": "新規資産",
+			"filterPlaceholder": "検索..."
+		},
+		"title": "資産・負債",
+		"types": {
+			"fixedAsset": "固定資産",
+			"liquidAsset": "流動資産",
+			"longTermLiability": "長期負債",
+			"personalAsset": "個人資産",
+			"shortTermLiability": "短期負債"
+		}
+	},
+	"budget": {
+		"durations": {
+			"periodMonths": "{months}ヶ月"
+		},
+		"summary": {
+			"explanations": {
+				"score0": "今期は基礎が不足していました。初心者でも困難な時期でも、再構築は可能です。",
+				"score1": "今期は厳しい状況でした。経験者でも大変な月はあります。前に進むことが大切です。",
+				"score2": "今期はかなり苦労されました。予想外の出費が重なることもあります。少しずつ改善しましょう。",
+				"score3": "今期は平均以下でした。想定外の支出や学習期間かもしれませんが、改善できます。",
+				"score4": "今期はなんとか乗り切りました。余裕を作れるよう、次は一歩前進しましょう。",
+				"score5": "今期は平均的な健全性です。基本をしっかり管理し、良い方向に進んでいます。",
+				"score6": "今期は全体的に良好でした。ほとんど上手く対応できており、微調整の余地があります。",
+				"score7": "今期は優れた結果です。自信を持って管理しており、最適化の余地はわずかです。",
+				"score8": "今期は素晴らしい成果です。一般的な課題を克服し、賢明な判断をしています。",
+				"score9": "今期は卓越した管理です。支出を巧みに処理し、ミスはほぼありません。",
+				"score10": "今期は完璧です。財務管理を習得し、一貫して賢い選択をしました。"
+			}
+		},
+		"title": "予算"
+	},
+	"common": {
+		"actions": {
+			"cancel": "キャンセル",
+			"delete": "削除",
+			"edit": "編集",
+			"ok": "OK",
+			"save": "保存"
+		},
+		"charts": {
+			"tooltipPercentage": "割合：<bold>{value}</bold>",
+			"tooltipValue": "金額：<bold>{value}</bold>"
+		},
+		"table": {
+			"error": "テーブルデータを読み込めません",
+			"errorBody": "データの読み込み中に問題が発生しました。"
+		}
+	},
+	"help": {
+		"link": "{subject}について"
+	},
+	"netWorth": {
+		"assetDistribution": "資産の内訳",
+		"liabilityDistribution": "負債の内訳",
+		"title": "純資産"
+	},
+	"retirement": {
+		"chart": {
+			"title": "累積退職貯蓄",
+			"tooltipTitle": "{age}歳"
+		},
+		"inputs": {
+			"assumedAnnualRaise": "年間昇給率",
+			"assumedInflationRatePercent": "インフレ率（年間%）",
+			"assumedInvestmentReturnPercent": "投資収益率（年間%）",
+			"assumedPostRetirementIncomeNeeded": "退職後の支出",
+			"contributionPercent": "拠出率（収入の%）",
+			"currentAge": "現在の年齢",
+			"currentPreTaxIncome": "現在の税引前収入",
+			"currentRetirementInvestments": "現在の退職資金",
+			"lifeExpectancy": "平均余命",
+			"retirementAge": "退職年齢",
+			"title": "計算の入力値"
+		},
+		"summary": {
+			"retirementLeftAt": "{age}歳時点の退職資金額"
+		},
+		"table": {
+			"columns": {
+				"addedToRetirement": "退職資金への追加",
+				"age": "年齢",
+				"assumedIncome": "想定収入",
+				"compoundInflation": "累積インフレ（対現在比）",
+				"distributedFromRetirement": "退職資金からの引出",
+				"retirementAmount": "退職資金額",
+				"retirementAmountToday": "退職資金額（現在価値）",
+				"year": "年"
+			},
+			"title": "年別退職資金"
+		},
+		"title": "退職・年金"
+	},
+	"rules": {
+		"columns": {
+			"category": "カテゴリー",
+			"merchant": "店舗名",
+			"regex": "マッチング条件"
+		},
+		"edit": {
+			"basedOnTitle": "店舗説明に基づく:",
+			"failureBody": "ルールの保存中にエラーが発生しました。後でもう一度お試しください。",
+			"failureTitle": "ルールの保存に失敗しました",
+			"regexCaseSensitive": "大文字・小文字を区別",
+			"regexMismatch": "入力された条件はこの説明と一致しません。",
+			"title": "{ruleName}を編集"
+		},
+		"listControls": {
+			"addOne": "新規ルール",
+			"deleteAction": "削除する",
+			"deleteBody": "{merchant}のルールを削除してもよろしいですか？",
+			"deleteTitle": "ルールを削除",
+			"filterPlaceholder": "検索..."
+		},
+		"title": "取引ルール"
+	},
+	"settings": {
+		"title": "設定"
+	},
+	"summary": {
+		"spendCard": {
+			"earnedMonthly": "今月の収入",
+			"earnedYearly": "今年の収入",
+			"spendMonthly": "今月の支出",
+			"spendYearly": "今年の支出"
+		},
+		"spendChart": {
+			"earned": "収入",
+			"spending": "支出",
+			"titleMonthly": "月別支出",
+			"titleYearly": "年別支出"
+		},
+		"title": "サマリー"
+	},
+	"transactions": {
+		"columns": {
+			"account": "口座",
+			"amount": "金額",
+			"category": "カテゴリー",
+			"date": "日付",
+			"merchant": "加盟店",
+			"notes": "メモ",
+			"type": "種別"
+		},
+		"edit": {
+			"failureBody": "取引の保存中にエラーが発生しました。後でもう一度お試しください。",
+			"failureTitle": "取引の保存に失敗しました",
+			"title": "{merchantName}の{amount}取引を編集"
+		},
+		"listControls": {
+			"addOne": "取引を追加",
+			"filterPlaceholder": "検索..."
+		},
+		"rules": {
+			"edit": "ルールを編集"
+		},
+		"title": "取引履歴",
+		"types": {
+			"credit": "収入",
+			"debit": "支出"
+		},
+		"upload": {
+			"action": "アップロード",
+			"confirmUpload": "確認して保存",
+			"createRule": "自動カテゴリー分け",
+			"dropFile": "ファイルをドラッグ＆ドロップ、またはクリックして選択",
+			"dropFileRules": "選択した口座の形式に一致する<bold>CSVファイル</bold>を選択してください。",
+			"dropFileSelected": "<bold>{fileName}</bold>が選択されています。",
+			"failureBody4XX": "ファイルの検証中にエラーが発生しました（{statusCode} {statusText}）。正しい形式のCSVファイルをアップロードしているか確認して、もう一度お試しください。",
+			"failureBody5XX": "ファイルの処理中にエラーが発生しました（{statusCode} {statusText}）。後でもう一度お試しください。",
+			"failureTitle": "ファイルのアップロードに失敗しました",
+			"resultCard": {
+				"countCategorized": "{count}件カテゴリー分け済み",
+				"countFailed": "{count}件失敗",
+				"countIgnored": "{count}件無視",
+				"countUncategorized": "{count}件未分類",
+				"descriptionUnprocessed": "以下の項目は、アップロードされたファイルに記載されている通りに表示されています。",
+				"titleFailed": "失敗した取引",
+				"titleIgnored": "無視された取引",
+				"titleUncategorized": "未分類の取引"
+			},
+			"selectAccount": "登録済みの金融機関に関連付けられた口座を選択してください。",
+			"selectedProvider": "この口座は<bold>{provider}</bold>に関連付けられています。",
+			"validateAgain": "カテゴリー分けを再実行",
+			"waitingForFile": "取引のアップロード中..."
+		}
+	}
+}
