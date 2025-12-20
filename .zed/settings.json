@@ -1,0 +1,58 @@
+{
+	"code_actions_on_format": {
+		"source.fixAll.biome": true,
+		"source.fixAll.eslint": true,
+		"source.fixAll.ts": true
+	},
+	"format_on_save": "on",
+	"formatter": {
+		"language_server": {
+			"name": "biome"
+		}
+	},
+	"hard_tabs": true,
+	"languages": {
+		"Shell Script": {
+			"hard_tabs": false,
+			"tab_size": 2
+		},
+		"TypeScript": {
+			"language_servers": [
+				"!typescript-language-server",
+				"vtsls",
+				"biome",
+				"eslint",
+				"tailwindcss-language-server"
+			]
+		},
+		"YAML": {
+			"hard_tabs": false,
+			"tab_size": 2
+		}
+	},
+	"lsp": {
+		"biome": {
+			"settings": {
+				"require_config_file": false
+			}
+		},
+		"tailwindcss-language-server": {
+			"settings": {
+				"classAttributes": ["class", "classNames?"]
+			}
+		},
+		"vtsls": {
+			"settings": {
+				"typescript": {
+					"preferences": {
+						"includePackageJsonAutoImports": "on"
+					},
+					"tsserver": {
+						"maxTsServerMemory": 8192
+					}
+				}
+			}
+		}
+	},
+	"tab_size": 4
+}
