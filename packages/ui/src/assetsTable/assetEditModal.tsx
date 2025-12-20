@@ -1,0 +1,128 @@
+import { keysOf } from "@ekumlin/typescript-toolkit/collections";
+import { invariant } from "@ekumlin/typescript-toolkit/values";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import {
+	type AssetType,
+	AssetTypes,
+	assetTypeSchema,
+} from "@tally/data-models/contracts/assetType";
+import {
+	addToast,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalHeader,
+	NumberInput,
+	Select,
+	SelectItem,
+	type useDisclosure,
+} from "@heroui/react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { EditModalFooter } from "../modal/editModalFooter";
+
+interface Props {
+	asset: Asset | null;
+	modalState: ReturnType<typeof useDisclosure>;
+	onSaveAsync: (asset: Asset) => Promise<void>;
+}
+
+export const AssetEditModal: React.FC<Props> = ({
+	asset,
+	modalState: { isOpen, onOpenChange },
+	onSaveAsync: onSave,
+}) => {
+	const t = useTranslations();
+
+	const [name, setName] = useState("");
+	const [type, setType] = useState<AssetType>("fixedAsset");
+	const [value, setValue] = useState(0);
+
+	const isModalOpen = isOpen && !!asset;
+	const assetTypeKeys = keysOf(AssetTypes);
+
+	const canSave = !!(name && value >= 0);
+
+	useEffect(() => {
+		if (!asset) {
+			return;
+		}
+
+		setName(asset.name);
+		setType(asset.type);
+		setValue(asset.value);
+	}, [asset]);
+
+	const title =
+		asset?.id === -1
+			? t("assets.listControls.addOne")
+			: t("assets.edit", { assetName: String(asset?.name) });
+
+	return (
+		<Modal
+			autoFocus={true}
+			backdrop="blur"
+			isOpen={isModalOpen}
+			onOpenChange={onOpenChange}
+			placement="top-center"
+		>
+			<ModalContent>
+				{(onClose) => (
+					<>
+						<ModalHeader>{title}</ModalHeader>
+						<ModalBody>
+							<Input
+								autoFocus={true}
+								label={t("assets.columns.name")}
+								onValueChange={setName}
+								value={name}
+							/>
+							<Select
+								label={t("assets.columns.type")}
+								onSelectionChange={(keys) => {
+									const { currentKey } = keys;
+									setType(assetTypeSchema.parse(currentKey));
+								}}
+								selectedKeys={[type]}
+							>
+								{assetTypeKeys.map((typeKey) => (
+									<SelectItem key={typeKey}>
+										{t(`assets.types.${typeKey}`, {
+											plural: "no",
+										})}
+									</SelectItem>
+								))}
+							</Select>
+							<NumberInput
+								label={t("assets.columns.value")}
+								onValueChange={setValue}
+								value={value}
+							/>
+						</ModalBody>
+						<EditModalFooter
+							isSaveDisabled={!canSave}
+							onClose={onClose}
+							onSave={async () => {
+								invariant(asset, "Asset must be defined.");
+								await onSave({
+									...asset,
+									name,
+									type,
+									value,
+								});
+							}}
+							onSaveError={() =>
+								addToast({
+									color: "danger",
+									description: "TODO",
+									title: "TODO",
+								})
+							}
+						/>
+					</>
+				)}
+			</ModalContent>
+		</Modal>
+	);
+};

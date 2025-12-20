@@ -1,0 +1,50 @@
+{
+	"name": "@tally/ui",
+	"version": "0.0.0",
+	"private": true,
+	"exports": {
+		"./*": "./src/*.tsx"
+	},
+	"scripts": {
+		"lint": "eslint . --max-warnings 0",
+		"generate:component": "turbo gen react-component",
+		"check-types": "tsc --noEmit",
+		"test": "vitest run",
+		"test:ui": "vitest --ui",
+		"test:watch": "vitest"
+	},
+	"dependencies": {
+		"@ekumlin/typescript-toolkit": "1.0.0",
+		"@tally/data-models": "workspace:*",
+		"@tally/i18n": "workspace:*",
+		"@tally/utilities": "workspace:*",
+		"@heroui/react": "^2.8.4",
+		"@internationalized/date": "3.9.0",
+		"@tabler/icons-react": "^3.35.0",
+		"@tailwindcss/postcss": "^4.1.13",
+		"@tanstack/react-query": "^5.90.2",
+		"ahooks": "^3.9.5",
+		"framer-motion": "^12.23.16",
+		"luxon": "^3.7.2",
+		"next": "^15.5.9",
+		"next-intl": "^4.3.9",
+		"postcss": "^8.5.6",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"react-dropzone": "^14.3.8",
+		"recharts": "^3.2.1",
+		"tailwind-merge": "^3.3.1",
+		"tailwindcss": "^4.1.13",
+		"zod": "^4.1.11"
+	},
+	"devDependencies": {
+		"@tally/eslint-config": "workspace:*",
+		"@tally/typescript-config": "workspace:*",
+		"@types/luxon": "^3.7.1",
+		"@types/node": "^22.15.3",
+		"@types/react": "19.1.0",
+		"@types/react-dom": "19.1.0",
+		"eslint": "^9.34.0",
+		"typescript": "5.9.2"
+	}
+}
