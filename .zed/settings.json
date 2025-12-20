@@ -12,6 +12,9 @@
 	},
 	"hard_tabs": true,
 	"languages": {
+		"CSS": {
+			"language_servers": ["tailwindcss-language-server"]
+		},
 		"Shell Script": {
 			"hard_tabs": false,
 			"tab_size": 2
