@@ -3,28 +3,19 @@ import { convertSubcategoryRowToSubcategory } from "@tally/data-models/converter
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { DatabaseClient } from "./databaseClient";
 
-const tableName = "subcategory";
-
 export class SubcategoriesClient extends DatabaseClient {
-	public constructor() {
-		super(tableName);
-	}
+	public async getSubcategoriesAsync(): Promise<Subcategory[]> {
+		const rows = await this.database
+			.selectFrom("subcategory")
+			.selectAll()
+			.orderBy("id", "asc")
+			.execute();
 
-	public getSubcategoriesAsync(): Promise<Subcategory[]> {
-		const { database } = this.databaseSettings;
-
-		const query = `
-			SELECT tbl.*
-			FROM [${tableName}] tbl
-			ORDER BY tbl.id ASC
-		`;
-
-		const rows = database.prepare(query).all();
 		const subcategories = rows.map((row) => {
 			const subcategoryRow = subcategoryRowSchema.parse(row);
 			return convertSubcategoryRowToSubcategory(subcategoryRow);
 		});
 
-		return Promise.resolve(subcategories);
+		return subcategories;
 	}
 }

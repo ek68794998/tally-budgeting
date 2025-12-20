@@ -25,8 +25,8 @@ CREATE TYPE txn_direction AS ENUM (
 CREATE TABLE IF NOT EXISTS asset (
 	id SERIAL PRIMARY KEY,
 	name TEXT UNIQUE NOT NULL,
-	type asset_type,
-	value BIGINT,  -- Monetary value in cents
+	type asset_type NOT NULL DEFAULT 'fixed_asset',
+	monetary_value TEXT NOT NULL DEFAULT '0',
 	provider TEXT,
 	active BOOLEAN NOT NULL DEFAULT true
 );
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS subcategory (
 	label TEXT NOT NULL UNIQUE,
 	category INTEGER NOT NULL,
 	description TEXT,
-	budget_amount_cents BIGINT NOT NULL DEFAULT 0,
+	budget_amount TEXT NOT NULL DEFAULT '0',
 	budget_frequency_months INTEGER NOT NULL DEFAULT 12,
 	budget_type budget_type NOT NULL DEFAULT 'expense',
 	FOREIGN KEY (category) REFERENCES category(id)
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS txn (
 	merchant TEXT NOT NULL,
 	date TIMESTAMPTZ,
 	account INTEGER,
-	subcategory INTEGER,
-	amount_cents BIGINT NOT NULL DEFAULT 0,
+	subcategory INTEGER NOT NULL DEFAULT -1,
+	amount TEXT NOT NULL DEFAULT '0',
 	direction txn_direction NOT NULL DEFAULT 'debit',
 	notes TEXT,
 	FOREIGN KEY (account) REFERENCES asset(id)
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS txn (
 CREATE TABLE IF NOT EXISTS txn_rule (
 	id SERIAL PRIMARY KEY,
 	pattern TEXT NOT NULL,
-	flags TEXT DEFAULT 'i',
+	flags TEXT NOT NULL DEFAULT 'i',
 	merchant TEXT NOT NULL,
 	subcategory INTEGER,
 	priority INTEGER DEFAULT 0,

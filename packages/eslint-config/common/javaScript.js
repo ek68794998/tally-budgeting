@@ -15,7 +15,6 @@ export const eslintConfigJavaScript = [
 			"arrow-parens": ["error", "always"],
 			"block-spacing": "error",
 			"brace-style": ["error", "1tbs"],
-			camelcase: "error",
 			"comma-dangle": [
 				"error",
 				{
