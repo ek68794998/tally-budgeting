@@ -54,5 +54,6 @@
 			}
 		}
 	},
-	"tab_size": 4
+	"tab_size": 4,
+	"use_on_type_format": false
 }
