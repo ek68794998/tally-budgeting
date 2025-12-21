@@ -1,13 +1,12 @@
 import { type Transaction } from "../contracts/transaction";
-import { TransactionDirections } from "../contracts/transactionDirection";
-import { type TransactionRow } from "../database/transactionRow";
+import { type TxnRow } from "../database/txnRow";
 
-export const convertTransactionToTransactionRow = (
+export const convertTransactionToTxnRow = (
 	transaction: Transaction,
-): TransactionRow => {
+): TxnRow => {
 	const {
 		accountId,
-		amount,
+		amountCents,
 		categoryId,
 		date,
 		id,
@@ -19,45 +18,42 @@ export const convertTransactionToTransactionRow = (
 
 	const dateValue = new Date(date);
 	dateValue.setUTCHours(12, 0, 0, 0);
-	const dateIso = dateValue.toISOString();
 
 	return {
-		accountId,
-		amountCents: Math.abs(Math.round(amount * 100)),
-		categoryId,
-		dateIso,
-		direction: TransactionDirections[type],
+		account: accountId ?? null,
+		amount_cents: amountCents, // eslint-disable-line @typescript-eslint/naming-convention
+		category: categoryId,
+		date: dateValue,
+		direction: type,
 		id,
 		merchant,
 		notes: notes || null,
-		subcategoryId,
+		subcategory: subcategoryId,
 	};
 };
 
-export const convertTransactionRowToTransaction = (
-	row: TransactionRow,
-): Transaction => {
+export const convertTxnRowToTransaction = (row: TxnRow): Transaction => {
 	const {
-		accountId,
-		amountCents,
-		categoryId,
-		dateIso,
+		account,
+		amount_cents: amountCents,
+		category,
+		date,
 		direction,
 		id,
 		merchant,
 		notes,
-		subcategoryId,
+		subcategory,
 	} = row;
 
 	return {
-		accountId,
-		amount: Math.abs(amountCents / 100.0),
-		categoryId,
-		date: dateIso,
+		accountId: account ?? undefined,
+		amountCents,
+		categoryId: category,
+		date: date.toISOString(),
 		id,
 		merchant,
-		notes: notes ?? undefined,
-		subcategoryId,
-		type: direction === TransactionDirections.credit ? "credit" : "debit",
+		notes: notes || "",
+		subcategoryId: subcategory,
+		type: direction,
 	};
 };

@@ -2,13 +2,13 @@ import z from "zod";
 import { transactionDirectionSchema } from "./transactionDirection";
 
 export const transactionSchema = z.object({
-	accountId: z.number(),
-	amount: z.number().min(0),
+	accountId: z.number().optional(),
+	amountCents: z.int().nonnegative(),
 	categoryId: z.number(),
 	date: z.iso.datetime({ offset: true }),
-	id: z.number(),
+	id: z.int().positive(),
 	merchant: z.string().min(1).max(100),
-	notes: z.string().optional(),
+	notes: z.string(),
 	subcategoryId: z.number(),
 	type: transactionDirectionSchema,
 });

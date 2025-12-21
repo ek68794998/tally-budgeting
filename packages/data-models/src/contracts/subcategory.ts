@@ -4,14 +4,14 @@ import { DefaultCategoryId } from "./category";
 
 export const subcategorySchema = z.object({
 	budget: z.object({
-		amount: z.number().min(0),
-		frequency: z.number().min(1).max(12),
+		amountCents: z.int().nonnegative(),
+		frequency: z.int().min(1).max(12),
 		type: budgetTypeSchema,
 	}),
-	categoryId: z.number(),
+	categoryId: z.int().min(1),
 	description: z.string(),
-	id: z.number(),
-	label: z.string().min(1).max(100),
+	id: z.int(),
+	label: z.string().min(2).max(100),
 });
 
 export type Subcategory = z.infer<typeof subcategorySchema>;
@@ -20,7 +20,7 @@ export const DefaultSubcategoryId = -1;
 
 export const DefaultSubcategory: Subcategory = {
 	budget: {
-		amount: 0,
+		amountCents: 0,
 		frequency: 12,
 		type: "expense",
 	},

@@ -1,15 +1,13 @@
 import z from "zod";
 
 export const txnRuleRowSchema = z.object({
-	/* eslint-disable @typescript-eslint/naming-convention */
+	active: z.boolean(),
 	flags: z.string(),
-	id: z.number().int().positive(),
-	is_active: z.boolean(),
+	id: z.int().positive(),
 	merchant: z.string(),
 	pattern: z.string().min(1).max(100),
-	priority: z.number().int(),
-	subcategory: z.number().int(),
-	/* eslint-enable @typescript-eslint/naming-convention */
+	priority: z.int(),
+	subcategory: z.int(),
 });
 
 export type TxnRuleRow = z.infer<typeof txnRuleRowSchema>;
