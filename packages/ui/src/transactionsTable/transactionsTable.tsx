@@ -120,9 +120,9 @@ export const TransactionsTable: React.FC = () => {
 		},
 		{
 			getValue: (item) => item.amount,
-			key: "amount",
+			key: "amountCents",
 			label: t("columns.amount"),
-			sortField: "amount",
+			sortField: "amountCents",
 		},
 		{
 			getValue: (item) => (

@@ -7,8 +7,8 @@ export const getTransactionEarnedValue = (
 ): number =>
 	subcategory.budget.type === "income"
 		? transaction.type === "credit"
-			? transaction.amount
-			: -transaction.amount
+			? transaction.amountCents
+			: -transaction.amountCents
 		: 0;
 
 export const getTransactionSpentValue = (
@@ -17,6 +17,6 @@ export const getTransactionSpentValue = (
 ): number =>
 	subcategory.budget.type === "expense"
 		? transaction.type === "debit"
-			? transaction.amount
-			: -transaction.amount
+			? transaction.amountCents
+			: -transaction.amountCents
 		: 0;

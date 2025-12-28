@@ -1,11 +1,5 @@
 import { keysOf } from "@ekumlin/typescript-toolkit/collections";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type Asset } from "@tally/data-models/contracts/asset";
-import {
-	type AssetType,
-	AssetTypes,
-	assetTypeSchema,
-} from "@tally/data-models/contracts/assetType";
 import {
 	addToast,
 	Input,
@@ -18,6 +12,13 @@ import {
 	SelectItem,
 	type useDisclosure,
 } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import {
+	type AssetType,
+	AssetTypes,
+	assetTypeSchema,
+} from "@tally/data-models/contracts/assetType";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { EditModalFooter } from "../modal/editModalFooter";
@@ -51,7 +52,7 @@ export const AssetEditModal: React.FC<Props> = ({
 
 		setName(asset.name);
 		setType(asset.type);
-		setValue(asset.value);
+		setValue(Dollars.fromCents(asset.valueCents));
 	}, [asset]);
 
 	const title =
@@ -109,7 +110,7 @@ export const AssetEditModal: React.FC<Props> = ({
 									...asset,
 									name,
 									type,
-									value,
+									valueCents: Dollars.toCents(value),
 								});
 							}}
 							onSaveError={() =>

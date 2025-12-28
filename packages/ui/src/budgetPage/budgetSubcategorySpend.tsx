@@ -1,6 +1,7 @@
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Chip, Progress, Tooltip } from "@heroui/react";
 import { IconHelpCircle } from "@tabler/icons-react";
+import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
 import { getSpentText } from "./helpers";
@@ -21,8 +22,9 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
 
 	const t = useTranslations("budget");
 
-	const underBudget = budget.amount - amountPaid;
-	const hasBudget = !!budget.amount;
+	const budgetAmount = Dollars.fromCents(budget.amountCents);
+	const underBudget = budgetAmount - amountPaid;
+	const hasBudget = !!budgetAmount;
 	const isUnderBudget = underBudget >= 0;
 
 	return (
@@ -52,7 +54,7 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
 					)}
 				</span>
 			}
-			maxValue={budget.amount}
+			maxValue={budgetAmount}
 			minValue={0}
 			showValueLabel={true}
 			size="sm"

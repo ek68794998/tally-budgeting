@@ -1,6 +1,5 @@
 "use client";
 
-import { type Asset } from "@tally/data-models/contracts/asset";
 import {
 	type Selection,
 	type SortDescriptor,
@@ -12,6 +11,8 @@ import {
 	TableRow,
 	useDisclosure,
 } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useLocale, useTranslations } from "next-intl";
 import { type Key, type ReactNode, useState } from "react";
 import { ModalDefaultAsset } from "../common/modalDefault";
@@ -45,7 +46,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 		label: string;
 	}[] = [
 		{ key: "name", label: t("columns.name") },
-		{ key: "value", label: t("columns.value") },
+		{ key: "valueCents", label: t("columns.value") },
 		{ key: "actions", label: "" },
 	];
 
@@ -62,8 +63,8 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 				return a.name.localeCompare(b.name);
 			}
 
-			if (sortDescriptor.column === "value") {
-				return a.value - b.value;
+			if (sortDescriptor.column === "valueCents") {
+				return a.valueCents - b.valueCents;
 			}
 
 			return 0;
@@ -92,7 +93,8 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 			case "name":
 				return item.name;
 			case "value":
-				return formatCurrency(item.value, { locale });
+				const value = Dollars.fromCents(item.valueCents);
+				return formatCurrency(value, { locale });
 			case "actions":
 				return (
 					<AssetRowDropdown

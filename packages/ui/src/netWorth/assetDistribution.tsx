@@ -1,7 +1,8 @@
 "use client";
 
-import { type Asset } from "@tally/data-models/contracts/asset";
 import { Card, CardBody } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { DonutChart } from "../charts/donutChart";
@@ -21,12 +22,14 @@ export const AssetDistribution: React.FC<Props> = ({ assets }) => {
 		let liquidValue = 0;
 
 		for (const asset of assets) {
+			const assetValue = Dollars.fromCents(asset.valueCents);
+
 			if (asset.type === "fixedAsset") {
-				fixedValue += asset.value;
+				fixedValue += assetValue;
 			} else if (asset.type === "liquidAsset") {
-				liquidValue += asset.value;
+				liquidValue += assetValue;
 			} else if (asset.type === "personalAsset") {
-				personalValue += asset.value;
+				personalValue += assetValue;
 			}
 		}
 

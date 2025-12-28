@@ -1,6 +1,7 @@
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { DateTime } from "luxon";
 import { formatCurrency } from "../format";
 import { type TransactionTableData } from "./types";
@@ -17,7 +18,7 @@ const convertTransactionToTableData = (
 ): TransactionTableData => ({
 	account: accounts.find((account) => account.id === transaction.accountId)
 		?.name,
-	amount: formatCurrency(transaction.amount, {
+	amount: formatCurrency(Dollars.fromCents(transaction.amountCents), {
 		showCents: true,
 	}),
 	date: DateTime.fromISO(transaction.date).toLocaleString(

@@ -3,6 +3,7 @@ import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
+import { Dollars } from "../financial/dollars";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -54,7 +55,9 @@ export class AppleDataProvider implements DataProvider<StatementRow> {
 
 			return {
 				accountId: account.id,
-				amount: Math.abs(Number.parseFloat(inputRow["Amount (USD)"])),
+				amountCents: Math.abs(
+					Dollars.toCents(inputRow["Amount (USD)"]),
+				),
 				categoryId: subcategory.categoryId,
 				date: new Date(inputRow["Transaction Date"]).toISOString(),
 				id: -1,

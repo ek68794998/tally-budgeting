@@ -1,5 +1,5 @@
 import z from "zod";
-import { transactionSortFields } from "../../database/transactionRow";
+import { transactionSortFields } from "../../database/txnRow";
 import { transactionSchema } from "../transaction";
 import { withNextLinkSchema } from "../types";
 import {

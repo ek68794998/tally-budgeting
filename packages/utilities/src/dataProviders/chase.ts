@@ -3,6 +3,7 @@ import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
+import { Dollars } from "../financial/dollars";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -59,12 +60,9 @@ export class ChaseDataProvider implements DataProvider<StatementRow> {
 
 			return {
 				accountId: account.id,
-				amount: Math.abs(
-					Math.round(Number.parseFloat(inputRow.Amount) * 100) / 100,
-				),
+				amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
 				categoryId: subcategory.categoryId,
 				date: new Date(inputRow["Transaction Date"]).toISOString(),
-				id: -1,
 				merchant,
 				subcategoryId: subcategory.id,
 				type: transactionType,

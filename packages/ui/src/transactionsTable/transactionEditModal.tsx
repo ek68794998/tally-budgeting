@@ -1,7 +1,4 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import {
 	addToast,
 	DatePicker,
@@ -21,6 +18,10 @@ import {
 	toCalendarDate,
 	today,
 } from "@internationalized/date";
+import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
+import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { SelectAccount } from "../common/selectAccount";
@@ -63,17 +64,17 @@ export const TransactionEditModal: React.FC<Props> = ({
 			return;
 		}
 
-		setAccountId(transaction.accountId);
-		setAmount(transaction.amount);
+		setAccountId(transaction.accountId ?? -1);
+		setAmount(Dollars.fromCents(transaction.amountCents));
 		setDate(toCalendarDate(parseAbsoluteToLocal(transaction.date)));
 		setMerchantName(transaction.merchant);
-		setNotes(transaction.notes ?? "");
+		setNotes(transaction.notes);
 		setSubcategoryId(transaction.subcategoryId);
 		setTransactionType(transaction.type);
 	}, [isModalOpen, transaction]);
 
 	const transactionAmountText = transaction
-		? formatCurrency(transaction.amount, {
+		? formatCurrency(Dollars.fromCents(transaction.amountCents), {
 				showCentsIfLessThanDigits: 2,
 			})
 		: "";
@@ -153,7 +154,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 								await onSaveAsync({
 									...transaction,
 									accountId,
-									amount,
+									amountCents: Dollars.toCents(amount),
 									date: date
 										? `${date.toString()}T12:00:00Z`
 										: transaction.date,

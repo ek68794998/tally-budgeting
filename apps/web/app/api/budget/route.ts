@@ -10,6 +10,7 @@ import {
 	getBudgetParamsSchema,
 } from "@tally/data-models/contracts/api/getBudget";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import {
 	getTransactionEarnedValue,
@@ -77,7 +78,7 @@ const GetAsync: NextResponseFn = async (request) => {
 			}
 
 			periodBudgeted +=
-				subcategory.budget.amount *
+				Dollars.fromCents(subcategory.budget.amountCents) *
 				Math.ceil(durationMonths / subcategory.budget.frequency);
 		}
 

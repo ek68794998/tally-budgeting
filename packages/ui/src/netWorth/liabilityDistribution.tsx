@@ -1,7 +1,8 @@
 "use client";
 
-import { type Asset } from "@tally/data-models/contracts/asset";
 import { Card, CardBody } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { DonutChart } from "../charts/donutChart";
@@ -20,10 +21,12 @@ export const LiabilityDistribution: React.FC<Props> = ({ assets }) => {
 		let longTerm = 0;
 
 		for (const asset of assets) {
+			const assetValue = Dollars.fromCents(asset.valueCents);
+
 			if (asset.type === "shortTermLiability") {
-				shortTerm += asset.value;
+				shortTerm += assetValue;
 			} else if (asset.type === "longTermLiability") {
-				longTerm += asset.value;
+				longTerm += assetValue;
 			}
 		}
 
