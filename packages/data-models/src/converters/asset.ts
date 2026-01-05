@@ -13,3 +13,16 @@ export const convertAssetRowToAsset = (row: AssetRow): Asset => {
 		valueCents,
 	};
 };
+
+export const convertAssetToAssetRow = (row: Asset): AssetRow => {
+	const { active, id, name, provider, type, valueCents } = row;
+
+	return {
+		active,
+		id,
+		name,
+		provider,
+		type,
+		value_cents: valueCents, // eslint-disable-line @typescript-eslint/naming-convention
+	};
+};

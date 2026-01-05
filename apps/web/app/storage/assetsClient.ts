@@ -1,12 +1,19 @@
 import { type Asset } from "@tally/data-models/contracts/asset";
-import { convertAssetRowToAsset } from "@tally/data-models/converters/asset";
+import {
+	convertAssetRowToAsset,
+	convertAssetToAssetRow,
+} from "@tally/data-models/converters/asset";
 import { assetRowSchema } from "@tally/data-models/database/assetRow";
+import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
+import { rowOrRowsAsRows } from "./helpers";
+
+export const TableName = "asset" as const satisfies keyof Database;
 
 export class AssetsClient extends DatabaseClient {
 	public async getAssetsAsync(): Promise<Asset[]> {
 		const rows = await this.database
-			.selectFrom("asset")
+			.selectFrom(TableName)
 			.selectAll()
 			.orderBy("id", "asc")
 			.execute();
@@ -17,5 +24,23 @@ export class AssetsClient extends DatabaseClient {
 		});
 
 		return assets;
+	}
+
+	public async insertAssetsAsync(values: Asset | Asset[]): Promise<void> {
+		const assets = rowOrRowsAsRows(values).map((r) =>
+			convertAssetToAssetRow(r),
+		);
+
+		await this.database.insertInto(TableName).values(assets).execute();
+	}
+
+	public async updateAssetAsync(value: Asset): Promise<void> {
+		const row = convertAssetToAssetRow(value);
+
+		await this.database
+			.updateTable(TableName)
+			.where("id", "=", row.id)
+			.set(row)
+			.execute();
 	}
 }

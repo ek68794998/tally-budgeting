@@ -9,3 +9,12 @@ export const convertCategoryRowToCategory = (row: CategoryRow): Category => {
 		label,
 	};
 };
+
+export const convertCategoryToCategoryRow = (row: Category): CategoryRow => {
+	const { id, label } = row;
+
+	return {
+		id,
+		label,
+	};
+};

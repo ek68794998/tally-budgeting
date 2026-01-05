@@ -6,10 +6,10 @@ import {
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { deleteTransactionRuleQuerySchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
 import { NextResponse } from "next/server";
-import { TransactionRulesClient } from "../../../../storage/transactionRulesClient";
+import { TxnRulesClient } from "../../../../storage/txnRulesClient";
 import { type NextResponseFn } from "../../../types";
 
-const transactionRulesClient = new TransactionRulesClient();
+const txnRulesClient = new TxnRulesClient();
 
 const DeleteAsync: NextResponseFn = async (_request, context) => {
 	invariant(context.params, "Params object must be defined");
@@ -20,7 +20,7 @@ const DeleteAsync: NextResponseFn = async (_request, context) => {
 		);
 
 		const idNumber = parseInt(id, 10);
-		await transactionRulesClient.deleteTransactionRuleAsync(idNumber);
+		await txnRulesClient.deleteTransactionRuleAsync(idNumber);
 
 		return NextResponse.json(null, {
 			headers: {

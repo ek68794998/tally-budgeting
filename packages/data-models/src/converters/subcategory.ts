@@ -26,3 +26,31 @@ export const convertSubcategoryRowToSubcategory = (
 		label,
 	};
 };
+
+export const convertSubcategoryToSubcategoryRow = (
+	row: Subcategory,
+): SubcategoryRow => {
+	const {
+		budget: {
+			amountCents: budgetAmountCents,
+			frequency: budgetFrequencyMonths,
+			type: budgetType,
+		},
+		categoryId: category,
+		description,
+		id,
+		label,
+	} = row;
+
+	return {
+		/* eslint-disable @typescript-eslint/naming-convention */
+		budget_amount_cents: budgetAmountCents,
+		budget_frequency_months: budgetFrequencyMonths,
+		budget_type: budgetType,
+		/* eslint-enable @typescript-eslint/naming-convention */
+		category,
+		description: description || "",
+		id,
+		label,
+	};
+};

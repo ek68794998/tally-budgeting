@@ -19,12 +19,12 @@ import {
 import { DateTime } from "luxon";
 import { NextResponse } from "next/server";
 import { SubcategoriesClient } from "../../storage/subcategoriesClient";
-import { TransactionsClient } from "../../storage/transactionsClient";
+import { TxnsClient } from "../../storage/txnsClient";
 import { type NextResponseFn } from "../types";
 import { getBudgetSummaryDates } from "./helpers";
 
 const subcategoriesClient = new SubcategoriesClient();
-const transactionsClient = new TransactionsClient();
+const txnsClient = new TxnsClient();
 
 const GetAsync: NextResponseFn = async (request) => {
 	try {
@@ -82,11 +82,10 @@ const GetAsync: NextResponseFn = async (request) => {
 				Math.ceil(durationMonths / subcategory.budget.frequency);
 		}
 
-		const transactions =
-			await transactionsClient.getTransactionsInPeriodAsync(
-				searchStartDate.toISO(),
-				endDate.toISO(),
-			);
+		const transactions = await txnsClient.getTransactionsInPeriodAsync(
+			searchStartDate,
+			endDate,
+		);
 
 		for (const transaction of transactions) {
 			const { date, subcategoryId } = transaction;

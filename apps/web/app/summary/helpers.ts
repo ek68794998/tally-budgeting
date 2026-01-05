@@ -1,19 +1,20 @@
 import { calculateSummary } from "@tally/utilities/summary/calculateSummary";
+import { DateTime } from "luxon";
 import { type SubcategoriesClient } from "../storage/subcategoriesClient";
-import { type TransactionsClient } from "../storage/transactionsClient";
+import { type TxnsClient } from "../storage/txnsClient";
 
 export const getSummaryDataAsync = async (
 	relativeTo: Date,
 	subcategoriesClient: SubcategoriesClient,
-	transactionsClient: TransactionsClient,
+	txnsClient: TxnsClient,
 ) => {
 	const subcategories = await subcategoriesClient.getSubcategoriesAsync();
 
 	const thisYear = relativeTo.getFullYear();
 	const transactionsPast2Years =
-		await transactionsClient.getTransactionsInPeriodAsync(
-			new Date(thisYear - 1, 0, 1).toISOString(),
-			relativeTo.toISOString(),
+		await txnsClient.getTransactionsInPeriodAsync(
+			DateTime.fromObject({ day: 1, month: 0, year: thisYear - 1 }),
+			DateTime.fromJSDate(relativeTo),
 		);
 
 	const summary = calculateSummary(transactionsPast2Years, subcategories, {

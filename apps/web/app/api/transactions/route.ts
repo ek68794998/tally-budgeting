@@ -14,10 +14,10 @@ import {
 } from "@tally/data-models/contracts/api/postTransaction";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import { NextResponse } from "next/server";
-import { TransactionsClient } from "../../storage/transactionsClient";
+import { TxnsClient } from "../../storage/txnsClient";
 import { type NextResponseFn } from "../types";
 
-const transactionsClient = new TransactionsClient();
+const txnsClient = new TxnsClient();
 
 const GetAsync: NextResponseFn = async (request) => {
 	try {
@@ -40,7 +40,7 @@ const GetAsync: NextResponseFn = async (request) => {
 		}
 
 		const { data: transactions, totalCount } =
-			await transactionsClient.getTransactionsAsync({
+			await txnsClient.getTransactionsAsync({
 				collectionParams: parsedParams.data,
 			});
 
@@ -84,13 +84,9 @@ const PostAsync: NextResponseFn = async (request) => {
 		const requestJson: unknown = await request.json();
 		const body = postTransactionRequestSchema.parse(requestJson);
 
-		if (body.transaction.id >= 0) {
-			await transactionsClient.updateTransactionAsync(body.transaction);
-		} else {
-			await transactionsClient.insertTransactionsAsync([
-				body.transaction,
-			]);
-		}
+		await (body.transaction.id >= 0
+			? txnsClient.updateTransactionAsync(body.transaction)
+			: txnsClient.insertTransactionsAsync([body.transaction]));
 
 		const response: PostTransactionResponse = {
 			success: true,
