@@ -22,7 +22,7 @@ interface Props {
 const getMonthLabels = (year: number, month: number) => {
 	const dateTime = DateTime.fromObject({
 		day: 15,
-		month,
+		month: month + 1,
 		year,
 	});
 
