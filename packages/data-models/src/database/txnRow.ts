@@ -12,7 +12,7 @@ export const transactionSortFields = [
 export const txnRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
 	account: z.int().nullable(),
-	amount_cents: z.int(),
+	amount_cents: z.string(), // BIGINT in Postgres is returned as a string.
 	category: z.int(),
 	date: z.date(),
 	direction: transactionDirectionSchema,

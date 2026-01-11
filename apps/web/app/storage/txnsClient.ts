@@ -63,7 +63,8 @@ export class TxnsClient extends DatabaseClient {
 		const orderDirection = getOrderDirection(direction);
 
 		let fetchQuery = query
-			.selectAll()
+			.selectAll("subcategory")
+			.selectAll("txn")
 			.orderBy(orderColumn, orderDirection)
 			.orderBy("date", "desc")
 			.orderBy("merchant", "asc");
@@ -93,7 +94,13 @@ export class TxnsClient extends DatabaseClient {
 
 		const rows = await this.database
 			.selectFrom(TableName)
-			.selectAll()
+			.leftJoin(
+				SubcategoryTableName,
+				`${TableName}.subcategory`,
+				`${SubcategoryTableName}.id`,
+			)
+			.selectAll("subcategory")
+			.selectAll("txn")
 			.where("date", ">=", startDate.toJSDate())
 			.where("date", "<=", endDate.toJSDate())
 			.orderBy("date", "desc")
@@ -161,6 +168,12 @@ const applyFilters = (
 		// TODO Error handling.
 		throw new Error(`Unsupported operator: ${fe.operator}`);
 	});
+
+	if (conditions.length === 0) {
+		// All transaction IDs should be greater than zero.
+		// This is done because an empty `or` clause would match no rows.
+		conditions.push(queryBuilder.eb("txn.id", ">", 0));
+	}
 
 	return queryBuilder.or(conditions);
 };

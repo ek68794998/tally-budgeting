@@ -13,7 +13,7 @@ export const getSummaryDataAsync = async (
 	const thisYear = relativeTo.getFullYear();
 	const transactionsPast2Years =
 		await txnsClient.getTransactionsInPeriodAsync(
-			DateTime.fromObject({ day: 1, month: 0, year: thisYear - 1 }),
+			DateTime.fromObject({ day: 1, month: 1, year: thisYear - 1 }),
 			DateTime.fromJSDate(relativeTo),
 		);
 

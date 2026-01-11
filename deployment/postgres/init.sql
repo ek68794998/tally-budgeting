@@ -25,8 +25,8 @@ CREATE TYPE txn_direction AS ENUM (
 CREATE TABLE IF NOT EXISTS asset (
 	id SERIAL PRIMARY KEY,
 	name TEXT UNIQUE NOT NULL,
-	type asset_type NOT NULL DEFAULT 'fixed_asset',
-	value_cents BIGINT NOT NULL DEFAULT 0,
+	type asset_type,
+	value BIGINT,  -- Monetary value in cents
 	provider TEXT,
 	active BOOLEAN NOT NULL DEFAULT true
 );

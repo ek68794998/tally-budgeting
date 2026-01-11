@@ -21,7 +21,7 @@ export const convertTransactionToTxnRow = (
 
 	return {
 		account: accountId ?? null,
-		amount_cents: amountCents, // eslint-disable-line @typescript-eslint/naming-convention
+		amount_cents: String(amountCents), // eslint-disable-line @typescript-eslint/naming-convention
 		category: categoryId,
 		date: dateValue,
 		direction: type,
@@ -47,7 +47,7 @@ export const convertTxnRowToTransaction = (row: TxnRow): Transaction => {
 
 	return {
 		accountId: account ?? undefined,
-		amountCents,
+		amountCents: Number(amountCents),
 		categoryId: category,
 		date: date.toISOString(),
 		id,

@@ -16,7 +16,7 @@ export const convertSubcategoryRowToSubcategory = (
 
 	return {
 		budget: {
-			amountCents: budgetAmountCents,
+			amountCents: Number(budgetAmountCents),
 			frequency: budgetFrequencyMonths,
 			type: budgetType,
 		},
@@ -44,7 +44,7 @@ export const convertSubcategoryToSubcategoryRow = (
 
 	return {
 		/* eslint-disable @typescript-eslint/naming-convention */
-		budget_amount_cents: budgetAmountCents,
+		budget_amount_cents: String(budgetAmountCents),
 		budget_frequency_months: budgetFrequencyMonths,
 		budget_type: budgetType,
 		/* eslint-enable @typescript-eslint/naming-convention */
