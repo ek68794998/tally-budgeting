@@ -59,6 +59,10 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 				subcategories.find((s) => s.id === subcategoryId) ??
 				DefaultSubcategory;
 
+			const transactionType = inputRow["Transaction Type"].toLowerCase();
+			const transactionDirection =
+				transactionType === "check" ? "debit" : transactionType;
+
 			return {
 				accountId: account.id,
 				amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
@@ -66,9 +70,7 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 				date: new Date(inputRow["Posting Date"]).toISOString(),
 				merchant,
 				subcategoryId: subcategory.id,
-				type: transactionDirectionSchema.parse(
-					inputRow["Transaction Type"].toLowerCase(),
-				),
+				type: transactionDirectionSchema.parse(transactionDirection),
 			};
 		};
 
@@ -78,7 +80,7 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 		return !!(
 			/-\s*AUTOPAY/.exec(description) ||
 			/-\s*PAYMENT/.exec(description) ||
-			/(Withdrawal|Deposit)\s*Transfer/.exec(description)
+			/(Withdrawal|Deposit)\s*Transfer.*\*/.exec(description)
 		);
 	};
 
