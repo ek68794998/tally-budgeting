@@ -6,15 +6,16 @@ import { type TxnRow } from "@tally/data-models/database/txnRow";
 import { type TxnRuleRow } from "@tally/data-models/database/txnRuleRow";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
+import { type WithGeneratedId } from "./types";
 
 const defaultPoolMax = 10;
 
 export interface Database {
-	asset: AssetRow;
-	category: CategoryRow;
-	subcategory: SubcategoryRow;
-	txn: TxnRow;
-	txnRule: TxnRuleRow;
+	asset: WithGeneratedId<AssetRow, "id">;
+	category: WithGeneratedId<CategoryRow, "id">;
+	subcategory: WithGeneratedId<SubcategoryRow, "id">;
+	txn: WithGeneratedId<TxnRow, "id">;
+	txn_rule: WithGeneratedId<TxnRuleRow, "id">; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
 let database: Kysely<Database> | undefined;

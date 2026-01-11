@@ -8,7 +8,7 @@ export const subcategorySchema = z.object({
 		frequency: z.int().min(1).max(12),
 		type: budgetTypeSchema,
 	}),
-	categoryId: z.int().min(1),
+	categoryId: z.int(),
 	description: z.string(),
 	id: z.int(),
 	label: z.string().min(2).max(100),

@@ -6,7 +6,7 @@ import {
 import { categoryRowSchema } from "@tally/data-models/database/categoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
 export const TableName = "category" as const satisfies keyof Database;
 
@@ -30,7 +30,7 @@ export class CategoriesClient extends DatabaseClient {
 		values: Category | Category[],
 	): Promise<void> {
 		const categories = rowOrRowsAsRows(values).map((r) =>
-			convertCategoryToCategoryRow(r),
+			withoutId(convertCategoryToCategoryRow(r)),
 		);
 
 		await this.database.insertInto(TableName).values(categories).execute();

@@ -6,7 +6,7 @@ export const transactionSchema = z.object({
 	amountCents: z.int().nonnegative(),
 	categoryId: z.number(),
 	date: z.iso.datetime({ offset: true }),
-	id: z.int().positive(),
+	id: z.int(),
 	merchant: z.string().min(1).max(100),
 	notes: z.string(),
 	subcategoryId: z.number(),

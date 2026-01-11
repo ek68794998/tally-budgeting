@@ -6,7 +6,7 @@ import {
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
 export const TableName = "subcategory" as const satisfies keyof Database;
 
@@ -30,7 +30,7 @@ export class SubcategoriesClient extends DatabaseClient {
 		values: Subcategory | Subcategory[],
 	): Promise<void> {
 		const subcategories = rowOrRowsAsRows(values).map((r) =>
-			convertSubcategoryToSubcategoryRow(r),
+			withoutId(convertSubcategoryToSubcategoryRow(r)),
 		);
 
 		await this.database

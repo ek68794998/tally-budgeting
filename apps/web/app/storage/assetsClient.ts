@@ -6,7 +6,7 @@ import {
 import { assetRowSchema } from "@tally/data-models/database/assetRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
 export const TableName = "asset" as const satisfies keyof Database;
 
@@ -28,7 +28,7 @@ export class AssetsClient extends DatabaseClient {
 
 	public async insertAssetsAsync(values: Asset | Asset[]): Promise<void> {
 		const assets = rowOrRowsAsRows(values).map((r) =>
-			convertAssetToAssetRow(r),
+			withoutId(convertAssetToAssetRow(r)),
 		);
 
 		await this.database.insertInto(TableName).values(assets).execute();

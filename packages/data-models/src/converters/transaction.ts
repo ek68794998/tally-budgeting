@@ -1,4 +1,5 @@
 import { type Transaction } from "../contracts/transaction";
+import { type SubcategoryRow } from "../database/subcategoryRow";
 import { type TxnRow } from "../database/txnRow";
 
 export const convertTransactionToTxnRow = (
@@ -7,7 +8,6 @@ export const convertTransactionToTxnRow = (
 	const {
 		accountId,
 		amountCents,
-		categoryId,
 		date,
 		id,
 		merchant,
@@ -22,7 +22,6 @@ export const convertTransactionToTxnRow = (
 	return {
 		account: accountId ?? null,
 		amount_cents: String(amountCents), // eslint-disable-line @typescript-eslint/naming-convention
-		category: categoryId,
 		date: dateValue,
 		direction: type,
 		id,
@@ -32,7 +31,9 @@ export const convertTransactionToTxnRow = (
 	};
 };
 
-export const convertTxnRowToTransaction = (row: TxnRow): Transaction => {
+export const convertTxnRowToTransaction = (
+	row: TxnRow & SubcategoryRow,
+): Transaction => {
 	const {
 		account,
 		amount_cents: amountCents,

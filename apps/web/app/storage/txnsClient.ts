@@ -5,6 +5,7 @@ import {
 	convertTransactionToTxnRow,
 	convertTxnRowToTransaction,
 } from "@tally/data-models/converters/transaction";
+import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { txnRowSchema } from "@tally/data-models/database/txnRow";
 import { parseODataLiteFilter } from "@tally/utilities/oData/parse";
 import { type ODataLiteFilterExpression } from "@tally/utilities/oData/types";
@@ -19,6 +20,7 @@ import {
 	getQueryCountAsync,
 	parseInValues,
 	rowOrRowsAsRows,
+	withoutId,
 } from "./helpers";
 import { TableName as SubcategoryTableName } from "./subcategoriesClient";
 import { type GetAllQueryResult, type GetRowsOptions } from "./types";
@@ -63,8 +65,7 @@ export class TxnsClient extends DatabaseClient {
 		const orderDirection = getOrderDirection(direction);
 
 		let fetchQuery = query
-			.selectAll("subcategory")
-			.selectAll("txn")
+			.selectAll(["subcategory", "txn"])
 			.orderBy(orderColumn, orderDirection)
 			.orderBy("date", "desc")
 			.orderBy("merchant", "asc");
@@ -74,8 +75,12 @@ export class TxnsClient extends DatabaseClient {
 		const rows = await fetchQuery.execute();
 
 		const transactions = rows.map((row) => {
+			const subcategoryRow = subcategoryRowSchema.parse(row);
 			const txnRow = txnRowSchema.parse(row);
-			return convertTxnRowToTransaction(txnRow);
+			return convertTxnRowToTransaction({
+				...subcategoryRow,
+				...txnRow,
+			});
 		});
 
 		return {
@@ -108,8 +113,12 @@ export class TxnsClient extends DatabaseClient {
 			.execute();
 
 		const transactionRules = rows.map((row) => {
+			const subcategoryRow = subcategoryRowSchema.parse(row);
 			const txnRow = txnRowSchema.parse(row);
-			return convertTxnRowToTransaction(txnRow);
+			return convertTxnRowToTransaction({
+				...subcategoryRow,
+				...txnRow,
+			});
 		});
 
 		return transactionRules;
@@ -119,7 +128,7 @@ export class TxnsClient extends DatabaseClient {
 		values: Transaction | Transaction[],
 	): Promise<void> {
 		const transactions = rowOrRowsAsRows(values).map((r) =>
-			convertTransactionToTxnRow(r),
+			withoutId(convertTransactionToTxnRow(r)),
 		);
 
 		await this.database

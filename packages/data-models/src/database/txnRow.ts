@@ -13,10 +13,9 @@ export const txnRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
 	account: z.int().nullable(),
 	amount_cents: z.string(), // BIGINT in Postgres is returned as a string.
-	category: z.int(),
 	date: z.date(),
 	direction: transactionDirectionSchema,
-	id: z.int().positive(),
+	id: z.int(),
 	merchant: z.string().min(1).max(100),
 	notes: z.string().nullable(),
 	subcategory: z.int(),

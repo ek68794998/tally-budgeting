@@ -6,9 +6,9 @@ import {
 import { txnRuleRowSchema } from "@tally/data-models/database/txnRuleRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
-export const TableName = "txnRule" as const satisfies keyof Database;
+export const TableName = "txn_rule" as const satisfies keyof Database;
 
 export class TxnRulesClient extends DatabaseClient {
 	public async deleteTransactionRuleAsync(id: number): Promise<void> {
@@ -38,7 +38,7 @@ export class TxnRulesClient extends DatabaseClient {
 		values: TransactionRule | TransactionRule[],
 	): Promise<void> {
 		const transactionRules = rowOrRowsAsRows(values).map((r) =>
-			convertTransactionRuleToTxnRuleRow(r),
+			withoutId(convertTransactionRuleToTxnRuleRow(r)),
 		);
 
 		await this.database

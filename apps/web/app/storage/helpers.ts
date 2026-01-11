@@ -58,5 +58,12 @@ export const parseInValues = (
 export const rowOrRowsAsRows = <T>(values: T | T[]): T[] =>
 	Array.isArray(values) ? values : [values];
 
+export const withoutId = <T extends { id: unknown }>(
+	item: T,
+): Omit<T, "id"> => {
+	const { id: _, ...rest } = item;
+	return rest;
+};
+
 const calculateOffset = (page: number, limit: number): number =>
 	(page - 1) * limit;
