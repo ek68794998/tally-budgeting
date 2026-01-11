@@ -7,7 +7,7 @@ const fromCents = (cents: number | string): number => {
 
 const toCents = (dollars: number | string): number => {
 	const dollarsValue = isString(dollars)
-		? Number.parseInt(dollars, 10)
+		? Number.parseFloat(dollars)
 		: dollars;
 	return Math.round(dollarsValue * 100.0);
 };

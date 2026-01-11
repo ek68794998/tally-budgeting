@@ -123,6 +123,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 							<NumberInput
 								formatOptions={{
 									currency: "USD",
+									maximumFractionDigits: 2,
 									style: "currency",
 								}}
 								label={t("transactions.columns.amount")}
