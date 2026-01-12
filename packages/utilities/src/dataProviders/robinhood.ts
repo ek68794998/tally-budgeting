@@ -75,7 +75,11 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 			};
 		};
 
-	public isStatementRowIgnored = (_inputRow: StatementRow) => false; // TODO: Ignore Status=="Pending"?
+	public isStatementRowIgnored = (inputRow: StatementRow) => {
+		const { Merchant: description } = inputRow;
+
+		return description === "Payment";
+	};
 
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
 		obj,

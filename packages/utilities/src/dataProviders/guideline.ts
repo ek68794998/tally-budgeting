@@ -63,11 +63,7 @@ export class GuidelineDataProvider implements DataProvider<StatementRow> {
 			};
 		};
 
-	public isStatementRowIgnored = (inputRow: StatementRow) => {
-		const { "Transaction type": description } = inputRow;
-
-		return description === "Dividend";
-	};
+	public isStatementRowIgnored = (_inputRow: StatementRow) => false;
 
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
 		obj,
