@@ -12,11 +12,11 @@
 		},
 		"title": "資産・負債",
 		"types": {
-			"fixedAsset": "固定資産",
-			"liquidAsset": "流動資産",
-			"longTermLiability": "長期負債",
-			"personalAsset": "個人資産",
-			"shortTermLiability": "短期負債"
+			"fixed_asset": "固定資産",
+			"liquid_asset": "流動資産",
+			"long_term_liability": "長期負債",
+			"personal_asset": "個人資産",
+			"short_term_liability": "短期負債"
 		}
 	},
 	"budget": {

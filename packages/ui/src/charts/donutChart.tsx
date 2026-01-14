@@ -29,7 +29,7 @@ interface DonutData {
 	value: number;
 }
 
-interface DonutChartProps {
+interface Props {
 	data: DonutData[];
 	formatValue?: (value: number) => string;
 	innerRadius?: number;
@@ -40,7 +40,7 @@ interface DonutChartProps {
 	title?: string;
 }
 
-export const DonutChart: React.FC<DonutChartProps> = ({
+export const DonutChart: React.FC<Props> = ({
 	data,
 	formatValue = (value) => value.toString(),
 	innerRadius = 60,

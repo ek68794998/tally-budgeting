@@ -1,23 +1,50 @@
-import Sqlite3 from "better-sqlite3";
-import { AppConfiguration } from "../config";
+import { invariant } from "@ekumlin/typescript-toolkit/values";
+import { type AssetRow } from "@tally/data-models/database/assetRow";
+import { type CategoryRow } from "@tally/data-models/database/categoryRow";
+import { type SubcategoryRow } from "@tally/data-models/database/subcategoryRow";
+import { type TxnRow } from "@tally/data-models/database/txnRow";
+import { type TxnRuleRow } from "@tally/data-models/database/txnRuleRow";
+import { Kysely, PostgresDialect } from "kysely";
+import { Pool } from "pg";
+import { type WithGeneratedId } from "./types";
 
-// TODO (#1) Replace with Postgres
+const defaultPoolMax = 10;
 
-const dbFilePath = AppConfiguration.databasePath;
-
-let database: Sqlite3.Database | undefined;
-
-export interface DatabaseSettings {
-	database: Sqlite3.Database;
+export interface Database {
+	asset: WithGeneratedId<AssetRow, "id">;
+	category: WithGeneratedId<CategoryRow, "id">;
+	subcategory: WithGeneratedId<SubcategoryRow, "id">;
+	txn: WithGeneratedId<TxnRow, "id">;
+	txn_rule: WithGeneratedId<TxnRuleRow, "id">; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
-export const getDatabaseSettings = (): DatabaseSettings => {
-	if (!database) {
-		database = new Sqlite3(dbFilePath);
+let database: Kysely<Database> | undefined;
 
-		// Enable WAL mode (https://github.com/WiseLibs/better-sqlite3/issues/262#issuecomment-549872386)
-		database.pragma("journal_mode = WAL");
+export const getDatabase = (): Kysely<Database> => {
+	if (database) {
+		return database;
 	}
 
-	return { database };
+	const {
+		POSTGRES_CONNECTION_STRING: connectionString,
+		POSTGRES_POOL_MAXIMUM: poolMax = `${defaultPoolMax}`,
+	} = process.env;
+
+	invariant(
+		connectionString,
+		"You must have configured the POSTGRES_CONNECTION_STRING setting in your environment's .env file.",
+	);
+
+	const dialect = new PostgresDialect({
+		pool: new Pool({
+			connectionString,
+			max: Number.parseInt(poolMax, 10),
+		}),
+	});
+
+	database = new Kysely<Database>({
+		dialect,
+	});
+
+	return database;
 };

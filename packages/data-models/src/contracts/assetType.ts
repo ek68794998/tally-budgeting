@@ -1,19 +1,13 @@
 import z from "zod";
 
-export const assetTypeSchema = z.enum([
-	"fixedAsset",
-	"liquidAsset",
-	"personalAsset",
-	"longTermLiability",
-	"shortTermLiability",
-]);
+export const AssetTypeKeys = [
+	"fixed_asset",
+	"liquid_asset",
+	"personal_asset",
+	"long_term_liability",
+	"short_term_liability",
+] as const;
+
+export const assetTypeSchema = z.enum(AssetTypeKeys);
 
 export type AssetType = z.infer<typeof assetTypeSchema>;
-
-export const AssetTypes = {
-	fixedAsset: 0,
-	liquidAsset: 1,
-	longTermLiability: 3,
-	personalAsset: 2,
-	shortTermLiability: 4,
-} as const satisfies Record<AssetType, number>;

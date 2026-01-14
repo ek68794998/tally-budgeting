@@ -38,6 +38,10 @@ export const parseRowAsTransaction = (
 
 	invariant(account.provider, "Account provider must be defined");
 
+	const setTransaction = (t: Omit<Transaction, "id" | "notes">) => {
+		transaction = { ...t, id: -1, notes: "" };
+	};
+
 	switch (account.provider) {
 		case "apple": {
 			const provider = new AppleDataProvider();
@@ -46,10 +50,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 
@@ -63,10 +69,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 
@@ -80,10 +88,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 
@@ -97,10 +107,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 
@@ -114,10 +126,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 
@@ -131,10 +145,12 @@ export const parseRowAsTransaction = (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
 				!provider.isStatementRowIgnored(inputRow)
 			) {
-				transaction = provider.convertStatementRowToTransaction(
-					inputRow,
-					account.name,
-					customizations,
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
 				);
 			}
 

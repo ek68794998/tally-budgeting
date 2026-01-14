@@ -1,11 +1,4 @@
-import { keysOf } from "@ekumlin/typescript-toolkit/collections";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type Asset } from "@tally/data-models/contracts/asset";
-import {
-	type AssetType,
-	AssetTypes,
-	assetTypeSchema,
-} from "@tally/data-models/contracts/assetType";
 import {
 	addToast,
 	Input,
@@ -18,6 +11,13 @@ import {
 	SelectItem,
 	type useDisclosure,
 } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import {
+	type AssetType,
+	AssetTypeKeys,
+	assetTypeSchema,
+} from "@tally/data-models/contracts/assetType";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { EditModalFooter } from "../modal/editModalFooter";
@@ -36,11 +36,10 @@ export const AssetEditModal: React.FC<Props> = ({
 	const t = useTranslations();
 
 	const [name, setName] = useState("");
-	const [type, setType] = useState<AssetType>("fixedAsset");
+	const [type, setType] = useState<AssetType>("fixed_asset");
 	const [value, setValue] = useState(0);
 
 	const isModalOpen = isOpen && !!asset;
-	const assetTypeKeys = keysOf(AssetTypes);
 
 	const canSave = !!(name && value >= 0);
 
@@ -51,7 +50,7 @@ export const AssetEditModal: React.FC<Props> = ({
 
 		setName(asset.name);
 		setType(asset.type);
-		setValue(asset.value);
+		setValue(Dollars.fromCents(asset.valueCents));
 	}, [asset]);
 
 	const title =
@@ -86,7 +85,7 @@ export const AssetEditModal: React.FC<Props> = ({
 								}}
 								selectedKeys={[type]}
 							>
-								{assetTypeKeys.map((typeKey) => (
+								{AssetTypeKeys.map((typeKey) => (
 									<SelectItem key={typeKey}>
 										{t(`assets.types.${typeKey}`, {
 											plural: "no",
@@ -109,7 +108,7 @@ export const AssetEditModal: React.FC<Props> = ({
 									...asset,
 									name,
 									type,
-									value,
+									valueCents: Dollars.toCents(value),
 								});
 							}}
 							onSaveError={() =>

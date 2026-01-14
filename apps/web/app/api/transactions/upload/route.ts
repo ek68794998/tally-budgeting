@@ -10,14 +10,14 @@ import { parseRowAsTransaction } from "@tally/utilities/dataProviders/parser";
 import { NextResponse } from "next/server";
 import { AssetsClient } from "../../../storage/assetsClient";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
-import { TransactionRulesClient } from "../../../storage/transactionRulesClient";
-import { TransactionsClient } from "../../../storage/transactionsClient";
+import { TxnRulesClient } from "../../../storage/txnRulesClient";
+import { TxnsClient } from "../../../storage/txnsClient";
 import { type NextResponseFn } from "../../types";
 
 const assetsClient = new AssetsClient();
 const subcategoriesClient = new SubcategoriesClient();
-const transactionsClient = new TransactionsClient();
-const transactionRulesClient = new TransactionRulesClient();
+const txnsClient = new TxnsClient();
+const txnRulesClient = new TxnRulesClient();
 
 const PostAsync: NextResponseFn = async (request) => {
 	const formData = await request.formData();
@@ -33,8 +33,7 @@ const PostAsync: NextResponseFn = async (request) => {
 	const assets = await assetsClient.getAssetsAsync();
 	const accounts = assets.filter(isAccount);
 	const subcategories = await subcategoriesClient.getSubcategoriesAsync();
-	const transactionRules =
-		await transactionRulesClient.getTransactionRulesAsync();
+	const transactionRules = await txnRulesClient.getTransactionRulesAsync();
 
 	const merchants = transactionRules.map(
 		({
@@ -105,7 +104,7 @@ const PostAsync: NextResponseFn = async (request) => {
 	const isValidationOnly = formData.get("isValidationOnly") === "true";
 
 	if (!isValidationOnly) {
-		await transactionsClient.insertTransactionsAsync(rowsProcessed);
+		await txnsClient.insertTransactionsAsync(rowsProcessed);
 	}
 
 	const responseData: PostTransactionsUploadResponse = {

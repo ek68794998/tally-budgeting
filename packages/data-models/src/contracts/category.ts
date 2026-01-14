@@ -1,8 +1,8 @@
 import z from "zod";
 
 export const categorySchema = z.object({
-	id: z.number(),
-	label: z.string().min(1).max(100),
+	id: z.int(),
+	label: z.string().min(2).max(100),
 });
 
 export const DefaultCategoryId = -1;

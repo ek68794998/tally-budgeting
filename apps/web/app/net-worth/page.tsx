@@ -2,6 +2,7 @@ import { type Asset } from "@tally/data-models/contracts/asset";
 import { AssetDistribution } from "@tally/ui/netWorth/assetDistribution";
 import { LiabilityDistribution } from "@tally/ui/netWorth/liabilityDistribution";
 import { NetWorthCard } from "@tally/ui/netWorth/netWorthCard";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { AssetsClient } from "../storage/assetsClient";
 
 const assetsClient = new AssetsClient();
@@ -13,10 +14,11 @@ const NetWorthPage: React.FC = async () => {
 		asset.type === "fixedAsset" ||
 		asset.type === "liquidAsset" ||
 		asset.type === "personalAsset";
-	const netWorth = assets.reduce(
-		(acc, asset) => acc + (isAsset(asset) ? 1 : -1) * asset.value,
+	const netWorthCents = assets.reduce(
+		(acc, asset) => acc + (isAsset(asset) ? 1 : -1) * asset.valueCents,
 		0,
 	);
+	const netWorth = Dollars.fromCents(netWorthCents);
 
 	return (
 		<div className="grid grid-cols-2 gap-4">

@@ -98,7 +98,7 @@ const findOperatorPosition = (expr: string, operator: string): number => {
 	return -1;
 };
 
-const parseODataValue = (raw: string): unknown => {
+const parseODataValue = (raw: string): ODataLiteFilterExpression["value"] => {
 	if (raw === "null") {
 		return null;
 	}

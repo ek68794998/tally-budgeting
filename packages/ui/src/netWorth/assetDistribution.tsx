@@ -1,7 +1,8 @@
 "use client";
 
-import { type Asset } from "@tally/data-models/contracts/asset";
 import { Card, CardBody } from "@heroui/react";
+import { type Asset } from "@tally/data-models/contracts/asset";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { DonutChart } from "../charts/donutChart";
@@ -21,26 +22,28 @@ export const AssetDistribution: React.FC<Props> = ({ assets }) => {
 		let liquidValue = 0;
 
 		for (const asset of assets) {
-			if (asset.type === "fixedAsset") {
-				fixedValue += asset.value;
-			} else if (asset.type === "liquidAsset") {
-				liquidValue += asset.value;
-			} else if (asset.type === "personalAsset") {
-				personalValue += asset.value;
+			const assetValue = Dollars.fromCents(asset.valueCents);
+
+			if (asset.type === "fixed_asset") {
+				fixedValue += assetValue;
+			} else if (asset.type === "liquid_asset") {
+				liquidValue += assetValue;
+			} else if (asset.type === "personal_asset") {
+				personalValue += assetValue;
 			}
 		}
 
 		return [
 			{
-				name: t("assets.types.fixedAsset", { plural: "yes" }),
+				name: t("assets.types.fixed_asset", { plural: "yes" }),
 				value: fixedValue,
 			},
 			{
-				name: t("assets.types.liquidAsset", { plural: "yes" }),
+				name: t("assets.types.liquid_asset", { plural: "yes" }),
 				value: liquidValue,
 			},
 			{
-				name: t("assets.types.personalAsset", { plural: "yes" }),
+				name: t("assets.types.personal_asset", { plural: "yes" }),
 				value: personalValue,
 			},
 		];

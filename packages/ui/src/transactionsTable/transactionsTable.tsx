@@ -1,8 +1,5 @@
 "use client";
 
-import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { isAccount } from "@tally/data-models/data/accountHelpers";
 import {
 	Chip,
 	Pagination,
@@ -19,6 +16,9 @@ import {
 	useDisclosure,
 } from "@heroui/react";
 import { IconNote } from "@tabler/icons-react";
+import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
+import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useMemo, useState } from "react";
@@ -120,9 +120,9 @@ export const TransactionsTable: React.FC = () => {
 		},
 		{
 			getValue: (item) => item.amount,
-			key: "amount",
+			key: "amountCents",
 			label: t("columns.amount"),
-			sortField: "amount",
+			sortField: "amountCents",
 		},
 		{
 			getValue: (item) => (

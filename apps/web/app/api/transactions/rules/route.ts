@@ -10,15 +10,15 @@ import {
 	postTransactionRuleRequestSchema,
 } from "@tally/data-models/contracts/api/postTransactionRule";
 import { NextResponse } from "next/server";
-import { TransactionRulesClient } from "../../../storage/transactionRulesClient";
+import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { type NextResponseFn } from "../../types";
 
-const transactionRulesClient = new TransactionRulesClient();
+const txnRulesClient = new TxnRulesClient();
 
 const GetAsync: NextResponseFn = async (_request) => {
 	try {
 		const transactionRules =
-			await transactionRulesClient.getTransactionRulesAsync();
+			await txnRulesClient.getTransactionRulesAsync();
 
 		const response: GetTransactionRulesResponse = {
 			transactionRules,
@@ -50,13 +50,9 @@ const PostAsync: NextResponseFn = async (request) => {
 		const requestJson: unknown = await request.json();
 		const body = postTransactionRuleRequestSchema.parse(requestJson);
 
-		if (body.rule.id >= 0) {
-			await transactionRulesClient.updateTransactionRuleAsync(body.rule);
-		} else {
-			await transactionRulesClient.insertTransactionRulesAsync([
-				body.rule,
-			]);
-		}
+		await (body.rule.id >= 0
+			? txnRulesClient.updateTransactionRuleAsync(body.rule)
+			: txnRulesClient.insertTransactionRulesAsync([body.rule]));
 
 		const response: PostTransactionRuleResponse = {
 			success: true,

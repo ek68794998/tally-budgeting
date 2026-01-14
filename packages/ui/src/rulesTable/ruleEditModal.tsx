@@ -1,6 +1,4 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import {
 	addToast,
 	Checkbox,
@@ -11,6 +9,8 @@ import {
 	ModalHeader,
 	type useDisclosure,
 } from "@heroui/react";
+import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
+import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { SelectCategory } from "../common/selectCategory";
@@ -143,7 +143,7 @@ export const RuleEditModal: React.FC<Props> = ({
 								invariant(rule, "Rule must be defined.");
 								await onSave({
 									...rule,
-									isActive: true,
+									active: true,
 									matcher: {
 										flags: regexFlags,
 										pattern: regex,

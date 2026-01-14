@@ -4,11 +4,11 @@ import { assetTypeSchema } from "./assetType";
 
 export const assetSchema = z.object({
 	active: z.boolean(),
-	id: z.number(),
+	id: z.int(),
 	name: z.string().min(1).max(100),
 	provider: accountProviderTypeSchema.nullable(),
 	type: assetTypeSchema,
-	value: z.number().min(0),
+	valueCents: z.int(),
 });
 
 export type Asset = z.infer<typeof assetSchema>;

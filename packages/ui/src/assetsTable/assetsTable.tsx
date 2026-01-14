@@ -1,23 +1,11 @@
 "use client";
 
+import { useDisclosure } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
-import {
-	type Selection,
-	type SortDescriptor,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-	useDisclosure,
-} from "@heroui/react";
-import { useLocale, useTranslations } from "next-intl";
-import { type Key, type ReactNode, useState } from "react";
+import { useState } from "react";
 import { ModalDefaultAsset } from "../common/modalDefault";
-import { formatCurrency } from "../format";
+import { AssetCard } from "./assetCard";
 import { AssetEditModal } from "./assetEditModal";
-import { AssetRowDropdown } from "./assetRowDropdown";
 import { AssetsTableControls } from "./assetsTableControls";
 
 interface Props {
@@ -25,29 +13,10 @@ interface Props {
 }
 
 export const AssetsTable: React.FC<Props> = ({ assets }) => {
-	type AssetKey = keyof (typeof assets)[number];
-	type ColumnKey = AssetKey | "actions";
-
 	const editModalState = useDisclosure();
-	const locale = useLocale();
-	const t = useTranslations("assets");
 
 	const [activeAsset, setActiveAsset] = useState<Asset | null>(null);
 	const [filterValue, setFilterValue] = useState("");
-	const [selection, setSelection] = useState<Selection>(new Set());
-	const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-		column: "name",
-		direction: "ascending",
-	});
-
-	const columns: {
-		key: ColumnKey;
-		label: string;
-	}[] = [
-		{ key: "name", label: t("columns.name") },
-		{ key: "value", label: t("columns.value") },
-		{ key: "actions", label: "" },
-	];
 
 	const displayedAssets = assets
 		.filter(
@@ -57,17 +26,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 					.toLocaleLowerCase()
 					.includes(filterValue.toLocaleLowerCase()),
 		)
-		.sort((a, b) => {
-			if (sortDescriptor.column === "name") {
-				return a.name.localeCompare(b.name);
-			}
-
-			if (sortDescriptor.column === "value") {
-				return a.value - b.value;
-			}
-
-			return 0;
-		});
+		.sort((a, b) => a.name.localeCompare(b.name));
 
 	const handleDelete = (_asset: Asset) => {
 		// TODO Implement delete logic here
@@ -87,66 +46,22 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 			}, 1000);
 		});
 
-	const getRowValue = (item: Asset, key: Key): ReactNode => {
-		switch (key) {
-			case "name":
-				return item.name;
-			case "value":
-				return formatCurrency(item.value, { locale });
-			case "actions":
-				return (
-					<AssetRowDropdown
-						onDelete={() => handleDelete(item)}
-						onEdit={() => handleEdit(item)}
-					/>
-				);
-			default:
-				return null;
-		}
-	};
-
 	return (
 		<div className="flex flex-col gap-4">
 			<AssetsTableControls
 				onFilterChange={setFilterValue}
 				onNewAsset={() => handleEdit(ModalDefaultAsset)}
 			/>
-			<Table
-				aria-label={t("title")}
-				classNames={{
-					wrapper:
-						"bg-background/80 dark:bg-background/20 backdrop-blur-md backdrop-saturate-150",
-				}}
-				onRowAction={() => "noop"}
-				onSelectionChange={setSelection}
-				onSortChange={setSortDescriptor}
-				selectedKeys={selection}
-				selectionMode="multiple"
-				sortDescriptor={sortDescriptor}
-			>
-				<TableHeader columns={columns}>
-					{(column) => (
-						<TableColumn key={column.key}>
-							{column.label}
-						</TableColumn>
-					)}
-				</TableHeader>
-				<TableBody items={displayedAssets}>
-					{(item) => {
-						const { id, name, type } = item;
-
-						return (
-							<TableRow key={`${id}-${name}-${type}`}>
-								{(columnKey) => (
-									<TableCell>
-										{getRowValue(item, columnKey)}
-									</TableCell>
-								)}
-							</TableRow>
-						);
-					}}
-				</TableBody>
-			</Table>
+			<div className="grid grid-cols-3 gap-4">
+				{displayedAssets.map((asset) => (
+					<AssetCard
+						asset={asset}
+						key={asset.id}
+						onDelete={() => handleDelete(asset)}
+						onEdit={() => handleEdit(asset)}
+					/>
+				))}
+			</div>
 			<AssetEditModal
 				asset={activeAsset}
 				modalState={editModalState}

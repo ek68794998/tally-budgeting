@@ -18,7 +18,7 @@ export type ODataLiteFilterOperator = z.infer<
 export const oDataLiteFilterExpressionSchema = z.object({
 	field: z.string(),
 	operator: oDataLiteFilterOperatorSchema,
-	value: z.unknown(),
+	value: z.union([z.boolean(), z.string(), z.number(), z.date(), z.null()]),
 });
 
 export type ODataLiteFilterExpression = z.infer<

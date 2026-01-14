@@ -13,7 +13,7 @@ export type CsvRowToTransactionFn<TInputRow extends object> = (
 	inputRow: TInputRow,
 	account: string,
 	customizations: TransactionCustomizations,
-) => Transaction;
+) => Omit<Transaction, "id" | "notes">;
 
 export type ValidationErrorFn<T> = (
 	obj: unknown,

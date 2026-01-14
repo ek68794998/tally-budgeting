@@ -40,8 +40,8 @@ export const calculateSummary = (
 
 	const previousYear = currentYear - 1;
 
-	const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-	const previousMonthYear = currentMonth === 1 ? previousYear : currentYear;
+	const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+	const previousMonthYear = currentMonth === 0 ? previousYear : currentYear;
 
 	const summaries: Summary = {
 		currentMonth: {

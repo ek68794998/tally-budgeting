@@ -1,23 +1,24 @@
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import { RowDropdown } from "../table/rowDropdown";
+import { MoreDropdown } from "../moreDropdown/moreDropdown";
 
 interface Props {
 	onDelete: () => void;
 	onEdit: () => void;
 }
 
-export const AssetRowDropdown: React.FC<Props> = ({ onDelete, onEdit }) => {
+export const AssetCardDropdown: React.FC<Props> = ({ onDelete, onEdit }) => {
 	const t = useTranslations();
 
 	return (
-		<RowDropdown
-			dropdownEntries={[
+		<MoreDropdown
+			entries={[
 				{
 					action: onEdit,
 					IconComponent: IconEdit,
 					key: "edit",
 					label: t("common.actions.edit"),
+					showDivider: true,
 				},
 				{
 					action: onDelete,

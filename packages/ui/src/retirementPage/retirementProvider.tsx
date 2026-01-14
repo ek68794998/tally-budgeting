@@ -3,7 +3,6 @@
 import { useLocalStorageState } from "ahooks";
 import {
 	createContext,
-	type ReactNode,
 	useCallback,
 	useContext,
 	useMemo,
@@ -25,14 +24,10 @@ const RetirementContext = createContext<RetirementContextValue | undefined>(
 	undefined,
 );
 
-interface RetirementProviderProps {
-	children: ReactNode;
-}
-
 const year = new Date().getFullYear();
 const monthsLeftInYear = 12 - new Date().getMonth();
 
-export const RetirementProvider: React.FC<RetirementProviderProps> = ({
+export const RetirementProvider: React.FC<React.PropsWithChildren> = ({
 	children,
 }) => {
 	const [storedInputs, setStoredInputs] = useLocalStorageState(

@@ -1,35 +1,42 @@
 import { type TransactionRule } from "../contracts/transactionRule";
-import { type TransactionRuleRow } from "../database/transactionRuleRow";
+import { type TxnRuleRow } from "../database/txnRuleRow";
 
-export const convertTransactionRuleToTransactionRuleRow = (
+export const convertTransactionRuleToTxnRuleRow = (
 	transactionRule: TransactionRule,
-): TransactionRuleRow => {
-	const { id, isActive, matcher, merchantName, priority, subcategoryId } =
+): TxnRuleRow => {
+	const { active, id, matcher, merchantName, priority, subcategoryId } =
 		transactionRule;
 
 	return {
 		flags: matcher.flags,
 		id,
-		isActive: isActive ? 1 : 0,
+		is_active: active, // eslint-disable-line @typescript-eslint/naming-convention
 		merchant: merchantName,
 		pattern: matcher.pattern,
 		priority,
-		subcategoryId,
+		subcategory: subcategoryId,
 	};
 };
 
-export const convertTransactionRuleRowToTransactionRule = (
-	row: TransactionRuleRow,
+export const convertTxnRuleRowToTransactionRule = (
+	row: TxnRuleRow,
 ): TransactionRule => {
-	const { flags, id, isActive, merchant, pattern, priority, subcategoryId } =
-		row;
+	const {
+		flags,
+		id,
+		is_active: active,
+		merchant,
+		pattern,
+		priority,
+		subcategory,
+	} = row;
 
 	return {
+		active,
 		id,
-		isActive: isActive > 0,
 		matcher: { flags, pattern },
 		merchantName: merchant,
 		priority,
-		subcategoryId,
+		subcategoryId: subcategory,
 	};
 };

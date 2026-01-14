@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS txn (
 	merchant TEXT NOT NULL,
 	date TIMESTAMPTZ,
 	account INTEGER,
-	subcategory INTEGER,
+	subcategory INTEGER NOT NULL DEFAULT -1,
 	amount_cents BIGINT NOT NULL DEFAULT 0,
 	direction txn_direction NOT NULL DEFAULT 'debit',
 	notes TEXT,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS txn (
 CREATE TABLE IF NOT EXISTS txn_rule (
 	id SERIAL PRIMARY KEY,
 	pattern TEXT NOT NULL,
-	flags TEXT DEFAULT 'i',
+	flags TEXT NOT NULL DEFAULT 'i',
 	merchant TEXT NOT NULL,
 	subcategory INTEGER,
 	priority INTEGER DEFAULT 0,

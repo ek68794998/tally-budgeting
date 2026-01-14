@@ -4,7 +4,6 @@ import { type PostTransactionsUploadResponse } from "@tally/data-models/contract
 import { type Asset } from "@tally/data-models/contracts/asset";
 import {
 	createContext,
-	type ReactNode,
 	useCallback,
 	useContext,
 	useMemo,
@@ -39,10 +38,6 @@ interface TransactionsUploadContextValue {
 const TransactionsUploadContext = createContext<
 	TransactionsUploadContextValue | undefined
 >(undefined);
-
-interface TransactionsUploadProviderProps {
-	children: ReactNode;
-}
 
 const uploadFile = (
 	file: File | null,
@@ -84,9 +79,9 @@ const uploadFile = (
 	xhr.send(formData);
 };
 
-export const TransactionsUploadProvider: React.FC<
-	TransactionsUploadProviderProps
-> = ({ children }) => {
+export const TransactionsUploadProvider: React.FC<React.PropsWithChildren> = ({
+	children,
+}) => {
 	const [account, setAccount] = useState<Asset | null>(null);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [uploadCallbacks, setUploadCallbacks] =

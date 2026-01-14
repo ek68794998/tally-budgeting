@@ -1,7 +1,7 @@
 "use client";
 
-import { type Summary } from "@tally/utilities/summary/calculateSummary";
 import { Tab, Tabs } from "@heroui/react";
+import { type Summary } from "@tally/utilities/summary/calculateSummary";
 import { SpendingBarChart } from "./spendingBarChart";
 import { SpendingCard } from "./spendingCard";
 

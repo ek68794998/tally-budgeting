@@ -1,7 +1,6 @@
 "use client";
 
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import {
 	Code,
 	type Selection,
@@ -13,6 +12,7 @@ import {
 	TableRow,
 	useDisclosure,
 } from "@heroui/react";
+import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { useTranslations } from "next-intl";
 import { type Key, type ReactNode, useState } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
@@ -107,8 +107,8 @@ export const RulesTable: React.FC = () => {
 				onFilterChange={setFilterValue}
 				onNewRule={() =>
 					handleEdit({
+						active: true,
 						id: -1,
-						isActive: true,
 						matcher: {
 							flags: "i",
 							pattern: "",

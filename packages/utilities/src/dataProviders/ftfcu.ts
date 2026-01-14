@@ -3,6 +3,7 @@ import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { transactionDirectionSchema } from "@tally/data-models/contracts/transactionDirection";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
+import { Dollars } from "../financial/dollars";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -58,19 +59,18 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 				subcategories.find((s) => s.id === subcategoryId) ??
 				DefaultSubcategory;
 
+			const transactionType = inputRow["Transaction Type"].toLowerCase();
+			const transactionDirection =
+				transactionType === "check" ? "debit" : transactionType;
+
 			return {
 				accountId: account.id,
-				amount: Math.abs(
-					Math.round(Number.parseFloat(inputRow.Amount) * 100) / 100,
-				),
+				amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
 				categoryId: subcategory.categoryId,
 				date: new Date(inputRow["Posting Date"]).toISOString(),
-				id: -1,
 				merchant,
 				subcategoryId: subcategory.id,
-				type: transactionDirectionSchema.parse(
-					inputRow["Transaction Type"].toLowerCase(),
-				),
+				type: transactionDirectionSchema.parse(transactionDirection),
 			};
 		};
 
@@ -80,7 +80,7 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 		return !!(
 			/-\s*AUTOPAY/.exec(description) ||
 			/-\s*PAYMENT/.exec(description) ||
-			/(Withdrawal|Deposit)\s*Transfer/.exec(description)
+			/(Withdrawal|Deposit)\s*Transfer.*\*/.exec(description)
 		);
 	};
 

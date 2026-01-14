@@ -1,30 +1,41 @@
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { convertSubcategoryRowToSubcategory } from "@tally/data-models/converters/subcategory";
+import {
+	convertSubcategoryRowToSubcategory,
+	convertSubcategoryToSubcategoryRow,
+} from "@tally/data-models/converters/subcategory";
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
+import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
-const tableName = "subcategory";
+export const TableName = "subcategory" as const satisfies keyof Database;
 
 export class SubcategoriesClient extends DatabaseClient {
-	public constructor() {
-		super(tableName);
-	}
+	public async getSubcategoriesAsync(): Promise<Subcategory[]> {
+		const rows = await this.database
+			.selectFrom(TableName)
+			.selectAll()
+			.orderBy("id", "asc")
+			.execute();
 
-	public getSubcategoriesAsync(): Promise<Subcategory[]> {
-		const { database } = this.databaseSettings;
-
-		const query = `
-			SELECT tbl.*
-			FROM [${tableName}] tbl
-			ORDER BY tbl.id ASC
-		`;
-
-		const rows = database.prepare(query).all();
 		const subcategories = rows.map((row) => {
 			const subcategoryRow = subcategoryRowSchema.parse(row);
 			return convertSubcategoryRowToSubcategory(subcategoryRow);
 		});
 
-		return Promise.resolve(subcategories);
+		return subcategories;
+	}
+
+	public async insertSubcategoriesAsync(
+		values: Subcategory | Subcategory[],
+	): Promise<void> {
+		const subcategories = rowOrRowsAsRows(values).map((r) =>
+			withoutId(convertSubcategoryToSubcategoryRow(r)),
+		);
+
+		await this.database
+			.insertInto(TableName)
+			.values(subcategories)
+			.execute();
 	}
 }

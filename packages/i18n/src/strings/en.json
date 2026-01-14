@@ -1,6 +1,8 @@
 {
 	"assets": {
 		"about": "This card explains the assets page.",
+		"activeNo": "Inactive",
+		"activeYes": "Active",
 		"columns": {
 			"name": "Name",
 			"type": "Type",
@@ -13,11 +15,11 @@
 		},
 		"title": "Assets & liabilities",
 		"types": {
-			"fixedAsset": "Fixed {plural, select, no {asset} other {assets}}",
-			"liquidAsset": "Liquid {plural, select, no {asset} other {assets}}",
-			"longTermLiability": "Long-term {plural, select, no {liability} other {liabilities}}",
-			"personalAsset": "Personal {plural, select, no {item} other {items}}",
-			"shortTermLiability": "Short-term {plural, select, no {liability} other {liabilities}}"
+			"fixed_asset": "Fixed {plural, select, no {asset} other {assets}}",
+			"liquid_asset": "Liquid {plural, select, no {asset} other {assets}}",
+			"long_term_liability": "Long-term {plural, select, no {liability} other {liabilities}}",
+			"personal_asset": "Personal {plural, select, no {item} other {items}}",
+			"short_term_liability": "Short-term {plural, select, no {liability} other {liabilities}}"
 		}
 	},
 	"budget": {
@@ -81,6 +83,14 @@
 		"table": {
 			"error": "Unable to load table data.",
 			"errorBody": "We ran into a problem while loading the data for this table."
+		}
+	},
+	"error": {
+		"fullPage": {
+			"ctaReload": "Try again",
+			"ctaReset": "Reload page",
+			"description": "The server encountered the following error:",
+			"title": "We couldn't load this page."
 		}
 	},
 	"help": {

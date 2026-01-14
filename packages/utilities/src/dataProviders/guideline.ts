@@ -2,6 +2,7 @@ import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
+import { Dollars } from "../financial/dollars";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -53,23 +54,16 @@ export class GuidelineDataProvider implements DataProvider<StatementRow> {
 
 			return {
 				accountId: account.id,
-				amount: Math.abs(
-					Math.round(Number.parseFloat(inputRow.Total) * 100) / 100,
-				),
+				amountCents: Math.abs(Dollars.toCents(inputRow.Total)),
 				categoryId: subcategory.categoryId,
 				date: new Date(inputRow["Fulfilled date"]).toISOString(),
-				id: -1,
 				merchant,
 				subcategoryId: subcategory.id,
 				type: description.includes("Fee") ? "debit" : "credit",
 			};
 		};
 
-	public isStatementRowIgnored = (inputRow: StatementRow) => {
-		const { "Transaction type": description } = inputRow;
-
-		return description === "Dividend";
-	};
+	public isStatementRowIgnored = (_inputRow: StatementRow) => false;
 
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
 		obj,

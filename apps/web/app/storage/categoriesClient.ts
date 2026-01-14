@@ -1,30 +1,48 @@
 import { type Category } from "@tally/data-models/contracts/category";
-import { convertCategoryRowToCategory } from "@tally/data-models/converters/category";
+import {
+	convertCategoryRowToCategory,
+	convertCategoryToCategoryRow,
+} from "@tally/data-models/converters/category";
 import { categoryRowSchema } from "@tally/data-models/database/categoryRow";
+import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
+import { rowOrRowsAsRows, withoutId } from "./helpers";
 
-const tableName = "category";
+export const TableName = "category" as const satisfies keyof Database;
 
 export class CategoriesClient extends DatabaseClient {
-	public constructor() {
-		super(tableName);
-	}
+	public async getCategoriesAsync(): Promise<Category[]> {
+		const rows = await this.database
+			.selectFrom(TableName)
+			.selectAll()
+			.orderBy("id", "asc")
+			.execute();
 
-	public getCategoriesAsync(): Promise<Category[]> {
-		const { database } = this.databaseSettings;
-
-		const query = `
-			SELECT tbl.*
-			FROM [${tableName}] tbl
-			ORDER BY tbl.id ASC
-		`;
-
-		const rows = database.prepare(query).all();
 		const categories = rows.map((row) => {
 			const categoryRow = categoryRowSchema.parse(row);
 			return convertCategoryRowToCategory(categoryRow);
 		});
 
-		return Promise.resolve(categories);
+		return categories;
+	}
+
+	public async insertCategoriesAsync(
+		values: Category | Category[],
+	): Promise<void> {
+		const categories = rowOrRowsAsRows(values).map((r) =>
+			withoutId(convertCategoryToCategoryRow(r)),
+		);
+
+		await this.database.insertInto(TableName).values(categories).execute();
+	}
+
+	public async updateCategoryAsync(value: Category): Promise<void> {
+		const row = convertCategoryToCategoryRow(value);
+
+		await this.database
+			.updateTable(TableName)
+			.where("id", "=", row.id)
+			.set(row)
+			.execute();
 	}
 }

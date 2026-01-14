@@ -8,6 +8,17 @@ import tailwindPlugin from "eslint-plugin-tailwindcss";
 export const eslintConfigTailwind = [
 	...tailwindPlugin.configs["flat/recommended"],
 	{
+		rules: {
+			"tailwindcss/no-custom-classname": [
+				"error",
+				{
+					whitelist: [
+						// Hero UI
+						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|primary|secondary|danger|warning|success)-[0-9]+$",
+					],
+				},
+			],
+		},
 		settings: {
 			tailwindcss: {
 				callees: ["twMerge"],

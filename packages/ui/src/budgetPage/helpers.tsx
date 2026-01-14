@@ -1,6 +1,4 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type Category } from "@tally/data-models/contracts/category";
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type CircularProgressProps } from "@heroui/react";
 import {
 	type Icon,
@@ -27,6 +25,9 @@ import {
 	IconToolsKitchen2,
 	IconTrendingUp,
 } from "@tabler/icons-react";
+import { type Category } from "@tally/data-models/contracts/category";
+import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { DateTime } from "luxon";
 import { type useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
@@ -176,11 +177,11 @@ export const getSpentText = (
 	t: ReturnType<typeof useTranslations<"budget">>,
 ) => {
 	const startDate = getStartDate(endDate, budget.frequency);
+	const budgetAmount = Dollars.fromCents(budget.amountCents);
 
-	const amountBudgeted = formatCurrency(budget.amount, {
+	const amountBudgeted = formatCurrency(budgetAmount, {
 		showCentsIfLessThanDigits: 2,
 	});
-
 	const amountSpent = formatCurrency(spent, {
 		showCentsIfLessThanDigits: 2,
 	});
@@ -207,7 +208,7 @@ export const getSpentText = (
 		});
 	}
 
-	return t.rich(budget.amount ? "spentInBudget" : "spentOverall", {
+	return t.rich(budgetAmount ? "spentInBudget" : "spentOverall", {
 		bold: (chunks) => <b>{chunks}</b>,
 		budget: amountBudgeted,
 		period: spendingPeriod,

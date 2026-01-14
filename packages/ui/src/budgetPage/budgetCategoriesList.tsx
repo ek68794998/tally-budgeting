@@ -1,8 +1,9 @@
 "use client";
 
-import { sortAndFlattenCategories } from "@tally/utilities/categories/sortAndFlattenCategories";
 import { Accordion, AccordionItem } from "@heroui/react";
 import { IconCurrencyDollar } from "@tabler/icons-react";
+import { sortAndFlattenCategories } from "@tally/utilities/categories/sortAndFlattenCategories";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { DateTime } from "luxon";
 import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
@@ -55,15 +56,15 @@ export const BudgetCategoriesList: React.FC<Props> = ({
 
 					for (const subcat of subcats) {
 						const amountPaid = getAmountPaid(subcat.id);
+						const amountBudgeted = Dollars.fromCents(
+							subcat.budget.amountCents,
+						);
 
-						if (subcat.budget.amount || amountPaid) {
+						if (amountBudgeted || amountPaid) {
 							countWithValues++;
 						}
 
-						if (
-							subcat.budget.amount &&
-							amountPaid > subcat.budget.amount
-						) {
+						if (amountBudgeted && amountPaid > amountBudgeted) {
 							countOverBudget++;
 						}
 					}

@@ -1,5 +1,6 @@
-import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { Button, Chip } from "@heroui/react";
+import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
 
@@ -21,9 +22,10 @@ export const TransactionsUploadResultTransactionRow: React.FC<Props> = ({
 			<Chip variant="flat">
 				{count > 1
 					? count
-					: formatCurrency(transaction.amount, {
-							showCentsIfLessThanDigits: 4,
-						})}
+					: formatCurrency(
+							Dollars.fromCents(transaction.amountCents),
+							{ showCentsIfLessThanDigits: 4 },
+						)}
 			</Chip>
 			<div className="flex-1 overflow-hidden font-mono text-nowrap overflow-ellipsis">
 				{transaction.merchant}
