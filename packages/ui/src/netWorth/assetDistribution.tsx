@@ -24,26 +24,26 @@ export const AssetDistribution: React.FC<Props> = ({ assets }) => {
 		for (const asset of assets) {
 			const assetValue = Dollars.fromCents(asset.valueCents);
 
-			if (asset.type === "fixedAsset") {
+			if (asset.type === "fixed_asset") {
 				fixedValue += assetValue;
-			} else if (asset.type === "liquidAsset") {
+			} else if (asset.type === "liquid_asset") {
 				liquidValue += assetValue;
-			} else if (asset.type === "personalAsset") {
+			} else if (asset.type === "personal_asset") {
 				personalValue += assetValue;
 			}
 		}
 
 		return [
 			{
-				name: t("assets.types.fixedAsset", { plural: "yes" }),
+				name: t("assets.types.fixed_asset", { plural: "yes" }),
 				value: fixedValue,
 			},
 			{
-				name: t("assets.types.liquidAsset", { plural: "yes" }),
+				name: t("assets.types.liquid_asset", { plural: "yes" }),
 				value: liquidValue,
 			},
 			{
-				name: t("assets.types.personalAsset", { plural: "yes" }),
+				name: t("assets.types.personal_asset", { plural: "yes" }),
 				value: personalValue,
 			},
 		];

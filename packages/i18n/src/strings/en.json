@@ -1,6 +1,8 @@
 {
 	"assets": {
 		"about": "This card explains the assets page.",
+		"activeNo": "Inactive",
+		"activeYes": "Active",
 		"columns": {
 			"name": "Name",
 			"type": "Type",
@@ -81,6 +83,14 @@
 		"table": {
 			"error": "Unable to load table data.",
 			"errorBody": "We ran into a problem while loading the data for this table."
+		}
+	},
+	"error": {
+		"fullPage": {
+			"ctaReload": "Try again",
+			"ctaReset": "Reload page",
+			"description": "The server encountered the following error:",
+			"title": "We couldn't load this page."
 		}
 	},
 	"help": {
