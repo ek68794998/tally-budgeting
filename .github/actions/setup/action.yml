@@ -1,0 +1,21 @@
+name: Initialize environment
+description: "Installs required build tools and prepares environment for build"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: package.json
+    - name: Install PNPM
+      uses: pnpm/action-setup@v4
+    - name: Install modules
+      run: pnpm i
+      shell: bash
+    - name: Print diagnostics
+      run: pnpm diagnostic
+      shell: bash
+    - name: Check code quality
+      run: pnpm lint && pnpm check-types
+      shell: bash

@@ -1,0 +1,22 @@
+name: Pull request gated build
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: Build & test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Initialize environment
+        uses: ./.github/actions/setup
+      - name: Build Docker image
+        run: pnpm build:docker
