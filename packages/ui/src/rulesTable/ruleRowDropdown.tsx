@@ -1,6 +1,6 @@
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import { RowDropdown } from "../table/rowDropdown";
+import { MoreDropdown } from "../moreDropdown/moreDropdown";
 
 interface Props {
 	onDelete: () => void;
@@ -11,8 +11,8 @@ export const RuleRowDropdown: React.FC<Props> = ({ onDelete, onEdit }) => {
 	const t = useTranslations();
 
 	return (
-		<RowDropdown
-			dropdownEntries={[
+		<MoreDropdown
+			entries={[
 				{
 					action: onEdit,
 					IconComponent: IconEdit,

@@ -8,32 +8,31 @@ import {
 } from "@heroui/react";
 import { type Icon, IconDots } from "@tabler/icons-react";
 
-interface DropdownEntry {
+interface MoreDropdownEntry extends DropdownItemProps {
 	action: () => void;
-	color?: DropdownItemProps["color"];
 	IconComponent: Icon;
 	key: string;
 	label: string;
 }
 
 interface Props {
-	dropdownEntries: DropdownEntry[];
+	entries: MoreDropdownEntry[];
 }
 
-export const RowDropdown: React.FC<Props> = ({ dropdownEntries }) => (
+export const MoreDropdown: React.FC<Props> = ({ entries }) => (
 	<Dropdown backdrop="opaque">
 		<DropdownTrigger>
 			<Button isIconOnly={true} size="sm" variant="light">
 				<IconDots />
 			</Button>
 		</DropdownTrigger>
-		<DropdownMenu items={dropdownEntries}>
-			{({ action, color, IconComponent, key, label }) => (
+		<DropdownMenu items={entries}>
+			{({ action, IconComponent, key, label, ...entry }) => (
 				<DropdownItem
-					color={color}
 					key={key}
 					onPress={action}
 					startContent={<IconComponent />}
+					{...entry}
 				>
 					{label}
 				</DropdownItem>
