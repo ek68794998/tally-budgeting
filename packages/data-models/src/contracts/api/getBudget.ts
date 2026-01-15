@@ -1,12 +1,12 @@
 import z from "zod";
 
-export const getBudgetParamsSchema = z.object({
+export const getBudgetQuerySchema = z.object({
 	endMonth: z.string().min(1).max(2),
 	endYear: z.string().min(4).max(4),
 	months: z.string().min(1).max(2),
 });
 
-export type GetBudgetParams = z.infer<typeof getBudgetParamsSchema>;
+export type GetBudgetQuery = z.infer<typeof getBudgetQuerySchema>;
 
 export const getBudgetResponseSchema = z.object({
 	bySubcategory: z.array(
