@@ -2,7 +2,7 @@ import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { type AccountProvider } from "../contracts/accountProvider";
 import { type AccountProviderType } from "../contracts/accountProviderType";
 
-export const AccountProviders: Record<AccountProviderType, AccountProvider> = {
+export const AccountProviders = {
 	apple: { id: "apple", name: "Apple Wallet" },
 	chase: { id: "chase", name: "Chase Bank" },
 	fidelity: { id: "fidelity", name: "Fidelity Investments" },
@@ -18,7 +18,7 @@ export const AccountProviders: Record<AccountProviderType, AccountProvider> = {
 		id: "robinhood",
 		name: "Robinhood",
 	},
-};
+} as const satisfies Record<AccountProviderType, AccountProvider>;
 
 invariant(
 	Object.entries(AccountProviders).every(([key, value]) => key === value.id),

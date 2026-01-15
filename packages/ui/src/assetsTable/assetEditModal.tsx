@@ -11,6 +11,7 @@ import {
 	SelectItem,
 	type useDisclosure,
 } from "@heroui/react";
+import { type AccountProviderType } from "@tally/data-models/contracts/accountProviderType";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import {
 	type AssetType,
@@ -20,6 +21,7 @@ import {
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { SelectProvider } from "../common/selectProvider";
 import { EditModalFooter } from "../modal/editModalFooter";
 
 interface Props {
@@ -35,6 +37,7 @@ export const AssetEditModal: React.FC<Props> = ({
 }) => {
 	const t = useTranslations();
 
+	const [provider, setProvider] = useState<AccountProviderType | null>(null);
 	const [name, setName] = useState("");
 	const [type, setType] = useState<AssetType>("fixed_asset");
 	const [value, setValue] = useState(0);
@@ -49,6 +52,7 @@ export const AssetEditModal: React.FC<Props> = ({
 		}
 
 		setName(asset.name);
+		setProvider(asset.provider);
 		setType(asset.type);
 		setValue(Dollars.fromCents(asset.valueCents));
 	}, [asset]);
@@ -93,8 +97,19 @@ export const AssetEditModal: React.FC<Props> = ({
 									</SelectItem>
 								))}
 							</Select>
+							<SelectProvider
+								label={t("assets.columns.provider")}
+								onChange={(p) => setProvider(p.id)}
+								value={provider}
+							/>
 							<NumberInput
+								formatOptions={{
+									currency: "USD",
+									maximumFractionDigits: 0,
+									style: "currency",
+								}}
 								label={t("assets.columns.value")}
+								minValue={0}
 								onValueChange={setValue}
 								value={value}
 							/>
@@ -107,6 +122,7 @@ export const AssetEditModal: React.FC<Props> = ({
 								await onSave({
 									...asset,
 									name,
+									provider,
 									type,
 									valueCents: Dollars.toCents(value),
 								});

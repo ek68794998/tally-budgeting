@@ -11,9 +11,10 @@ const NetWorthPage: React.FC = async () => {
 	const assets = await assetsClient.getAssetsAsync();
 
 	const isAsset = (asset: Asset) =>
-		asset.type === "fixedAsset" ||
-		asset.type === "liquidAsset" ||
-		asset.type === "personalAsset";
+		asset.type === "fixed_asset" ||
+		asset.type === "liquid_asset" ||
+		asset.type === "personal_asset";
+
 	const netWorthCents = assets.reduce(
 		(acc, asset) => acc + (isAsset(asset) ? 1 : -1) * asset.valueCents,
 		0,

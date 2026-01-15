@@ -5,13 +5,19 @@
 		"activeYes": "Active",
 		"columns": {
 			"name": "Name",
+			"provider": "Institution",
 			"type": "Type",
 			"value": "Value"
 		},
 		"edit": "Edit {assetName}",
 		"listControls": {
 			"addOne": "New asset",
-			"filterPlaceholder": "Type here to search…"
+			"deleteAction": "Yes, delete it",
+			"deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
+			"deleteTitle": "Delete asset",
+			"filterPlaceholder": "Type here to search…",
+			"setActiveNo": "Deactivate",
+			"setActiveYes": "Activate"
 		},
 		"title": "Assets & liabilities",
 		"types": {

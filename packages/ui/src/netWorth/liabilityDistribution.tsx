@@ -23,20 +23,20 @@ export const LiabilityDistribution: React.FC<Props> = ({ assets }) => {
 		for (const asset of assets) {
 			const assetValue = Dollars.fromCents(asset.valueCents);
 
-			if (asset.type === "shortTermLiability") {
+			if (asset.type === "short_term_liability") {
 				shortTerm += assetValue;
-			} else if (asset.type === "longTermLiability") {
+			} else if (asset.type === "long_term_liability") {
 				longTerm += assetValue;
 			}
 		}
 
 		return [
 			{
-				name: t("assets.types.longTermLiability", { plural: "yes" }),
+				name: t("assets.types.long_term_liability", { plural: "yes" }),
 				value: longTerm,
 			},
 			{
-				name: t("assets.types.shortTermLiability", { plural: "yes" }),
+				name: t("assets.types.short_term_liability", { plural: "yes" }),
 				value: shortTerm,
 			},
 		];
