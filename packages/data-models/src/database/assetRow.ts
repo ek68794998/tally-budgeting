@@ -8,7 +8,7 @@ export const assetRowSchema = z.object({
 	name: z.string().min(1).max(100),
 	provider: accountProviderTypeSchema.nullable(),
 	type: assetTypeSchema,
-	value: z.string(), // BIGINT in Postgres is returned as a string.
+	value_cents: z.string() /* BIGINT -> string */, // eslint-disable-line @typescript-eslint/naming-convention
 });
 
 export type AssetRow = z.infer<typeof assetRowSchema>;

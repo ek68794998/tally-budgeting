@@ -8,9 +8,9 @@ export const convertTransactionRuleToTxnRuleRow = (
 		transactionRule;
 
 	return {
+		active,
 		flags: matcher.flags,
 		id,
-		is_active: active, // eslint-disable-line @typescript-eslint/naming-convention
 		merchant: merchantName,
 		pattern: matcher.pattern,
 		priority,
@@ -21,15 +21,7 @@ export const convertTransactionRuleToTxnRuleRow = (
 export const convertTxnRuleRowToTransactionRule = (
 	row: TxnRuleRow,
 ): TransactionRule => {
-	const {
-		flags,
-		id,
-		is_active: active,
-		merchant,
-		pattern,
-		priority,
-		subcategory,
-	} = row;
+	const { active, flags, id, merchant, pattern, priority, subcategory } = row;
 
 	return {
 		active,

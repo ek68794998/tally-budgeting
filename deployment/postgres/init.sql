@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS asset (
 	id SERIAL PRIMARY KEY,
 	name TEXT UNIQUE NOT NULL,
 	type asset_type,
-	value BIGINT,  -- Monetary value in cents
+	value_cents BIGINT,
 	provider TEXT,
 	active BOOLEAN NOT NULL DEFAULT true
 );
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS txn_rule (
 	merchant TEXT NOT NULL,
 	subcategory INTEGER,
 	priority INTEGER DEFAULT 0,
-	is_active BOOLEAN DEFAULT true,
+	active BOOLEAN DEFAULT true,
 	FOREIGN KEY (subcategory) REFERENCES subcategory(id)
 		ON DELETE SET NULL
 		ON UPDATE CASCADE
@@ -88,8 +88,8 @@ CREATE INDEX IF NOT EXISTS idx_txn_date ON txn(date);
 CREATE INDEX IF NOT EXISTS idx_txn_account ON txn(account);
 CREATE INDEX IF NOT EXISTS idx_txn_subcategory ON txn(subcategory);
 CREATE INDEX IF NOT EXISTS idx_subcategory_category ON subcategory(category);
-CREATE INDEX IF NOT EXISTS idx_txn_rule_active ON txn_rule(is_active)
-	WHERE is_active = true;
+CREATE INDEX IF NOT EXISTS idx_txn_rule_active ON txn_rule(active)
+	WHERE active = true;
 
 -- GIN index for full-text search
 CREATE INDEX IF NOT EXISTS idx_txn_merchant_search ON txn
