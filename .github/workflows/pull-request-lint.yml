@@ -20,14 +20,16 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - uses: lw-ci/action-conventional-pull-request@v3
+      - name: Run commitlint
+        uses: lw-ci/action-conventional-pull-request@v3
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           config_file: "./.github/config/commitlint.js"
 
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - name: Add comment if there are errors
+        uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.valid == 'false')
         with:
           header: pr-title-lint-error
@@ -40,7 +42,8 @@ jobs:
             ${{ steps.lint_pr_title.outputs.report }}
             ```
 
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - name: Delete comment if there are no errors
+        uses: marocchino/sticky-pull-request-comment@v2
         if: ${{ steps.lint_pr_title.outputs.valid == 'true' }}
         with:
           header: pr-title-lint-error
