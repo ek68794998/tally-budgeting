@@ -8,5 +8,3 @@ export interface NextIntlAppConfig {
 	Messages: typeof messages;
 	/* eslint-enable @typescript-eslint/naming-convention */
 }
-
-export type Localization = string | NonNullable<React.ReactNode>;
