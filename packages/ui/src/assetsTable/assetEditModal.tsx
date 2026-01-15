@@ -122,6 +122,7 @@ export const AssetEditModal: React.FC<Props> = ({
 								await onSave({
 									...asset,
 									name,
+									provider,
 									type,
 									valueCents: Dollars.toCents(value),
 								});
