@@ -20,11 +20,12 @@ jobs:
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          config_file: "./.github/commitlint.js"
 
       - uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.valid == 'false')
         with:
-          config_file: "./.github/commitlint.js"
           header: pr-title-lint-error
           message: |
             ⚠️ Pull request title validation failed!
