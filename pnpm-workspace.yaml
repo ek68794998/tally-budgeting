@@ -1,5 +1,10 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
 hoistPattern:
-  - "*@heroui/*"
+  - '*@heroui/*'
+onlyBuiltDependencies:
+  - '@heroui/shared-utils'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp
