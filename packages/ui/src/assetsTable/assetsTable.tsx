@@ -9,6 +9,8 @@ import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultAsset } from "../common/modalDefault";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
+import { useAssets } from "../hooks/store/useAssets";
+import { useLatestData } from "../hooks/useLatestData";
 import { AssetCard } from "./assetCard";
 import { AssetEditModal } from "./assetEditModal";
 import { AssetsTableControls } from "./assetsTableControls";
@@ -17,12 +19,19 @@ interface Props {
 	assets: Asset[];
 }
 
-export const AssetsTable: React.FC<Props> = ({ assets }) => {
+export const AssetsTable: React.FC<Props> = ({ assets: initialAssets }) => {
+	const { assets: loadedAssets, isLoading, refetch } = useAssets();
 	const deleteModalState = useDisclosure();
 	const editModalState = useDisclosure();
 	const { deleteAssetAsync } = useDeleteAsset();
 	const { postAssetAsync } = usePostAsset();
 	const t = useTranslations("assets");
+
+	const assets = useLatestData({
+		initial: initialAssets,
+		isLoading,
+		latest: loadedAssets,
+	});
 
 	const [activeAsset, setActiveAsset] = useState<Asset | null>(null);
 	const [filterValue, setFilterValue] = useState("");
@@ -48,13 +57,17 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 		});
 
 	const handleDeleteAsync = async (asset: Asset) => {
-		setActiveAsset(asset);
 		await deleteAssetAsync(asset.id);
+		setActiveAsset(null);
+
+		void refetch();
 	};
 
 	const handleSaveAsync = async (asset: Asset) => {
 		await postAssetAsync(asset);
 		setActiveAsset(null);
+
+		void refetch();
 	};
 
 	const handleStartDelete = (asset: Asset) => {
