@@ -1,4 +1,4 @@
-import { configBase } from "@tally/eslint-config/react-internal";
+import { config as configBase } from "@tally/eslint-config/react-internal";
 
 /** @type {import("eslint").Linter.Config} */
 export default [
