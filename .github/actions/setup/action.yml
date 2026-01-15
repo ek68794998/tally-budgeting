@@ -11,7 +11,9 @@ runs:
     - name: Install PNPM
       uses: pnpm/action-setup@v4
     - name: Install modules
-      run: pnpm i
+      run: |
+        pnpm config set enable-pre-post-scripts true
+        pnpm i
       shell: bash
     - name: Print diagnostics
       run: pnpm diagnostic
