@@ -5,6 +5,7 @@
 		"activeYes": "Active",
 		"columns": {
 			"name": "Name",
+			"provider": "Institution",
 			"type": "Type",
 			"value": "Value"
 		},

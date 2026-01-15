@@ -9,7 +9,7 @@ export const ModalDefaultAsset: Readonly<Asset> = {
 	id: -1,
 	name: "",
 	provider: null,
-	type: "fixedAsset",
+	type: "fixed_asset",
 	valueCents: 0,
 } as const;
 
