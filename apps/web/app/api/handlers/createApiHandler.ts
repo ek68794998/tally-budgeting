@@ -108,6 +108,7 @@ const logRequest = (
 	error?: string,
 ) => {
 	// TODO: Integrate with telemetry service
+	// eslint-disable-next-line no-console
 	console.log({
 		duration,
 		error,

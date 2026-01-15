@@ -6,7 +6,6 @@ import {
 	isSuccessHttpStatusCode,
 } from "@ekumlin/typescript-toolkit/http";
 import { TextCsv } from "@ekumlin/typescript-toolkit/io";
-import { postTransactionsUploadResponseSchema } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import {
 	addToast,
 	Card,
@@ -14,6 +13,7 @@ import {
 	Progress,
 	type ProgressProps,
 } from "@heroui/react";
+import { postTransactionsUploadResponseSchema } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { useMount } from "ahooks";
 import { useTranslations } from "next-intl";
 import { useState } from "react";

@@ -11,6 +11,7 @@ import {
 } from "@tally/data-models/contracts/api/getBudget";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Dollars } from "@tally/utilities/financial/dollars";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import {
 	getTransactionEarnedValue,
@@ -23,12 +24,15 @@ import { TxnsClient } from "../../storage/txnsClient";
 import { type NextResponseFn } from "../types";
 import { getBudgetSummaryDates } from "./helpers";
 
-const subcategoriesClient = new SubcategoriesClient();
-const txnsClient = new TxnsClient();
+const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
+const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 const GetAsync: NextResponseFn = async (request) => {
 	try {
 		const { searchParams } = new URL(request.url);
+
+		const subcategoriesClient = subcategoriesClientLazy.get();
+		const txnsClient = txnsClientLazy.get();
 
 		const searchParamsObject = searchParamsToObject(searchParams);
 		const parsedParams =

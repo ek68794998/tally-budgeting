@@ -8,6 +8,7 @@ import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { getCsvRows, processCsvFile } from "@tally/utilities/dataHandlers/csv";
 import { type Merchant } from "@tally/utilities/dataHandlers/types";
 import { parseRowAsTransaction } from "@tally/utilities/dataProviders/parser";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
 import { AssetsClient } from "../../../storage/assetsClient";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
@@ -16,10 +17,10 @@ import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
 import { type NextResponseFn } from "../../types";
 
-const assetsClient = new AssetsClient();
-const subcategoriesClient = new SubcategoriesClient();
-const txnsClient = new TxnsClient();
-const txnRulesClient = new TxnRulesClient();
+const assetsClientLazy = new Lazy(() => new AssetsClient());
+const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
+const txnsClientLazy = new Lazy(() => new TxnsClient());
+const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const PostTransactionsUploadRouteAsync: NextResponseFn =
 	createApiHandler({
@@ -35,6 +36,11 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 					statusCode: BadRequest,
 				};
 			}
+
+			const assetsClient = assetsClientLazy.get();
+			const subcategoriesClient = subcategoriesClientLazy.get();
+			const txnsClient = txnsClientLazy.get();
+			const txnRulesClient = txnRulesClientLazy.get();
 
 			const assets = await assetsClient.getAssetsAsync();
 			const accounts = assets.filter(isAccount);

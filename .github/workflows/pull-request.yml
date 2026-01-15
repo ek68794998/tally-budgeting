@@ -19,4 +19,4 @@ jobs:
       - name: Initialize environment
         uses: ./.github/actions/setup
       - name: Build Docker image
-        run: pnpm build:docker
+        run: pnpm docker:build

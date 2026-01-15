@@ -3,16 +3,19 @@ import {
 	type GetTransactionsResponse,
 	getTransactionsParamsSchema,
 } from "@tally/data-models/contracts/api/getTransactions";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
 import { type NextResponseFn } from "../types";
 
-const txnsClient = new TxnsClient();
+const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const GetTransactionsRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "GET:TRANSACTIONS",
 	handler: async ({ query: queryParams }, request) => {
+		const txnsClient = txnsClientLazy.get();
+
 		const { data: transactions, totalCount } =
 			await txnsClient.getTransactionsAsync({
 				collectionParams: queryParams,
