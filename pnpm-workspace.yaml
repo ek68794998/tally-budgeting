@@ -1,8 +1,6 @@
 packages:
   - apps/*
   - packages/*
-hoistPattern:
-  - '*@heroui/*'
 onlyBuiltDependencies:
   - '@heroui/shared-utils'
   - '@tailwindcss/oxide'
