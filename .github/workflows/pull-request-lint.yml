@@ -20,6 +20,9 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
+      - name: Install Commitlint
+        run: npm install -g @commitlint/cli @commitlint/config-conventional
+
       - name: Run commitlint
         uses: lw-ci/action-conventional-pull-request@v3
         id: lint_pr_title
