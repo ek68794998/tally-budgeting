@@ -9,14 +9,16 @@ import {
 	type PostTransactionRuleResponse,
 	postTransactionRuleRequestSchema,
 } from "@tally/data-models/contracts/api/postTransactionRule";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import { NextResponse } from "next/server";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { type NextResponseFn } from "../../types";
 
-const txnRulesClient = new TxnRulesClient();
+const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 const GetAsync: NextResponseFn = async (_request) => {
 	try {
+		const txnRulesClient = txnRulesClientLazy.get();
 		const transactionRules =
 			await txnRulesClient.getTransactionRulesAsync();
 
@@ -47,6 +49,8 @@ const GetAsync: NextResponseFn = async (_request) => {
 
 const PostAsync: NextResponseFn = async (request) => {
 	try {
+		const txnRulesClient = txnRulesClientLazy.get();
+
 		const requestJson: unknown = await request.json();
 		const body = postTransactionRuleRequestSchema.parse(requestJson);
 

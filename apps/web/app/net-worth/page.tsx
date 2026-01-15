@@ -3,11 +3,13 @@ import { AssetDistribution } from "@tally/ui/netWorth/assetDistribution";
 import { LiabilityDistribution } from "@tally/ui/netWorth/liabilityDistribution";
 import { NetWorthCard } from "@tally/ui/netWorth/netWorthCard";
 import { Dollars } from "@tally/utilities/financial/dollars";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import { AssetsClient } from "../storage/assetsClient";
 
-const assetsClient = new AssetsClient();
+const assetsClientLazy = new Lazy(() => new AssetsClient());
 
 const NetWorthPage: React.FC = async () => {
+	const assetsClient = assetsClientLazy.get();
 	const assets = await assetsClient.getAssetsAsync();
 
 	const isAsset = (asset: Asset) =>

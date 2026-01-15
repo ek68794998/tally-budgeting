@@ -1,12 +1,16 @@
 import { SummaryCards } from "@tally/ui/summaryPage/summaryCards";
+import { Lazy } from "@tally/utilities/lazy/lazy";
 import { SubcategoriesClient } from "../storage/subcategoriesClient";
 import { TxnsClient } from "../storage/txnsClient";
 import { getSummaryDataAsync } from "./helpers";
 
-const subcategoriesClient = new SubcategoriesClient();
-const txnsClient = new TxnsClient();
+const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
+const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 const SummaryPage: React.FC = async () => {
+	const subcategoriesClient = subcategoriesClientLazy.get();
+	const txnsClient = txnsClientLazy.get();
+
 	const summary = await getSummaryDataAsync(
 		new Date(),
 		subcategoriesClient,
