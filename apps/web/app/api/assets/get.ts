@@ -1,40 +1,24 @@
-import {
-	CacheControl,
-	InternalServerError,
-	Ok,
-} from "@ekumlin/typescript-toolkit/http";
+import { Ok } from "@ekumlin/typescript-toolkit/http";
 import { type GetAssetsResponse } from "@tally/data-models/contracts/api/getAssets";
-import { NextResponse } from "next/server";
+import z from "zod";
 import { AssetsClient } from "../../storage/assetsClient";
+import { createApiHandler } from "../handlers/createApiHandler";
 import { type NextResponseFn } from "../types";
 
 const assetsClient = new AssetsClient();
 
-export const GetAssetsRouteAsync: NextResponseFn = async (_request) => {
-	try {
+export const GetAssetsRouteAsync: NextResponseFn = createApiHandler({
+	eventName: "GET:ASSETS",
+	handler: async () => {
 		const assets = await assetsClient.getAssetsAsync();
 
-		const response: GetAssetsResponse = {
-			assets,
-		};
+		const data: GetAssetsResponse = { assets };
 
-		return NextResponse.json(response, {
-			headers: {
-				[CacheControl]: "no-cache, no-store, must-revalidate",
-			},
-			status: Ok,
-		});
-	} catch (error) {
-		console.error("Failed to fetch assets:", error);
-
-		return NextResponse.json(
-			{
-				error: "Failed to fetch assets",
-				success: false,
-			},
-			{
-				status: InternalServerError,
-			},
-		);
-	}
-};
+		return { data, ok: true, statusCode: Ok };
+	},
+	schemata: {
+		body: z.unknown(),
+		params: z.unknown(),
+		query: z.unknown(),
+	},
+});
