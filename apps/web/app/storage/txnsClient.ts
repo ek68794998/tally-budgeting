@@ -156,10 +156,12 @@ const applyFilters = (
 		const column = mapFilterFieldToColumn(fe.field);
 
 		if (fe.operator === "eq") {
+			/* eslint-disable */
 			// Kysely doesn't permit us to send Boolean values for comparison
 			// if the database has no Boolean columns. However, it is still
 			// safe to send these values to the database—not that we ever do.
 			const value = fe.value as any; // TODO
+			/* eslint-enable */
 
 			return queryBuilder.eb(column, "=", value);
 		}
