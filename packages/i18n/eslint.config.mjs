@@ -1,4 +1,13 @@
-import { eslintConfigBase } from "@tally/eslint-config/base";
+import { eslintConfigBase as configBase } from "@tally/eslint-config/base";
 
 /** @type {import("eslint").Linter.Config} */
-export default eslintConfigBase;
+export default [
+	...configBase,
+	{
+		languageOptions: {
+			parserOptions: {
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+	},
+];

@@ -1,4 +1,3 @@
-import path from "node:path";
 import tseslint from "typescript-eslint";
 import { getNamingConventionsRule } from "../helpers.js";
 
@@ -13,13 +12,6 @@ export const eslintConfigTypeScript = [
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: path.resolve(
-					import.meta.dirname,
-					"..",
-					"..",
-					"typescript-config",
-					"base.json",
-				),
 			},
 		},
 	},
