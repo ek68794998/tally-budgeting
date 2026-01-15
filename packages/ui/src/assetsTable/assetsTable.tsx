@@ -1,8 +1,11 @@
 "use client";
 
+import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { useDisclosure } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultAsset } from "../common/modalDefault";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
@@ -15,9 +18,11 @@ interface Props {
 }
 
 export const AssetsTable: React.FC<Props> = ({ assets }) => {
+	const deleteModalState = useDisclosure();
 	const editModalState = useDisclosure();
 	const { deleteAssetAsync } = useDeleteAsset();
 	const { postAssetAsync } = usePostAsset();
+	const t = useTranslations("assets");
 
 	const [activeAsset, setActiveAsset] = useState<Asset | null>(null);
 	const [filterValue, setFilterValue] = useState("");
@@ -42,18 +47,24 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 			return a.name.localeCompare(b.name);
 		});
 
-	const handleDelete = async (asset: Asset) => {
-		await deleteAssetAsync(asset.id);
-	};
-
-	const handleEdit = (asset: Asset) => {
+	const handleDeleteAsync = async (asset: Asset) => {
 		setActiveAsset(asset);
-		editModalState.onOpen();
+		await deleteAssetAsync(asset.id);
 	};
 
 	const handleSaveAsync = async (asset: Asset) => {
 		await postAssetAsync(asset);
 		setActiveAsset(null);
+	};
+
+	const handleStartDelete = (asset: Asset) => {
+		setActiveAsset(asset);
+		deleteModalState.onOpen();
+	};
+
+	const handleStartEdit = (asset: Asset) => {
+		setActiveAsset(asset);
+		editModalState.onOpen();
 	};
 
 	const handleSetActive = async (asset: Asset, value: boolean) => {
@@ -69,21 +80,34 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 		<div className="flex flex-col gap-4">
 			<AssetsTableControls
 				onFilterChange={setFilterValue}
-				onNewAsset={() => handleEdit(ModalDefaultAsset)}
+				onNewAsset={() => handleStartEdit(ModalDefaultAsset)}
 			/>
 			<div className="grid grid-cols-3 gap-4">
 				{displayedAssets.map((asset) => (
 					<AssetCard
 						asset={asset}
 						key={asset.id}
-						onDelete={() => handleDelete(asset)}
-						onEdit={() => handleEdit(asset)}
+						onDelete={() => handleStartDelete(asset)}
+						onEdit={() => handleStartEdit(asset)}
 						onSetActive={(value) =>
 							void handleSetActive(asset, value)
 						}
 					/>
 				))}
 			</div>
+			<ConfirmationModal
+				body={t("listControls.deleteBody", {
+					merchant: activeAsset?.name ?? "",
+				})}
+				confirmText={t("listControls.deleteAction")}
+				isDestructive={true}
+				modalState={deleteModalState}
+				onConfirmAsync={async () => {
+					invariant(activeAsset, "Active rule must be defined");
+					await handleDeleteAsync(activeAsset);
+				}}
+				title={t("listControls.deleteTitle")}
+			/>
 			<AssetEditModal
 				asset={activeAsset}
 				modalState={editModalState}

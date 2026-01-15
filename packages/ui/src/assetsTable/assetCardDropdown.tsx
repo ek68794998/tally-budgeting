@@ -32,7 +32,9 @@ export const AssetCardDropdown: React.FC<Props> = ({
 						: IconToggleRightFilled,
 					key: "setActive",
 					label: t(
-						isActive ? "assets.setActiveNo" : "assets.setActiveYes",
+						isActive
+							? "assets.listControls.setActiveNo"
+							: "assets.listControls.setActiveYes",
 					),
 				},
 				{
