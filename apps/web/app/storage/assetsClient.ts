@@ -11,6 +11,13 @@ import { rowOrRowsAsRows, withoutId } from "./helpers";
 export const TableName = "asset" as const satisfies keyof Database;
 
 export class AssetsClient extends DatabaseClient {
+	public async deleteAssetAsync(id: number): Promise<void> {
+		await this.database
+			.deleteFrom(TableName)
+			.where("id", "=", id)
+			.execute();
+	}
+
 	public async getAssetsAsync(): Promise<Asset[]> {
 		const rows = await this.database
 			.selectFrom(TableName)

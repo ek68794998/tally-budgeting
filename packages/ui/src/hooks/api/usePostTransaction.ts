@@ -8,7 +8,7 @@ export const usePostTransaction = () => {
 		mutationFn: async (transaction: Transaction) => {
 			const body: PostTransactionRequest = { transaction };
 
-			const response = await fetch(`/api/transactions`, {
+			const response = await fetch("/api/transactions", {
 				body: JSON.stringify(body),
 				method: "POST",
 			});

@@ -10,7 +10,7 @@ export const usePostTransactionRule = () => {
 		mutationFn: async (rule: TransactionRule) => {
 			const body: PostTransactionRuleRequest = { rule };
 
-			const response = await fetch(`/api/transactions/rules`, {
+			const response = await fetch("/api/transactions/rules", {
 				body: JSON.stringify(body),
 				headers: {
 					[ContentType]: ApplicationJson,

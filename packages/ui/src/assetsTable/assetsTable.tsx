@@ -4,6 +4,8 @@ import { useDisclosure } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { useState } from "react";
 import { ModalDefaultAsset } from "../common/modalDefault";
+import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
+import { usePostAsset } from "../hooks/api/usePostAsset";
 import { AssetCard } from "./assetCard";
 import { AssetEditModal } from "./assetEditModal";
 import { AssetsTableControls } from "./assetsTableControls";
@@ -14,6 +16,8 @@ interface Props {
 
 export const AssetsTable: React.FC<Props> = ({ assets }) => {
 	const editModalState = useDisclosure();
+	const { deleteAssetAsync } = useDeleteAsset();
+	const { postAssetAsync } = usePostAsset();
 
 	const [activeAsset, setActiveAsset] = useState<Asset | null>(null);
 	const [filterValue, setFilterValue] = useState("");
@@ -26,10 +30,20 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 					.toLocaleLowerCase()
 					.includes(filterValue.toLocaleLowerCase()),
 		)
-		.sort((a, b) => a.name.localeCompare(b.name));
+		.sort((a, b) => {
+			if (a.active && !b.active) {
+				return -1;
+			}
 
-	const handleDelete = (_asset: Asset) => {
-		// TODO Implement delete logic here
+			if (!a.active && b.active) {
+				return 1;
+			}
+
+			return a.name.localeCompare(b.name);
+		});
+
+	const handleDelete = async (asset: Asset) => {
+		await deleteAssetAsync(asset.id);
 	};
 
 	const handleEdit = (asset: Asset) => {
@@ -37,14 +51,19 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 		editModalState.onOpen();
 	};
 
-	const handleSaveAsync = (_asset: Asset) =>
-		new Promise<void>((resolve) => {
-			// TODO Implement save logic here
-			setTimeout(() => {
-				setActiveAsset(null);
-				resolve();
-			}, 1000);
-		});
+	const handleSaveAsync = async (asset: Asset) => {
+		await postAssetAsync(asset);
+		setActiveAsset(null);
+	};
+
+	const handleSetActive = async (asset: Asset, value: boolean) => {
+		const assetToSave: Asset = {
+			...asset,
+			active: value,
+		};
+
+		await handleSaveAsync(assetToSave);
+	};
 
 	return (
 		<div className="flex flex-col gap-4">
@@ -59,6 +78,9 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 						key={asset.id}
 						onDelete={() => handleDelete(asset)}
 						onEdit={() => handleEdit(asset)}
+						onSetActive={(value) =>
+							void handleSetActive(asset, value)
+						}
 					/>
 				))}
 			</div>

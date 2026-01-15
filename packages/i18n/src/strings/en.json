@@ -13,6 +13,8 @@
 			"addOne": "New asset",
 			"filterPlaceholder": "Type here to search…"
 		},
+		"setActiveNo": "Deactivate",
+		"setActiveYes": "Activate",
 		"title": "Assets & liabilities",
 		"types": {
 			"fixed_asset": "Fixed {plural, select, no {asset} other {assets}}",

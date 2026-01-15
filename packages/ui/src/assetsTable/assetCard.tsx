@@ -11,9 +11,15 @@ interface Props {
 	asset: Asset;
 	onDelete: () => void;
 	onEdit: () => void;
+	onSetActive: (value: boolean) => void;
 }
 
-export const AssetCard: React.FC<Props> = ({ asset, onDelete, onEdit }) => {
+export const AssetCard: React.FC<Props> = ({
+	asset,
+	onDelete,
+	onEdit,
+	onSetActive,
+}) => {
 	const locale = useLocale();
 	const t = useTranslations("assets");
 
@@ -56,7 +62,12 @@ export const AssetCard: React.FC<Props> = ({ asset, onDelete, onEdit }) => {
 					{separator}
 					<span>{t(active ? "activeYes" : "activeNo")}</span>
 					<span className="flex-1" />
-					<AssetCardDropdown onDelete={onDelete} onEdit={onEdit} />
+					<AssetCardDropdown
+						isActive={active}
+						onDelete={onDelete}
+						onEdit={onEdit}
+						onSetActive={onSetActive}
+					/>
 				</div>
 			</div>
 		</Card>
