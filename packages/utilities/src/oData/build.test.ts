@@ -32,14 +32,21 @@ describe("OData builder", () => {
 			expect(buildODataLiteFilter(expressions)).toBe(expected);
 		});
 
-		it.each<[string, ODataLiteFilterOperator, unknown, string]>([
-			["name", "eq", "John", "name eq 'John'"],
-			["name", "ne", "John", "name ne 'John'"],
-			["age", "lt", 30, "age lt 30"],
-			["age", "le", 30, "age le 30"],
-			["age", "gt", 20, "age gt 20"],
-			["age", "ge", 20, "age ge 20"],
-		])("supports %s operator", (field, operator, value, expected) => {
+		it.each<
+			[
+				ODataLiteFilterOperator,
+				string,
+				ODataLiteFilterExpression["value"],
+				string,
+			]
+		>([
+			["eq", "name", "John", "name eq 'John'"],
+			["ne", "name", "John", "name ne 'John'"],
+			["lt", "age", 30, "age lt 30"],
+			["le", "age", 30, "age le 30"],
+			["gt", "age", 20, "age gt 20"],
+			["ge", "age", 20, "age ge 20"],
+		])("supports %s operator", (operator, field, value, expected) => {
 			const expressions: ODataLiteFilterExpression[] = [
 				{ field, operator, value },
 			];
@@ -77,8 +84,11 @@ describe("OData builder", () => {
 		});
 
 		it("throws error for unsupported value types", () => {
+			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+			const invalidObject = { nested: "object" } as unknown as Date;
+
 			const expressions: ODataLiteFilterExpression[] = [
-				{ field: "data", operator: "eq", value: { nested: "object" } },
+				{ field: "data", operator: "eq", value: invalidObject },
 			];
 			expect(() => buildODataLiteFilter(expressions)).toThrow(
 				"Unsupported value type",
