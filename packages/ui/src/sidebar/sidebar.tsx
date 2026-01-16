@@ -2,7 +2,6 @@
 
 import {
 	IconBeach,
-	IconChartBarPopular,
 	IconDashboard,
 	IconDashboardFilled,
 	IconPig,
@@ -84,23 +83,17 @@ export const Sidebar = ({ className }: Props) => {
 							path: "/transactions",
 						}),
 						createMenuItem({
-							DefaultIconComponent: IconChartBarPopular,
-							id: "net-worth",
-							label: t("netWorth.title"),
-							path: "/net-worth",
+							DefaultIconComponent: IconPig,
+							FilledIconComponent: IconPigFilled,
+							id: "assets",
+							label: t("assets.title"),
+							path: "/assets",
 						}),
 						createMenuItem({
 							DefaultIconComponent: IconBeach,
 							id: "retirement",
 							label: t("retirement.title"),
 							path: "/retirement",
-						}),
-						createMenuItem({
-							DefaultIconComponent: IconPig,
-							FilledIconComponent: IconPigFilled,
-							id: "assets",
-							label: t("assets.title"),
-							path: "/assets",
 						}),
 					]}
 				/>

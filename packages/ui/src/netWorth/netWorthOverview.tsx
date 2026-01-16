@@ -3,15 +3,12 @@ import { AssetDistribution } from "@tally/ui/netWorth/assetDistribution";
 import { LiabilityDistribution } from "@tally/ui/netWorth/liabilityDistribution";
 import { NetWorthCard } from "@tally/ui/netWorth/netWorthCard";
 import { Dollars } from "@tally/utilities/financial/dollars";
-import { Lazy } from "@tally/utilities/lazy/lazy";
-import { AssetsClient } from "../storage/assetsClient";
 
-const assetsClientLazy = new Lazy(() => new AssetsClient());
+interface Props {
+	assets: Asset[];
+}
 
-const NetWorthPage: React.FC = async () => {
-	const assetsClient = assetsClientLazy.get();
-	const assets = await assetsClient.getAssetsAsync();
-
+export const NetWorthOverview: React.FC<Props> = ({ assets }) => {
 	const isAsset = (asset: Asset) =>
 		asset.type === "fixed_asset" ||
 		asset.type === "liquid_asset" ||
@@ -31,5 +28,3 @@ const NetWorthPage: React.FC = async () => {
 		</div>
 	);
 };
-
-export default NetWorthPage;

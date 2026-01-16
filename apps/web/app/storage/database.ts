@@ -1,6 +1,7 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { type AssetRow } from "@tally/data-models/database/assetRow";
 import { type CategoryRow } from "@tally/data-models/database/categoryRow";
+import { type NetWorthSnapshotRow } from "@tally/data-models/database/netWorthSnapshotRow";
 import { type SubcategoryRow } from "@tally/data-models/database/subcategoryRow";
 import { type TxnRow } from "@tally/data-models/database/txnRow";
 import { type TxnRuleRow } from "@tally/data-models/database/txnRuleRow";
@@ -13,6 +14,7 @@ const defaultPoolMax = 10;
 export interface Database {
 	asset: WithGeneratedId<AssetRow, "id">;
 	category: WithGeneratedId<CategoryRow, "id">;
+	net_worth_snapshot: WithGeneratedId<NetWorthSnapshotRow, "id">; // eslint-disable-line @typescript-eslint/naming-convention
 	subcategory: WithGeneratedId<SubcategoryRow, "id">;
 	txn: WithGeneratedId<TxnRow, "id">;
 	txn_rule: WithGeneratedId<TxnRuleRow, "id">; // eslint-disable-line @typescript-eslint/naming-convention

@@ -1,4 +1,5 @@
-import { AssetsTable } from "@tally/ui/assetsTable/assetsTable";
+import { AssetsList } from "@tally/ui/assetsPage/assetsList";
+import { NetWorthOverview } from "@tally/ui/netWorth/netWorthOverview";
 import { Lazy } from "@tally/utilities/lazy/lazy";
 import { AssetsClient } from "../storage/assetsClient";
 
@@ -9,8 +10,9 @@ const AssetsPage: React.FC = async () => {
 	const assets = await assetsClient.getAssetsAsync();
 
 	return (
-		<div>
-			<AssetsTable assets={assets} />
+		<div className="flex flex-col gap-8">
+			<NetWorthOverview assets={assets} />
+			<AssetsList assets={assets} />
 		</div>
 	);
 };

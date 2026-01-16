@@ -10,6 +10,11 @@
 			"addOne": "新規資産",
 			"filterPlaceholder": "検索..."
 		},
+		"netWorth": {
+			"assetDistribution": "資産の内訳",
+			"liabilityDistribution": "負債の内訳",
+			"title": "純資産"
+		},
 		"title": "資産・負債",
 		"types": {
 			"fixed_asset": "固定資産",
@@ -59,11 +64,6 @@
 	},
 	"help": {
 		"link": "{subject}について"
-	},
-	"netWorth": {
-		"assetDistribution": "資産の内訳",
-		"liabilityDistribution": "負債の内訳",
-		"title": "純資産"
 	},
 	"retirement": {
 		"chart": {

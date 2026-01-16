@@ -38,6 +38,12 @@ CREATE TABLE IF NOT EXISTS category (
 
 INSERT INTO category (id, label) VALUES (-1, 'Uncategorized');
 
+CREATE TABLE IF NOT EXISTS net_worth_snapshot (
+  id SERIAL PRIMARY KEY,
+  date DATE NOT NULL UNIQUE,
+  value_cents BIGINT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS subcategory (
 	id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE,

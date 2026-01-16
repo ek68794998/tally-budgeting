@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const NetWorthCard: React.FC<Props> = ({ className, netWorth }) => {
-	const t = useTranslations("netWorth");
+	const t = useTranslations("assets.netWorth");
 
 	return (
 		<Card className={className} isBlurred={true}>

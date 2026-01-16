@@ -55,7 +55,7 @@ export const LiabilityDistribution: React.FC<Props> = ({ assets }) => {
 					}))}
 					formatValue={(value) => formatCurrency(value)}
 					size={300}
-					title={t("netWorth.liabilityDistribution")}
+					title={t("assets.netWorth.liabilityDistribution")}
 				/>
 			</CardBody>
 		</Card>
