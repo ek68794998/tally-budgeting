@@ -1,5 +1,5 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type GetBudgetParams } from "@tally/data-models/contracts/api/getBudget";
+import { type GetBudgetQuery } from "@tally/data-models/contracts/api/getBudget";
 import { DateTime } from "luxon";
 
 export interface BudgetSummaryDates {
@@ -10,7 +10,7 @@ export interface BudgetSummaryDates {
 }
 
 export const getBudgetSummaryDates = (
-	params: GetBudgetParams,
+	params: GetBudgetQuery,
 ): BudgetSummaryDates => {
 	const endMonth = Number(params.endMonth);
 	const endYear = Number(params.endYear);
