@@ -1,8 +1,8 @@
 "use client";
 
 import { type Asset } from "@tally/data-models/contracts/asset";
-import { AssetsTable } from "@tally/ui/assetsTable/assetsTable";
 import { useTranslations } from "next-intl";
+import { AssetsTable } from "../assetsTable/assetsTable";
 import { useAssets } from "../hooks/store/useAssets";
 import { useLatestData } from "../hooks/useLatestData";
 

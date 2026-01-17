@@ -2,13 +2,13 @@
 
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
-import { AssetDistribution } from "@tally/ui/netWorth/assetDistribution";
-import { LiabilityDistribution } from "@tally/ui/netWorth/liabilityDistribution";
-import { NetWorthCard } from "@tally/ui/netWorth/netWorthCard";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useAssets } from "../hooks/store/useAssets";
 import { useNetWorthSnapshots } from "../hooks/store/useNetWorthSnapshots";
 import { useLatestData } from "../hooks/useLatestData";
+import { AssetDistribution } from "./assetDistribution";
+import { LiabilityDistribution } from "./liabilityDistribution";
+import { NetWorthCard } from "./netWorthCard";
 
 interface Props {
 	initialData: {
