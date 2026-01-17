@@ -14,7 +14,12 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 
 		if (!parsedBody.success) {
 			return {
-				error: `Invalid request body: ${parsedBody.error.message /* TODO */}`,
+				error: {
+					code: "invalidRequestBody",
+					params: {
+						message: parsedBody.error.message /* TODO */,
+					},
+				},
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -26,7 +31,12 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 
 		if (!parsedQuery.success) {
 			return {
-				error: `Invalid query parameters: ${parsedQuery.error.message /* TODO */}`,
+				error: {
+					code: "invalidQueryParameters",
+					params: {
+						message: parsedQuery.error.message /* TODO */,
+					},
+				},
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -36,7 +46,12 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 
 		if (!parsedParams.success) {
 			return {
-				error: `Invalid route parameters: ${parsedParams.error.message /* TODO */}`,
+				error: {
+					code: "invalidRouteParameters",
+					params: {
+						message: parsedParams.error.message /* TODO */,
+					},
+				},
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -52,7 +67,12 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 		console.error(error); /* TODO */
 
 		return {
-			error: "Failed to parse request",
+			error: {
+				code: "invalidRequestShape",
+				params: {
+					message: "Failed to parse request" /* TODO */,
+				},
+			},
 			statusCode: BadRequest,
 			success: false,
 		};

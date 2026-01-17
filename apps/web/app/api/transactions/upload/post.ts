@@ -15,6 +15,7 @@ import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
+import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 
 const assetsClientLazy = new Lazy(() => new AssetsClient());
@@ -25,14 +26,16 @@ const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 export const PostTransactionsUploadRouteAsync: NextResponseFn =
 	createApiHandler({
 		eventName: "POST:TRANSACTIONS/UPLOAD",
-		handler: async (_, request) => {
+		handler: async (
+			_,
+			request,
+		): Promise<ApiResult<PostTransactionsUploadResponse>> => {
 			const formData = await request.formData();
 			const file = formData.get("file");
 
 			if (!(file instanceof File)) {
 				return {
-					error: "invalidFile",
-					ok: false,
+					error: { code: "invalidFileUpload" },
 					statusCode: BadRequest,
 				};
 			}
@@ -68,8 +71,7 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 
 			if (!account?.provider) {
 				return {
-					error: "invalidAccount",
-					ok: false,
+					error: { code: "invalidAccount" },
 					statusCode: BadRequest,
 				};
 			}
@@ -84,8 +86,7 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 				console.error(error);
 
 				return {
-					error: "invalidFile",
-					ok: false,
+					error: { code: "invalidFileUpload" },
 					statusCode: BadRequest,
 				};
 			}
@@ -128,15 +129,12 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 				await txnsClient.insertTransactionsAsync(rowsProcessed);
 			}
 
-			const data: PostTransactionsUploadResponse = {
-				rowsFailed,
-				rowsIgnored,
-				rowsProcessed,
-			};
-
 			return {
-				data,
-				ok: true,
+				data: {
+					rowsFailed,
+					rowsIgnored,
+					rowsProcessed,
+				},
 				statusCode: Ok,
 			};
 		},

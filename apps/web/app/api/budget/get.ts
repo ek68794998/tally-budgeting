@@ -16,6 +16,7 @@ import z from "zod";
 import { SubcategoriesClient } from "../../storage/subcategoriesClient";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
+import { type ApiResult } from "../handlers/types";
 import { type NextResponseFn } from "../types";
 import { getBudgetSummaryDates } from "./helpers";
 
@@ -24,7 +25,9 @@ const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const GetBudgetRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "GET:BUDGET",
-	handler: async ({ query: searchParams }) => {
+	handler: async ({
+		query: searchParams,
+	}): Promise<ApiResult<GetBudgetResponse>> => {
 		const subcategoriesClient = subcategoriesClientLazy.get();
 		const txnsClient = txnsClientLazy.get();
 
@@ -109,23 +112,24 @@ export const GetBudgetRouteAsync: NextResponseFn = createApiHandler({
 			}
 		}
 
-		const data: GetBudgetResponse = {
-			bySubcategory: Object.entries(spentWithinPeriodBySubcategory).map(
-				([id, spent]) => ({
+		return {
+			data: {
+				bySubcategory: Object.entries(
+					spentWithinPeriodBySubcategory,
+				).map(([id, spent]) => ({
 					spent,
 					subcategoryId: Number(id),
-				}),
-			),
-			summary: {
-				annualIncome: totalIncome,
-				annualSpent: totalSpending,
-				budgeted: periodBudgeted,
-				income: periodIncome,
-				spent: periodSpending,
+				})),
+				summary: {
+					annualIncome: totalIncome,
+					annualSpent: totalSpending,
+					budgeted: periodBudgeted,
+					income: periodIncome,
+					spent: periodSpending,
+				},
 			},
+			statusCode: Ok,
 		};
-
-		return { data, ok: true, statusCode: Ok };
 	},
 	schemata: {
 		body: z.unknown(),

@@ -1,5 +1,6 @@
 import z from "zod";
 import { assetSchema } from "../asset";
+import { createApiResponseSchema } from "./types";
 
 export const postAssetRequestSchema = z.object({
 	asset: assetSchema,
@@ -7,8 +8,6 @@ export const postAssetRequestSchema = z.object({
 
 export type PostAssetRequest = z.infer<typeof postAssetRequestSchema>;
 
-export const postAssetResponseSchema = z.object({
-	success: z.boolean(),
-});
+export const postAssetResponseSchema = createApiResponseSchema({});
 
 export type PostAssetResponse = z.infer<typeof postAssetResponseSchema>;

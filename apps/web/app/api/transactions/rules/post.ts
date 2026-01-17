@@ -1,8 +1,5 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import {
-	type PostTransactionRuleResponse,
-	postTransactionRuleRequestSchema,
-} from "@tally/data-models/contracts/api/postTransactionRule";
+import { postTransactionRuleRequestSchema } from "@tally/data-models/contracts/api/postTransactionRule";
 import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
@@ -21,15 +18,7 @@ export const PostTransactionsRulesRouteAsync: NextResponseFn = createApiHandler(
 				? txnRulesClient.updateTransactionRuleAsync(body.rule)
 				: txnRulesClient.insertTransactionRulesAsync([body.rule]));
 
-			const data: PostTransactionRuleResponse = {
-				success: true,
-			};
-
-			return {
-				data,
-				ok: true,
-				statusCode: Ok,
-			};
+			return { statusCode: Ok };
 		},
 		schemata: {
 			body: postTransactionRuleRequestSchema,

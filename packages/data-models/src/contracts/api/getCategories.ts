@@ -1,8 +1,9 @@
 import z from "zod";
 import { categorySchema } from "../category";
 import { subcategorySchema } from "../subcategory";
+import { createApiResponseSchema } from "./types";
 
-export const getCategoriesResponseSchema = z.object({
+export const getCategoriesResponseSchema = createApiResponseSchema({
 	categories: z.array(categorySchema),
 	subcategories: z.array(subcategorySchema),
 });

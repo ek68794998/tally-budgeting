@@ -5,6 +5,7 @@ import z from "zod";
 import { CategoriesClient } from "../../storage/categoriesClient";
 import { SubcategoriesClient } from "../../storage/subcategoriesClient";
 import { createApiHandler } from "../handlers/createApiHandler";
+import { type ApiResult } from "../handlers/types";
 import { type NextResponseFn } from "../types";
 
 const categoriesClientLazy = new Lazy(() => new CategoriesClient());
@@ -12,18 +13,15 @@ const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 
 export const GetCategoriesRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "GET:CATEGORIES",
-	handler: async () => {
+	handler: async (): Promise<ApiResult<GetCategoriesResponse>> => {
 		const categoriesClient = categoriesClientLazy.get();
 		const subcategoriesClient = subcategoriesClientLazy.get();
 
 		const categories = await categoriesClient.getCategoriesAsync();
 		const subcategories = await subcategoriesClient.getSubcategoriesAsync();
 
-		const data: GetCategoriesResponse = { categories, subcategories };
-
 		return {
-			data,
-			ok: true,
+			data: { categories, subcategories },
 			statusCode: Ok,
 		};
 	},

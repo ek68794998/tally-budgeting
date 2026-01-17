@@ -1,4 +1,4 @@
-import { Ok } from "@ekumlin/typescript-toolkit/http";
+import { NoContent } from "@ekumlin/typescript-toolkit/http";
 import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
 import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
@@ -19,11 +19,7 @@ export const DeleteTransactionsRulesIdRouteAsync: NextResponseFn =
 			const idNumber = parseInt(id, 10);
 			await txnRulesClient.deleteTransactionRuleAsync(idNumber);
 
-			return {
-				data: null,
-				ok: true,
-				statusCode: Ok,
-			};
+			return { statusCode: NoContent };
 		},
 		schemata: {
 			body: z.unknown(),

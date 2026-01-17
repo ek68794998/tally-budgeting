@@ -1,103 +1,123 @@
-import { InternalServerError, Ok } from "@ekumlin/typescript-toolkit/http";
-import { NextResponse } from "next/server";
+import {
+	type HttpStatusCode,
+	InternalServerError,
+	isSuccessHttpStatusCode,
+} from "@ekumlin/typescript-toolkit/http";
+import {
+	type ApiError,
+	type ApiResponse,
+} from "@tally/data-models/contracts/api/types";
+import { StructuredError } from "@tally/data-models/error/structuredError";
+import { type NextRequest, NextResponse } from "next/server";
 import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
-import { type ApiHandler, type RequestSchemata } from "./types";
+import { type ApiHandler, type ApiResult, type RequestSchemata } from "./types";
 
-interface ApiHandlerDefinition<TBody, TQuery, TParams, TResponse> {
+interface ApiHandlerDefinition<
+	TBody,
+	TQuery,
+	TParams,
+	TResponse extends ApiResponse,
+> {
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
 	schemata: RequestSchemata<TBody, TQuery, TParams>;
 }
 
 export const createApiHandler =
-	<TBody, TQuery, TParams, TResponse>(
+	<TBody, TQuery, TParams, TResponse extends ApiResponse>(
 		definition: ApiHandlerDefinition<TBody, TQuery, TParams, TResponse>,
 	): NextResponseFn =>
 	async (request, { params }): Promise<NextResponse> => {
-		const { eventName, handler, schemata } = definition;
+		const { eventName } = definition;
 
 		const startTime = Date.now();
 		const routeParams = await params;
 
-		const getDuration = () => Date.now() - startTime;
+		const { data, error, statusCode } = await executeHandlerAsync(
+			definition,
+			request,
+			routeParams,
+		);
 
-		try {
-			const parseResult = await parseRequestAsync(
-				request,
-				routeParams,
-				schemata,
-			);
+		const duration = Date.now() - startTime;
 
-			if (!parseResult.success) {
-				logRequest(
-					eventName,
-					request.method,
-					request.nextUrl.pathname,
-					parseResult.statusCode,
-					getDuration(),
-					parseResult.error,
-				);
+		logRequest(
+			eventName,
+			request.method,
+			request.nextUrl.pathname,
+			statusCode,
+			duration,
+			error,
+		);
 
-				return NextResponse.json(
-					{ error: parseResult.error },
-					{ status: parseResult.statusCode },
-				);
-			}
+		const response: ApiResponse = {
+			...data,
+			error,
+			success: isSuccessHttpStatusCode(statusCode),
+		};
 
-			const result = await handler(parseResult, request);
-			const duration = getDuration();
-
-			if (!result.ok) {
-				logRequest(
-					eventName,
-					request.method,
-					request.nextUrl.pathname,
-					result.statusCode,
-					duration,
-					result.error,
-				);
-				return NextResponse.json(
-					{ error: result.error },
-					{ status: result.statusCode },
-				);
-			}
-
-			logRequest(
-				eventName,
-				request.method,
-				request.nextUrl.pathname,
-				Ok,
-				duration,
-			);
-
-			return NextResponse.json(result.data);
-		} catch (error) {
-			const userFacingErrorMessage = "Internal server error"; // TODO
-
-			console.error(error);
-
-			const errorMessage =
-				error instanceof Error ? error.message : userFacingErrorMessage;
-			const status =
-				error instanceof HttpError ? error.status : InternalServerError;
-
-			logRequest(
-				eventName,
-				request.method,
-				request.nextUrl.pathname,
-				status,
-				getDuration(),
-				errorMessage,
-			);
-
-			return NextResponse.json(
-				{ error: userFacingErrorMessage },
-				{ status },
-			);
-		}
+		return NextResponse.json(response, { status: statusCode });
 	};
+
+const executeHandlerAsync = async <
+	TBody,
+	TQuery,
+	TParams,
+	TResponse extends ApiResponse,
+>(
+	definition: ApiHandlerDefinition<TBody, TQuery, TParams, TResponse>,
+	request: NextRequest,
+	routeParams: unknown,
+): Promise<ApiResult<TResponse>> => {
+	const { handler, schemata } = definition;
+
+	try {
+		const parseResult = await parseRequestAsync(
+			request,
+			routeParams,
+			schemata,
+		);
+
+		if (!parseResult.success) {
+			return {
+				error: parseResult.error,
+				statusCode: parseResult.statusCode,
+			};
+		}
+
+		return await handler(parseResult, request);
+	} catch (error) {
+		let apiError: ApiError;
+		let statusCode: HttpStatusCode;
+
+		if (error instanceof HttpError) {
+			apiError = {
+				code: error.code,
+				params: error.params,
+			};
+			statusCode = error.status;
+		} else if (error instanceof StructuredError) {
+			apiError = {
+				code: error.code,
+				params: error.params,
+			};
+			statusCode = InternalServerError;
+		} else {
+			apiError = {
+				code: "http500",
+				params: {},
+			};
+			statusCode = InternalServerError;
+		}
+
+		return {
+			error: apiError,
+			statusCode,
+		};
+	}
+};
 
 const logRequest = (
 	eventName: string,
@@ -105,17 +125,18 @@ const logRequest = (
 	path: string,
 	statusCode: number,
 	duration: number,
-	error?: string,
+	error: ApiError | undefined,
 ) => {
 	// TODO: Integrate with telemetry service
+
+	const text = `${new Date().toISOString()} [${eventName}] ${method} ${path} returned ${statusCode} after ${duration}ms`;
+
+	if (error) {
+		console.error(text);
+		console.error(error);
+		return;
+	}
+
 	// eslint-disable-next-line no-console
-	console.log({
-		duration,
-		error,
-		eventName,
-		method,
-		path,
-		statusCode,
-		timestamp: new Date().toISOString(),
-	});
+	console.log(text);
 };

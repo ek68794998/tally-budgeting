@@ -1,7 +1,8 @@
 import z from "zod";
 import { transactionRuleSchema } from "../transactionRule";
+import { createApiResponseSchema } from "./types";
 
-export const getTransactionRulesResponseSchema = z.object({
+export const getTransactionRulesResponseSchema = createApiResponseSchema({
 	transactionRules: z.array(transactionRuleSchema),
 });
 
