@@ -3,7 +3,7 @@ import {
 	type GetTransactionsResponse,
 	getTransactionsParamsSchema,
 } from "@tally/data-models/contracts/api/getTransactions";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import z from "zod";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";

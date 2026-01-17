@@ -6,7 +6,7 @@ import {
 } from "@tally/data-models/contracts/api/getBudget";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Dollars } from "@tally/utilities/financial/dollars";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
 	getTransactionEarnedValue,
 	getTransactionSpentValue,

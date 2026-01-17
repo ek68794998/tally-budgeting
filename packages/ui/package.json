@@ -13,7 +13,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@ekumlin/typescript-toolkit": "1.0.0",
+		"@ekumlin/typescript-toolkit": "1.0.1",
 		"@heroui/react": "^2.8.4",
 		"@internationalized/date": "3.10.1",
 		"@tabler/icons-react": "3.36.1",

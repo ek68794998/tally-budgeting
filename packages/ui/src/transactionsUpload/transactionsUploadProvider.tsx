@@ -1,5 +1,6 @@
 "use client";
 
+import { Post } from "@ekumlin/typescript-toolkit/http";
 import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import {
@@ -75,7 +76,7 @@ const uploadFile = (
 		onUploadFinish?.(xhr.responseText, xhr.status, xhr.statusText);
 	};
 
-	xhr.open("POST", "/api/transactions/upload");
+	xhr.open(Post, "/api/transactions/upload");
 	xhr.send(formData);
 };
 

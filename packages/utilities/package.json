@@ -13,7 +13,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@ekumlin/typescript-toolkit": "1.0.0",
+		"@ekumlin/typescript-toolkit": "1.0.1",
 		"@tally/data-models": "workspace:*",
 		"csv": "^6.4.1",
 		"luxon": "^3.7.2",

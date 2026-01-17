@@ -1,3 +1,4 @@
+import { Post } from "@ekumlin/typescript-toolkit/http";
 import { type PostNetWorthSnapshotRequest } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ export const usePostNetWorthSnapshot = () => {
 
 			const response = await fetch("/api/net-worth/snapshots", {
 				body: JSON.stringify(body),
-				method: "POST",
+				method: Post,
 			});
 
 			if (!response.ok) {

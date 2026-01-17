@@ -8,7 +8,7 @@ import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { getCsvRows, processCsvFile } from "@tally/utilities/dataHandlers/csv";
 import { type Merchant } from "@tally/utilities/dataHandlers/types";
 import { parseRowAsTransaction } from "@tally/utilities/dataProviders/parser";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import z from "zod";
 import { AssetsClient } from "../../../storage/assetsClient";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";

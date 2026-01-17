@@ -1,3 +1,4 @@
+import { Post } from "@ekumlin/typescript-toolkit/http";
 import { type PostAssetRequest } from "@tally/data-models/contracts/api/postAsset";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ export const usePostAsset = () => {
 
 			const response = await fetch("/api/assets", {
 				body: JSON.stringify(body),
-				method: "POST",
+				method: Post,
 			});
 
 			if (!response.ok) {

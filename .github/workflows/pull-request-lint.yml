@@ -16,9 +16,8 @@ jobs:
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4s
+      - name: Check out repository
+        uses: actions/checkout@v6
 
       - name: Run commitlint
         uses: lw-ci/action-conventional-pull-request@v3

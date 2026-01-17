@@ -1,5 +1,5 @@
 import { SummaryCards } from "@tally/ui/summaryPage/summaryCards";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { SubcategoriesClient } from "../storage/subcategoriesClient";
 import { TxnsClient } from "../storage/txnsClient";
 import { getSummaryDataAsync } from "./helpers";

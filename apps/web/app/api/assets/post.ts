@@ -1,6 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postAssetRequestSchema } from "@tally/data-models/contracts/api/postAsset";
-import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
 import { AssetsClient } from "../../storage/assetsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
