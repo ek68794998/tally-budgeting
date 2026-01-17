@@ -7,15 +7,17 @@ import { useAssets } from "../hooks/store/useAssets";
 import { useLatestData } from "../hooks/useLatestData";
 
 interface Props {
-	assets: Asset[];
+	initialData: {
+		assets: Asset[];
+	};
 }
 
-export const AssetsList: React.FC<Props> = ({ assets: initialAssets }) => {
+export const AssetsList: React.FC<Props> = ({ initialData }) => {
 	const { assets: loadedAssets, isLoading } = useAssets();
 	const t = useTranslations("assets");
 
 	const assets = useLatestData({
-		initial: initialAssets,
+		initial: initialData.assets,
 		isLoading,
 		latest: loadedAssets,
 	});

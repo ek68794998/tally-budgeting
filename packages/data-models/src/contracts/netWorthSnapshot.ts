@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const netWorthSnapshotSchema = z.object({
-	date: z.date(),
+	date: z.iso.datetime({ offset: true }),
 	id: z.int(),
 	valueCents: z.number(),
 });

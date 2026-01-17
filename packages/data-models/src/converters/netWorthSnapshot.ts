@@ -7,7 +7,7 @@ export const convertNetWorthSnapshotRowToNetWorthSnapshot = (
 	const { date, id, value_cents: value } = row;
 
 	return {
-		date,
+		date: date.toISOString(),
 		id,
 		valueCents: Number(value),
 	};
@@ -19,7 +19,7 @@ export const convertNetWorthSnapshotToNetWorthSnapshotRow = (
 	const { date, id, valueCents } = row;
 
 	return {
-		date,
+		date: new Date(date),
 		id,
 		value_cents: String(valueCents), // eslint-disable-line @typescript-eslint/naming-convention
 	};

@@ -22,6 +22,7 @@
 		"listTitle": "Your Assets",
 		"netWorth": {
 			"assetDistribution": "Asset Distribution",
+			"delta": "{delta} since {date}",
 			"liabilityDistribution": "Liability Distribution",
 			"title": "Net Worth"
 		},
@@ -70,7 +71,7 @@
 				"score9": "Outstanding financial management this period. You navigated expenses skillfully with very few missteps.",
 				"score10": "Exceptional period. You demonstrated mastery over your finances and made consistently smart choices throughout."
 			},
-			"overview": "Cash flow breakdown",
+			"overview": "Cash Flow",
 			"subtitleBudget": "Total Budget",
 			"subtitleIncome": "{income} Income",
 			"subtitleRemaining": "Total Saved",
