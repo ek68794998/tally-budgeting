@@ -257,8 +257,8 @@ importers:
         specifier: ^2.8.4
         version: 2.8.7(@types/react@19.1.0)(framer-motion@12.26.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.18)
       '@internationalized/date':
-        specifier: 3.9.0
-        version: 3.9.0
+        specifier: 3.10.1
+        version: 3.10.1
       '@tabler/icons-react':
         specifier: 3.36.1
         version: 3.36.1(react@19.1.0)
@@ -1337,9 +1337,6 @@ packages:
 
   '@internationalized/date@3.10.1':
     resolution: {integrity: sha512-oJrXtQiAXLvT9clCf1K4kxp3eKsQhIaZqxEyowkBcsvZDdZkbWrVmnGknxs5flTD0VGsxrxKgBCZty1EzoiMzA==}
-
-  '@internationalized/date@3.9.0':
-    resolution: {integrity: sha512-yaN3brAnHRD+4KyyOsJyk49XUvj2wtbNACSqg0bz3u8t2VuzhC8Q5dfRnrSxjnnbDb+ienBnkn1TzQfE154vyg==}
 
   '@internationalized/message@3.1.8':
     resolution: {integrity: sha512-Rwk3j/TlYZhn3HQ6PyXUV0XP9Uv42jqZGNegt0BXlxjE6G3+LwHjbQZAGHhCnCPdaA6Tvd3ma/7QzLlLkJxAWA==}
@@ -5755,10 +5752,6 @@ snapshots:
   '@internationalized/date@3.10.1':
     dependencies:
       '@swc/helpers': 0.5.18
-
-  '@internationalized/date@3.9.0':
-    dependencies:
-      '@swc/helpers': 0.5.15
 
   '@internationalized/message@3.1.8':
     dependencies:
