@@ -13,14 +13,20 @@ const netWorthSnapshotsClientLazy = new Lazy(
 	() => new NetWorthSnapshotsClient(),
 );
 
+const dateMatcher = /^(\d{4}-\d{2}-\d{2})/;
+
 export const PostNetWorthSnapshotsRouteAsync: NextResponseFn = createApiHandler(
 	{
 		eventName: "POST:NETWORTH/SNAPSHOTS",
 		handler: async ({ body }) => {
+			const [date] = body.snapshot.date.match(dateMatcher) || [];
+			const completeDate = `${date}T12:00:00Z`;
+
 			const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
-			await netWorthSnapshotsClient.upsertNetWorthSnapshotsAsync(
-				body.snapshot,
-			);
+			await netWorthSnapshotsClient.upsertNetWorthSnapshotsAsync({
+				...body.snapshot,
+				date: completeDate,
+			});
 
 			const data: PostNetWorthSnapshotResponse = {
 				success: true,
