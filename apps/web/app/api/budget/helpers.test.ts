@@ -1,4 +1,4 @@
-import { type GetBudgetParams } from "@tally/data-models/contracts/api/getBudget";
+import { type GetBudgetQuery } from "@tally/data-models/contracts/api/getBudget";
 import { describe, expect, it } from "vitest";
 import { type BudgetSummaryDates, getBudgetSummaryDates } from "./helpers";
 
@@ -6,7 +6,7 @@ type BudgetSummaryDatesValues = Record<keyof BudgetSummaryDates, string>;
 
 describe("Budget API helpers", () => {
 	describe("getBudgetSummaryDates", () => {
-		it.each<[GetBudgetParams, BudgetSummaryDatesValues]>([
+		it.each<[GetBudgetQuery, BudgetSummaryDatesValues]>([
 			[
 				{ endMonth: "9", endYear: "2024", months: "1" },
 				{
@@ -34,27 +34,19 @@ describe("Budget API helpers", () => {
 					transactionStartDate: "2023-10-01T00:00:00.000Z",
 				},
 			],
-		])(
-			"should return the correct dates for %s",
-			(
-				params,
-				{
-					durationMonths: expectedMonths,
-					endDate: expectedEnd,
-					searchStartDate: expectedSearchStart,
-					transactionStartDate: expectedTransactionsStart,
-				},
-			) => {
-				const result = getBudgetSummaryDates(params);
-				expect(result.durationMonths).toBe(Number(expectedMonths));
-				expect(result.endDate.toISO()).toBe(expectedEnd);
-				expect(result.searchStartDate.toISO()).toBe(
-					expectedSearchStart,
-				);
-				expect(result.transactionStartDate.toISO()).toBe(
-					expectedTransactionsStart,
-				);
-			},
-		);
+		])("should return the correct dates for %s", (params, {
+			durationMonths: expectedMonths,
+			endDate: expectedEnd,
+			searchStartDate: expectedSearchStart,
+			transactionStartDate: expectedTransactionsStart,
+		}) => {
+			const result = getBudgetSummaryDates(params);
+			expect(result.durationMonths).toBe(Number(expectedMonths));
+			expect(result.endDate.toISO()).toBe(expectedEnd);
+			expect(result.searchStartDate.toISO()).toBe(expectedSearchStart);
+			expect(result.transactionStartDate.toISO()).toBe(
+				expectedTransactionsStart,
+			);
+		});
 	});
 });
