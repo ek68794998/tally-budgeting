@@ -1,3 +1,4 @@
+import { Post } from "@ekumlin/typescript-toolkit/http";
 import { type PostTransactionRequest } from "@tally/data-models/contracts/api/postTransaction";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ export const usePostTransaction = () => {
 
 			const response = await fetch("/api/transactions", {
 				body: JSON.stringify(body),
-				method: "POST",
+				method: Post,
 			});
 
 			if (!response.ok) {

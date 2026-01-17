@@ -1,9 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import {
-	type PostTransactionResponse,
-	postTransactionRequestSchema,
-} from "@tally/data-models/contracts/api/postTransaction";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import z from "zod";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
@@ -20,13 +17,7 @@ export const PostTransactionsRouteAsync: NextResponseFn = createApiHandler({
 			? txnsClient.updateTransactionAsync(body.transaction)
 			: txnsClient.insertTransactionsAsync([body.transaction]));
 
-		const data: PostTransactionResponse = { success: true };
-
-		return {
-			data,
-			ok: true,
-			statusCode: Ok,
-		};
+		return { statusCode: Ok };
 	},
 	schemata: {
 		body: postTransactionRequestSchema,

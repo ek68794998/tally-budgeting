@@ -1,9 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import {
-	type PostAssetResponse,
-	postAssetRequestSchema,
-} from "@tally/data-models/contracts/api/postAsset";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { postAssetRequestSchema } from "@tally/data-models/contracts/api/postAsset";
 import z from "zod";
 import { AssetsClient } from "../../storage/assetsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
@@ -19,13 +16,7 @@ export const PostAssetsRouteAsync: NextResponseFn = createApiHandler({
 			? assetsClient.updateAssetAsync(body.asset)
 			: assetsClient.insertAssetsAsync([body.asset]));
 
-		const data: PostAssetResponse = { success: true };
-
-		return {
-			data,
-			ok: true,
-			statusCode: Ok,
-		};
+		return { statusCode: Ok };
 	},
 	schemata: {
 		body: postAssetRequestSchema,

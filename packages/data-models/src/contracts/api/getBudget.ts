@@ -1,4 +1,5 @@
 import z from "zod";
+import { createApiResponseSchema } from "./types";
 
 export const getBudgetQuerySchema = z.object({
 	endMonth: z.string().min(1).max(2),
@@ -8,7 +9,7 @@ export const getBudgetQuerySchema = z.object({
 
 export type GetBudgetQuery = z.infer<typeof getBudgetQuerySchema>;
 
-export const getBudgetResponseSchema = z.object({
+export const getBudgetResponseSchema = createApiResponseSchema({
 	bySubcategory: z.array(
 		z.object({
 			spent: z.number(),

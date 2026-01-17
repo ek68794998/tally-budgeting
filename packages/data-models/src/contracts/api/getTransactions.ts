@@ -3,6 +3,7 @@ import { transactionSortFields } from "../../database/txnRow";
 import { transactionSchema } from "../transaction";
 import { withNextLinkSchema } from "../types";
 import {
+	createApiResponseSchema,
 	createFilterParamsSchema,
 	createPaginationParamsSchema,
 	createSortParamsSchema,
@@ -18,7 +19,8 @@ export const getTransactionsParamsSchema = z.object({
 
 export type GetTransactionsParams = z.infer<typeof getTransactionsParamsSchema>;
 
-export const getTransactionsResponseSchema = withNextLinkSchema.extend({
+export const getTransactionsResponseSchema = createApiResponseSchema({
+	...withNextLinkSchema.shape,
 	count: z.number().min(0),
 	transactions: z.array(transactionSchema),
 });

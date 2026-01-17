@@ -13,7 +13,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@ekumlin/typescript-toolkit": "1.0.0",
+		"@ekumlin/typescript-toolkit": "1.0.1",
 		"zod": "^4.1.11"
 	},
 	"devDependencies": {

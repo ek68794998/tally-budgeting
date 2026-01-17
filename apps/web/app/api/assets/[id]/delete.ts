@@ -1,6 +1,6 @@
-import { Ok } from "@ekumlin/typescript-toolkit/http";
+import { NoContent } from "@ekumlin/typescript-toolkit/http";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
-import { Lazy } from "@tally/utilities/lazy/lazy";
 import z from "zod";
 import { AssetsClient } from "../../../storage/assetsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
@@ -18,11 +18,7 @@ export const DeleteAssetsIdRouteAsync: NextResponseFn = createApiHandler({
 		const idNumber = parseInt(id, 10);
 		await assetsClient.deleteAssetAsync(idNumber);
 
-		return {
-			data: null,
-			ok: true,
-			statusCode: Ok,
-		};
+		return { statusCode: NoContent };
 	},
 	schemata: {
 		body: z.unknown(),

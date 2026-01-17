@@ -1,4 +1,4 @@
-import { ContentType } from "@ekumlin/typescript-toolkit/http";
+import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import { type PostTransactionRuleRequest } from "@tally/data-models/contracts/api/postTransactionRule";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
@@ -15,7 +15,7 @@ export const usePostTransactionRule = () => {
 				headers: {
 					[ContentType]: ApplicationJson,
 				},
-				method: "POST",
+				method: Post,
 			});
 
 			if (!response.ok) {

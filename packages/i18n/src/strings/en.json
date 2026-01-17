@@ -137,7 +137,7 @@
 				"addedToRetirement": "Contributed",
 				"age": "Age",
 				"assumedIncome": "Assumed Income",
-				"compoundInflation": "Compound Inflation (× Today's)",
+				"compoundInflation": "Inflation (× Today's)",
 				"distributedFromRetirement": "Distributed",
 				"retirementAmount": "Retirement Amount",
 				"retirementAmountToday": "Retirement Amount (Today's Money)",

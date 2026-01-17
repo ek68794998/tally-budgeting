@@ -1,9 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import {
-	type PostNetWorthSnapshotResponse,
-	postNetWorthSnapshotRequestSchema,
-} from "@tally/data-models/contracts/api/postNetWorthSnapshot";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { postNetWorthSnapshotRequestSchema } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import z from "zod";
 import { NetWorthSnapshotsClient } from "../../../storage/netWorthSnapshotsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
@@ -28,11 +25,7 @@ export const PostNetWorthSnapshotsRouteAsync: NextResponseFn = createApiHandler(
 				date: completeDate,
 			});
 
-			const data: PostNetWorthSnapshotResponse = {
-				success: true,
-			};
-
-			return { data, ok: true, statusCode: Ok };
+			return { statusCode: Ok };
 		},
 		schemata: {
 			body: postNetWorthSnapshotRequestSchema,

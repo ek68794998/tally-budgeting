@@ -1,9 +1,10 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
 import { type GetNetWorthSnapshotsResponse } from "@tally/data-models/contracts/api/getNetWorthSnapshots";
-import { Lazy } from "@tally/utilities/lazy/lazy";
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import z from "zod";
 import { NetWorthSnapshotsClient } from "../../../storage/netWorthSnapshotsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
+import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 
 const netWorthSnapshotsClientLazy = new Lazy(
@@ -12,16 +13,15 @@ const netWorthSnapshotsClientLazy = new Lazy(
 
 export const GetNetWorthSnapshotsRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "GET:NETWORTH/SNAPSHOTS",
-	handler: async () => {
+	handler: async (): Promise<ApiResult<GetNetWorthSnapshotsResponse>> => {
 		const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
 		const snapshots =
 			await netWorthSnapshotsClient.getNetWorthSnapshotsAsync();
 
-		const data: GetNetWorthSnapshotsResponse = {
-			snapshots,
+		return {
+			data: { snapshots },
+			statusCode: Ok,
 		};
-
-		return { data, ok: true, statusCode: Ok };
 	},
 	schemata: {
 		body: z.unknown(),

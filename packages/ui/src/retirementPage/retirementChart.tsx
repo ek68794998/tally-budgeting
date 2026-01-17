@@ -79,13 +79,11 @@ export const RetirementChart: React.FC<Props> = ({ className }) => {
 								formatCurrency(Number(value)),
 								null,
 							]}
-							labelFormatter={(value) => (
-								<p className="text-sm font-medium text-stone-900">
-									{t("chart.tooltipTitle", {
-										age: Number(value),
-									})}
-								</p>
-							)}
+							labelFormatter={(value) =>
+								t("chart.tooltipTitle", {
+									age: Number(value),
+								})
+							}
 						/>
 						<Area
 							dataKey="retirementAmount"

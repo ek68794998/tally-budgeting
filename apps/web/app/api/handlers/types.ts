@@ -1,19 +1,30 @@
 import { type HttpStatusCode } from "@ekumlin/typescript-toolkit/http";
+import {
+	type ApiError,
+	type ApiResponse,
+} from "@tally/data-models/contracts/api/types";
 import { type NextRequest } from "next/server";
 import { type z } from "zod";
 import { type NextResponseFn } from "../types";
 
-export type ApiHandler<TBody, TQuery, TParams, TResponse> = (
+export type ApiHandler<
+	TBody,
+	TQuery,
+	TParams,
+	TResponse extends ApiResponse,
+> = (
 	input: RequestParseSuccessResult<TBody, TQuery, TParams>,
 	request: NextRequest,
 ) => Promise<ApiResult<TResponse>>;
 
-export type ApiResult<T> =
-	| { data: T; ok: true }
-	| { error: string; ok: false; statusCode: HttpStatusCode };
+export interface ApiResult<T extends ApiResponse> {
+	data?: Omit<T, "success">;
+	error?: ApiError;
+	statusCode: HttpStatusCode;
+}
 
 export interface RequestParseErrorResult {
-	error: string;
+	error: ApiError;
 	statusCode: HttpStatusCode;
 	success: false;
 }

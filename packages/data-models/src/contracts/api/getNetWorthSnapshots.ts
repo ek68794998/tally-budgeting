@@ -1,7 +1,8 @@
 import z from "zod";
 import { netWorthSnapshotSchema } from "../netWorthSnapshot";
+import { createApiResponseSchema } from "./types";
 
-export const getNetWorthSnapshotsResponseSchema = z.object({
+export const getNetWorthSnapshotsResponseSchema = createApiResponseSchema({
 	snapshots: z.array(netWorthSnapshotSchema),
 });
 
