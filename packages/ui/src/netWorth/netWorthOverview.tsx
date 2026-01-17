@@ -44,16 +44,13 @@ export const NetWorthOverview: React.FC<Props> = ({ initialData }) => {
 		0,
 	);
 	const netWorth = Dollars.fromCents(netWorthCents);
-	const previousNetWorthSnapshot = snapshots.sort((a, b) =>
-		b.date.localeCompare(a.date),
-	)[0];
 
 	return (
 		<div className="grid grid-cols-2 gap-4">
 			<NetWorthCard
 				className="col-span-2"
 				netWorth={netWorth}
-				previousNetWorthSnapshot={previousNetWorthSnapshot}
+				snapshots={snapshots}
 			/>
 			<AssetDistribution assets={assets} />
 			<LiabilityDistribution assets={assets} />

@@ -56,41 +56,40 @@ export const DonutChart: React.FC<Props> = ({
 		active,
 		payload,
 	}) => {
-		if (active && payload.length) {
-			const tooltipData = tooltipPayloadSchema.parse(payload[0]);
-			const tooltipPayload = pieChartItemDataSchema.parse(
-				tooltipData.payload,
-			);
+		const tooltipDataParsed = tooltipPayloadSchema.safeParse(payload[0]);
 
-			return (
-				<div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-					<p className="text-sm font-medium text-stone-900">
-						{tooltipData.name}
-					</p>
-					<p className="text-sm text-stone-600">
-						{t.rich("tooltipValue", {
-							bold: (chunks) => (
-								<span className="font-semibold">{chunks}</span>
-							),
-							value: formatValue(tooltipData.value),
-						})}
-					</p>
-					<p className="text-sm text-stone-600">
-						{t.rich("tooltipPercentage", {
-							bold: (chunks) => (
-								<span className="font-semibold">{chunks}</span>
-							),
-							value: formatPercent(
-								(tooltipData.value / tooltipPayload.total) *
-									100,
-							),
-						})}
-					</p>
-				</div>
-			);
+		if (!active || !tooltipDataParsed.success) {
+			return null;
 		}
 
-		return null;
+		const tooltipData = tooltipDataParsed.data;
+		const tooltipPayload = pieChartItemDataSchema.parse(
+			tooltipData.payload,
+		);
+
+		return (
+			<div className="bg-background border-background-300 rounded border p-2 shadow-sm">
+				<p className="text-sm font-medium">{tooltipData.name}</p>
+				<p className="text-sm">
+					{t.rich("tooltipValue", {
+						bold: (chunks) => (
+							<span className="font-semibold">{chunks}</span>
+						),
+						value: formatValue(tooltipData.value),
+					})}
+				</p>
+				<p className="text-sm">
+					{t.rich("tooltipPercentage", {
+						bold: (chunks) => (
+							<span className="font-semibold">{chunks}</span>
+						),
+						value: formatPercent(
+							(tooltipData.value / tooltipPayload.total) * 100,
+						),
+					})}
+				</p>
+			</div>
+		);
 	};
 
 	const renderCustomLegend: DefaultLegendContentType = (props) => {

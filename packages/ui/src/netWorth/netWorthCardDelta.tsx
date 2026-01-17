@@ -2,7 +2,6 @@
 
 import { DateTime } from "luxon";
 import { useLocale, useTranslations } from "next-intl";
-import { twMerge } from "tailwind-merge";
 import { formatCurrency } from "../format";
 
 interface Props {
@@ -31,12 +30,7 @@ export const NetWorthCardDelta: React.FC<Props> = ({
 	});
 
 	return (
-		<div
-			className={twMerge(
-				"font-sans text-2xl font-bold",
-				netWorthDeltaColor,
-			)}
-		>
+		<div className={netWorthDeltaColor}>
 			{t("delta", {
 				date: DateTime.fromISO(previousDateIso).toLocaleString(
 					{ day: "numeric", month: "long" },
