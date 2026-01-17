@@ -66,6 +66,7 @@ export const RetirementInputs: React.FC<Props> = ({ className }) => {
 					<NumberInput
 						formatOptions={{
 							currency: "USD",
+							maximumFractionDigits: 0,
 							style: "currency",
 						}}
 						label={t("inputs.assumedPostRetirementIncomeNeeded")}
@@ -95,6 +96,7 @@ export const RetirementInputs: React.FC<Props> = ({ className }) => {
 					<NumberInput
 						formatOptions={{
 							currency: "USD",
+							maximumFractionDigits: 0,
 							style: "currency",
 						}}
 						label={t("inputs.currentPreTaxIncome")}
@@ -105,6 +107,7 @@ export const RetirementInputs: React.FC<Props> = ({ className }) => {
 					<NumberInput
 						formatOptions={{
 							currency: "USD",
+							maximumFractionDigits: 0,
 							style: "currency",
 						}}
 						label={t("inputs.currentRetirementInvestments")}

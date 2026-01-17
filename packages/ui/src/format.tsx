@@ -10,6 +10,7 @@ export interface FormatCurrencyOptions extends FormatWithLocaleOptions {
 	currencySymbol?: string;
 	showCents?: boolean;
 	showCentsIfLessThanDigits?: number;
+	showPlusSymbol?: boolean;
 }
 
 export const formatCurrency = (
@@ -20,6 +21,7 @@ export const formatCurrency = (
 		currencySymbol = "$",
 		showCents,
 		showCentsIfLessThanDigits,
+		showPlusSymbol,
 		...restOptions
 	} = options ?? {};
 
@@ -34,12 +36,15 @@ export const formatCurrency = (
 		decimalPlaces = 2;
 	}
 
-	const formattedValue = formatNumber(value, {
+	const isNegative = value < 0;
+	const positiveValue = Math.abs(value);
+
+	const formattedValue = formatNumber(positiveValue, {
 		...restOptions,
 		decimalPlaces,
 	});
 
-	return `${currencySymbol}${formattedValue}`;
+	return `${isNegative ? "-" : showPlusSymbol ? "+" : ""}${currencySymbol}${formattedValue}`;
 };
 
 export const formatNumber = (

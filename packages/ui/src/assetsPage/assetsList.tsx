@@ -1,0 +1,31 @@
+"use client";
+
+import { type Asset } from "@tally/data-models/contracts/asset";
+import { useTranslations } from "next-intl";
+import { AssetsTable } from "../assetsTable/assetsTable";
+import { useAssets } from "../hooks/store/useAssets";
+import { useLatestData } from "../hooks/useLatestData";
+
+interface Props {
+	initialData: {
+		assets: Asset[];
+	};
+}
+
+export const AssetsList: React.FC<Props> = ({ initialData }) => {
+	const { assets: loadedAssets, isLoading } = useAssets();
+	const t = useTranslations("assets");
+
+	const assets = useLatestData({
+		initial: initialData.assets,
+		isLoading,
+		latest: loadedAssets,
+	});
+
+	return (
+		<div>
+			<h2 className="mb-2 text-2xl font-black">{t("listTitle")}</h2>
+			<AssetsTable assets={assets} />
+		</div>
+	);
+};

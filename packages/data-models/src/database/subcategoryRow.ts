@@ -3,7 +3,7 @@ import { budgetTypeSchema } from "../contracts/budgetType";
 
 export const subcategoryRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
-	budget_amount_cents: z.string(), // BIGINT in Postgres is returned as a string.
+	budget_amount_cents: z.string() /* BIGINT -> string */,
 	budget_frequency_months: z.int().min(1).max(12),
 	budget_type: budgetTypeSchema,
 	/* eslint-enable @typescript-eslint/naming-convention */

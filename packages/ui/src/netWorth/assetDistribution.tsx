@@ -62,7 +62,7 @@ export const AssetDistribution: React.FC<Props> = ({ assets }) => {
 					}))}
 					formatValue={(value) => formatCurrency(value)}
 					size={300}
-					title={t("netWorth.assetDistribution")}
+					title={t("assets.netWorth.assetDistribution")}
 				/>
 			</CardBody>
 		</Card>

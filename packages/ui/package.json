@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@ekumlin/typescript-toolkit": "1.0.0",
 		"@heroui/react": "^2.8.4",
-		"@internationalized/date": "3.9.0",
+		"@internationalized/date": "3.10.1",
 		"@tabler/icons-react": "3.36.1",
 		"@tailwindcss/postcss": "^4.1.13",
 		"@tally/data-models": "workspace:*",

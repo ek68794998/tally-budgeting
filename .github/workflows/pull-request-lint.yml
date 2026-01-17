@@ -18,10 +18,7 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
-
-      - name: Install Commitlint
-        run: npm install -g @commitlint/cli @commitlint/config-conventional
+        uses: actions/checkout@v4s
 
       - name: Run commitlint
         uses: lw-ci/action-conventional-pull-request@v3

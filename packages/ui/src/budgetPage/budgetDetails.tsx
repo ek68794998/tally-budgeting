@@ -3,7 +3,7 @@
 import { Spinner } from "@heroui/react";
 import { IconX } from "@tabler/icons-react";
 import {
-	type GetBudgetParams,
+	type GetBudgetQuery,
 	getBudgetResponseSchema,
 } from "@tally/data-models/contracts/api/getBudget";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ const defaultMonths = 6;
 export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
 	const [months, setMonths] = useState(defaultMonths);
 
-	const searchParams: GetBudgetParams = {
+	const searchParams: GetBudgetQuery = {
 		endMonth: String(periodEnd.month),
 		endYear: String(periodEnd.year),
 		months: String(months),

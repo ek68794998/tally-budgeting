@@ -14,12 +14,20 @@
 			"addOne": "New asset",
 			"deleteAction": "Yes, delete it",
 			"deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
-			"deleteTitle": "Delete asset",
+			"deleteTitle": "Delete Asset",
 			"filterPlaceholder": "Type here to search…",
 			"setActiveNo": "Deactivate",
 			"setActiveYes": "Activate"
 		},
-		"title": "Assets & liabilities",
+		"listTitle": "Your Assets",
+		"netWorth": {
+			"addSnapshot": "New Snapshot",
+			"assetDistribution": "Asset Distribution",
+			"delta": "{delta} since {date}",
+			"liabilityDistribution": "Liability Distribution",
+			"title": "Net Worth"
+		},
+		"title": "Net Worth & Assets",
 		"types": {
 			"fixed_asset": "Fixed {plural, select, no {asset} other {assets}}",
 			"liquid_asset": "Liquid {plural, select, no {asset} other {assets}}",
@@ -32,7 +40,7 @@
 		"about": "This card explains the budget page.",
 		"categoriesView": {
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
-			"title": "Breakdown by category"
+			"title": "Breakdown by Category"
 		},
 		"columns": {
 			"budget": "Budget",
@@ -49,7 +57,7 @@
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
 		"spentOverall": "<bold>{spent}</bold> {period}",
 		"summary": {
-			"cardTitle": "Budget score",
+			"cardTitle": "Budget Score",
 			"description": "Here is an overview of your budget. These summarized numbers show <bold>the last {months} months</bold> as of <bold>{endDate}</bold>. The overall score is based on how well you stayed in your budget, and left wiggle room between your budget and income.",
 			"explanations": {
 				"score0": "This period had no financial foundation. Whether you're just starting out or hit a rough patch, there's always room to rebuild.",
@@ -64,12 +72,12 @@
 				"score9": "Outstanding financial management this period. You navigated expenses skillfully with very few missteps.",
 				"score10": "Exceptional period. You demonstrated mastery over your finances and made consistently smart choices throughout."
 			},
-			"overview": "Cash flow breakdown",
-			"subtitleBudget": "Total budget",
-			"subtitleIncome": "{income} income",
-			"subtitleRemaining": "Total saved",
-			"subtitleSpending": "Total spending",
-			"title": "Budget overview"
+			"overview": "Cash Flow",
+			"subtitleBudget": "Total Budget",
+			"subtitleIncome": "{income} Income",
+			"subtitleRemaining": "Total Saved",
+			"subtitleSpending": "Total Spending",
+			"title": "Budget Overview"
 		},
 		"title": "Budget",
 		"underBudget": "On target"
@@ -102,46 +110,40 @@
 	"help": {
 		"link": "About {subject}"
 	},
-	"netWorth": {
-		"about": "This card explains the netWorth page.",
-		"assetDistribution": "Asset distribution",
-		"liabilityDistribution": "Liability distribution",
-		"title": "Net worth"
-	},
 	"retirement": {
 		"about": "This card explains the retirement page.",
 		"chart": {
-			"title": "Cumulative retirement savings",
+			"title": "Cumulative Savings",
 			"tooltipTitle": "Age {age}"
 		},
 		"inputs": {
-			"assumedAnnualRaise": "Annual raise",
-			"assumedInflationRatePercent": "Inflation rate (% annual)",
-			"assumedInvestmentReturnPercent": "Investment return (% annual)",
-			"assumedPostRetirementIncomeNeeded": "Post-retirement expenses",
-			"contributionPercent": "Contribution (% of income)",
-			"currentAge": "Current age",
-			"currentPreTaxIncome": "Current pre-tax income",
-			"currentRetirementInvestments": "Current retirement",
-			"lifeExpectancy": "Life expectancy",
-			"retirementAge": "Retirement age",
-			"title": "Calculator inputs"
+			"assumedAnnualRaise": "Annual Raise",
+			"assumedInflationRatePercent": "Inflation Rate (% Annual)",
+			"assumedInvestmentReturnPercent": "Investment Return (% Annual)",
+			"assumedPostRetirementIncomeNeeded": "Post-Retirement Expenses",
+			"contributionPercent": "Contribution (% of Income)",
+			"currentAge": "Current Age",
+			"currentPreTaxIncome": "Current Pre-Tax Income",
+			"currentRetirementInvestments": "Current Retirement",
+			"lifeExpectancy": "Life Expectancy",
+			"retirementAge": "Retirement Age",
+			"title": "Calculator Inputs"
 		},
 		"summary": {
-			"retirementLeftAt": "Estimated retirement at {age}"
+			"retirementLeftAt": "Estimated Savings at {age}"
 		},
 		"table": {
 			"columns": {
-				"addedToRetirement": "Added to retirement",
+				"addedToRetirement": "Contributed",
 				"age": "Age",
-				"assumedIncome": "Assumed income",
-				"compoundInflation": "Compound inflation (× today’s)",
-				"distributedFromRetirement": "Distributed from retirement",
-				"retirementAmount": "Retirement amount",
-				"retirementAmountToday": "Retirement amount (today’s money)",
+				"assumedIncome": "Assumed Income",
+				"compoundInflation": "Compound Inflation (× Today's)",
+				"distributedFromRetirement": "Distributed",
+				"retirementAmount": "Retirement Amount",
+				"retirementAmountToday": "Retirement Amount (Today's Money)",
 				"year": "Year"
 			},
-			"title": "Retirement by year"
+			"title": "Retirement by Year"
 		},
 		"title": "Retirement"
 	},
@@ -164,10 +166,10 @@
 			"addOne": "New rule",
 			"deleteAction": "Yes, delete it",
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
-			"deleteTitle": "Delete rule",
+			"deleteTitle": "Delete Rule",
 			"filterPlaceholder": "Type here to search…"
 		},
-		"title": "Transaction rules"
+		"title": "Transaction Rules"
 	},
 	"settings": {
 		"title": "Settings"
@@ -183,8 +185,8 @@
 		"spendChart": {
 			"earned": "Income",
 			"spending": "Expenses",
-			"titleMonthly": "Monthly spending",
-			"titleYearly": "Annual spending"
+			"titleMonthly": "Monthly Spending",
+			"titleYearly": "Annual Spending"
 		},
 		"title": "Summary"
 	},
@@ -201,7 +203,7 @@
 		},
 		"edit": {
 			"failureBody": "An error occurred while saving your transaction. Please try again later.",
-			"failureTitle": "Saving transaction failed",
+			"failureTitle": "Saving Transaction Failed",
 			"title": "Edit {amount} transaction with {merchantName}"
 		},
 		"filter": {
@@ -231,16 +233,16 @@
 			"dropFileSelected": "You've selected <bold>{fileName}</bold>.",
 			"failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
 			"failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
-			"failureTitle": "File upload failed",
+			"failureTitle": "File Upload Failed",
 			"resultCard": {
 				"countCategorized": "{count} categorized",
 				"countFailed": "{count} failed",
 				"countIgnored": "{count} ignored",
 				"countUncategorized": "{count} uncategorized",
 				"descriptionUnprocessed": "The items below are shown as they appeared in the file you uploaded.",
-				"titleFailed": "Failed transactions",
-				"titleIgnored": "Ignored transactions",
-				"titleUncategorized": "Uncategorized transactions"
+				"titleFailed": "Failed Transactions",
+				"titleIgnored": "Ignored Transactions",
+				"titleUncategorized": "Uncategorized Transactions"
 			},
 			"selectAccount": "Please select an account associated with a known financial provider.",
 			"selectedProvider": "This account is associated with <bold>{provider}</bold>.",

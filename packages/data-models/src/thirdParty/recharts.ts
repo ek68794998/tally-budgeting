@@ -6,7 +6,7 @@ export const tooltipPayloadSchema = z.object({
 	fill: z.string().optional(),
 	hide: z.boolean(),
 	name: z.string(),
-	nameKey: z.string(),
+	nameKey: z.string().optional(),
 	payload: z.unknown(),
 	stroke: z.string().optional(),
 	strokeWidth: z.number().optional(),

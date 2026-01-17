@@ -2,7 +2,7 @@ import { type Asset } from "../contracts/asset";
 import { type AssetRow } from "../database/assetRow";
 
 export const convertAssetRowToAsset = (row: AssetRow): Asset => {
-	const { active, id, name, provider, type, value } = row;
+	const { active, id, name, provider, type, value_cents: value } = row;
 
 	return {
 		active,
@@ -23,6 +23,6 @@ export const convertAssetToAssetRow = (row: Asset): AssetRow => {
 		name,
 		provider,
 		type,
-		value: String(valueCents),
+		value_cents: String(valueCents), // eslint-disable-line @typescript-eslint/naming-convention
 	};
 };
