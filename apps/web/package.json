@@ -10,6 +10,7 @@
 		"lint": "next lint --max-warnings 0",
 		"start": "next start",
 		"test": "vitest run",
+		"test:coverage": "vitest --coverage",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest"
 	},

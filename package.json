@@ -9,19 +9,21 @@
 		"dev:db:down": "docker compose -f deployment/docker-compose.yml -f deployment/docker-compose.dev.yml down",
 		"dev:db:up": "pnpm dev:db -d",
 		"diagnostic": "echo \"Turbo $(turbo --version); Node $(node -v); NPM $(npm -v); PNPM $(pnpm -v); TS(C) $(tsc -v)\"",
-		"docker:build": "pnpm build && docker build --platform linux/amd64 -f apps/web/Dockerfile -t tally-budgeting . && docker save -o tally-budgeting.tar tally-budgeting",
+		"docker:build": "docker build --platform linux/amd64 -f apps/web/Dockerfile -t tally-budgeting . && docker save -o tally-budgeting.tar tally-budgeting",
 		"docker:down": "docker compose -f deployment/docker-compose.yml down",
 		"docker:logs": "docker compose -f deployment/docker-compose.yml logs -f",
 		"docker:up": "docker compose -f deployment/docker-compose.yml up -d",
 		"fix:biome": "biome format --write .",
 		"lint": "turbo run lint ; pnpm lint:biome",
 		"lint:biome": "biome check",
-		"test": "pnpm -r test",
-		"test:ui": "pnpm -r test:ui",
-		"test:watch": "pnpm -r test:watch"
+		"test": "vitest --no-watch",
+		"test:coverage": "vitest --coverage --no-watch",
+		"test:ui": "vitest --ui",
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
+		"@vitest/coverage-v8": "^3.2.4",
 		"turbo": "2.5.8",
 		"typescript": "5.9.2",
 		"vitest": "^3.2.4"
