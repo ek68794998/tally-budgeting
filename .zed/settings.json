@@ -39,6 +39,11 @@
 				"require_config_file": false
 			}
 		},
+		"eslint": {
+			"settings": {
+				"onIgnoredFiles": "off"
+			}
+		},
 		"tailwindcss-language-server": {
 			"settings": {
 				"classAttributes": ["class", "classNames?"]

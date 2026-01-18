@@ -8,6 +8,7 @@ export default defineConfig({
 				...(configDefaults.coverage.exclude ?? []),
 				"**/_*/**",
 				"**/build/**",
+				"**/coverage/**",
 				"**/dist/**",
 				"**/eslint-config/**",
 				"**/node_modules/**",
@@ -18,7 +19,7 @@ export default defineConfig({
 			reporter: ["text", "html", "json"],
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
-				branches: 60,
+				branches: 65,
 				functions: 45,
 				lines: 10,
 				statements: 10,
