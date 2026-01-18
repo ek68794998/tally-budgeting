@@ -13,7 +13,7 @@ import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { SelectCategory } from "../common/selectCategory";
+import { SelectSubcategory } from "../common/selectSubcategory";
 import { EditModalFooter } from "../modal/editModalFooter";
 import {
 	getAutoRegexStringFromMerchantName,
@@ -91,7 +91,7 @@ export const RuleEditModal: React.FC<Props> = ({
 								isRegexMismatch={isRegexMismatch}
 								merchantToMatch={merchantToMatch}
 							/>
-							<SelectCategory
+							<SelectSubcategory
 								label={t("rules.columns.category")}
 								onChange={(subcategory) =>
 									setSubcategoryId(subcategory.id)

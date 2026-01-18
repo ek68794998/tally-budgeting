@@ -56,7 +56,12 @@
 			"noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
 			"noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
 			"subcategoryColumns": {
-				"label": "Label"
+				"budgetAmount": "Budgeted Amount",
+				"budgetFrequency": "Budget Frequency",
+				"budgetType": "Budget Type",
+				"categoryId": "Category",
+				"description": "Description",
+				"label": "label"
 			},
 			"subcategoryCount": "{count} subcategories",
 			"title": "Breakdown by Category"

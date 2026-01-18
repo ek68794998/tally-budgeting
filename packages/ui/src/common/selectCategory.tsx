@@ -4,35 +4,19 @@ import {
 	Autocomplete,
 	AutocompleteItem,
 	type AutocompleteProps,
-	AutocompleteSection,
 } from "@heroui/react";
-import { type Category } from "@tally/data-models/contracts/category";
 import {
-	DefaultSubcategoryId,
-	type Subcategory,
-} from "@tally/data-models/contracts/subcategory";
-import { useCallback, useMemo, useState } from "react";
-import { filterMatches } from "../filter";
+	type Category,
+	DefaultCategoryId,
+} from "@tally/data-models/contracts/category";
+import { useMemo, useState } from "react";
 import { useCategories } from "../hooks/store/useCategories";
 
 interface Props {
-	autocompleteProps?: Partial<
-		Omit<AutocompleteProps<CategoryItem>, "children">
-	>;
+	autocompleteProps?: Partial<Omit<AutocompleteProps<Category>, "children">>;
 	label?: string;
-	onChange: (value: Subcategory) => void;
-	value: Subcategory | number;
-}
-
-interface CategoryItem {
-	id: number;
-	label: string;
-	subcategories: SubcategoryItem[];
-}
-
-interface SubcategoryItem {
-	id: number;
-	label: string;
+	onChange: (value: Category) => void;
+	value: Category | number;
 }
 
 export const SelectCategory: React.FC<Props> = ({
@@ -41,38 +25,17 @@ export const SelectCategory: React.FC<Props> = ({
 	onChange,
 	value,
 }) => {
-	const { categories, subcategories } = useCategories();
+	const { categories } = useCategories();
 
 	const [inputValue, setInputValue] = useState("");
 
-	const getSubcategories = useCallback(
-		(c: Category): SubcategoryItem[] =>
-			subcategories
-				.filter(
-					(s) =>
-						s.categoryId === c.id &&
-						(filterMatches(inputValue, s.label) ||
-							filterMatches(inputValue, c.label)),
-				)
-				.sort((a, b) => a.label.localeCompare(b.label)),
-		[inputValue, subcategories],
-	);
-
-	const items: CategoryItem[] = useMemo(
-		() =>
-			categories
-				.map((c) => ({
-					id: c.id,
-					label: c.label,
-					subcategories: getSubcategories(c),
-				}))
-				.filter((category) => category.subcategories.length > 0)
-				.sort((a, b) => a.label.localeCompare(b.label)),
-		[categories, getSubcategories],
+	const items: Category[] = useMemo(
+		() => categories.slice().sort((a, b) => a.label.localeCompare(b.label)),
+		[categories],
 	);
 
 	const selectedCategory = isNumber(value)
-		? subcategories.find((s) => s.id === value)
+		? categories.find((s) => s.id === value)
 		: value;
 	const displayValue = selectedCategory?.label;
 
@@ -89,36 +52,22 @@ export const SelectCategory: React.FC<Props> = ({
 				let newValue = isNullOrUndefined(key) ? NaN : Number(key);
 
 				if (Number.isNaN(newValue)) {
-					newValue = DefaultSubcategoryId;
+					newValue = DefaultCategoryId;
 				}
 
-				const newSubcategory = subcategories.find(
-					(s) => s.id === newValue,
-				);
+				const newCategory = categories.find((s) => s.id === newValue);
 				invariant(
-					newSubcategory,
-					"Subcategory must be present within the data set",
+					newCategory,
+					"Category must be present within the data set",
 				);
 
-				onChange(newSubcategory);
+				onChange(newCategory);
 				setInputValue("");
 			}}
 			placeholder={displayValue}
 			selectedKey={selectedCategory?.id}
 		>
-			{(c) => (
-				<AutocompleteSection
-					items={c.subcategories}
-					key={`category-${c.id}`}
-					title={c.label}
-				>
-					{(i) => (
-						<AutocompleteItem key={i.id}>
-							{i.label}
-						</AutocompleteItem>
-					)}
-				</AutocompleteSection>
-			)}
+			{(c) => <AutocompleteItem key={c.id}>{c.label}</AutocompleteItem>}
 		</Autocomplete>
 	);
 };

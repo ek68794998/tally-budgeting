@@ -25,7 +25,7 @@ import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { SelectAccount } from "../common/selectAccount";
-import { SelectCategory } from "../common/selectCategory";
+import { SelectSubcategory } from "../common/selectSubcategory";
 import { formatCurrency } from "../format";
 import { EditModalFooter } from "../modal/editModalFooter";
 import { TransactionEditDirectionButtons } from "./transactionEditDirectionButtons";
@@ -108,7 +108,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 								onValueChange={setMerchantName}
 								value={merchantName}
 							/>
-							<SelectCategory
+							<SelectSubcategory
 								label={t("transactions.columns.category")}
 								onChange={(subcategory) =>
 									setSubcategoryId(subcategory.id)
