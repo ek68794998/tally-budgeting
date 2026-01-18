@@ -135,17 +135,21 @@ const testCases: TestCase[] = [
 
 describe("Budget page helpers", () => {
 	describe("calculateBudgetScore", () => {
-		it.each<TestCase>(testCases)(
-			"should calculate budget score for $name",
-			({ budgeted, expectedScore, income, spent }) => {
-				const score = calculateBudgetScore(spent, income, budgeted);
+		it.each<TestCase>(
+			testCases,
+		)("should calculate budget score for $name", ({
+			budgeted,
+			expectedScore,
+			income,
+			spent,
+		}) => {
+			const score = calculateBudgetScore(spent, income, budgeted);
 
-				const scoreToOneDecimal = score?.toFixed(1) ?? "null";
-				const expectedScoreToOneDecimal =
-					expectedScore?.toFixed(1) ?? "null";
+			const scoreToOneDecimal = score?.toFixed(1) ?? "null";
+			const expectedScoreToOneDecimal =
+				expectedScore?.toFixed(1) ?? "null";
 
-				expect(scoreToOneDecimal).toBe(expectedScoreToOneDecimal);
-			},
-		);
+			expect(scoreToOneDecimal).toBe(expectedScoreToOneDecimal);
+		});
 	});
 });

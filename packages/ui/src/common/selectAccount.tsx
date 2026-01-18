@@ -1,9 +1,9 @@
 "use client";
 
 import { isNumber } from "@ekumlin/typescript-toolkit/types";
+import { Select, SelectItem, type SelectProps } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { AccountProviders } from "@tally/data-models/data/accountProviders";
-import { Select, SelectItem, type SelectProps } from "@heroui/react";
 import { DataProviderIcon } from "../dataProviderIcons/dataProviderIcon";
 import { useAssets } from "../hooks/store/useAssets";
 

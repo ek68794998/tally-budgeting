@@ -1,16 +1,16 @@
 import { isNullOrUndefined, isNumber } from "@ekumlin/typescript-toolkit/types";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { type Category } from "@tally/data-models/contracts/category";
-import {
-	DefaultSubcategoryId,
-	type Subcategory,
-} from "@tally/data-models/contracts/subcategory";
 import {
 	Autocomplete,
 	AutocompleteItem,
 	type AutocompleteProps,
 	AutocompleteSection,
 } from "@heroui/react";
+import { type Category } from "@tally/data-models/contracts/category";
+import {
+	DefaultSubcategoryId,
+	type Subcategory,
+} from "@tally/data-models/contracts/subcategory";
 import { useCallback, useMemo, useState } from "react";
 import { filterMatches } from "../filter";
 import { useCategories } from "../hooks/store/useCategories";
