@@ -11,7 +11,7 @@ interface Props {
 	subcategory: Subcategory;
 }
 
-export const BudgetSubcategoryItem: React.FC<Props> = ({
+export const SubcategoryItem: React.FC<Props> = ({
 	onDelete,
 	onEdit,
 	subcategory,

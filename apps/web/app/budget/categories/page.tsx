@@ -1,4 +1,4 @@
-import { BudgetCategoriesMasterDetail } from "@tally/ui/budget/budgetCategoriesPage/budgetCategoriesMasterDetail";
+import { CategoriesMasterDetail } from "@tally/ui/budget/budgetCategoriesPage/categoriesMasterDetail";
 import { DateTime } from "luxon";
 
 const BudgetCategoriesPage: React.FC = () => {
@@ -11,7 +11,7 @@ const BudgetCategoriesPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-col gap-4">
-			<BudgetCategoriesMasterDetail />
+			<CategoriesMasterDetail />
 		</div>
 	);
 };

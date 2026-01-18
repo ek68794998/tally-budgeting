@@ -39,11 +39,25 @@
 	"budget": {
 		"about": "This card explains the budget page.",
 		"categoriesEdit": {
+			"categoryColumns": {
+				"label": "Label"
+			},
+			"deleteCategoryAction": "Yes, delete all",
+			"deleteCategoryDescription": "This will delete the <bold>\"{label}\"</bold> category and <bold>all subcategories</bold>. Any transactions using those subcategories will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+			"deleteCategoryTitle": "Delete category?",
+			"deleteSubcategoryAction": "Yes, delete it",
+			"deleteSubcategoryDescription": "This will delete the <bold>\"{label}\"</bold> subcategory, and any transactions using this subcategory will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+			"deleteSubcategoryTitle": "Delete subcategory?",
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+			"editCategory": "Edit {label}",
+			"editSubcategory": "Edit {label}",
 			"newCategory": "New Category",
 			"newSubcategory": "New Subcategory",
 			"noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
 			"noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
+			"subcategoryColumns": {
+				"label": "Label"
+			},
 			"subcategoryCount": "{count} subcategories",
 			"title": "Breakdown by Category"
 		},

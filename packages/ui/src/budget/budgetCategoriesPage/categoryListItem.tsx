@@ -11,7 +11,7 @@ interface Props {
 	subcategoryCount: number;
 }
 
-export const BudgetCategoryListItem: React.FC<Props> = ({
+export const CategoryListItem: React.FC<Props> = ({
 	category,
 	isSelected,
 	onClick,

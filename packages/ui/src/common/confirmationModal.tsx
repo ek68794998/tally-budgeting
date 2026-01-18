@@ -10,7 +10,7 @@ import {
 import { useTranslations } from "next-intl";
 
 interface Props {
-	body: string;
+	body: React.ReactNode;
 	cancelText?: string;
 	confirmText?: string;
 	isDestructive?: boolean;
@@ -36,7 +36,7 @@ export const ConfirmationModal: React.FC<Props> = ({
 				{(onClose) => (
 					<>
 						<ModalHeader>{title}</ModalHeader>
-						<ModalBody>{body}</ModalBody>
+						<ModalBody className="block">{body}</ModalBody>
 						<ModalFooter>
 							<Button onPress={onClose}>
 								{cancelText || t("common.actions.cancel")}

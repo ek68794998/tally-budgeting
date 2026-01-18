@@ -1,16 +1,16 @@
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { useTranslations } from "next-intl";
-import { BudgetSubcategoryItem } from "./budgetSubcategoryItem";
+import { SubcategoryItem } from "./subcategoryItem";
 
 interface Props {
 	category: Category;
-	onDeleteSubcategory?: (subcategoryId: number) => void;
-	onEditSubcategory?: (subcategoryId: number) => void;
+	onDeleteSubcategory: (subcategory: Subcategory) => void;
+	onEditSubcategory: (subcategory: Subcategory) => void;
 	subcategories: Subcategory[];
 }
 
-export const BudgetCategoryDetailContent: React.FC<Props> = ({
+export const CategoryDetailContent: React.FC<Props> = ({
 	category,
 	onDeleteSubcategory,
 	onEditSubcategory,
@@ -33,10 +33,10 @@ export const BudgetCategoryDetailContent: React.FC<Props> = ({
 			) : (
 				<div className="flex flex-col gap-4">
 					{categorySubcategories.map((sub) => (
-						<BudgetSubcategoryItem
+						<SubcategoryItem
 							key={sub.id}
-							onDelete={() => onDeleteSubcategory?.(sub.id)}
-							onEdit={() => onEditSubcategory?.(sub.id)}
+							onDelete={() => onDeleteSubcategory(sub)}
+							onEdit={() => onEditSubcategory(sub)}
 							subcategory={sub}
 						/>
 					))}
