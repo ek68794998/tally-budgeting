@@ -11,6 +11,13 @@ import { rowOrRowsAsRows, withoutId } from "./helpers";
 export const TableName = "category" as const satisfies keyof Database;
 
 export class CategoriesClient extends DatabaseClient {
+	public async deleteCategoryAsync(id: number): Promise<void> {
+		await this.database
+			.deleteFrom(TableName)
+			.where("id", "=", id)
+			.execute();
+	}
+
 	public async getCategoriesAsync(): Promise<Category[]> {
 		const rows = await this.database
 			.selectFrom(TableName)

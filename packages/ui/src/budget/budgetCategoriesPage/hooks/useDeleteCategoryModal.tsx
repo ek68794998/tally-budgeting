@@ -6,8 +6,10 @@ import { type Category } from "@tally/data-models/contracts/category";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ConfirmationModal } from "../../../common/confirmationModal";
+import { useDeleteCategory } from "../../../hooks/api/useDeleteCategory";
 
 export const useCategoryDeleteModal = () => {
+	const { deleteCategoryAsync } = useDeleteCategory();
 	const categoryDeleteModalState = useDisclosure();
 	const t = useTranslations("budget.categoriesEdit");
 
@@ -33,12 +35,12 @@ export const useCategoryDeleteModal = () => {
 							activeCategory,
 							"Active category must be defined",
 						);
-						// TODO delete activeCategory
+						await deleteCategoryAsync(activeCategory.id);
 					}}
 					title={t("deleteCategoryTitle")}
 				/>
 			),
 		}),
-		[activeCategory, categoryDeleteModalState, t],
+		[activeCategory, categoryDeleteModalState, deleteCategoryAsync, t],
 	);
 };
