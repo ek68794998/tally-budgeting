@@ -1,6 +1,6 @@
 import { NoContent } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
-import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
+import { deleteCategoryParamsSchema } from "@tally/data-models/contracts/api/deleteCategory";
 import z from "zod";
 import { CategoriesClient } from "../../../storage/categoriesClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
@@ -22,7 +22,7 @@ export const DeleteCategoriesIdRouteAsync: NextResponseFn = createApiHandler({
 	},
 	schemata: {
 		body: z.unknown(),
-		params: deleteTransactionRuleParamsSchema,
+		params: deleteCategoryParamsSchema,
 		query: z.unknown(),
 	},
 });
