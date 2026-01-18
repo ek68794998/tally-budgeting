@@ -27,6 +27,14 @@ describe("OData parser", () => {
 				"deleted eq null",
 				{ field: "deleted", operator: "eq", value: null },
 			],
+			[
+				"deleted eq NonStandardString",
+				{
+					field: "deleted",
+					operator: "eq",
+					value: "NonStandardString",
+				},
+			],
 		])("parses single expression: %s", (filter, expected) => {
 			expect(parseODataLiteFilter(filter)).toEqual([expected]);
 		});

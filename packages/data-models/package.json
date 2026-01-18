@@ -8,7 +8,8 @@
 	"scripts": {
 		"check-types": "tsc --noEmit",
 		"lint": "eslint . --max-warnings 0",
-		"test": "vitest run",
+		"test": "vitest --no-watch",
+		"test:coverage": "vitest --coverage --no-watch",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest"
 	},
