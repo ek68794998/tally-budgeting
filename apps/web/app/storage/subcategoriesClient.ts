@@ -45,4 +45,14 @@ export class SubcategoriesClient extends DatabaseClient {
 			.values(subcategories)
 			.execute();
 	}
+
+	public async updateSubcategoryAsync(value: Subcategory): Promise<void> {
+		const row = convertSubcategoryToSubcategoryRow(value);
+
+		await this.database
+			.updateTable(TableName)
+			.where("id", "=", row.id)
+			.set(row)
+			.execute();
+	}
 }

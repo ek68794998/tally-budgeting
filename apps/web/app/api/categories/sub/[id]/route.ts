@@ -1,3 +1,3 @@
-import { DeleteTransactionsIdRouteAsync } from "./delete";
+import { DeleteCategoriesSubIdRouteAsync } from "./delete";
 
-export { DeleteTransactionsIdRouteAsync as DELETE };
+export { DeleteCategoriesSubIdRouteAsync as DELETE };

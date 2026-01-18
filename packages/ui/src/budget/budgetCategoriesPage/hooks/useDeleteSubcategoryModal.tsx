@@ -7,8 +7,10 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ConfirmationModal } from "../../../common/confirmationModal";
 import { useDeleteSubcategory } from "../../../hooks/api/useDeleteSubcategory";
+import { useCategories } from "../../../hooks/store/useCategories";
 
 export const useSubcategoryDeleteModal = () => {
+	const { refetch } = useCategories();
 	const { deleteSubcategoryAsync } = useDeleteSubcategory();
 	const subcategoryDeleteModalState = useDisclosure();
 	const t = useTranslations("budget.categoriesEdit");
@@ -37,6 +39,7 @@ export const useSubcategoryDeleteModal = () => {
 							"Active subcategory must be defined",
 						);
 						await deleteSubcategoryAsync(activeSubcategory.id);
+						await refetch();
 					}}
 					title={t("deleteSubcategoryTitle")}
 				/>
@@ -45,6 +48,7 @@ export const useSubcategoryDeleteModal = () => {
 		[
 			activeSubcategory,
 			deleteSubcategoryAsync,
+			refetch,
 			subcategoryDeleteModalState,
 			t,
 		],

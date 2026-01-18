@@ -19,7 +19,7 @@ import { useTranslations } from "next-intl";
 
 interface Props {
 	category: Category;
-	onAddSubcategory: () => void;
+	onAddSubcategory: (category: Category) => void;
 	onDeleteCategory: (category: Category) => void;
 	onEditCategory: (category: Category) => void;
 }
@@ -34,7 +34,7 @@ export const SubcategoryActions: React.FC<Props> = ({
 
 	return (
 		<div className="flex gap-2">
-			<Button onPress={onAddSubcategory} variant="light">
+			<Button onPress={() => onAddSubcategory(category)} variant="light">
 				<IconPlus />
 				{t("budget.categoriesEdit.newSubcategory")}
 			</Button>

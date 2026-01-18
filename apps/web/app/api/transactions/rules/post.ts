@@ -14,7 +14,7 @@ export const PostTransactionsRulesRouteAsync: NextResponseFn = createApiHandler(
 		handler: async ({ body }) => {
 			const txnRulesClient = txnRulesClientLazy.get();
 
-			await (body.rule.id >= 0
+			await (body.rule.id > 0
 				? txnRulesClient.updateTransactionRuleAsync(body.rule)
 				: txnRulesClient.insertTransactionRulesAsync([body.rule]));
 

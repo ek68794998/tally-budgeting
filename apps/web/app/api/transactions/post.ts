@@ -13,7 +13,7 @@ export const PostTransactionsRouteAsync: NextResponseFn = createApiHandler({
 	handler: async ({ body }) => {
 		const txnsClient = txnsClientLazy.get();
 
-		await (body.transaction.id >= 0
+		await (body.transaction.id > 0
 			? txnsClient.updateTransactionAsync(body.transaction)
 			: txnsClient.insertTransactionsAsync([body.transaction]));
 

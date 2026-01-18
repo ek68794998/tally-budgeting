@@ -50,8 +50,11 @@ export const CategoriesMasterDetail: React.FC = () => {
 		openCategoryEditModal(ModalDefaultCategory);
 	};
 
-	const handleAddSubcategory = () => {
-		openSubcategoryEditModal(ModalDefaultSubcategory);
+	const handleAddSubcategory = (category: Category) => {
+		openSubcategoryEditModal({
+			...ModalDefaultSubcategory,
+			categoryId: category.id,
+		});
 	};
 
 	const handleDeleteCategory = (category: Category) => {
