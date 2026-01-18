@@ -1,5 +1,11 @@
 import { getDatabase } from "./database";
 
-export class DatabaseClient {
-	protected readonly database = getDatabase();
+type ClientDatabaseType = ReturnType<typeof getDatabase>;
+
+export abstract class DatabaseClient {
+	protected readonly database: ClientDatabaseType;
+
+	public constructor(database?: ClientDatabaseType) {
+		this.database = database ?? getDatabase();
+	}
 }

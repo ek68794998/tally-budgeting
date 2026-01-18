@@ -1,7 +1,8 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import { postTransactionRuleRequestSchema } from "@tally/data-models/contracts/api/postTransactionRule";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { postTransactionRuleRequestSchema } from "@tally/data-models/contracts/api/postTransactionRule";
 import z from "zod";
+import { hasId } from "../../../storage/helpers";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
 import { type NextResponseFn } from "../../types";
@@ -14,7 +15,7 @@ export const PostTransactionsRulesRouteAsync: NextResponseFn = createApiHandler(
 		handler: async ({ body }) => {
 			const txnRulesClient = txnRulesClientLazy.get();
 
-			await (body.rule.id >= 0
+			await (hasId(body.rule)
 				? txnRulesClient.updateTransactionRuleAsync(body.rule)
 				: txnRulesClient.insertTransactionRulesAsync([body.rule]));
 

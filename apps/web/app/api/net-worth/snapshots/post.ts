@@ -1,6 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import { postNetWorthSnapshotRequestSchema } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { postNetWorthSnapshotRequestSchema } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
 import z from "zod";
 import { NetWorthSnapshotsClient } from "../../../storage/netWorthSnapshotsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";

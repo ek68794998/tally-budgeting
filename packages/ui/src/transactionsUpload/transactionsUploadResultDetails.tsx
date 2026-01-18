@@ -1,8 +1,5 @@
 "use client";
 
-import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
 import {
 	Accordion,
 	AccordionItem,
@@ -21,6 +18,9 @@ import {
 	IconCheck,
 	IconEditOff,
 } from "@tabler/icons-react";
+import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
+import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
+import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import z from "zod";

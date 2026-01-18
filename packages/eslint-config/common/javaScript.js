@@ -25,7 +25,7 @@ export const eslintConfigJavaScript = [
 					objects: "always-multiline",
 				},
 			],
-			"comma-spacing": "error",
+			"comma-spacing": "off",
 			complexity: "off",
 			"constructor-super": "error",
 			curly: "error",

@@ -38,6 +38,34 @@
 	},
 	"budget": {
 		"about": "This card explains the budget page.",
+		"categoriesEdit": {
+			"categoryColumns": {
+				"label": "Label"
+			},
+			"deleteCategoryAction": "Yes, delete all",
+			"deleteCategoryDescription": "This will delete the <bold>\"{label}\"</bold> category and <bold>all subcategories</bold>. Any transactions using those subcategories will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+			"deleteCategoryTitle": "Delete category?",
+			"deleteSubcategoryAction": "Yes, delete it",
+			"deleteSubcategoryDescription": "This will delete the <bold>\"{label}\"</bold> subcategory, and any transactions using this subcategory will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+			"deleteSubcategoryTitle": "Delete subcategory?",
+			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+			"editCategory": "Edit {label}",
+			"editSubcategory": "Edit {label}",
+			"newCategory": "New Category",
+			"newSubcategory": "New Subcategory",
+			"noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
+			"noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
+			"subcategoryColumns": {
+				"budgetAmount": "Budgeted Amount",
+				"budgetFrequency": "Budget Frequency",
+				"budgetType": "Budget Type",
+				"categoryId": "Category",
+				"description": "Description",
+				"label": "Label"
+			},
+			"subcategoryCount": "{count} subcategories",
+			"title": "Categories"
+		},
 		"categoriesView": {
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
 			"title": "Breakdown by Category"
@@ -49,7 +77,8 @@
 		"durations": {
 			"multipleMonths": "since {month}",
 			"oneMonth": "in {month}",
-			"periodMonths": "{months} {months, plural, =1 {month} other {months}}"
+			"periodMonths": "{months} {months, plural, =1 {month} other {months}}",
+			"perPeriod": "<bold>{amount}</bold> every {period}"
 		},
 		"editCategories": "Edit categories",
 		"overBudget": "{amount} over budget",
@@ -80,6 +109,11 @@
 			"title": "Budget Overview"
 		},
 		"title": "Budget",
+		"types": {
+			"expense": "Expense",
+			"income": "Income",
+			"neutral": "Reallocation"
+		},
 		"underBudget": "On target"
 	},
 	"common": {
@@ -93,6 +127,10 @@
 		"charts": {
 			"tooltipPercentage": "Percentage: <bold>{value}</bold>",
 			"tooltipValue": "Value: <bold>{value}</bold>"
+		},
+		"masterDetail": {
+			"detailEmptyState": "Select an item to view its details.",
+			"masterEmptyState": "No items available."
 		},
 		"table": {
 			"error": "Unable to load table data.",

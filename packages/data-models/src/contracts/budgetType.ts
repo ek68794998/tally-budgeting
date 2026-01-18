@@ -1,11 +1,7 @@
 import z from "zod";
 
-export const budgetTypeSchema = z.enum(["expense", "income", "neutral"]);
+export const BudgetTypes = ["expense", "income", "neutral"] as const;
+
+export const budgetTypeSchema = z.enum(BudgetTypes);
 
 export type BudgetType = z.infer<typeof budgetTypeSchema>;
-
-export const BudgetTypes = {
-	expense: 2,
-	income: 1,
-	neutral: 0,
-} as const satisfies Record<BudgetType, number>;

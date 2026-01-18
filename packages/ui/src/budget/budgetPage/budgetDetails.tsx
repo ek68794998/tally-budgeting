@@ -9,9 +9,9 @@ import {
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ZodError } from "zod";
+import { type BudgetDate } from "../types";
 import { BudgetCategoriesList } from "./budgetCategoriesList";
 import { BudgetScore } from "./budgetScore";
-import { type BudgetDate } from "./types";
 
 interface Props {
 	periodEnd: BudgetDate;

@@ -1,6 +1,6 @@
 import { NoContent } from "@ekumlin/typescript-toolkit/http";
-import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
 import z from "zod";
 import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";

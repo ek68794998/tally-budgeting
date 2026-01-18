@@ -3,6 +3,7 @@ import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postAssetRequestSchema } from "@tally/data-models/contracts/api/postAsset";
 import z from "zod";
 import { AssetsClient } from "../../storage/assetsClient";
+import { hasId } from "../../storage/helpers";
 import { createApiHandler } from "../handlers/createApiHandler";
 import { type NextResponseFn } from "../types";
 
@@ -12,7 +13,7 @@ export const PostAssetsRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "POST:ASSETS",
 	handler: async ({ body }) => {
 		const assetsClient = assetsClientLazy.get();
-		await (body.asset.id >= 0
+		await (hasId(body.asset)
 			? assetsClient.updateAssetAsync(body.asset)
 			: assetsClient.insertAssetsAsync([body.asset]));
 

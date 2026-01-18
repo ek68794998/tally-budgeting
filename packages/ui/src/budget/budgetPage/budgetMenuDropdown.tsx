@@ -11,7 +11,7 @@ import { IconDots, IconEdit } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { type DropdownEntry } from "../types";
+import { type DropdownEntry } from "../../types";
 
 export const BudgetMenuDropdown = () => {
 	const router = useRouter();

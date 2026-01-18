@@ -1,4 +1,4 @@
-import { BudgetDetails } from "@tally/ui/budgetPage/budgetDetails";
+import { BudgetDetails } from "@tally/ui/budget/budgetPage/budgetDetails";
 import { DateTime } from "luxon";
 
 const BudgetPage: React.FC = () => {

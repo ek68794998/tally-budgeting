@@ -7,10 +7,7 @@
 	},
 	"scripts": {
 		"lint": "eslint . --max-warnings 0",
-		"check-types": "tsc --noEmit",
-		"test": "vitest run",
-		"test:ui": "vitest --ui",
-		"test:watch": "vitest"
+		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.6.1",

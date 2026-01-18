@@ -11,6 +11,13 @@ import { rowOrRowsAsRows, withoutId } from "./helpers";
 export const TableName = "subcategory" as const satisfies keyof Database;
 
 export class SubcategoriesClient extends DatabaseClient {
+	public async deleteSubcategoryAsync(id: number): Promise<void> {
+		await this.database
+			.deleteFrom(TableName)
+			.where("id", "=", id)
+			.execute();
+	}
+
 	public async getSubcategoriesAsync(): Promise<Subcategory[]> {
 		const rows = await this.database
 			.selectFrom(TableName)
@@ -36,6 +43,16 @@ export class SubcategoriesClient extends DatabaseClient {
 		await this.database
 			.insertInto(TableName)
 			.values(subcategories)
+			.execute();
+	}
+
+	public async updateSubcategoryAsync(value: Subcategory): Promise<void> {
+		const row = convertSubcategoryToSubcategoryRow(value);
+
+		await this.database
+			.updateTable(TableName)
+			.where("id", "=", row.id)
+			.set(row)
 			.execute();
 	}
 }

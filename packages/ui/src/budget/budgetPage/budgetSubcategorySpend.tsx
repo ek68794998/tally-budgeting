@@ -3,9 +3,9 @@ import { IconHelpCircle } from "@tabler/icons-react";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
-import { formatCurrency } from "../format";
-import { getSpentText } from "./helpers";
-import { type BudgetDate } from "./types";
+import { formatCurrency } from "../../format";
+import { getSpentText } from "../helpers";
+import { type BudgetDate } from "../types";
 
 interface Props {
 	amountPaid: number;
