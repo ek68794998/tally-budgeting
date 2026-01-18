@@ -1,6 +1,6 @@
 import { Card, CardBody, Progress, type ProgressProps } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { formatCurrency } from "../format";
+import { formatCurrency } from "../../format";
 
 interface Props {
 	budgeted: number;

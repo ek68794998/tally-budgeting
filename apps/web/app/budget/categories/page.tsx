@@ -1,7 +1,7 @@
-import { BudgetDetails } from "@tally/ui/budget/budgetPage/budgetDetails";
+import { BudgetCategoriesMasterDetail } from "@tally/ui/budget/budgetCategoriesPage/budgetCategoriesMasterDetail";
 import { DateTime } from "luxon";
 
-const BudgetPage: React.FC = () => {
+const BudgetCategoriesPage: React.FC = () => {
 	const getPeriodEnd = () => {
 		const utcNow = DateTime.utc().minus({ months: 1 });
 		return { month: utcNow.month, year: utcNow.year };
@@ -11,9 +11,9 @@ const BudgetPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-col gap-4">
-			<BudgetDetails periodEnd={periodEnd} />
+			<BudgetCategoriesMasterDetail />
 		</div>
 	);
 };
 
-export default BudgetPage;
+export default BudgetCategoriesPage;

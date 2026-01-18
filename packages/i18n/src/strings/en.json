@@ -38,6 +38,15 @@
 	},
 	"budget": {
 		"about": "This card explains the budget page.",
+		"categoriesEdit": {
+			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+			"newCategory": "New Category",
+			"newSubcategory": "New Subcategory",
+			"noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
+			"noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
+			"subcategoryCount": "{count} subcategories",
+			"title": "Breakdown by Category"
+		},
 		"categoriesView": {
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
 			"title": "Breakdown by Category"
@@ -49,7 +58,8 @@
 		"durations": {
 			"multipleMonths": "since {month}",
 			"oneMonth": "in {month}",
-			"periodMonths": "{months} {months, plural, =1 {month} other {months}}"
+			"periodMonths": "{months} {months, plural, =1 {month} other {months}}",
+			"perPeriod": "<bold>{amount}</bold> every {period}"
 		},
 		"editCategories": "Edit categories",
 		"overBudget": "{amount} over budget",
@@ -80,6 +90,11 @@
 			"title": "Budget Overview"
 		},
 		"title": "Budget",
+		"types": {
+			"expense": "Expense",
+			"income": "Income",
+			"neutral": "Reallocation"
+		},
 		"underBudget": "On target"
 	},
 	"common": {
@@ -93,6 +108,10 @@
 		"charts": {
 			"tooltipPercentage": "Percentage: <bold>{value}</bold>",
 			"tooltipValue": "Value: <bold>{value}</bold>"
+		},
+		"masterDetail": {
+			"detailEmptyState": "Select an item to view its details.",
+			"masterEmptyState": "No items available."
 		},
 		"table": {
 			"error": "Unable to load table data.",
