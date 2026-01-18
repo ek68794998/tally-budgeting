@@ -136,6 +136,9 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@tally/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -236,6 +239,24 @@ importers:
       '@types/negotiator':
         specifier: ^0.6.4
         version: 0.6.4
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.19.7
+      eslint:
+        specifier: ^9.34.0
+        version: 9.39.2(jiti@2.6.1)
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/testing:
+    devDependencies:
+      '@tally/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@tally/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.19.7

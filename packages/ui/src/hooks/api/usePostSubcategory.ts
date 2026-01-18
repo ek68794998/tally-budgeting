@@ -1,6 +1,6 @@
 import { Post } from "@ekumlin/typescript-toolkit/http";
 import { type PostSubcategoryRequest } from "@tally/data-models/contracts/api/postSubcategory";
-import { type Subcategory } from "@tally/data-models/contracts/Subcategory";
+import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
 
