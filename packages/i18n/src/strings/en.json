@@ -61,10 +61,10 @@
 				"budgetType": "Budget Type",
 				"categoryId": "Category",
 				"description": "Description",
-				"label": "label"
+				"label": "Label"
 			},
 			"subcategoryCount": "{count} subcategories",
-			"title": "Breakdown by Category"
+			"title": "Categories"
 		},
 		"categoriesView": {
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",

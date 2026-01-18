@@ -131,7 +131,7 @@ export const CategoriesMasterDetail: React.FC = () => {
 							}
 						/>
 					),
-					title: "Categories",
+					title: t("title"),
 				}}
 			/>
 			{renderCategoryDeleteModal()}
