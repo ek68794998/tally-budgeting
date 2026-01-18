@@ -3,6 +3,7 @@ import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postCategoryRequestSchema } from "@tally/data-models/contracts/api/postCategory";
 import z from "zod";
 import { CategoriesClient } from "../../storage/categoriesClient";
+import { hasId } from "../../storage/helpers";
 import { createApiHandler } from "../handlers/createApiHandler";
 import { type NextResponseFn } from "../types";
 
@@ -13,7 +14,7 @@ export const PostCategoriesRouteAsync: NextResponseFn = createApiHandler({
 	handler: async ({ body }) => {
 		const categoriesClient = categoriesClientLazy.get();
 
-		await (body.category.id > 0
+		await (hasId(body.category)
 			? categoriesClient.updateCategoryAsync(body.category)
 			: categoriesClient.insertCategoriesAsync([body.category]));
 

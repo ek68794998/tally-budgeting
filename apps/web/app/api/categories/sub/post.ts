@@ -2,6 +2,7 @@ import { Ok } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postSubcategoryRequestSchema } from "@tally/data-models/contracts/api/postSubcategory";
 import z from "zod";
+import { hasId } from "../../../storage/helpers";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
 import { type NextResponseFn } from "../../types";
@@ -13,7 +14,7 @@ export const PostCategoriesSubRouteAsync: NextResponseFn = createApiHandler({
 	handler: async ({ body }) => {
 		const subcategoriesClient = subcategoriesClientLazy.get();
 
-		await (body.subcategory.id > 0
+		await (hasId(body.subcategory)
 			? subcategoriesClient.updateSubcategoryAsync(body.subcategory)
 			: subcategoriesClient.insertSubcategoriesAsync([body.subcategory]));
 
