@@ -1,7 +1,7 @@
 "use client";
 
-import { type Summary } from "@tally/utilities/summary/calculateSummary";
 import { Card, CardBody, CardHeader } from "@heroui/react";
+import { type Summary } from "@tally/utilities/summary/calculateSummary";
 import { useTranslations } from "next-intl";
 import {
 	Bar,

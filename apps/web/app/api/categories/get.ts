@@ -1,6 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import { type GetCategoriesResponse } from "@tally/data-models/contracts/api/getCategories";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { type GetCategoriesResponse } from "@tally/data-models/contracts/api/getCategories";
 import z from "zod";
 import { CategoriesClient } from "../../storage/categoriesClient";
 import { SubcategoriesClient } from "../../storage/subcategoriesClient";

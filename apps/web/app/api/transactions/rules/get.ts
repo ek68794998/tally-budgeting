@@ -1,6 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import { type GetTransactionRulesResponse } from "@tally/data-models/contracts/api/getTransactionRules";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { type GetTransactionRulesResponse } from "@tally/data-models/contracts/api/getTransactionRules";
 import z from "zod";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { createApiHandler } from "../../handlers/createApiHandler";

@@ -1,10 +1,10 @@
 import { keysOf } from "@ekumlin/typescript-toolkit/collections";
+import { Button, ButtonGroup } from "@heroui/react";
+import { type Icon, IconCoins, IconReceipt } from "@tabler/icons-react";
 import {
 	type TransactionDirection,
 	TransactionDirections,
 } from "@tally/data-models/contracts/transactionDirection";
-import { Button, ButtonGroup } from "@heroui/react";
-import { type Icon, IconCoins, IconReceipt } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 const transactionDirectionIcons: Record<TransactionDirection, Icon> = {

@@ -1,6 +1,6 @@
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { AssetsList } from "@tally/ui/assetsPage/assetsList";
 import { NetWorthOverview } from "@tally/ui/netWorth/netWorthOverview";
-import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { AssetsClient } from "../storage/assetsClient";
 import { NetWorthSnapshotsClient } from "../storage/netWorthSnapshotsClient";
 

@@ -1,6 +1,6 @@
 import { Ok } from "@ekumlin/typescript-toolkit/http";
-import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
+import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
 import z from "zod";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
