@@ -390,6 +390,9 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@tally/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

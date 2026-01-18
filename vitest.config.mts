@@ -19,9 +19,9 @@ export default defineConfig({
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
 				branches: 60,
-				functions: 40,
-				lines: 8,
-				statements: 8,
+				functions: 45,
+				lines: 10,
+				statements: 10,
 			},
 		},
 		exclude: [...configDefaults.exclude, "**/build/**"],
