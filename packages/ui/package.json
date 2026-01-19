@@ -39,7 +39,10 @@
 	},
 	"devDependencies": {
 		"@tally/eslint-config": "workspace:*",
+		"@tally/testing": "workspace:*",
 		"@tally/typescript-config": "workspace:*",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.1",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^22.15.3",
 		"@types/react": "19.1.0",
