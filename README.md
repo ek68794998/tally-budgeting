@@ -19,8 +19,8 @@ _Coming soon_
 ## Prerequisites
 
 - Node.js 20 or higher
-- PNPM 9 or higher
-- Docker (recommended for deployment)
+- PNPM 10 or higher
+- Docker (for database and deployment)
 
 ## Installation
 
@@ -35,18 +35,65 @@ cd tally-budgeting
 pnpm install
 ```
 
-3. Start the development server:
+3. Start the development database:
+```bash
+pnpm dev:db:up
+```
+
+4. Start the development server:
 ```bash
 pnpm dev
 ```
 
-Once the server is running, it can be opened in a web browser by navigating to [localhost:7855](http://localhost:7855).
+## Development
+
+### Database
+
+The development database runs in Docker. Use these commands to manage it:
+
+- `pnpm dev:db:up` - Start the database in detached mode
+- `pnpm dev:db` - Start the database with logs
+- `pnpm dev:db:down` - Stop and remove the database container
+
+### Testing
+
+- `pnpm test` - Run all tests once
+- `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:ui` - Open the Vitest UI
+- `pnpm test:coverage` - Generate coverage report
+
+### Code Quality
+
+- `pnpm lint` - Run ESLint and Biome checks
+- `pnpm fix:biome` - Auto-fix Biome formatting issues
+- `pnpm check-types` - Type check all packages
 
 ## Deployment
 
 Docker is the recommended deployment method for both the application and PostgreSQL database.
 
-_Detailed deployment instructions coming soon._
+### Building the Docker Image
+
+```bash
+pnpm docker:build
+```
+
+This builds the application image for `linux/amd64` and saves it to `tally-budgeting.tar`.
+
+### Running with Docker Compose
+
+```bash
+# Start all services
+pnpm docker:up
+
+# View logs
+pnpm docker:logs
+
+# Stop all services
+pnpm docker:down
+```
+
+The Docker Compose configuration includes both the application and PostgreSQL database.
 
 ## Configuration
 
@@ -72,9 +119,10 @@ _Detailed CSV format documentation coming soon._
 - **UI Components**: HeroUI
 - **Icons**: Tabler Icons
 - **Date/Time**: Luxon
-- **Testing**: Vitest
+- **Testing**: Vitest, @testing-library/react
 - **Code Quality**: ESLint, Biome
-- **Database**: PostgreSQL _(in progress)_
+- **Database**: PostgreSQL
+- **Deployment**: Docker
 
 ## Contributing
 
