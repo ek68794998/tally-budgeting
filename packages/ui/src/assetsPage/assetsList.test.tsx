@@ -62,7 +62,7 @@ describe("AssetsList", () => {
 		render(<AssetsList initialData={{ assets: mockAssets }} />);
 
 		expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
-			"listTitle",
+			"Your Assets",
 		);
 	});
 
