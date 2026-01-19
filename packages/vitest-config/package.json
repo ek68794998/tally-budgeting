@@ -1,9 +1,8 @@
 {
-	"name": "@tally/i18n",
+	"name": "@tally/vitest-config",
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
-		"./en.json": "./src/strings/en.json",
 		"./*": "./src/*.ts"
 	},
 	"scripts": {
@@ -11,17 +10,15 @@
 		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@formatjs/intl-localematcher": "^0.6.1",
-		"@tally/data-models": "workspace:*",
-		"deepmerge": "^4.3.1",
-		"negotiator": "^1.0.0",
-		"next": "^15.5.9",
-		"next-intl": "^4.3.9"
+		"@tally/i18n": "workspace:*",
+		"next-intl": "^4.3.9",
+		"zod": "^4.1.11"
 	},
 	"devDependencies": {
 		"@tally/eslint-config": "workspace:*",
 		"@tally/typescript-config": "workspace:*",
-		"@types/negotiator": "^0.6.4",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.1",
 		"@types/node": "^22.15.3",
 		"eslint": "^9.34.0",
 		"typescript": "5.9.2"
