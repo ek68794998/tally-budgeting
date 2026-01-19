@@ -1,6 +1,6 @@
 import { configDefaults, defineConfig } from "vitest/config";
 
-const {dirname} = import.meta;
+const { dirname } = import.meta;
 
 export default defineConfig({
 	test: {
@@ -34,9 +34,9 @@ export default defineConfig({
 		projects: [
 			{
 				test: {
-					environment: 'happy-dom',
-					include: ['**/*.{test,spec}.{tsx,jsx}'],
-					name: 'unit-react',
+					environment: "happy-dom",
+					include: ["**/*.{test,spec}.{tsx,jsx}"],
+					name: "unit-react",
 					setupFiles: [
 						`${dirname}/../../packages/vitest-config/src/i18n.setup.ts`,
 						`${dirname}/../../packages/vitest-config/src/react.setup.ts`,
@@ -45,9 +45,9 @@ export default defineConfig({
 			},
 			{
 				test: {
-					environment: 'node',
-					include: ['**/*.{test,spec}.{ts,js}'],
-					name: 'unit-ts',
+					environment: "node",
+					include: ["**/*.{test,spec}.{ts,js}"],
+					name: "unit-ts",
 				},
 			},
 		],
