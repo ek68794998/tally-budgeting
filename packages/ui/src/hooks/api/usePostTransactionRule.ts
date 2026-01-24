@@ -1,30 +1,39 @@
 import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
-import { type PostTransactionRuleRequest } from "@tally/data-models/contracts/api/postTransactionRule";
+import {
+	type PostTransactionRuleRequest,
+	postTransactionRuleResponseSchema,
+} from "@tally/data-models/contracts/api/postTransactionRule";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePostTransactionRule = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (rule: TransactionRule) => {
 			const body: PostTransactionRuleRequest = { rule };
 
-			const response = await fetch("/api/transactions/rules", {
-				body: JSON.stringify(body),
-				headers: {
-					[ContentType]: ApplicationJson,
+			const response = await fetch(
+				buildApiRoute(api.transactions.rules.base),
+				{
+					body: JSON.stringify(body),
+					headers: {
+						[ContentType]: ApplicationJson,
+					},
+					method: Post,
 				},
-				method: Post,
+			);
+
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: postTransactionRuleResponseSchema,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to update transaction rule");
-			}
-
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

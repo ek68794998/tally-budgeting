@@ -1,26 +1,36 @@
-import { Post } from "@ekumlin/typescript-toolkit/http";
-import { type PostCategoryRequest } from "@tally/data-models/contracts/api/postCategory";
+import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
+import {
+	type PostCategoryRequest,
+	postCategoryResponseSchema,
+} from "@tally/data-models/contracts/api/postCategory";
 import { type Category } from "@tally/data-models/contracts/category";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePostCategory = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (category: Category) => {
 			const body: PostCategoryRequest = { category };
 
-			const response = await fetch("/api/categories", {
+			const response = await fetch(buildApiRoute(api.categories.base), {
 				body: JSON.stringify(body),
+				headers: {
+					[ContentType]: ApplicationJson,
+				},
 				method: Post,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to update category");
-			}
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: postCategoryResponseSchema,
+			});
 
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

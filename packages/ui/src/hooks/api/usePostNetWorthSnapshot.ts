@@ -1,26 +1,39 @@
-import { Post } from "@ekumlin/typescript-toolkit/http";
-import { type PostNetWorthSnapshotRequest } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
+import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
+import {
+	type PostNetWorthSnapshotRequest,
+	postNetWorthSnapshotResponseSchema,
+} from "@tally/data-models/contracts/api/postNetWorthSnapshot";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePostNetWorthSnapshot = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (snapshot: NetWorthSnapshot) => {
 			const body: PostNetWorthSnapshotRequest = { snapshot };
 
-			const response = await fetch("/api/net-worth/snapshots", {
-				body: JSON.stringify(body),
-				method: Post,
+			const response = await fetch(
+				buildApiRoute(api.netWorth.snapshots),
+				{
+					body: JSON.stringify(body),
+					headers: {
+						[ContentType]: ApplicationJson,
+					},
+					method: Post,
+				},
+			);
+
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: postNetWorthSnapshotResponseSchema,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to update snapshot");
-			}
-
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

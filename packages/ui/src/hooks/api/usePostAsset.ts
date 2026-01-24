@@ -1,26 +1,36 @@
-import { Post } from "@ekumlin/typescript-toolkit/http";
-import { type PostAssetRequest } from "@tally/data-models/contracts/api/postAsset";
+import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
+import {
+	type PostAssetRequest,
+	postAssetResponseSchema,
+} from "@tally/data-models/contracts/api/postAsset";
 import { type Asset } from "@tally/data-models/contracts/asset";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePostAsset = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (asset: Asset) => {
 			const body: PostAssetRequest = { asset };
 
-			const response = await fetch("/api/assets", {
+			const response = await fetch(buildApiRoute(api.assets), {
 				body: JSON.stringify(body),
+				headers: {
+					[ContentType]: ApplicationJson,
+				},
 				method: Post,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to update asset");
-			}
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: postAssetResponseSchema,
+			});
 
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

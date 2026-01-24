@@ -1,0 +1,101 @@
+import { NotFound, Ok } from "@ekumlin/typescript-toolkit/http";
+import { addToast } from "@heroui/react";
+import { renderHook } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import { useApiResponseValidator } from "./useApiResponseValidator";
+
+vi.mock("@heroui/react", () => ({
+	addToast: vi.fn(),
+}));
+
+describe("useApiResponseValidator", () => {
+	it("should validate successful response with schema", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const mockSchema = z.object({
+			data: z.string(),
+			error: z.undefined().optional(),
+			success: z.boolean(),
+		});
+
+		const mockResponse = new Response(
+			JSON.stringify({ data: "test", success: true }),
+			{ status: Ok },
+		);
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: mockResponse,
+			responseSchema: mockSchema,
+		});
+
+		expect(validationResult).toEqual({ data: "test", success: true });
+	});
+
+	it("should validate successful response without schema", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const mockResponse = new Response(
+			JSON.stringify({ data: "test", success: true }),
+			{ status: Ok },
+		);
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: mockResponse,
+			responseSchema: z.unknown(),
+		});
+
+		expect(validationResult).toEqual({ data: "test", success: true });
+	});
+
+	it("should throw and show toast when response.ok is false", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const mockResponse = new Response(
+			JSON.stringify({ error: "Not found" }),
+			{ status: NotFound },
+		);
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: mockResponse,
+			responseSchema: z.unknown(),
+		});
+
+		expect(validationResult).toBe(false);
+
+		expect(addToast).toHaveBeenCalledWith({
+			color: "danger",
+			description:
+				"The request failed. Please check your connection and try again.",
+			title: "Request Failed",
+		});
+	});
+
+	it("should throw and show toast when schema validation fails", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const mockSchema = z.object({
+			data: z.string(),
+			success: z.boolean(),
+		});
+
+		const mockResponse = new Response(
+			JSON.stringify({ data: 123, success: true }), // data should be string, not number
+			{ status: Ok },
+		);
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: mockResponse,
+			responseSchema: mockSchema,
+		});
+
+		expect(validationResult).toBe(false);
+
+		expect(addToast).toHaveBeenCalledWith({
+			color: "danger",
+			description:
+				"The server returned data in an unexpected format. Please try again.",
+			title: "Validation Error",
+		});
+	});
+});
