@@ -1,13 +1,30 @@
-import { Button, Input } from "@heroui/react";
-import { IconSearch, IconUpload } from "@tabler/icons-react";
+import {
+	Button,
+	ButtonGroup,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
+	Input,
+	type Selection,
+} from "@heroui/react";
+import {
+	IconChevronDown,
+	IconPlus,
+	IconSearch,
+	IconTrash,
+} from "@tabler/icons-react";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { type DropdownEntry } from "../types";
 
 interface Props {
+	onDelete: (selection: Selection) => void;
 	onFilterChange: (value: string) => void;
 	onNewRule: () => void;
+	selectedRules: Selection;
 }
 
 const debounceMilliseconds = Duration.fromObject({
@@ -15,8 +32,10 @@ const debounceMilliseconds = Duration.fromObject({
 });
 
 export const RulesTableControls: React.FC<Props> = ({
+	onDelete,
 	onFilterChange,
 	onNewRule,
+	selectedRules,
 }) => {
 	const t = useTranslations("rules");
 
@@ -30,6 +49,28 @@ export const RulesTableControls: React.FC<Props> = ({
 		{ wait: debounceMilliseconds.toMillis() },
 	);
 
+	const dropdownEntries: DropdownEntry[] = useMemo(() => {
+		const entries: DropdownEntry[] = [];
+
+		if (selectedRules === "all" || selectedRules.size > 0) {
+			entries.push({
+				action: () => {
+					onDelete(selectedRules);
+				},
+				destructive: true,
+				IconComponent: IconTrash,
+				key: "delete",
+				label: t(
+					selectedRules === "all"
+						? "listControls.deleteAllTitle"
+						: "listControls.deleteSelectedTitle",
+				),
+			});
+		}
+
+		return entries;
+	}, [onDelete, selectedRules, t]);
+
 	return (
 		<div className="flex justify-between gap-4">
 			<Input
@@ -40,13 +81,40 @@ export const RulesTableControls: React.FC<Props> = ({
 				startContent={<IconSearch />}
 				value={filterValue}
 			/>
-			<Button
-				className="flex-none"
-				onPress={onNewRule}
-				startContent={<IconUpload size={16} />}
-			>
-				{t("listControls.addOne")}
-			</Button>
+			<ButtonGroup>
+				<Button
+					className="flex-none"
+					onPress={onNewRule}
+					startContent={<IconPlus size={16} />}
+				>
+					{t("listControls.addOne")}
+				</Button>
+				<Dropdown backdrop="opaque" placement="bottom-end">
+					<DropdownTrigger>
+						<Button isIconOnly={true}>
+							<IconChevronDown />
+						</Button>
+					</DropdownTrigger>
+					<DropdownMenu items={dropdownEntries}>
+						{({
+							action,
+							destructive,
+							IconComponent,
+							key,
+							label,
+						}) => (
+							<DropdownItem
+								color={destructive ? "danger" : undefined}
+								key={key}
+								onPress={action}
+								startContent={<IconComponent />}
+							>
+								{label}
+							</DropdownItem>
+						)}
+					</DropdownMenu>
+				</Dropdown>
+			</ButtonGroup>
 		</div>
 	);
 };

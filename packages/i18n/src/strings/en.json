@@ -11,7 +11,7 @@
 		},
 		"edit": "Edit {assetName}",
 		"listControls": {
-			"addOne": "New asset",
+			"addOne": "New Asset",
 			"deleteAction": "Yes, delete it",
 			"deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
 			"deleteTitle": "Delete Asset",
@@ -138,6 +138,12 @@
 		}
 	},
 	"error": {
+		"api": {
+			"errorBody": "The request failed. Please check your connection and try again.",
+			"errorTitle": "Request Failed",
+			"validationErrorBody": "The server returned data in an unexpected format. Please try again.",
+			"validationErrorTitle": "Validation Error"
+		},
 		"fullPage": {
 			"ctaReload": "Try again",
 			"ctaReset": "Reload page",
@@ -201,9 +207,11 @@
 			"title": "Edit {ruleName}"
 		},
 		"listControls": {
-			"addOne": "New rule",
+			"addOne": "New Rule",
 			"deleteAction": "Yes, delete it",
+			"deleteAllTitle": "Delete All",
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
+			"deleteSelectedTitle": "Delete Selected",
 			"deleteTitle": "Delete Rule",
 			"filterPlaceholder": "Type here to search…"
 		},
@@ -215,10 +223,10 @@
 	"summary": {
 		"about": "This card explains the summary page.",
 		"spendCard": {
-			"earnedMonthly": "Income this month",
-			"earnedYearly": "Income this year",
-			"spendMonthly": "Spending this month",
-			"spendYearly": "Spending this year"
+			"earnedMonthly": "Income in {period}",
+			"earnedYearly": "Income in {period}",
+			"spendMonthly": "Spending in {period}",
+			"spendYearly": "Spending in {period}"
 		},
 		"spendChart": {
 			"earned": "Income",
@@ -251,7 +259,7 @@
 			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}"
 		},
 		"listControls": {
-			"addOne": "Add transaction",
+			"addOne": "Add Transaction",
 			"filterPlaceholder": "Type here to search…"
 		},
 		"rules": {
