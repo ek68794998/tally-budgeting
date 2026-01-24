@@ -58,4 +58,18 @@ export class TxnRulesClient extends DatabaseClient {
 			.set(row)
 			.execute();
 	}
+
+	public async updateTransactionRulesOrderAsync(
+		ruleIds: number[],
+	): Promise<void> {
+		await this.database.transaction().execute(async (trx) => {
+			for (const [index, id] of ruleIds.entries()) {
+				await trx
+					.updateTable(TableName)
+					.where("id", "=", id)
+					.set({ priority: index })
+					.execute();
+			}
+		});
+	}
 }
