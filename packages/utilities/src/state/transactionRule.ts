@@ -2,6 +2,7 @@ import { getTransactionRulesResponseSchema } from "@tally/data-models/contracts/
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { api, buildApiRoute } from "../routing/routeBuilder";
 
 interface TransactionRuleStore {
 	error: string | null;
@@ -21,7 +22,9 @@ export const useTransactionRuleStore = create<TransactionRuleStore>()(
 			});
 
 			try {
-				const response = await fetch("/api/transactions/rules");
+				const response = await fetch(
+					buildApiRoute(api.transactions.rules.base),
+				);
 				const responseJson: unknown = await response.json();
 				const { transactionRules } =
 					getTransactionRulesResponseSchema.parse(responseJson);

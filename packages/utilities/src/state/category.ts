@@ -3,6 +3,7 @@ import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { api, buildApiRoute } from "../routing/routeBuilder";
 
 interface CategoryStore {
 	categories: Category[];
@@ -24,7 +25,9 @@ export const useCategoryStore = create<CategoryStore>()(
 			});
 
 			try {
-				const response = await fetch("/api/categories");
+				const response = await fetch(
+					buildApiRoute(api.categories.base),
+				);
 				const responseJson: unknown = await response.json();
 				const { categories, subcategories } =
 					getCategoriesResponseSchema.parse(responseJson);
