@@ -57,7 +57,7 @@ export const RulesTableControls: React.FC<Props> = ({
 				action: () => {
 					onDelete(selectedRules);
 				},
-				destructive: true,
+				color: "danger",
 				IconComponent: IconTrash,
 				key: "delete",
 				label: t(
@@ -98,13 +98,13 @@ export const RulesTableControls: React.FC<Props> = ({
 					<DropdownMenu items={dropdownEntries}>
 						{({
 							action,
-							destructive,
 							IconComponent,
 							key,
 							label,
+							...restProps
 						}) => (
 							<DropdownItem
-								color={destructive ? "danger" : undefined}
+								{...restProps}
 								key={key}
 								onPress={action}
 								startContent={<IconComponent />}

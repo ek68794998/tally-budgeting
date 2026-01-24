@@ -21,6 +21,7 @@ export const RuleRowDropdown: React.FC<Props> = ({ onDelete, onEdit }) => {
 				},
 				{
 					action: onDelete,
+					color: "danger",
 					IconComponent: IconTrash,
 					key: "delete",
 					label: t("common.actions.delete"),

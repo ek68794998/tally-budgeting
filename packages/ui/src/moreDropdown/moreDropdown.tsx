@@ -2,21 +2,14 @@ import {
 	Button,
 	Dropdown,
 	DropdownItem,
-	type DropdownItemProps,
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { type Icon, IconDots } from "@tabler/icons-react";
-
-interface MoreDropdownEntry extends DropdownItemProps {
-	action: () => void;
-	IconComponent: Icon;
-	key: string;
-	label: string;
-}
+import { IconDots } from "@tabler/icons-react";
+import { type DropdownEntry } from "../types";
 
 interface Props {
-	entries: MoreDropdownEntry[];
+	entries: DropdownEntry[];
 }
 
 export const MoreDropdown: React.FC<Props> = ({ entries }) => (
