@@ -121,6 +121,12 @@
 			"cancel": "Cancel",
 			"delete": "Delete",
 			"edit": "Edit",
+			"move": {
+				"bottom": "Move to Bottom",
+				"down": "Move Down",
+				"top": "Move to Top",
+				"up": "Move Up"
+			},
 			"ok": "OK",
 			"save": "Save"
 		},

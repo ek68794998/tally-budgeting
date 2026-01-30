@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
-		"./en.json": "./src/strings/en.json",
+		"./strings/*": "./src/strings/*.json",
 		"./*": "./src/*.ts"
 	},
 	"scripts": {
