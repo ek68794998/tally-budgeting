@@ -1,11 +1,9 @@
 import { Delete } from "@ekumlin/typescript-toolkit/http";
+import { deleteCategoryResponseSchema } from "@tally/data-models/contracts/api/deleteCategory";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { z } from "zod";
 import { useApiResponseValidator } from "../useApiResponseValidator";
-
-const deleteCategoryResponseSchema = z.object({});
 
 export const useDeleteCategory = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();

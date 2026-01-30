@@ -27,7 +27,7 @@ export const useApiResponseValidator = () => {
 					title: t("errorTitle"),
 				});
 
-				// TODO Log this: API request failed with status ${response.status}
+				// TODO (#2) Log this: API request failed with status ${response.status}
 				return false;
 			}
 
@@ -38,7 +38,7 @@ export const useApiResponseValidator = () => {
 					title: t("errorTitle"),
 				});
 
-				// TODO Log this: API request returned non-success status code ${response.status}
+				// TODO (#2) Log this: API request returned non-success status code ${response.status}
 				return false;
 			}
 
@@ -52,7 +52,7 @@ export const useApiResponseValidator = () => {
 					title: t("validationErrorTitle"),
 				});
 
-				// TODO Log this: API response validation failed: ${parseResult.error.message}
+				// TODO (#2) Log this: API response validation failed: ${parseResult.error.message}
 				return false;
 			}
 
