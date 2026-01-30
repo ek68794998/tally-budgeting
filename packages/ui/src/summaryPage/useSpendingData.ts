@@ -35,7 +35,7 @@ const getMonthLabels = (year: number, month: number) => {
 export const useSpendingData = ({
 	spendingPeriod,
 	summary,
-}: Props): [SpendingDataPoint, SpendingDataPoint] => {
+}: Props): [previous: SpendingDataPoint, current: SpendingDataPoint] => {
 	const isMonthly = spendingPeriod === "monthly";
 
 	return useMemo(() => {

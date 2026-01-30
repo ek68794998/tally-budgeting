@@ -58,4 +58,21 @@ export class TxnRulesClient extends DatabaseClient {
 			.set(row)
 			.execute();
 	}
+
+	public async updateTransactionRulesOrderAsync(
+		ruleIds: number[],
+	): Promise<void> {
+		await this.database.transaction().execute(async (trx) => {
+			for (const [index, id] of ruleIds.entries()) {
+				// Skip checking if the rows exist.
+				// This ensures that if you delete it on one tab, and
+				// reorder it on another, the command will not fail.
+				await trx
+					.updateTable(TableName)
+					.where("id", "=", id)
+					.set({ priority: index })
+					.execute();
+			}
+		});
+	}
 }

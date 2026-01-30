@@ -1,0 +1,20 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(npm run:*)",
+			"Bash(yarn:*)",
+			"Bash(pnpm:*)",
+			"Bash(vitest:*)",
+			"Bash(jest:*)"
+		],
+		"ask": ["Bash(npm install:*)", "Bash(npm uninstall:*)"],
+		"deny": [
+			"Read(./.env)",
+			"Read(./.env.*)",
+			"Read(./secrets/**)",
+			"Read(./**/*credential*)",
+			"Read(./**/*secret*)",
+			"Read(~/.ssh/**)"
+		]
+	}
+}

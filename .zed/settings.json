@@ -4,6 +4,12 @@
 		"source.fixAll.eslint": true,
 		"source.fixAll.ts": true
 	},
+	"file_scan_exclusions": [
+		".DS_Store",
+		".git",
+		"**/__snapshots__",
+		"**/node_modules"
+	],
 	"format_on_save": "on",
 	"formatter": {
 		"language_server": {

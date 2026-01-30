@@ -1,21 +1,28 @@
 import { Delete } from "@ekumlin/typescript-toolkit/http";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { z } from "zod";
+import { useApiResponseValidator } from "../useApiResponseValidator";
+
+const deleteAssetResponseSchema = z.object({});
 
 export const useDeleteAsset = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (id: number) => {
-			const response = await fetch(`/api/assets/${id}`, {
-				method: Delete,
+			const response = await fetch(
+				buildApiRoute(api.assets, { params: [id] }),
+				{ method: Delete },
+			);
+
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: deleteAssetResponseSchema,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to delete asset");
-			}
-
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

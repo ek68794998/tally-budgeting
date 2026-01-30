@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultAsset } from "../common/modalDefault";
+import { filterMatches } from "../filter";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
 import { useAssets } from "../hooks/store/useAssets";
@@ -30,13 +31,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 	const [filterValue, setFilterValue] = useState("");
 
 	const displayedAssets = assets
-		.filter(
-			(a) =>
-				!filterValue ||
-				a.name
-					.toLocaleLowerCase()
-					.includes(filterValue.toLocaleLowerCase()),
-		)
+		.filter((a) => filterMatches(filterValue, a.name))
 		.sort((a, b) => {
 			if (a.active && !b.active) {
 				return -1;

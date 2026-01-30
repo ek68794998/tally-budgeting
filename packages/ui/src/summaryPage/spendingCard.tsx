@@ -17,11 +17,13 @@ export const SpendingCard: React.FC<Props> = ({ summary, type }) => {
 	const t = useTranslations("summary");
 	const isMonthly = type === "monthly";
 
-	const [_, { valueEarned: currentIncome, valueSpent: currentExpenses }] =
-		useSpendingData({
-			spendingPeriod: type,
-			summary,
-		});
+	const [
+		_,
+		{ shortName, valueEarned: currentIncome, valueSpent: currentExpenses },
+	] = useSpendingData({
+		spendingPeriod: type,
+		summary,
+	});
 
 	return (
 		<DataCard
@@ -32,6 +34,7 @@ export const SpendingCard: React.FC<Props> = ({ summary, type }) => {
 						isMonthly
 							? "spendCard.spendMonthly"
 							: "spendCard.spendYearly",
+						{ period: shortName },
 					),
 					value: formatCurrency(currentExpenses, {
 						showCentsIfLessThanDigits,
@@ -42,6 +45,7 @@ export const SpendingCard: React.FC<Props> = ({ summary, type }) => {
 						isMonthly
 							? "spendCard.earnedMonthly"
 							: "spendCard.earnedYearly",
+						{ period: shortName },
 					),
 					value: formatCurrency(currentIncome, {
 						showCentsIfLessThanDigits,

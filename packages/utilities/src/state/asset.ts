@@ -1,6 +1,7 @@
 import { getAssetsResponseSchema } from "@tally/data-models/contracts/api/getAssets";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { create } from "zustand";
+import { api, buildApiRoute } from "../routing/routeBuilder";
 
 interface AssetStore {
 	assets: Asset[];
@@ -20,7 +21,7 @@ export const useAssetStore = create<AssetStore>((set, _get) => ({
 		});
 
 		try {
-			const response = await fetch("/api/assets");
+			const response = await fetch(buildApiRoute(api.assets));
 			const responseJson: unknown = await response.json();
 			const { assets } = getAssetsResponseSchema.parse(responseJson);
 

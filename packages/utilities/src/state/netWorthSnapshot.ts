@@ -2,6 +2,7 @@ import { getNetWorthSnapshotsResponseSchema } from "@tally/data-models/contracts
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { api, buildApiRoute } from "../routing/routeBuilder";
 
 interface NetWorthSnapshotStore {
 	error: string | null;
@@ -21,7 +22,9 @@ export const useNetWorthSnapshotStore = create<NetWorthSnapshotStore>()(
 			});
 
 			try {
-				const response = await fetch("/api/net-worth/snapshots");
+				const response = await fetch(
+					buildApiRoute(api.netWorth.snapshots),
+				);
 				const responseJson: unknown = await response.json();
 				const { snapshots } =
 					getNetWorthSnapshotsResponseSchema.parse(responseJson);

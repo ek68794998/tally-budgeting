@@ -3,12 +3,12 @@
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
-		"./en.json": "./src/strings/en.json",
+		"./strings/*": "./src/strings/*.json",
 		"./*": "./src/*.ts"
 	},
 	"scripts": {
-		"lint": "eslint . --max-warnings 0",
-		"check-types": "tsc --noEmit"
+		"check-types": "tsc --listFiles --noEmit",
+		"lint": "eslint . --max-warnings 0"
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.6.1",

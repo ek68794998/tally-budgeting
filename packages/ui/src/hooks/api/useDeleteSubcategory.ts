@@ -1,21 +1,26 @@
 import { Delete } from "@ekumlin/typescript-toolkit/http";
+import { deleteSubcategoryResponseSchema } from "@tally/data-models/contracts/api/deleteSubcategory";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const useDeleteSubcategory = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (id: number) => {
-			const response = await fetch(`/api/categories/sub/${id}`, {
-				method: Delete,
+			const response = await fetch(
+				buildApiRoute(api.categories.sub, { params: [id] }),
+				{ method: Delete },
+			);
+
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: deleteSubcategoryResponseSchema,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to delete subcategory");
-			}
-
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

@@ -1,4 +1,4 @@
-import en from "@tally/i18n/en.json";
+import en from "@tally/i18n/strings/en";
 import { vi } from "vitest";
 import z from "zod";
 

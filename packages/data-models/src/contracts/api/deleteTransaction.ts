@@ -7,3 +7,9 @@ export const deleteTransactionParamsSchema = z.object({
 export type DeleteTransactionParams = z.infer<
 	typeof deleteTransactionParamsSchema
 >;
+
+export const deleteTransactionResponseSchema = z.unknown();
+
+export type DeleteTransactionResponse = z.infer<
+	typeof deleteTransactionResponseSchema
+>;

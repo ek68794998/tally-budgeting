@@ -5,3 +5,9 @@ export const deleteCategoryParamsSchema = z.object({
 });
 
 export type DeleteCategoryParams = z.infer<typeof deleteCategoryParamsSchema>;
+
+export const deleteCategoryResponseSchema = z.unknown();
+
+export type DeleteCategoryResponse = z.infer<
+	typeof deleteCategoryResponseSchema
+>;

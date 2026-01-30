@@ -1,36 +1,35 @@
-import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ContentType, Patch } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
-	type PostTransactionRuleRequest,
-	postTransactionRuleResponseSchema,
-} from "@tally/data-models/contracts/api/postTransactionRule";
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
+	type PatchTransactionRulesReorderRequest,
+	patchTransactionRulesReorderResponseSchema,
+} from "@tally/data-models/contracts/api/patchTransactionRulesReorder";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
-export const usePostTransactionRule = () => {
+export const usePatchTransactionRulesReorder = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (rule: TransactionRule) => {
-			const body: PostTransactionRuleRequest = { rule };
+		mutationFn: async (ruleIds: number[]) => {
+			const body: PatchTransactionRulesReorderRequest = { ruleIds };
 
 			const response = await fetch(
-				buildApiRoute(api.transactions.rules.base),
+				buildApiRoute(api.transactions.rules.order),
 				{
 					body: JSON.stringify(body),
 					headers: {
 						[ContentType]: ApplicationJson,
 					},
-					method: Post,
+					method: Patch,
 				},
 			);
 
 			const validatedResponse = await validateApiResponseAsync({
 				response,
-				responseSchema: postTransactionRuleResponseSchema,
+				responseSchema: patchTransactionRulesReorderResponseSchema,
 			});
 
 			return validatedResponse;
@@ -39,7 +38,7 @@ export const usePostTransactionRule = () => {
 
 	return useMemo(
 		() => ({
-			postTransactionRuleAsync: mutateAsync,
+			patchTransactionRulesReorderAsync: mutateAsync,
 		}),
 		[mutateAsync],
 	);

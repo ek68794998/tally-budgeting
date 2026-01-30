@@ -1,26 +1,36 @@
-import { Post } from "@ekumlin/typescript-toolkit/http";
-import { type PostTransactionRequest } from "@tally/data-models/contracts/api/postTransaction";
+import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
+import {
+	type PostTransactionRequest,
+	postTransactionResponseSchema,
+} from "@tally/data-models/contracts/api/postTransaction";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePostTransaction = () => {
+	const { validateApiResponseAsync } = useApiResponseValidator();
+
 	const { mutateAsync } = useMutation({
 		mutationFn: async (transaction: Transaction) => {
 			const body: PostTransactionRequest = { transaction };
 
-			const response = await fetch("/api/transactions", {
+			const response = await fetch(buildApiRoute(api.transactions.base), {
 				body: JSON.stringify(body),
+				headers: {
+					[ContentType]: ApplicationJson,
+				},
 				method: Post,
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to update transaction");
-			}
+			const validatedResponse = await validateApiResponseAsync({
+				response,
+				responseSchema: postTransactionResponseSchema,
+			});
 
-			const responseJson: unknown = await response.json();
-
-			return responseJson; // TODO Typing
+			return validatedResponse;
 		},
 	});
 

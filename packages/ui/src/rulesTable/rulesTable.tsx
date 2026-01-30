@@ -3,43 +3,46 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	Code,
-	type Selection,
+	Spinner,
 	Table,
 	TableBody,
 	TableCell,
 	TableColumn,
 	TableHeader,
 	TableRow,
-	useDisclosure,
 } from "@heroui/react";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { useTranslations } from "next-intl";
-import { type Key, type ReactNode, useState } from "react";
+import { type Key, type ReactNode } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
-import { useDeleteTransactionRule } from "../hooks/api/useDeleteTransactionRule";
-import { usePostTransactionRule } from "../hooks/api/usePostTransactionRule";
 import { useCategories } from "../hooks/store/useCategories";
-import { useTransactionRules } from "../hooks/store/useTransactionRules";
+import { useRulesTable } from "./hooks/useRulesTable";
 import { RuleEditModal } from "./ruleEditModal";
 import { RuleRowDropdown } from "./ruleRowDropdown";
 import { RulesTableControls } from "./rulesTableControls";
 
 export const RulesTable: React.FC = () => {
-	type RuleKey = keyof (typeof rules)[number];
-	type ColumnKey = RuleKey | "actions";
-
 	const { subcategories } = useCategories();
-	const { deleteTransactionRuleAsync } = useDeleteTransactionRule();
-	const deleteModalState = useDisclosure();
-	const editModalState = useDisclosure();
-	const { postTransactionRuleAsync } = usePostTransactionRule();
-	const { refetch: refetchTransactionRules, transactionRules: rules } =
-		useTransactionRules();
+	const {
+		activeRule,
+		deleteModalState,
+		displayedRules,
+		editModalState,
+		handleDeleteAsync,
+		handleEdit,
+		handleNewRule,
+		handleReorderAsync,
+		handleSaveAsync,
+		isLoading,
+		openDeleteModal,
+		selection,
+		setFilterValue,
+		setSelection,
+	} = useRulesTable();
 	const t = useTranslations("rules");
 
-	const [activeRule, setActiveRule] = useState<TransactionRule | null>(null);
-	const [filterValue, setFilterValue] = useState("");
-	const [selection, setSelection] = useState<Selection>(new Set());
+	type RuleKey = keyof (typeof displayedRules)[number];
+	type ColumnKey = RuleKey | "actions";
 
 	const columns: {
 		key: ColumnKey;
@@ -50,31 +53,6 @@ export const RulesTable: React.FC = () => {
 		{ key: "matcher", label: t("columns.regex") },
 		{ key: "actions", label: "" },
 	];
-
-	const displayedRules = rules.filter(
-		(a) =>
-			!filterValue ||
-			a.merchantName
-				.toLocaleLowerCase()
-				.includes(filterValue.toLocaleLowerCase()),
-	);
-
-	const handleDeleteAsync = async (rule: TransactionRule) => {
-		await deleteTransactionRuleAsync(rule.id);
-		void refetchTransactionRules();
-		setActiveRule(null);
-	};
-
-	const handleEdit = (rule: TransactionRule) => {
-		setActiveRule(rule);
-		editModalState.onOpen();
-	};
-
-	const handleSaveAsync = async (rule: TransactionRule) => {
-		await postTransactionRuleAsync(rule);
-		void refetchTransactionRules();
-		setActiveRule(null);
-	};
 
 	const getRowValue = (item: TransactionRule, key: Key): ReactNode => {
 		switch (key) {
@@ -89,11 +67,11 @@ export const RulesTable: React.FC = () => {
 			case "actions":
 				return (
 					<RuleRowDropdown
-						onDelete={() => {
-							setActiveRule(item);
-							deleteModalState.onOpen();
-						}}
+						onDelete={() => openDeleteModal(item)}
 						onEdit={() => handleEdit(item)}
+						onReorder={(position) =>
+							void handleReorderAsync(item, position)
+						}
 					/>
 				);
 			default:
@@ -104,20 +82,12 @@ export const RulesTable: React.FC = () => {
 	return (
 		<div className="flex flex-col gap-4">
 			<RulesTableControls
+				onDelete={() => {
+					// TODO
+				}}
 				onFilterChange={setFilterValue}
-				onNewRule={() =>
-					handleEdit({
-						active: true,
-						id: -1,
-						matcher: {
-							flags: "i",
-							pattern: "",
-						},
-						merchantName: "",
-						priority: 0,
-						subcategoryId: -1,
-					})
-				}
+				onNewRule={handleNewRule}
+				selectedRules={selection}
 			/>
 			<Table
 				aria-label={t("title")}
@@ -137,7 +107,11 @@ export const RulesTable: React.FC = () => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody items={displayedRules}>
+				<TableBody
+					isLoading={isLoading}
+					items={displayedRules}
+					loadingContent={<Spinner />}
+				>
 					{(item) => {
 						const { id, merchantName } = item;
 

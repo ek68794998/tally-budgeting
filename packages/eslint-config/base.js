@@ -33,6 +33,6 @@ export const eslintConfigBase = [
 		},
 	},
 	{
-		ignores: ["dist/**", "*.config.mjs", "*.config.js"],
+		ignores: ["coverage/**", "dist/**", "*.config.mjs", "*.config.js"],
 	},
 ];
