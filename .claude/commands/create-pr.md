@@ -16,5 +16,5 @@ Create a pull request:
    
    ## Risks
    - <Any potential issues or breaking changes>
-5. Create PR: `gh pr create --title "<TYPE>: <TITLE>" --body "<BODY>" --web`
+5. Create PR: `gh pr create --title "<TYPE>: <TITLE>" --body "<BODY>" --draft`
 6. Output the PR URL
