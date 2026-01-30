@@ -1,0 +1,62 @@
+# CLAUDE.md
+
+This file provides project-specific guidance for Claude Code. Update this file whenever Claude does something incorrectly so it learns not to repeat mistakes.
+
+## Project Overview
+
+Tally is a self-hosted budgeting application built with Next.js, TypeScript, and PostgreSQL. It's a monorepo managed by Turbo and PNPM, with a focus on privacy-conscious personal finance management.
+
+## Development Workflow
+
+Give Claude verification loops for 2-3x quality improvement:
+
+1. Make changes
+2. Run type check
+3. Run linting
+4. Run tests with coverage
+
+## Commands Reference
+
+### Testing
+
+```bash
+pnpm test                            # Run all tests once
+pnpm test "packages/<package name>"  # Run test files in a specific package
+pnpm test "<pattern>"                # Run test files matching a pattern
+pnpm test:watch                      # Run tests in watch mode
+pnpm test:ui                         # Open Vitest UI
+pnpm test:coverage                   # Generate coverage report
+```
+
+### Code Quality
+
+```bash
+pnpm check-types  # Type-check all packages
+pnpm lint         # Run ESLint and Biome
+pnpm fix:biome    # Auto-fix Biome formatting
+```
+
+## Code Style & Conventions
+
+All generated code must past type checks and linting.
+
+- Prefer `type` over `interface`; never use `enum` (use string literal unions instead)
+- Use descriptive variable names
+- Keep functions small and focused
+- Write tests for new functionality
+- Handle errors explicitly (okay to fill `catch` in with TODO if you're not sure); don't swallow them
+- Use comments in code ONLY IF the code is missing something (i.e., TODO), or the code is unusual, unconventional, or difficult to understand
+- When generating unit test files:
+    - Mock only the bare minimum required; do NOT mock dependencies simply to make writing the test easier
+    - Prefer `it.each` whenever writing multi-case unit tests
+
+## Things Claude Should NOT Do
+
+- Don't add comments to silence linting or type checks unless explicitly told to
+- Don't skip error handling
+- Don't make breaking API changes without discussion
+- Don't create "example" files illustrating usage; test files should be sufficiently descriptive to illustrate usage
+
+## Project-Specific Patterns
+
+- The web app doesn't use path aliases like `@/`. All imports are relative or workspace references.
