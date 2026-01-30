@@ -31,6 +31,7 @@ export const RulesTable: React.FC = () => {
 		handleDeleteAsync,
 		handleEdit,
 		handleNewRule,
+		handleReorderAsync,
 		handleSaveAsync,
 		isLoading,
 		openDeleteModal,
@@ -68,6 +69,9 @@ export const RulesTable: React.FC = () => {
 					<RuleRowDropdown
 						onDelete={() => openDeleteModal(item)}
 						onEdit={() => handleEdit(item)}
+						onReorder={(position) =>
+							void handleReorderAsync(item, position)
+						}
 					/>
 				);
 			default:
