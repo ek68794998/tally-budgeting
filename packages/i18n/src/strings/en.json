@@ -219,7 +219,7 @@
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
 			"deleteSelectedTitle": "Delete Selected",
 			"deleteTitle": "Delete Rule",
-			"filterPlaceholder": "Type here to search…"
+			"filterPlaceholder": "Search…"
 		},
 		"title": "Transaction Rules"
 	},
@@ -267,7 +267,7 @@
 		"listControls": {
 			"addMany": "Add Transactions",
 			"addOne": "New Transaction",
-			"filterPlaceholder": "Type here to search…"
+			"filterPlaceholder": "Search…"
 		},
 		"rules": {
 			"edit": "Known Merchants"
