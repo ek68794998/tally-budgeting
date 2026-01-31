@@ -18,6 +18,10 @@ import {
 	toCalendarDate,
 	today,
 } from "@internationalized/date";
+import {
+	type HappinessLevel,
+	HappinessLevelDefault,
+} from "@tally/data-models/contracts/happinessLevel";
 import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
@@ -29,6 +33,7 @@ import { SelectSubcategory } from "../common/selectSubcategory";
 import { formatCurrency } from "../format";
 import { EditModalFooter } from "../modal/editModalFooter";
 import { TransactionEditDirectionButtons } from "./transactionEditDirectionButtons";
+import { TransactionHappinessSelect } from "./transactionHappinessDropdown";
 
 interface Props {
 	modalState: ReturnType<typeof useDisclosure>;
@@ -47,6 +52,9 @@ export const TransactionEditModal: React.FC<Props> = ({
 	const [amount, setAmount] = useState(0);
 	const [date, setDate] = useState<CalendarDate | null>(
 		today(getLocalTimeZone()),
+	);
+	const [happiness, setHappiness] = useState<HappinessLevel>(
+		HappinessLevelDefault,
 	);
 	const [merchantName, setMerchantName] = useState("");
 	const [notes, setNotes] = useState("");
@@ -67,6 +75,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 		setAccountId(transaction.accountId ?? -1);
 		setAmount(Dollars.fromCents(transaction.amountCents));
 		setDate(toCalendarDate(parseAbsoluteToLocal(transaction.date)));
+		setHappiness(transaction.happiness);
 		setMerchantName(transaction.merchant);
 		setNotes(transaction.notes);
 		setSubcategoryId(transaction.subcategoryId);
@@ -136,6 +145,10 @@ export const TransactionEditModal: React.FC<Props> = ({
 								label={t("transactions.columns.date")}
 								onChange={setDate}
 								value={date}
+							/>
+							<TransactionHappinessSelect
+								onChange={setHappiness}
+								value={happiness}
 							/>
 							<Textarea
 								label={t("transactions.columns.notes")}

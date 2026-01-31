@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS txn (
 	subcategory INTEGER NOT NULL DEFAULT -1,
 	amount_cents BIGINT NOT NULL DEFAULT 0,
 	direction txn_direction NOT NULL DEFAULT 'debit',
+	happiness INTEGER NOT NULL DEFAULT 2,
 	notes TEXT,
 	FOREIGN KEY (account) REFERENCES asset(id)
 		ON DELETE SET NULL

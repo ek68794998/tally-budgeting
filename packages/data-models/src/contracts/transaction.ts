@@ -1,4 +1,5 @@
 import z from "zod";
+import { happinessLevelSchema } from "./happinessLevel";
 import { transactionDirectionSchema } from "./transactionDirection";
 
 export const transactionSchema = z.object({
@@ -6,6 +7,7 @@ export const transactionSchema = z.object({
 	amountCents: z.int().nonnegative(),
 	categoryId: z.number(),
 	date: z.iso.datetime({ offset: true }),
+	happiness: happinessLevelSchema,
 	id: z.int(),
 	merchant: z.string().min(1).max(100),
 	notes: z.string(),
