@@ -265,7 +265,8 @@
 			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}"
 		},
 		"listControls": {
-			"addOne": "Add Transaction",
+			"addMany": "Add Transactions",
+			"addOne": "New Transaction",
 			"filterPlaceholder": "Type here to search…"
 		},
 		"rules": {
@@ -277,8 +278,8 @@
 			"debit": "Expense"
 		},
 		"upload": {
-			"action": "Upload file",
-			"confirmUpload": "Confirm & save",
+			"action": "Import File",
+			"confirmUpload": "Confirm & Save",
 			"createRule": "Auto-categorize",
 			"dropFile": "Drag and drop a file here, or click to browse",
 			"dropFileRules": "You must select a <bold>CSV file</bold> which matches the format for the chosen account.",

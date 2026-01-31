@@ -7,7 +7,7 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { IconDots, IconEdit } from "@tabler/icons-react";
+import { IconDots, IconList } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -21,7 +21,7 @@ export const TransactionsMenuDropdown = () => {
 		() => [
 			{
 				action: () => router.push("/transactions/rules"),
-				IconComponent: IconEdit,
+				IconComponent: IconList,
 				key: "edit",
 				label: t("rules.edit"),
 			},
@@ -32,7 +32,7 @@ export const TransactionsMenuDropdown = () => {
 	return (
 		<Dropdown backdrop="opaque" placement="bottom-end">
 			<DropdownTrigger>
-				<Button isIconOnly={true} size="sm" variant="light">
+				<Button isIconOnly={true} variant="light">
 					<IconDots />
 				</Button>
 			</DropdownTrigger>

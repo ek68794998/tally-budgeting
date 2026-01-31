@@ -1,19 +1,5 @@
-import {
-	Button,
-	ButtonGroup,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-	Input,
-	type Selection,
-} from "@heroui/react";
-import {
-	IconChevronDown,
-	IconPlus,
-	IconSearch,
-	IconTrash,
-} from "@tabler/icons-react";
+import { Button, ButtonGroup, Input, type Selection } from "@heroui/react";
+import { IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useTranslations } from "next-intl";
@@ -89,31 +75,6 @@ export const RulesTableControls: React.FC<Props> = ({
 				>
 					{t("listControls.addOne")}
 				</Button>
-				<Dropdown backdrop="opaque" placement="bottom-end">
-					<DropdownTrigger>
-						<Button isIconOnly={true}>
-							<IconChevronDown />
-						</Button>
-					</DropdownTrigger>
-					<DropdownMenu items={dropdownEntries}>
-						{({
-							action,
-							IconComponent,
-							key,
-							label,
-							...restProps
-						}) => (
-							<DropdownItem
-								{...restProps}
-								key={key}
-								onPress={action}
-								startContent={<IconComponent />}
-							>
-								{label}
-							</DropdownItem>
-						)}
-					</DropdownMenu>
-				</Dropdown>
 			</ButtonGroup>
 		</div>
 	);
