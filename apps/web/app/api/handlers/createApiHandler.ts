@@ -92,6 +92,9 @@ const executeHandlerAsync = async <
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
 
+		// TODO (#2) Consolidate this logging.
+		console.error(error);
+
 		if (error instanceof HttpError) {
 			apiError = {
 				code: error.code,
@@ -127,16 +130,16 @@ const logRequest = (
 	duration: number,
 	error: ApiError | undefined,
 ) => {
-	// TODO: Integrate with telemetry service
-
 	const text = `${new Date().toISOString()} [${eventName}] ${method} ${path} returned ${statusCode} after ${duration}ms`;
 
 	if (error) {
+		// TODO (#2) Consolidate this logging.
 		console.error(text);
 		console.error(error);
 		return;
 	}
 
+	// TODO (#2) Integrate with telemetry service
 	// eslint-disable-next-line no-console
 	console.log(text);
 };
