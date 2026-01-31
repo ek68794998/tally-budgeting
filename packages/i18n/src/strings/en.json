@@ -12,10 +12,10 @@
 		"edit": "Edit {assetName}",
 		"listControls": {
 			"addOne": "New Asset",
-			"deleteAction": "Yes, delete it",
+			"deleteAction": "Yes, Delete",
 			"deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
 			"deleteTitle": "Delete Asset",
-			"filterPlaceholder": "Type here to search…",
+			"filterPlaceholder": "Search",
 			"setActiveNo": "Deactivate",
 			"setActiveYes": "Activate"
 		},
@@ -42,10 +42,10 @@
 			"categoryColumns": {
 				"label": "Label"
 			},
-			"deleteCategoryAction": "Yes, delete all",
+			"deleteCategoryAction": "Yes, Delete All",
 			"deleteCategoryDescription": "This will delete the <bold>\"{label}\"</bold> category and <bold>all subcategories</bold>. Any transactions using those subcategories will be marked as uncategorized. <bold>This cannot be undone.</bold>",
 			"deleteCategoryTitle": "Delete category?",
-			"deleteSubcategoryAction": "Yes, delete it",
+			"deleteSubcategoryAction": "Yes, Delete",
 			"deleteSubcategoryDescription": "This will delete the <bold>\"{label}\"</bold> subcategory, and any transactions using this subcategory will be marked as uncategorized. <bold>This cannot be undone.</bold>",
 			"deleteSubcategoryTitle": "Delete subcategory?",
 			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
@@ -80,7 +80,7 @@
 			"periodMonths": "{months} {months, plural, =1 {month} other {months}}",
 			"perPeriod": "<bold>{amount}</bold> every {period}"
 		},
-		"editCategories": "Edit categories",
+		"editCategories": "Edit Categories",
 		"overBudget": "{amount} over budget",
 		"overBudgetCount": "{count} over budget",
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
@@ -151,8 +151,8 @@
 			"validationErrorTitle": "Validation Error"
 		},
 		"fullPage": {
-			"ctaReload": "Try again",
-			"ctaReset": "Reload page",
+			"ctaReload": "Try Again",
+			"ctaReset": "Reload Page",
 			"description": "The server encountered the following error:",
 			"title": "We couldn't load this page."
 		}
@@ -201,20 +201,20 @@
 		"about": "This card explains the rules page.",
 		"columns": {
 			"category": "Category",
-			"merchant": "Merchant name",
-			"regex": "Expression to match"
+			"merchant": "Merchant Name",
+			"regex": "Expression to Match"
 		},
 		"edit": {
 			"basedOnTitle": "Based on merchant description:",
 			"failureBody": "An error occurred while saving your rule. Please try again later.",
-			"failureTitle": "Saving rule failed",
+			"failureTitle": "Saving Rule Failed",
 			"regexCaseSensitive": "Case-sensitive?",
 			"regexMismatch": "The expression you've provided does not match this description.",
 			"title": "Edit {ruleName}"
 		},
 		"listControls": {
 			"addOne": "New Rule",
-			"deleteAction": "Yes, delete it",
+			"deleteAction": "Yes, Delete",
 			"deleteAllTitle": "Delete All",
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
 			"deleteSelectedTitle": "Delete Selected",
@@ -259,9 +259,9 @@
 			"title": "Edit {amount} transaction with {merchantName}"
 		},
 		"filter": {
-			"accountsAll": "All accounts",
+			"accountsAll": "All Accounts",
 			"accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
-			"categoriesAll": "All categories",
+			"categoriesAll": "All Categories",
 			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}"
 		},
 		"listControls": {
@@ -270,7 +270,7 @@
 			"filterPlaceholder": "Type here to search…"
 		},
 		"rules": {
-			"edit": "Edit rules"
+			"edit": "Known Merchants"
 		},
 		"title": "Transactions",
 		"types": {
@@ -299,7 +299,7 @@
 			},
 			"selectAccount": "Please select an account associated with a known financial provider.",
 			"selectedProvider": "This account is associated with <bold>{provider}</bold>.",
-			"validateAgain": "Re-run categorization",
+			"validateAgain": "Re-run Categorization",
 			"waitingForFile": "Waiting for transactions to upload…"
 		}
 	}
