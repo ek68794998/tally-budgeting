@@ -33,7 +33,7 @@ import { SelectSubcategory } from "../common/selectSubcategory";
 import { formatCurrency } from "../format";
 import { EditModalFooter } from "../modal/editModalFooter";
 import { TransactionEditDirectionButtons } from "./transactionEditDirectionButtons";
-import { TransactionHappinessSelect } from "./transactionHappinessDropdown";
+import { TransactionHappinessSelect } from "./transactionHappinessSelect";
 
 interface Props {
 	modalState: ReturnType<typeof useDisclosure>;
