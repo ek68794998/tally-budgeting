@@ -12,6 +12,8 @@ export const convertSubcategoryRowToSubcategory = (
 		description,
 		id,
 		label,
+		pct_needs: percentNeeds,
+		pct_savings: percentSavings,
 	} = row;
 
 	return {
@@ -24,6 +26,8 @@ export const convertSubcategoryRowToSubcategory = (
 		description: description || "",
 		id,
 		label,
+		percentNeeds,
+		percentSavings,
 	};
 };
 
@@ -40,6 +44,8 @@ export const convertSubcategoryToSubcategoryRow = (
 		description,
 		id,
 		label,
+		percentNeeds,
+		percentSavings,
 	} = row;
 
 	return {
@@ -47,10 +53,12 @@ export const convertSubcategoryToSubcategoryRow = (
 		budget_amount_cents: String(budgetAmountCents),
 		budget_frequency_months: budgetFrequencyMonths,
 		budget_type: budgetType,
-		/* eslint-enable @typescript-eslint/naming-convention */
 		category,
 		description: description || "",
 		id,
 		label,
+		pct_needs: percentNeeds,
+		pct_savings: percentSavings,
+		/* eslint-enable @typescript-eslint/naming-convention */
 	};
 };

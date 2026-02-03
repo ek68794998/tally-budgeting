@@ -1,7 +1,10 @@
 "use client";
 
 import { Post } from "@ekumlin/typescript-toolkit/http";
-import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
+import {
+	type PostTransactionsUploadRequest,
+	type PostTransactionsUploadResponse,
+} from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import {
 	createContext,
@@ -10,6 +13,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import { buildFormData } from "../forms/helpers";
 
 interface TransactionsUploadCallbacks {
 	onSelectNone: () => void;
@@ -56,10 +60,13 @@ const uploadFile = (
 
 	onUploadStart?.(file);
 
-	const formData = new FormData();
-	formData.append("accountId", String(account.id));
-	formData.append("file", file);
-	formData.append("isValidationOnly", String(isValidationOnly).toLowerCase());
+	const formBody: PostTransactionsUploadRequest = {
+		accountId: String(account.id),
+		file,
+		isValidationOnly: isValidationOnly ? "true" : "false",
+	};
+
+	const formData = buildFormData(formBody);
 
 	const xhr = new XMLHttpRequest();
 

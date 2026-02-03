@@ -1,5 +1,6 @@
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { DefaultCategoryId } from "@tally/data-models/contracts/category";
+import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
 import {
 	DefaultSubcategoryId,
 	type Subcategory,
@@ -28,6 +29,8 @@ describe("AppleDataProvider", () => {
 			description: "Coffee and cafes",
 			id: 101,
 			label: "Coffee",
+			percentNeeds: 0,
+			percentSavings: 0,
 		};
 
 		testAccount = {
@@ -278,6 +281,7 @@ describe("AppleDataProvider", () => {
 
 			const resultWithId = transactionSchema.parse({
 				...result,
+				happiness: HappinessLevelDefault,
 				notes: "",
 			});
 

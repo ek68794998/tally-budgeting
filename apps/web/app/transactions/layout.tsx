@@ -1,5 +1,4 @@
 import { HelpLink } from "@tally/ui/helpLink/helpLink";
-import { TransactionsMenuDropdown } from "@tally/ui/transactionsPage/transactionsMenuDropdown";
 import { useTranslations } from "next-intl";
 import { PageLayout } from "../components/pageLayout";
 
@@ -11,13 +10,10 @@ const TransactionsLayout: React.FC<React.PropsWithChildren> = ({
 	return (
 		<PageLayout
 			actions={
-				<>
-					<HelpLink
-						linkPath="/help/assets"
-						subject={t("assets.title")}
-					/>
-					<TransactionsMenuDropdown />
-				</>
+				<HelpLink
+					linkPath="/help/transactions"
+					subject={t("transactions.title")}
+				/>
 			}
 			title={t("transactions.title")}
 		>

@@ -8,12 +8,7 @@ import {
 	Input,
 	type Selection,
 } from "@heroui/react";
-import {
-	IconChevronDown,
-	IconPlus,
-	IconSearch,
-	IconTrash,
-} from "@tabler/icons-react";
+import { IconDots, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useTranslations } from "next-intl";
@@ -89,10 +84,12 @@ export const RulesTableControls: React.FC<Props> = ({
 				>
 					{t("listControls.addOne")}
 				</Button>
+			</ButtonGroup>
+			{dropdownEntries.length > 0 ? (
 				<Dropdown backdrop="opaque" placement="bottom-end">
 					<DropdownTrigger>
-						<Button isIconOnly={true}>
-							<IconChevronDown />
+						<Button isIconOnly={true} variant="light">
+							<IconDots />
 						</Button>
 					</DropdownTrigger>
 					<DropdownMenu items={dropdownEntries}>
@@ -114,7 +111,7 @@ export const RulesTableControls: React.FC<Props> = ({
 						)}
 					</DropdownMenu>
 				</Dropdown>
-			</ButtonGroup>
+			) : null}
 		</div>
 	);
 };

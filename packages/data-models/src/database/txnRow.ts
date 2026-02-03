@@ -1,4 +1,5 @@
 import z from "zod";
+import { happinessLevelSchema } from "../contracts/happinessLevel";
 import { transactionDirectionSchema } from "../contracts/transactionDirection";
 
 export const transactionSortFields = [
@@ -14,6 +15,7 @@ export const txnRowSchema = z.object({
 	amount_cents: z.string() /* BIGINT -> string */, // eslint-disable-line @typescript-eslint/naming-convention
 	date: z.date(),
 	direction: transactionDirectionSchema,
+	happiness: happinessLevelSchema,
 	id: z.int(),
 	merchant: z.string().min(1).max(100),
 	notes: z.string().nullable(),

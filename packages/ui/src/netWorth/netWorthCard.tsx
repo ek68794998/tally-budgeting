@@ -4,6 +4,7 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { IconCameraPlus } from "@tabler/icons-react";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import { Dollars } from "@tally/utilities/financial/dollars";
+import { DateTime } from "luxon";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
 import { usePostNetWorthSnapshot } from "../hooks/api/usePostNetWorthSnapshot";
@@ -26,8 +27,18 @@ export const NetWorthCard: React.FC<Props> = ({
 	const { postSnapshotAsync } = usePostNetWorthSnapshot();
 	const t = useTranslations("assets.netWorth");
 
+	const today = DateTime.now().startOf("day");
+
 	const snapshotsSorted = snapshots
-		.slice()
+		.filter((s) => {
+			const snapshotDate = DateTime.fromISO(s.date);
+
+			if (!snapshotDate.isValid) {
+				return false;
+			}
+
+			return snapshotDate < today;
+		})
 		.sort((a, b) => a.date.localeCompare(b.date));
 
 	const previousNetWorthSnapshot =

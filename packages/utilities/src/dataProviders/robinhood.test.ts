@@ -28,6 +28,8 @@ describe("RobinhoodDataProvider", () => {
 			description: "Coffee and cafes",
 			id: 101,
 			label: "Coffee",
+			percentNeeds: 0,
+			percentSavings: 0,
 		};
 
 		testAccount = {

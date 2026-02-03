@@ -11,7 +11,6 @@ import {
 	type SharedSelection,
 } from "@heroui/react";
 import {
-	IconChevronDown,
 	IconFilter,
 	IconPlus,
 	IconSearch,
@@ -29,6 +28,7 @@ import { useMemo, useState } from "react";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
 import { getTableFilterProps } from "../table/helpers";
+import { TransactionsMenuDropdown } from "../transactionsPage/transactionsMenuDropdown";
 import { type DropdownEntry } from "../types";
 
 interface Props {
@@ -115,8 +115,14 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				key: "edit",
 				label: t("listControls.addOne"),
 			},
+			{
+				action: () => router.push("/transactions/upload"),
+				IconComponent: IconUpload,
+				key: "upload",
+				label: t("upload.action"),
+			},
 		],
-		[onNewTransaction, t],
+		[onNewTransaction, router, t],
 	);
 
 	const sortedAccounts = useMemo(
@@ -145,7 +151,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="flex justify-between gap-4">
+			<div className="flex justify-between gap-2">
 				<Input
 					isClearable={true}
 					onClear={() => setSearchValue("")}
@@ -157,21 +163,19 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				<Button
 					isIconOnly={true}
 					onPress={() => setShowFilters((v) => !v)}
-					variant={showFilters ? "solid" : "flat"}
+					variant={showFilters ? "solid" : "light"}
 				>
 					<IconFilter />
 				</Button>
+				<div className="bg-divider my-2 w-px" />
 				<ButtonGroup>
-					<Button
-						onPress={() => router.push("/transactions/upload")}
-						startContent={<IconUpload size={16} />}
-					>
-						{t("upload.action")}
-					</Button>
 					<Dropdown backdrop="opaque" placement="bottom-end">
 						<DropdownTrigger>
-							<Button isIconOnly={true}>
-								<IconChevronDown />
+							<Button
+								startContent={<IconPlus size={16} />}
+								variant="light"
+							>
+								{t("listControls.addMany")}
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu items={dropdownEntries}>
@@ -187,6 +191,8 @@ export const TransactionsTableControls: React.FC<Props> = ({
 						</DropdownMenu>
 					</Dropdown>
 				</ButtonGroup>
+				<div className="bg-divider my-2 w-px" />
+				<TransactionsMenuDropdown />
 			</div>
 			{showFilters ? (
 				<div className="flex flex-row justify-end gap-4">

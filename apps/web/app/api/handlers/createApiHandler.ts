@@ -2,6 +2,7 @@ import {
 	type HttpStatusCode,
 	InternalServerError,
 	isSuccessHttpStatusCode,
+	NoContent,
 } from "@ekumlin/typescript-toolkit/http";
 import {
 	type ApiError,
@@ -20,6 +21,7 @@ interface ApiHandlerDefinition<
 	TParams,
 	TResponse extends ApiResponse,
 > {
+	bodyParser?: (request: NextRequest) => Promise<unknown>;
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
 	schemata: RequestSchemata<TBody, TQuery, TParams>;
@@ -58,6 +60,11 @@ export const createApiHandler =
 			success: isSuccessHttpStatusCode(statusCode),
 		};
 
+		if (statusCode === NoContent) {
+			// https://github.com/vercel/next.js/discussions/51118
+			return new NextResponse(null, { status: statusCode });
+		}
+
 		return NextResponse.json(response, { status: statusCode });
 	};
 
@@ -71,11 +78,12 @@ const executeHandlerAsync = async <
 	request: NextRequest,
 	routeParams: unknown,
 ): Promise<ApiResult<TResponse>> => {
-	const { handler, schemata } = definition;
+	const { bodyParser, handler, schemata } = definition;
 
 	try {
 		const parseResult = await parseRequestAsync(
 			request,
+			bodyParser,
 			routeParams,
 			schemata,
 		);
@@ -91,6 +99,9 @@ const executeHandlerAsync = async <
 	} catch (error) {
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
+
+		// TODO (#2) Consolidate this logging.
+		console.error(error);
 
 		if (error instanceof HttpError) {
 			apiError = {
@@ -127,16 +138,16 @@ const logRequest = (
 	duration: number,
 	error: ApiError | undefined,
 ) => {
-	// TODO: Integrate with telemetry service
-
 	const text = `${new Date().toISOString()} [${eventName}] ${method} ${path} returned ${statusCode} after ${duration}ms`;
 
 	if (error) {
+		// TODO (#2) Consolidate this logging.
 		console.error(text);
 		console.error(error);
 		return;
 	}
 
+	// TODO (#2) Integrate with telemetry service
 	// eslint-disable-next-line no-console
 	console.log(text);
 };

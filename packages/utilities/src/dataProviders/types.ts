@@ -9,11 +9,13 @@ export interface TransactionCustomizations {
 	subcategories: Subcategory[];
 }
 
+export type CsvTransaction = Omit<Transaction, "id" | "happiness" | "notes">;
+
 export type CsvRowToTransactionFn<TInputRow extends object> = (
 	inputRow: TInputRow,
 	account: string,
 	customizations: TransactionCustomizations,
-) => Omit<Transaction, "id" | "notes">;
+) => CsvTransaction;
 
 export type ValidationErrorFn<T> = (
 	obj: unknown,

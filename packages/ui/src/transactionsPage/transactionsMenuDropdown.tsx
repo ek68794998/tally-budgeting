@@ -7,7 +7,7 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { IconDots, IconEdit } from "@tabler/icons-react";
+import { IconCategory, IconDots, IconList } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -15,15 +15,21 @@ import { type DropdownEntry } from "../types";
 
 export const TransactionsMenuDropdown = () => {
 	const router = useRouter();
-	const t = useTranslations("transactions");
+	const t = useTranslations();
 
 	const dropdownEntries: DropdownEntry[] = useMemo(
 		() => [
 			{
 				action: () => router.push("/transactions/rules"),
-				IconComponent: IconEdit,
-				key: "edit",
-				label: t("rules.edit"),
+				IconComponent: IconList,
+				key: "rules",
+				label: t("transactions.rules.edit"),
+			},
+			{
+				action: () => router.push("/budget/categories"),
+				IconComponent: IconCategory,
+				key: "categories",
+				label: t("budget.editCategories"),
 			},
 		],
 		[router, t],
@@ -32,7 +38,7 @@ export const TransactionsMenuDropdown = () => {
 	return (
 		<Dropdown backdrop="opaque" placement="bottom-end">
 			<DropdownTrigger>
-				<Button isIconOnly={true} size="sm" variant="light">
+				<Button isIconOnly={true} variant="light">
 					<IconDots />
 				</Button>
 			</DropdownTrigger>

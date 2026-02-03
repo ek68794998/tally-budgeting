@@ -1,5 +1,6 @@
 import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
 import { type Asset } from "@tally/data-models/contracts/asset";
+import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { AppleDataProvider } from "./apple";
 import { ChaseDataProvider } from "./chase";
@@ -7,7 +8,7 @@ import { FidelityDataProvider } from "./fidelity";
 import { FirstTechFederalDataProvider } from "./ftfcu";
 import { GuidelineDataProvider } from "./guideline";
 import { RobinhoodDataProvider } from "./robinhood";
-import { type TransactionCustomizations } from "./types";
+import { type CsvTransaction, type TransactionCustomizations } from "./types";
 
 interface TransactionParseResultFailure {
 	errors: string[];
@@ -38,8 +39,13 @@ export const parseRowAsTransaction = (
 
 	invariant(account.provider, "Account provider must be defined");
 
-	const setTransaction = (t: Omit<Transaction, "id" | "notes">) => {
-		transaction = { ...t, id: -1, notes: "" };
+	const setTransaction = (t: CsvTransaction) => {
+		transaction = {
+			...t,
+			happiness: HappinessLevelDefault,
+			id: -1,
+			notes: "",
+		};
 	};
 
 	switch (account.provider) {

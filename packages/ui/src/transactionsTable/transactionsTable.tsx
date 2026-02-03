@@ -63,6 +63,11 @@ export const TransactionsTable: React.FC = () => {
 
 	const accounts = assets.filter(isAccount);
 
+	const editTransaction = (toEdit: Transaction) => {
+		setActiveTransaction(toEdit);
+		editModalState.onOpen();
+	};
+
 	const columns: {
 		getValue: (item: TransactionTableData) => ReactNode;
 		key: TransactionKey;
@@ -130,6 +135,18 @@ export const TransactionsTable: React.FC = () => {
 					onDelete={() => {
 						void deleteTransactionAsync(item.id);
 					}}
+					onDuplicate={() => {
+						const transactionFromData = data?.transactions.find(
+							(transaction) => transaction.id === item.id,
+						);
+
+						if (!transactionFromData) {
+							return;
+						}
+
+						transactionFromData.id = ModalDefaultTransaction.id;
+						editTransaction(transactionFromData);
+					}}
 					onEdit={() => {
 						const transactionFromData = data?.transactions.find(
 							(transaction) => transaction.id === item.id,
@@ -139,8 +156,7 @@ export const TransactionsTable: React.FC = () => {
 							return;
 						}
 
-						setActiveTransaction(transactionFromData);
-						editModalState.onOpen();
+						editTransaction(transactionFromData);
 					}}
 				/>
 			),
