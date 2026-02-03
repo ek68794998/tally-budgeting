@@ -1,5 +1,6 @@
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { DefaultCategoryId } from "@tally/data-models/contracts/category";
+import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
 import {
 	DefaultSubcategoryId,
 	type Subcategory,
@@ -280,6 +281,7 @@ describe("AppleDataProvider", () => {
 
 			const resultWithId = transactionSchema.parse({
 				...result,
+				happiness: HappinessLevelDefault,
 				notes: "",
 			});
 
