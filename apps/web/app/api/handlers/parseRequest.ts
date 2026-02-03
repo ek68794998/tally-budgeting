@@ -5,11 +5,14 @@ import { type RequestParseResult, type RequestSchemata } from "./types";
 
 export const parseRequestAsync = async <TBody, TQuery, TParams>(
 	req: NextRequest,
+	parser: ((request: NextRequest) => Promise<unknown>) | undefined,
 	routeParams: unknown,
 	schemata: RequestSchemata<TBody, TQuery, TParams>,
 ): Promise<RequestParseResult<TBody, TQuery, TParams>> => {
 	try {
-		const body: unknown = await req.json().catch(() => ({}));
+		const body: unknown = await (parser ? parser(req) : req.json()).catch(
+			() => ({}),
+		);
 		const parsedBody = schemata.body.safeParse(body);
 
 		if (!parsedBody.success) {

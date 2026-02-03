@@ -21,6 +21,7 @@ interface ApiHandlerDefinition<
 	TParams,
 	TResponse extends ApiResponse,
 > {
+	bodyParser?: (request: NextRequest) => Promise<unknown>;
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
 	schemata: RequestSchemata<TBody, TQuery, TParams>;
@@ -77,11 +78,12 @@ const executeHandlerAsync = async <
 	request: NextRequest,
 	routeParams: unknown,
 ): Promise<ApiResult<TResponse>> => {
-	const { handler, schemata } = definition;
+	const { bodyParser, handler, schemata } = definition;
 
 	try {
 		const parseResult = await parseRequestAsync(
 			request,
+			bodyParser,
 			routeParams,
 			schemata,
 		);

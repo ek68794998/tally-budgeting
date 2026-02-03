@@ -1,9 +1,11 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
-import { isString } from "@ekumlin/typescript-toolkit/types";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
-import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
+import {
+	type PostTransactionsUploadResponse,
+	postTransactionsUploadRequestSchema,
+} from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { getCsvRows, processCsvFile } from "@tally/utilities/dataHandlers/csv";
@@ -25,20 +27,22 @@ const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const PostTransactionsUploadRouteAsync: NextResponseFn =
 	createApiHandler({
-		eventName: "POST:TRANSACTIONS/UPLOAD",
-		handler: async (
-			_,
-			request,
-		): Promise<ApiResult<PostTransactionsUploadResponse>> => {
+		bodyParser: async (request) => {
 			const formData = await request.formData();
-			const file = formData.get("file");
 
-			if (!(file instanceof File)) {
-				return {
-					error: { code: "invalidFileUpload" },
-					statusCode: BadRequest,
-				};
-			}
+			return postTransactionRequestSchema.parse({
+				accountId: formData.get("accountId"),
+				file: formData.get("file"),
+				isValidationOnly: formData.get("isValidationOnly"),
+			});
+		},
+		eventName: "POST:TRANSACTIONS/UPLOAD",
+		handler: async ({
+			body,
+		}): Promise<ApiResult<PostTransactionsUploadResponse>> => {
+			const accountId = possibleNumberToNumber(body.accountId) ?? 0;
+			const file = body.file;
+			const isValidationOnly = body.isValidationOnly === "true";
 
 			const assetsClient = assetsClientLazy.get();
 			const subcategoriesClient = subcategoriesClientLazy.get();
@@ -64,9 +68,6 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 				}),
 			);
 
-			const rawAccountId = formData.get("accountId");
-			const accountId =
-				isString(rawAccountId) && possibleNumberToNumber(rawAccountId);
 			const account = accounts.find((a) => a.id === accountId);
 
 			if (!account?.provider) {
@@ -122,9 +123,6 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 				rowsProcessed.push(transactionParseResult.transaction);
 			}
 
-			const isValidationOnly =
-				formData.get("isValidationOnly") === "true";
-
 			if (!isValidationOnly) {
 				await txnsClient.insertTransactionsAsync(rowsProcessed);
 			}
@@ -139,7 +137,7 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 			};
 		},
 		schemata: {
-			body: postTransactionRequestSchema,
+			body: postTransactionsUploadRequestSchema,
 			params: z.unknown(),
 			query: z.unknown(),
 		},
