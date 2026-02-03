@@ -2,6 +2,7 @@ import {
 	type HttpStatusCode,
 	InternalServerError,
 	isSuccessHttpStatusCode,
+	NoContent,
 } from "@ekumlin/typescript-toolkit/http";
 import {
 	type ApiError,
@@ -57,6 +58,11 @@ export const createApiHandler =
 			error,
 			success: isSuccessHttpStatusCode(statusCode),
 		};
+
+		if (statusCode === NoContent) {
+			// https://github.com/vercel/next.js/discussions/51118
+			return new NextResponse(null, { status: statusCode });
+		}
 
 		return NextResponse.json(response, { status: statusCode });
 	};
