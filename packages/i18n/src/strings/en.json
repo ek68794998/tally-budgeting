@@ -80,7 +80,7 @@
 			"periodMonths": "{months} {months, plural, =1 {month} other {months}}",
 			"perPeriod": "<bold>{amount}</bold> every {period}"
 		},
-		"editCategories": "Edit Categories",
+		"editCategories": "Categories",
 		"overBudget": "{amount} over budget",
 		"overBudgetCount": "{count} over budget",
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
@@ -274,7 +274,7 @@
 		"listControls": {
 			"addMany": "Add Transactions",
 			"addOne": "New Transaction",
-			"filterPlaceholder": "Search…"
+			"filterPlaceholder": "Search merchants…"
 		},
 		"rules": {
 			"edit": "Known Merchants"

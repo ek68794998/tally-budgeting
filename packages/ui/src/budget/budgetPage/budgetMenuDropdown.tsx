@@ -7,7 +7,7 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { IconDots, IconEdit } from "@tabler/icons-react";
+import { IconCategory, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -21,7 +21,7 @@ export const BudgetMenuDropdown = () => {
 		() => [
 			{
 				action: () => router.push("/budget/categories"),
-				IconComponent: IconEdit,
+				IconComponent: IconCategory,
 				key: "edit",
 				label: t("editCategories"),
 			},

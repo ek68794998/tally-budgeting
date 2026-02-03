@@ -151,7 +151,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="flex justify-between gap-4">
+			<div className="flex justify-between gap-2">
 				<Input
 					isClearable={true}
 					onClear={() => setSearchValue("")}
@@ -163,14 +163,18 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				<Button
 					isIconOnly={true}
 					onPress={() => setShowFilters((v) => !v)}
-					variant={showFilters ? "solid" : "flat"}
+					variant={showFilters ? "solid" : "light"}
 				>
 					<IconFilter />
 				</Button>
+				<div className="bg-divider my-2 w-px" />
 				<ButtonGroup>
 					<Dropdown backdrop="opaque" placement="bottom-end">
 						<DropdownTrigger>
-							<Button startContent={<IconPlus size={16} />}>
+							<Button
+								startContent={<IconPlus size={16} />}
+								variant="light"
+							>
 								{t("listControls.addMany")}
 							</Button>
 						</DropdownTrigger>
@@ -187,6 +191,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 						</DropdownMenu>
 					</Dropdown>
 				</ButtonGroup>
+				<div className="bg-divider my-2 w-px" />
 				<TransactionsMenuDropdown />
 			</div>
 			{showFilters ? (
