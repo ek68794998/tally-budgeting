@@ -17,6 +17,7 @@ import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
 import { TxnRulesClient } from "../../../storage/txnRulesClient";
 import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
+import { HttpError } from "../../handlers/httpError";
 import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 
@@ -86,10 +87,11 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 			} catch (error) {
 				console.error(error);
 
-				return {
-					error: { code: "invalidFileUpload" },
-					statusCode: BadRequest,
-				};
+				throw new HttpError(
+					"Invalid file upload",
+					BadRequest,
+					"invalidFileUpload",
+				);
 			}
 
 			const rowsFailed: [string, unknown][] = [];
