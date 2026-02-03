@@ -42,7 +42,18 @@ export const useApiResponseValidator = () => {
 				return false;
 			}
 
-			const responseJson: unknown = await response.json();
+			let responseJson: unknown;
+
+			try {
+				responseJson = await response.json();
+			} catch (error) {
+				if (error instanceof SyntaxError) {
+					// Empty response body; ignore and let parser handle it.
+				} else {
+					throw error;
+				}
+			}
+
 			const parseResult = responseSchema.safeParse(responseJson);
 
 			if (!parseResult.success) {
