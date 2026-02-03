@@ -27,6 +27,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 1,
 				label: "Groceries",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 		];
 
@@ -47,6 +49,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 1,
 				label: "Sub Z",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -54,6 +58,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 2,
 				label: "Sub A",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 		];
 
@@ -79,6 +85,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 1,
 				label: "Groceries",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -86,6 +94,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 2,
 				label: "Gas",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -93,6 +103,8 @@ describe("createCategoryMap", () => {
 				description: "",
 				id: 3,
 				label: "Dining",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 		];
 

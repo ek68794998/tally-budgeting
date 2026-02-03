@@ -12,6 +12,8 @@ export const subcategorySchema = z.object({
 	description: z.string(),
 	id: z.int(),
 	label: z.string().min(2).max(100),
+	percentNeeds: z.int().min(0).max(100),
+	percentSavings: z.int().min(0).max(100),
 });
 
 export type Subcategory = z.infer<typeof subcategorySchema>;
@@ -28,4 +30,6 @@ export const DefaultSubcategory: Subcategory = {
 	description: "",
 	id: DefaultSubcategoryId,
 	label: "Uncategorized",
+	percentNeeds: 0,
+	percentSavings: 0,
 };

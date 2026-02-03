@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS subcategory (
 	budget_amount_cents BIGINT NOT NULL DEFAULT 0,
 	budget_frequency_months INTEGER NOT NULL DEFAULT 12,
 	budget_type budget_type NOT NULL DEFAULT 'expense',
+	pct_needs INTEGER NOT NULL DEFAULT 0,
+	pct_savings INTEGER NOT NULL DEFAULT 0,
 	FOREIGN KEY (category) REFERENCES category(id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE

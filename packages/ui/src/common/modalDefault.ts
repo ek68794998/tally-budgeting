@@ -3,6 +3,7 @@ import {
 	type Category,
 	DefaultCategoryId,
 } from "@tally/data-models/contracts/category";
+import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
 import {
 	DefaultSubcategoryId,
 	type Subcategory,
@@ -34,12 +35,15 @@ export const ModalDefaultSubcategory: Readonly<Subcategory> = {
 	description: "",
 	id: 0,
 	label: "",
+	percentNeeds: 0,
+	percentSavings: 0,
 } as const;
 
 export const ModalDefaultTransaction: Readonly<Transaction> = {
 	amountCents: 0,
 	categoryId: DefaultCategoryId,
 	date: new Date().toISOString(),
+	happiness: HappinessLevelDefault,
 	id: 0,
 	merchant: "",
 	notes: "",

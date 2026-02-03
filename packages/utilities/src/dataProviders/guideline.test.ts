@@ -27,6 +27,8 @@ describe("GuidelineDataProvider", () => {
 			description: "Retirement contributions",
 			id: 101,
 			label: "401k",
+			percentNeeds: 0,
+			percentSavings: 0,
 		};
 
 		testAccount = {

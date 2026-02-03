@@ -30,6 +30,8 @@ describe("sortAndFlattenCategories", () => {
 				description: "",
 				id: 1,
 				label: "Snacks",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -37,6 +39,8 @@ describe("sortAndFlattenCategories", () => {
 				description: "",
 				id: 2,
 				label: "Groceries",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -44,6 +48,8 @@ describe("sortAndFlattenCategories", () => {
 				description: "",
 				id: 3,
 				label: "Dining",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 		];
 
@@ -68,6 +74,8 @@ describe("sortAndFlattenCategories", () => {
 				description: "",
 				id: 1,
 				label: "Groceries",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 			{
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
@@ -75,6 +83,8 @@ describe("sortAndFlattenCategories", () => {
 				description: "",
 				id: 2,
 				label: "Gas",
+				percentNeeds: 0,
+				percentSavings: 0,
 			},
 		];
 
