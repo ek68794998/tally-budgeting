@@ -27,9 +27,15 @@ export const BudgetActionItemAboveAverage: React.FC<Props> = ({
 			{...restProps}
 			content={t.rich("overview.aboveAverage", {
 				amount: formatCurrency(data.spentThisMonth),
-				averageBudget: formatCurrency(data.monthlyAverage),
 				bold: (chunks) => <b>{chunks}</b>,
-				period: `${periodMonths} months`, // TODO
+			})}
+			subcontent={t("overview.aboveAverageSubtitle", {
+				amountOver: formatCurrency(
+					data.spentThisMonth - data.monthlyAverage,
+				),
+				averageBudget: formatCurrency(data.monthlyAverage),
+				months: periodMonths,
+				remaining: formatCurrency(data.remaining),
 				totalBudget: formatCurrency(data.budgetTotal),
 			})}
 		/>

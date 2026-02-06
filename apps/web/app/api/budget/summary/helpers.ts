@@ -220,11 +220,15 @@ export const createBudgetSummaryData = (
 				type: "overBudget",
 			});
 		} else if (subcategory.budget.frequency > 1) {
-			const monthlyAverage = budgetAmount / subcategory.budget.frequency;
+			const monthlyAverage = Math.ceil(
+				budgetAmount / subcategory.budget.frequency,
+			);
 			const previousMonthSpent =
 				previousMonthSpending.get(subcategory.id) || 0;
 
-			if (previousMonthSpent > monthlyAverage) {
+			// Since this is an average and isn't precise, we add
+			// $1 here to prevent a "5-cent over" from showing up.
+			if (previousMonthSpent > monthlyAverage + 1) {
 				const spentInPeriod = currentSpent;
 				const remaining = budgetAmount - spentInPeriod;
 

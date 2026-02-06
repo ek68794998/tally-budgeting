@@ -60,6 +60,7 @@ export const BudgetActionItemsSection: React.FC<Props> = ({
 
 				const additionalProps: BudgetActionItemCommonProps = {
 					category,
+					periodEnd,
 					subcategory,
 				};
 
@@ -78,7 +79,6 @@ export const BudgetActionItemsSection: React.FC<Props> = ({
 							<BudgetActionItemBudgetChange
 								data={datum}
 								key={key}
-								periodEnd={periodEnd}
 								{...additionalProps}
 							/>
 						);

@@ -2,13 +2,15 @@ import { IconCurrencyDollar } from "@tabler/icons-react";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { getIconForCategory } from "../helpers";
+import { type BudgetDate } from "../types";
 
 export interface BudgetActionItemCommonProps {
 	category: Category;
+	periodEnd: BudgetDate;
 	subcategory: Subcategory;
 }
 
-interface Props extends BudgetActionItemCommonProps {
+interface Props extends Omit<BudgetActionItemCommonProps, "periodEnd"> {
 	content: React.ReactNode;
 	subcontent?: React.ReactNode;
 }
@@ -38,7 +40,9 @@ export const BudgetActionItemCell: React.FC<Props> = ({
 				</span>
 				{content}
 			</div>
-			{subcontent ? <div>{subcontent}</div> : null}
+			{subcontent ? (
+				<div className="text-xs opacity-70">{subcontent}</div>
+			) : null}
 		</div>
 	);
 };

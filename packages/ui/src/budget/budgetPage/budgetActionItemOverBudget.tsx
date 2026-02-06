@@ -1,4 +1,5 @@
 import { type OverBudgetItem } from "@tally/data-models/contracts/api/getBudgetSummary";
+import { DateTime } from "luxon";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../../format";
 import {
@@ -12,18 +13,34 @@ interface Props extends BudgetActionItemCommonProps {
 
 export const BudgetActionItemOverBudget: React.FC<Props> = ({
 	data,
+	periodEnd,
 	...restProps
 }) => {
 	const t = useTranslations("budget");
 
+	const periodEndDate = DateTime.fromObject({ ...periodEnd });
+	const periodStartDate = periodEndDate.minus({
+		months: data.frequency - 1,
+	});
+
+	const dateLabelFmt =
+		periodEndDate.year === periodStartDate.year ? "MMMM" : "MMMM yyyy";
+
+	const endLabel = periodEndDate.toFormat(dateLabelFmt);
+	const startLabel = periodStartDate.toFormat(dateLabelFmt);
+
 	return (
 		<BudgetActionItemCell
 			{...restProps}
-			content={t.rich("spentInBudget", {
+			content={t.rich("overview.overBudget", {
 				bold: (chunks) => <b>{chunks}</b>,
 				budget: formatCurrency(data.budgeted),
-				period: `(${data.frequency} months)`, // TODO
 				spent: formatCurrency(data.spent),
+			})}
+			subcontent={t("overview.overBudgetSubtitle", {
+				endMonth: endLabel,
+				months: data.frequency,
+				startMonth: startLabel,
 			})}
 		/>
 	);

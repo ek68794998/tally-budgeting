@@ -1,7 +1,7 @@
 import { type BudgetChangeItem } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { useTranslations } from "next-intl";
+import { twMerge } from "tailwind-merge";
 import { formatCurrency } from "../../format";
-import { type BudgetDate } from "../types";
 import {
 	BudgetActionItemCell,
 	type BudgetActionItemCommonProps,
@@ -9,8 +9,13 @@ import {
 
 interface Props extends BudgetActionItemCommonProps {
 	data: BudgetChangeItem;
-	periodEnd: BudgetDate;
 }
+
+const percentageFormatter = Intl.NumberFormat("en-US", {
+	maximumFractionDigits: 0,
+	signDisplay: "always",
+	style: "percent",
+});
 
 export const BudgetActionItemBudgetChange: React.FC<Props> = ({
 	data,
@@ -18,9 +23,12 @@ export const BudgetActionItemBudgetChange: React.FC<Props> = ({
 }) => {
 	const t = useTranslations("budget");
 
-	const lastPeriod = t("durations.periodMonths", {
-		months: data.periodMonths,
-	});
+	const isImprovement = data.currentSpent < data.previousSpent;
+	const changePct = isImprovement
+		? (data.currentSpent - data.previousSpent) / data.previousSpent
+		: data.currentSpent / data.previousSpent;
+
+	const changeText = percentageFormatter.format(changePct);
 
 	return (
 		<BudgetActionItemCell
@@ -28,9 +36,31 @@ export const BudgetActionItemBudgetChange: React.FC<Props> = ({
 			content={t.rich("overview.budgetChange", {
 				bold: (chunks) => <b>{chunks}</b>,
 				currentSpend: formatCurrency(data.currentSpent),
-				lastDate: lastPeriod,
 				lastSpend: formatCurrency(data.previousSpent),
+				spentFmt: (chunks) => (
+					<b
+						className={twMerge(
+							isImprovement
+								? "text-success-600"
+								: "text-danger-600",
+						)}
+					>
+						{chunks}
+					</b>
+				),
 			})}
+			subcontent={t(
+				isImprovement
+					? "overview.budgetChangeUnderSubtitle"
+					: "overview.budgetChangeOverSubtitle",
+				{
+					amountOver: formatCurrency(
+						data.currentSpent - data.budgeted,
+					),
+					change: changeText,
+					months: data.periodMonths,
+				},
+			)}
 		/>
 	);
 };
