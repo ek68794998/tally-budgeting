@@ -1,10 +1,11 @@
-import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
+import { unreachable } from "@ekumlin/typescript-toolkit/values";
 import { Spinner } from "@heroui/react";
 import { type ActionItem } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { useCategories } from "../../hooks/store/useCategories";
 import { type BudgetDate } from "../types";
 import { BudgetActionItemAboveAverage } from "./budgetActionItemAboveAverage";
 import { BudgetActionItemBudgetChange } from "./budgetActionItemBudgetChange";
+import { type BudgetActionItemCommonProps } from "./budgetActionItemCell";
 import { BudgetActionItemOverBudget } from "./budgetActionItemOverBudget";
 
 interface Props {
@@ -49,12 +50,15 @@ export const BudgetActionItemsSection: React.FC<Props> = ({
 				let content: React.ReactNode;
 
 				const subcategory = getSubcategory(datum.subcategoryId);
-				invariant(subcategory); // TODO
+				const category =
+					subcategory && getCategory(subcategory.categoryId);
 
-				const category = getCategory(subcategory.categoryId);
-				invariant(category); // TODO
+				if (!category) {
+					// TODO (#2) Log this
+					return null;
+				}
 
-				const additionalProps = {
+				const additionalProps: BudgetActionItemCommonProps = {
 					category,
 					subcategory,
 				};

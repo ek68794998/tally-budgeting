@@ -1,4 +1,4 @@
-import { IconChevronRight } from "@tabler/icons-react";
+import { IconCurrencyDollar } from "@tabler/icons-react";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { getIconForCategory } from "../helpers";
@@ -10,14 +10,20 @@ export interface BudgetActionItemCommonProps {
 
 interface Props extends BudgetActionItemCommonProps {
 	content: React.ReactNode;
+	subcontent?: React.ReactNode;
 }
 
 export const BudgetActionItemCell: React.FC<Props> = ({
 	category,
 	content,
 	subcategory,
+	subcontent,
 }) => {
-	const IconComponent = getIconForCategory(category) ?? IconChevronRight;
+	const IconComponent = getIconForCategory(
+		category,
+		subcategory,
+		IconCurrencyDollar,
+	);
 
 	return (
 		<div className="ml-4 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
@@ -26,8 +32,13 @@ export const BudgetActionItemCell: React.FC<Props> = ({
 					<IconComponent size={16} />
 				</div>
 			</div>
-			<div>{subcategory.label}</div>
-			<div>{content}</div>
+			<div>
+				<span className="mr-2 font-light opacity-70">
+					{subcategory.label}
+				</span>
+				{content}
+			</div>
+			{subcontent ? <div>{subcontent}</div> : null}
 		</div>
 	);
 };

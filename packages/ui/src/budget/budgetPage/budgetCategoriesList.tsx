@@ -44,7 +44,11 @@ export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 			</p>
 			<Accordion selectionMode="multiple">
 				{items.map(([cat, subcats]) => {
-					const IconComponent = getIconForCategory(cat);
+					const IconComponent = getIconForCategory(
+						cat,
+						undefined,
+						IconCurrencyDollar,
+					);
 
 					let countOverBudget = 0;
 					let countWithValues = 0;
@@ -90,11 +94,7 @@ export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 										"flex h-9 w-9 items-center justify-center rounded-lg",
 									)}
 								>
-									{IconComponent ? (
-										<IconComponent />
-									) : (
-										<IconCurrencyDollar />
-									)}
+									<IconComponent />
 								</div>
 							}
 							subtitle={subtitle}

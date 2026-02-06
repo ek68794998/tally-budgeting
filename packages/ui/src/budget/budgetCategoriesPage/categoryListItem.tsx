@@ -19,7 +19,11 @@ export const CategoryListItem: React.FC<Props> = ({
 }) => {
 	const t = useTranslations("budget.categoriesEdit");
 
-	const CategoryIconComponent = getIconForCategory(category) || IconFolder;
+	const CategoryIconComponent = getIconForCategory(
+		category,
+		undefined,
+		IconFolder,
+	);
 
 	return (
 		<Button
