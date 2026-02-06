@@ -1,4 +1,4 @@
-import { Ok } from "@ekumlin/typescript-toolkit/http";
+import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
 	type GetBudgetSummaryResponse,
@@ -9,6 +9,7 @@ import z from "zod";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
 import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
+import { HttpError } from "../../handlers/httpError";
 import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 import { createBudgetSummaryData } from "./helpers";
@@ -33,7 +34,11 @@ export const GetBudgetRouteAsync: NextResponseFn = createApiHandler({
 		);
 
 		if (!endDateMonth.isValid) {
-			throw new Error("Invalid end date");
+			throw new HttpError(
+				"Invalid end date.",
+				BadRequest,
+				"invalidQueryParameters",
+			);
 		}
 
 		const endDate = endDateMonth.endOf("month");

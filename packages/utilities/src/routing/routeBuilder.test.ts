@@ -11,7 +11,7 @@ describe("routeBuilder", () => {
 				"/api/transactions/rules/order",
 			);
 			expect(api.assets).toBe("/api/assets");
-			expect(api.budget).toBe("/api/budget");
+			expect(api.budget.summary).toBe("/api/budget/summary");
 			expect(api.categories.base).toBe("/api/categories");
 			expect(api.categories.sub).toBe("/api/categories/sub");
 			expect(api.netWorth.snapshots).toBe("/api/net-worth/snapshots");
@@ -38,9 +38,9 @@ describe("routeBuilder", () => {
 		});
 
 		it("should handle numeric params", () => {
-			expect(buildApiRoute("/api/budget", { params: [2024, 3] })).toBe(
-				"/api/budget/2024/3",
-			);
+			expect(
+				buildApiRoute("/api/budget/summary", { params: [2024, 3] }),
+			).toBe("/api/budget/summary/2024/3");
 		});
 
 		it("should build API routes with query params", () => {
