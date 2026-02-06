@@ -77,12 +77,31 @@
 		"durations": {
 			"multipleMonths": "since {month}",
 			"oneMonth": "in {month}",
-			"periodMonths": "{months} {months, plural, =1 {month} other {months}}",
+			"periodMonths": "{months, plural, =1 {month} other {{months} months}}",
 			"perPeriod": "<bold>{amount}</bold> every {period}"
 		},
 		"editCategories": "Categories",
 		"overBudget": "{amount} over budget",
 		"overBudgetCount": "{count} over budget",
+		"overview": {
+			"aboveAverage": "<bold>{amount}</bold> most recent month ({totalBudget} over {period} = {averageBudget} per month)",
+			"budgetChange": "Was <bold>{lastSpend}</bold> previous {lastDate}, now <bold>{currentSpend}</bold>",
+			"sectionAboveAverageSubtitle": "{count} items exceeded their monthly average but remain within total budget",
+			"sectionAboveAverageTitle": "Above Average Spend",
+			"sectionImprovedSubtitle": "{count} budgets returned to target since last period",
+			"sectionImprovedTitle": "Back on Track",
+			"sectionOverBudgetSubtitle": "{count} budgets exceeded their cap this period",
+			"sectionOverBudgetTitle": "Over Budget",
+			"sectionWorsenedSubtitle": "{count} budgets went over cap since last period",
+			"sectionWorsenedTitle": "New Overages",
+			"title": "Overview"
+		},
+		"quickPulse": {
+			"month": "Last Month",
+			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
+			"title": "Quick Pulse",
+			"year": "Last 12 Months"
+		},
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
 		"spentOverall": "<bold>{spent}</bold> {period}",
 		"summary": {
@@ -152,8 +171,8 @@
 			"validationErrorTitle": "Validation Error"
 		},
 		"fullPage": {
-			"ctaReload": "Try Again",
-			"ctaReset": "Reload Page",
+			"ctaReload": "Reload Page",
+			"ctaReset": "Try Again",
 			"description": "The server encountered the following error:",
 			"title": "We couldn't load this page."
 		}

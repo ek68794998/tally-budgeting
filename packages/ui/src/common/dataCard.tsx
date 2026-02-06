@@ -56,7 +56,7 @@ export const DataCard: React.FC<Props> = ({ centered, data, size = "md" }) => {
 		<Card isBlurred={true}>
 			<CardBody
 				className={twMerge(
-					"flex flex-col justify-center",
+					"flex flex-col items-stretch justify-center",
 					dataGap,
 					padding,
 				)}
@@ -64,20 +64,15 @@ export const DataCard: React.FC<Props> = ({ centered, data, size = "md" }) => {
 				{dataPoints.map((point) => (
 					<div
 						className={twMerge(
-							"flex flex-col items-start",
+							"flex flex-col items-stretch",
 							centered && "items-center",
 							titleGap,
 						)}
 						key={point.title}
 					>
-						<div
-							className={twMerge(
-								"font-light opacity-75",
-								titleFontSize,
-							)}
-						>
+						<h3 className={twMerge("opacity-75", titleFontSize)}>
 							{point.title}
-						</div>
+						</h3>
 						<div
 							className={twMerge(
 								"font-sans font-black",
