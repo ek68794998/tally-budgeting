@@ -4,29 +4,28 @@ import { Spinner } from "@heroui/react";
 import { IconX } from "@tabler/icons-react";
 import {
 	type GetBudgetQuery,
-	getBudgetResponseSchema,
-} from "@tally/data-models/contracts/api/getBudget";
+	getBudgetSummaryResponseSchema,
+} from "@tally/data-models/contracts/api/getBudgetSummary";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
 import { type BudgetDate } from "../types";
+import { BudgetActionItems } from "./budgetActionItems";
 import { BudgetCategoriesList } from "./budgetCategoriesList";
-import { BudgetScore } from "./budgetScore";
+import { BudgetQuickPulseCharts } from "./budgetQuickPulseCharts";
 
 interface Props {
 	periodEnd: BudgetDate;
 }
 
-const defaultMonths = 6;
-
 export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
-	const [months, setMonths] = useState(defaultMonths);
+	const t = useTranslations("budget");
 
 	const searchParams: GetBudgetQuery = {
 		endMonth: String(periodEnd.month),
 		endYear: String(periodEnd.year),
-		months: String(months),
 	};
 
 	const { data, error, isFetching } = useQuery({
@@ -35,16 +34,16 @@ export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
 			const urlSearchParams = new URLSearchParams(searchParams);
 
 			const response = await fetch(
-				buildApiRoute(api.budget, { query: urlSearchParams }),
+				buildApiRoute(api.budget.summary, { query: urlSearchParams }),
 				{ signal },
 			);
 
 			const json: unknown = await response.json();
-			const result = getBudgetResponseSchema.parse(json);
+			const result = getBudgetSummaryResponseSchema.parse(json);
 
 			return result;
 		},
-		queryKey: ["transactions", searchParams],
+		queryKey: ["budgetSummary", searchParams],
 		retry: (failureCount, attemptError) => {
 			if (failureCount >= 3) {
 				return false;
@@ -63,25 +62,30 @@ export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
 	}
 
 	if (error || !data) {
+		console.error(error); // TODO (#2)
 		return <IconX />;
 	}
 
-	const headerClassName = "mb-2 text-2xl font-black";
+	const headerClassName = "mb-2 mt-6 text-2xl font-black";
 
 	return (
 		<div className="flex flex-col gap-4">
-			<BudgetScore
-				headerClassName={headerClassName}
-				onPeriodChange={setMonths}
-				periodEnd={periodEnd}
-				periodMonths={months}
-				summary={data.summary}
-			/>
-			<BudgetCategoriesList
-				headerClassName={headerClassName}
-				periodEnd={periodEnd}
-				subcategorySpending={data.bySubcategory}
-			/>
+			<div>
+				<h2 className={twMerge(headerClassName, "mt-0")}>
+					{t("quickPulse.title")}
+				</h2>
+				<BudgetQuickPulseCharts data={data.quickPulse} />
+				<h2 className={headerClassName}>{t("overview.title")}</h2>
+				<BudgetActionItems
+					data={data.actionItems}
+					periodEnd={periodEnd}
+				/>
+				<h2 className={headerClassName}>{t("categoriesView.title")}</h2>
+				<BudgetCategoriesList
+					data={data.budgetBreakdown}
+					periodEnd={periodEnd}
+				/>
+			</div>
 		</div>
 	);
 };

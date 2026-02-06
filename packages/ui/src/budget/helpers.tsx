@@ -14,6 +14,7 @@ import {
 	IconGift,
 	IconHeartbeat,
 	IconHome,
+	IconLock,
 	IconPaw,
 	IconPigMoney,
 	IconPlane,
@@ -52,6 +53,7 @@ const knownIcons = [
 	[/\bPersonal\s*Care\b/i, IconSparkles],
 	[/\bPets?\b/i, IconPaw],
 	[/\bShop/i, IconShoppingBag],
+	[/\bSecur/i, IconLock],
 	[/\bTax(es)?\b/i, IconBuildingBank],
 	[/\b(Tech|Electronic|Compute)/i, IconDeviceDesktop],
 	[/\bTravel\b/i, IconPlane],
@@ -234,5 +236,24 @@ export const getStartDate = (
 	return startDate;
 };
 
-export const getIconForCategory = (category: Category): Icon | undefined =>
-	knownIcons.find(([regex]) => regex.test(category.label))?.[1];
+export const getIconForCategory = (
+	category: Category,
+	subcategory: Subcategory | undefined,
+	DefaultIconComponent: Icon,
+): Icon => {
+	let MainIconComponent: Icon | undefined;
+	let SubIconComponent: Icon | undefined;
+
+	for (const knownIcon of knownIcons) {
+		if (knownIcon[0].test(category.label)) {
+			MainIconComponent = knownIcon[1];
+		}
+
+		if (subcategory && knownIcon[0].test(subcategory.label)) {
+			SubIconComponent = knownIcon[1];
+			break;
+		}
+	}
+
+	return SubIconComponent || MainIconComponent || DefaultIconComponent;
+};

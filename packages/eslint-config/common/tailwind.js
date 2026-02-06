@@ -14,8 +14,8 @@ export const eslintConfigTailwind = [
 				{
 					whitelist: [
 						// Hero UI
-						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(background|divider)(-[0-9]+)?$",
-						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|primary|secondary|danger|warning|success)-[0-9]+$",
+						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|background|divider)(-[0-9]+)?(/[0-9]+)?$",
+						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(primary|secondary|danger|warning|success)-[0-9]+(/[0-9]+)?$",
 					],
 				},
 			],

@@ -2,6 +2,7 @@
 
 import { Accordion, AccordionItem } from "@heroui/react";
 import { IconCurrencyDollar } from "@tabler/icons-react";
+import { type BudgetBreakdownItem } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { sortAndFlattenCategories } from "@tally/utilities/categories/sortAndFlattenCategories";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { DateTime } from "luxon";
@@ -13,16 +14,11 @@ import { type BudgetDate } from "../types";
 import { BudgetSubcategorySpend } from "./budgetSubcategorySpend";
 
 interface Props {
-	headerClassName?: string;
+	data: BudgetBreakdownItem[];
 	periodEnd: BudgetDate;
-	subcategorySpending: { spent: number; subcategoryId: number }[];
 }
 
-export const BudgetCategoriesList: React.FC<Props> = ({
-	headerClassName,
-	periodEnd,
-	subcategorySpending,
-}) => {
+export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 	const { categories, subcategories } = useCategories();
 
 	const t = useTranslations("budget");
@@ -32,15 +28,14 @@ export const BudgetCategoriesList: React.FC<Props> = ({
 	const items = sortAndFlattenCategories(categories, subcategories);
 
 	const getAmountPaid = (subcategoryId: number) =>
-		subcategorySpending.find((s) => s.subcategoryId === subcategoryId)
-			?.spent ?? 0;
+		data.find((s) => s.subcategoryId === subcategoryId)
+			?.currentPeriodSpent ?? 0;
 
 	const iconFgClassName = "text-success-900 dark:text-green-100";
 	const iconBgClassName = "bg-success-200 dark:bg-green-900";
 
 	return (
 		<div>
-			<h2 className={headerClassName}>{t("categoriesView.title")}</h2>
 			<p className="mb-2 text-sm opacity-70">
 				{t.rich("categoriesView.description", {
 					bold: (chunks) => <b>{chunks}</b>,
@@ -49,7 +44,11 @@ export const BudgetCategoriesList: React.FC<Props> = ({
 			</p>
 			<Accordion selectionMode="multiple">
 				{items.map(([cat, subcats]) => {
-					const IconComponent = getIconForCategory(cat);
+					const IconComponent = getIconForCategory(
+						cat,
+						undefined,
+						IconCurrencyDollar,
+					);
 
 					let countOverBudget = 0;
 					let countWithValues = 0;
@@ -95,11 +94,7 @@ export const BudgetCategoriesList: React.FC<Props> = ({
 										"flex h-9 w-9 items-center justify-center rounded-lg",
 									)}
 								>
-									{IconComponent ? (
-										<IconComponent />
-									) : (
-										<IconCurrencyDollar />
-									)}
+									<IconComponent />
 								</div>
 							}
 							subtitle={subtitle}

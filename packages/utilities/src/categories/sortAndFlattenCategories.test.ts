@@ -1,5 +1,8 @@
 import { type Category } from "@tally/data-models/contracts/category";
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import {
+	DefaultSubcategory,
+	type Subcategory,
+} from "@tally/data-models/contracts/subcategory";
 import { describe, expect, it } from "vitest";
 import { sortAndFlattenCategories } from "./sortAndFlattenCategories";
 
@@ -25,31 +28,28 @@ describe("sortAndFlattenCategories", () => {
 		const categories: Category[] = [{ id: 1, label: "Food" }];
 		const subcategories: Subcategory[] = [
 			{
+				...DefaultSubcategory,
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
 				categoryId: 1,
 				description: "",
 				id: 1,
 				label: "Snacks",
-				percentNeeds: 0,
-				percentSavings: 0,
 			},
 			{
+				...DefaultSubcategory,
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
 				categoryId: 1,
 				description: "",
 				id: 2,
 				label: "Groceries",
-				percentNeeds: 0,
-				percentSavings: 0,
 			},
 			{
+				...DefaultSubcategory,
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
 				categoryId: 1,
 				description: "",
 				id: 3,
 				label: "Dining",
-				percentNeeds: 0,
-				percentSavings: 0,
 			},
 		];
 
@@ -69,22 +69,20 @@ describe("sortAndFlattenCategories", () => {
 		];
 		const subcategories: Subcategory[] = [
 			{
+				...DefaultSubcategory,
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
 				categoryId: 1,
 				description: "",
 				id: 1,
 				label: "Groceries",
-				percentNeeds: 0,
-				percentSavings: 0,
 			},
 			{
+				...DefaultSubcategory,
 				budget: { amountCents: 0, frequency: 1, type: "expense" },
 				categoryId: 2,
 				description: "",
 				id: 2,
 				label: "Gas",
-				percentNeeds: 0,
-				percentSavings: 0,
 			},
 		];
 

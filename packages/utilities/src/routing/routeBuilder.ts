@@ -2,7 +2,9 @@ import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 
 const apiRoutes = {
 	assets: "/api/assets",
-	budget: "/api/budget",
+	budget: {
+		summary: "/api/budget/summary",
+	},
 	categories: {
 		base: "/api/categories",
 		sub: "/api/categories/sub",
