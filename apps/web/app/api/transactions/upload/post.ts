@@ -1,7 +1,6 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
-import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
 import {
 	type PostTransactionsUploadResponse,
 	postTransactionsUploadRequestSchema,
@@ -31,7 +30,7 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 		bodyParser: async (request) => {
 			const formData = await request.formData();
 
-			return postTransactionRequestSchema.parse({
+			return postTransactionsUploadRequestSchema.parse({
 				accountId: formData.get("accountId"),
 				file: formData.get("file"),
 				isValidationOnly: formData.get("isValidationOnly"),

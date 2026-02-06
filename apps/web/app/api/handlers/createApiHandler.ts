@@ -21,7 +21,7 @@ interface ApiHandlerDefinition<
 	TParams,
 	TResponse extends ApiResponse,
 > {
-	bodyParser?: (request: NextRequest) => Promise<unknown>;
+	bodyParser?: (request: NextRequest) => Promise<TBody>;
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
 	schemata: RequestSchemata<TBody, TQuery, TParams>;
