@@ -12,7 +12,7 @@ import { Dollars } from "@tally/utilities/financial/dollars";
 import {
 	getTransactionEarnedValue,
 	getTransactionSpentValue,
-} from "@tally/utilities/summary/helpers";
+} from "@tally/utilities/financial/transactions";
 import { DateTime } from "luxon";
 
 export interface BudgetSummaryDates {

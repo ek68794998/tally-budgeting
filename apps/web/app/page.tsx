@@ -1,10 +1,10 @@
-import SummaryLayout from "./summary/layout";
-import SummaryPage from "./summary/page";
+import DefaultLayout from "./budget/layout";
+import DefaultPage from "./budget/page";
 
 const HomePage: React.FC = () => (
-	<SummaryLayout>
-		<SummaryPage />
-	</SummaryLayout>
+	<DefaultLayout>
+		<DefaultPage />
+	</DefaultLayout>
 );
 
 export default HomePage;

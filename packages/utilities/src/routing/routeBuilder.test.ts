@@ -112,7 +112,6 @@ describe("routeBuilder", () => {
 			expect(web.transactions.rules).toBe("/transactions/rules");
 			expect(web.budget).toBe("/budget");
 			expect(web.assets).toBe("/assets");
-			expect(web.summary).toBe("/summary");
 			expect(web.retirement).toBe("/retirement");
 			expect(web.categories).toBe("/categories");
 			expect(web.netWorth).toBe("/net-worth");

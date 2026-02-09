@@ -167,7 +167,7 @@ describe("Budget API helpers", () => {
 		});
 
 		it("should detect above-average spending in multi-month budget", () => {
-			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+			const endDate = createValidDateTime("2025-01-10T00:00:00.000Z");
 
 			const subcategories: Subcategory[] = [
 				createTestSubcategory(1, "Gifts", 120000, 12),

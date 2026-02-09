@@ -2,9 +2,12 @@ import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { describe, expect, it } from "vitest";
-import { getTransactionEarnedValue, getTransactionSpentValue } from "./helpers";
+import {
+	getTransactionEarnedValue,
+	getTransactionSpentValue,
+} from "../financial/transactions";
 
-describe("summary helpers", () => {
+describe("transactions helpers", () => {
 	const createTransaction = (
 		type: "credit" | "debit",
 		amountCents: number,

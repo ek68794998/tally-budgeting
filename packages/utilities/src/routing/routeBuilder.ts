@@ -30,7 +30,6 @@ const webRoutes = {
 	home: "/",
 	netWorth: "/net-worth",
 	retirement: "/retirement",
-	summary: "/summary",
 	transactions: {
 		base: "/transactions",
 		rules: "/transactions/rules",

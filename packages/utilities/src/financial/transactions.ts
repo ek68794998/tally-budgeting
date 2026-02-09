@@ -1,6 +1,6 @@
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { Dollars } from "../financial/dollars";
+import { Dollars } from "./dollars";
 
 export const getTransactionEarnedValue = (
 	transaction: Transaction,
