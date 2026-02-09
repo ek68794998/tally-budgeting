@@ -1,6 +1,7 @@
 import { unreachable } from "@ekumlin/typescript-toolkit/values";
 import { Spinner } from "@heroui/react";
 import { type ActionItem } from "@tally/data-models/contracts/api/getBudgetSummary";
+import { telemetry } from "@tally/utilities/telemetry/index";
 import { useCategories } from "../../hooks/store/useCategories";
 import { type BudgetDate } from "../types";
 import { BudgetActionItemAboveAverage } from "./budgetActionItemAboveAverage";
@@ -54,7 +55,9 @@ export const BudgetActionItemsSection: React.FC<Props> = ({
 					subcategory && getCategory(subcategory.categoryId);
 
 				if (!category) {
-					// TODO (#2) Log this
+					telemetry.warn("INVALID_CATEGORY", {
+						id: datum.subcategoryId,
+					});
 					return null;
 				}
 
