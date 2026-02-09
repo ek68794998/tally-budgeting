@@ -14,6 +14,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ConsoleLogger } from "./consoleLogger";
 
 describe("ConsoleLogger", () => {
+	const noop = () => {
+		/* Do nothing */
+	};
+
 	let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 	let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
 	let consoleInfoSpy: ReturnType<typeof vi.spyOn>;
@@ -21,9 +25,9 @@ describe("ConsoleLogger", () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date("2024-01-01T12:00:00.000Z"));
-		consoleErrorSpy = vi.spyOn(console, "error");
-		consoleWarnSpy = vi.spyOn(console, "warn");
-		consoleInfoSpy = vi.spyOn(console, "info");
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(noop);
+		consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(noop);
+		consoleInfoSpy = vi.spyOn(console, "info").mockImplementation(noop);
 	});
 
 	afterEach(() => {

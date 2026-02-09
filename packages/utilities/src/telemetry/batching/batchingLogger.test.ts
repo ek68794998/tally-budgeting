@@ -15,6 +15,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BatchingLogger } from "./batchingLogger";
 
 describe("BatchingLogger", () => {
+	const noop = () => {
+		/* Do nothing */
+	};
+
 	const endpoint = "https://example.com/events";
 	const mockFetch = vi.fn();
 
@@ -368,7 +372,9 @@ describe("BatchingLogger", () => {
 		});
 
 		it("handles fetch errors gracefully", () => {
-			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const consoleWarnSpy = vi
+				.spyOn(console, "warn")
+				.mockImplementation(noop);
 			mockFetch.mockRejectedValue(new Error("Network error"));
 
 			const logger = new BatchingLogger(endpoint);
