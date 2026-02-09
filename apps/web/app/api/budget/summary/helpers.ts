@@ -284,12 +284,12 @@ export const createBudgetSummaryData = (
 		quickPulse: {
 			last12Months: {
 				budgeted: last12MonthsBudgeted,
-				income: last12MonthsIncome, // TODO Add tests
+				income: last12MonthsIncome,
 				spent: last12MonthsSpent,
 			},
 			lastMonth: {
 				budgeted: lastMonthBudgeted,
-				income: lastMonthIncome, // TODO Add tests
+				income: lastMonthIncome,
 				spent: lastMonthSpent,
 			},
 		},

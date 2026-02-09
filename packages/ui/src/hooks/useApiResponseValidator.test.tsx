@@ -9,6 +9,12 @@ vi.mock("@heroui/react", () => ({
 	addToast: vi.fn(),
 }));
 
+vi.mock("@tally/utilities/telemetry/telemetry", () => ({
+	telemetry: vi.fn(() => ({
+		error: vi.fn(),
+	})),
+}));
+
 describe("useApiResponseValidator", () => {
 	it("should validate successful response with schema", async () => {
 		const { result } = renderHook(() => useApiResponseValidator());
