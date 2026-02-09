@@ -17,7 +17,6 @@ export const eventLogEntrySchema = z.object({
 export type EventLogEntry = z.infer<typeof eventLogEntrySchema>;
 
 export const httpIncomingDataSchema = z.object({
-	duration: z.number(),
 	error: z.unknown().optional(),
 	headers: httpHeadersSchema.optional(),
 	method: z.string(),
@@ -28,7 +27,6 @@ export const httpIncomingDataSchema = z.object({
 export type HttpIncomingData = z.infer<typeof httpIncomingDataSchema>;
 
 export const httpOutgoingDataSchema = z.object({
-	duration: z.number().optional(),
 	error: z.unknown().optional(),
 	headers: httpHeadersSchema.optional(),
 	method: z.string(),

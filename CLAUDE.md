@@ -40,7 +40,8 @@ pnpm fix:biome    # Auto-fix Biome formatting
 
 All generated code must past type checks and linting.
 
-- Prefer `type` over `interface`; never use `enum` (use string literal unions instead)
+- Prefer `interface` over `type`; never use `enum` (use string literal unions instead)
+- Prefer `const` lambda variables to `function` declarations (as both locals and members)
 - Use descriptive variable names
 - Keep functions small and focused
 - Write tests for new functionality
@@ -52,7 +53,7 @@ All generated code must past type checks and linting.
 
 ## Things Claude Should NOT Do
 
-- Don't add comments to silence linting or type checks unless explicitly told to
+- Don't add comments to silence linting or type checks unless explicitly instructed to do so
 - Don't skip error handling
 - Don't make breaking API changes without discussion
 - Don't create "example" files illustrating usage; test files should be sufficiently descriptive to illustrate usage

@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 import z from "zod";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
 import { TxnsClient } from "../../../storage/txnsClient";
+import { telemetry } from "../../../telemetry/telemetry";
 import { createApiHandler } from "../../handlers/createApiHandler";
 import { HttpError } from "../../handlers/httpError";
 import { type ApiResult } from "../../handlers/types";
@@ -44,11 +45,17 @@ export const GetBudgetRouteAsync: NextResponseFn = createApiHandler({
 		const endDate = endDateMonth.endOf("month");
 		const searchStartDate = endDate.startOf("month").minus({ months: 23 });
 
+		const { end: endProfiling } = telemetry().profile(
+			"GET_BUDGET_SUMMARY_DATA",
+		);
+
 		const subcategories = await subcategoriesClient.getSubcategoriesAsync();
 		const transactions = await txnsClient.getTransactionsInPeriodAsync(
 			searchStartDate,
 			endDate,
 		);
+
+		endProfiling();
 
 		const summaryData = createBudgetSummaryData({
 			endDate,

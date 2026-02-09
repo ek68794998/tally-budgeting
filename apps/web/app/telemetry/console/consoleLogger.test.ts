@@ -66,7 +66,7 @@ describe("ConsoleLogger", () => {
 			logger.error("error-event", data);
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				expect.stringContaining(JSON.stringify(data, null, 2)),
+				expect.stringContaining("error-event Something went wrong"),
 			);
 		});
 
@@ -447,10 +447,8 @@ describe("ConsoleLogger", () => {
 				}
 			} else if (eventLevel === "http") {
 				logger.httpIncoming("test-event", {
-					duration: 100,
 					method: Get,
 					path: "/test",
-					statusCode: Ok,
 				});
 
 				if (shouldLog) {

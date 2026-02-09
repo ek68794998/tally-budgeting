@@ -5,11 +5,10 @@ import {
 	type EventLogLevel,
 	type PostEventsRequest,
 } from "@tally/data-models/contracts/api/postEvents";
-import { sanitizeHeaders } from "../helpers";
-import type { Logger } from "../logger";
-import type { EventLogEntry, HttpOutgoingData } from "../types";
+import { BaseLogger } from "../baseLogger";
+import type { EventLogEntry } from "../types";
 
-export class BatchingLogger implements Logger {
+export class BatchingLogger extends BaseLogger {
 	private readonly endpoint: string;
 	private readonly flushInterval: number;
 	private readonly maxBatchSize: number;
@@ -22,6 +21,8 @@ export class BatchingLogger implements Logger {
 		maxBatchSize = 50,
 		flushInterval = 10000,
 	) {
+		super();
+
 		this.endpoint = endpoint;
 		this.maxBatchSize = maxBatchSize;
 		this.flushInterval = flushInterval;
@@ -29,37 +30,11 @@ export class BatchingLogger implements Logger {
 	}
 
 	public error(event: string, data?: EventLogData): void {
-		this.log("error", event, data);
+		super.error(event, data);
 		this.flush();
 	}
 
-	public warn(event: string, data?: EventLogData): void {
-		this.log("warn", event, data);
-	}
-
-	public info(event: string, data?: EventLogData): void {
-		this.log("info", event, data);
-	}
-
-	public debug(event: string, data?: EventLogData): void {
-		this.log("debug", event, data);
-	}
-
-	public httpOutgoing(event: string, data: HttpOutgoingData): void {
-		let headers: Record<string, unknown> | undefined;
-
-		if (data.headers) {
-			headers = sanitizeHeaders(data.headers);
-		}
-
-		this.log("http", event, {
-			message: `${data.method} ${data.url}`,
-			...data,
-			headers,
-		});
-	}
-
-	private log(
+	protected log(
 		level: EventLogLevel,
 		event: string,
 		data?: EventLogData,
@@ -109,17 +84,17 @@ export class BatchingLogger implements Logger {
 		});
 	}
 
-	private startTimer(): void {
-		this.timerId = setTimeout(() => {
-			this.flush();
-		}, this.flushInterval);
-	}
-
 	private resetTimer(): void {
 		if (this.timerId) {
 			clearTimeout(this.timerId);
 		}
 
 		this.startTimer();
+	}
+
+	private startTimer(): void {
+		this.timerId = setTimeout(() => {
+			this.flush();
+		}, this.flushInterval);
 	}
 }

@@ -193,9 +193,7 @@ describe("BatchingLogger", () => {
 		it("logs http event without headers", () => {
 			const logger = new BatchingLogger(endpoint);
 			const data = {
-				duration: 150,
 				method: Get,
-				statusCode: Ok,
 				url: "https://api.example.com/users",
 			};
 			logger.httpOutgoing("http-request", data);
@@ -207,7 +205,7 @@ describe("BatchingLogger", () => {
 			const body = parseBody(call[1]);
 			expect(body.events[0]).toMatchObject({
 				data,
-				event: "http-request",
+				event: "http-request:START",
 				level: "http",
 				source: "FRONTEND",
 			});

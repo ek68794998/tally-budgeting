@@ -1,10 +1,24 @@
 import { type EventLogData } from "@tally/data-models/contracts/api/postEvents";
 import type { HttpOutgoingData } from "./types";
 
+export type HttpRequestEndKeys = "duration" | "error" | "statusCode";
+export type StandardLogFn = (event: string, data?: EventLogData) => void;
+
+export interface ProfilerCallback<TData extends object> {
+	end: (data?: TData) => void;
+}
+
 export interface Logger {
-	debug: (event: string, data?: EventLogData) => void;
-	error: (event: string, data?: EventLogData) => void;
-	httpOutgoing: (event: string, data: HttpOutgoingData) => void;
-	info: (event: string, data?: EventLogData) => void;
-	warn: (event: string, data?: EventLogData) => void;
+	debug: StandardLogFn;
+	error: StandardLogFn;
+	httpOutgoing: (
+		event: string,
+		data: Omit<HttpOutgoingData, HttpRequestEndKeys>,
+	) => ProfilerCallback<HttpOutgoingData>;
+	info: StandardLogFn;
+	profile: (
+		event: string,
+		data?: EventLogData,
+	) => ProfilerCallback<EventLogData>;
+	warn: StandardLogFn;
 }

@@ -1,4 +1,3 @@
-import { hrtime } from "node:process";
 import {
 	type HttpStatusCode,
 	InternalServerError,
@@ -16,8 +15,6 @@ import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
 import { type ApiHandler, type ApiResult, type RequestSchemata } from "./types";
-
-const nanosecondsInOneMillisecond = 1_000_000;
 
 interface ApiHandlerDefinition<
 	TBody,
@@ -38,7 +35,11 @@ export const createApiHandler =
 	async (request, { params }): Promise<NextResponse> => {
 		const { eventName } = definition;
 
-		const startTime = hrtime.bigint();
+		const { end: endProfiling } = telemetry().httpIncoming(eventName, {
+			method: request.method,
+			path: request.nextUrl.pathname,
+		});
+
 		const routeParams = await params;
 
 		const { data, error, statusCode } = await executeHandlerAsync(
@@ -47,24 +48,18 @@ export const createApiHandler =
 			routeParams,
 		);
 
-		const endTime = hrtime.bigint();
-		const durationNanoseconds = Number(endTime - startTime);
-		const duration = durationNanoseconds / nanosecondsInOneMillisecond;
-
-		logRequest(
-			eventName,
-			request.method,
-			request.nextUrl.pathname,
-			statusCode,
-			duration,
-			error,
-		);
-
 		const response: ApiResponse = {
 			...data,
 			error,
 			success: isSuccessHttpStatusCode(statusCode),
 		};
+
+		endProfiling({
+			error,
+			method: request.method,
+			path: request.nextUrl.pathname,
+			statusCode,
+		});
 
 		if (statusCode === NoContent) {
 			// https://github.com/vercel/next.js/discussions/51118
@@ -133,21 +128,4 @@ const executeHandlerAsync = async <
 			statusCode,
 		};
 	}
-};
-
-const logRequest = (
-	eventName: string,
-	method: string,
-	path: string,
-	statusCode: number,
-	duration: number,
-	error: ApiError | undefined,
-) => {
-	telemetry().httpIncoming(eventName, {
-		duration,
-		error,
-		method,
-		path,
-		statusCode,
-	});
 };
