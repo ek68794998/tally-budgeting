@@ -7,7 +7,7 @@ import {
 	getBudgetSummaryResponseSchema,
 } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
-import { telemetry } from "@tally/utilities/telemetry/index";
+import { telemetry } from "@tally/utilities/telemetry/telemetry";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
@@ -63,7 +63,7 @@ export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
 	}
 
 	if (error || !data) {
-		telemetry.error("BUDGET_API_ERROR", {
+		telemetry().error("BUDGET_API_ERROR", {
 			error: error?.message,
 		});
 		return <IconX />;

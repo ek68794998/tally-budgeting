@@ -2,7 +2,7 @@
 
 import { isSuccessHttpStatusCode } from "@ekumlin/typescript-toolkit/http";
 import { addToast } from "@heroui/react";
-import { telemetry } from "@tally/utilities/telemetry/index";
+import { telemetry } from "@tally/utilities/telemetry/telemetry";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { type z } from "zod";
@@ -28,7 +28,7 @@ export const useApiResponseValidator = () => {
 					title: t("errorTitle"),
 				});
 
-				telemetry.error("API_REQUEST_NOT_OK", {
+				telemetry().error("API_REQUEST_NOT_OK", {
 					statusCode: response.status,
 					statusText: response.statusText,
 				});
@@ -43,7 +43,7 @@ export const useApiResponseValidator = () => {
 					title: t("errorTitle"),
 				});
 
-				telemetry.error("API_REQUEST_FAILED", {
+				telemetry().error("API_REQUEST_FAILED", {
 					statusCode: response.status,
 					statusText: response.statusText,
 				});
@@ -72,7 +72,7 @@ export const useApiResponseValidator = () => {
 					title: t("validationErrorTitle"),
 				});
 
-				telemetry.error("API_RESPONSE_VALIDATION_FAILED", {
+				telemetry().error("API_RESPONSE_VALIDATION_FAILED", {
 					errorMessage: parseResult.error.message,
 				});
 

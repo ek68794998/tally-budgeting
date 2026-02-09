@@ -1,3 +1,4 @@
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { BatchingLogger } from "./batching/batchingLogger";
 import type { Logger } from "./logger";
 
@@ -26,4 +27,5 @@ class Telemetry {
 	}
 }
 
-export const telemetry = Telemetry.getInstance().getLogger();
+const lazyTelemetry = new Lazy(() => Telemetry.getInstance().getLogger());
+export const telemetry = () => lazyTelemetry.get();

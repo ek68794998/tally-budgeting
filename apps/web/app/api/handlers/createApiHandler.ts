@@ -10,7 +10,7 @@ import {
 } from "@tally/data-models/contracts/api/types";
 import { StructuredError } from "@tally/data-models/error/structuredError";
 import { type NextRequest, NextResponse } from "next/server";
-import { telemetry } from "../../telemetry";
+import { telemetry } from "../../telemetry/telemetry";
 import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
@@ -101,7 +101,7 @@ const executeHandlerAsync = async <
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
 
-		telemetry.error("API_HANDLER_ERROR", { error });
+		telemetry().error("API_HANDLER_ERROR", { error });
 
 		if (error instanceof HttpError) {
 			apiError = {
@@ -138,7 +138,7 @@ const logRequest = (
 	duration: number,
 	error: ApiError | undefined,
 ) => {
-	telemetry.httpIncoming(eventName, {
+	telemetry().httpIncoming(eventName, {
 		duration,
 		error,
 		method,

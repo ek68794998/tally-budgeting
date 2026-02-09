@@ -1,3 +1,4 @@
+import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { eventLogLevelSchema } from "@tally/data-models/contracts/api/postEvents";
 import { ConsoleLogger } from "./console/consoleLogger";
 import type { Logger } from "./logger";
@@ -31,4 +32,5 @@ class Telemetry {
 	}
 }
 
-export const telemetry = Telemetry.getInstance().getLogger();
+const lazyTelemetry = new Lazy(() => Telemetry.getInstance().getLogger());
+export const telemetry = () => lazyTelemetry.get();
