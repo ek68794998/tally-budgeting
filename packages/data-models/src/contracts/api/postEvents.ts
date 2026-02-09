@@ -1,5 +1,13 @@
 import z from "zod";
 
+export const eventLogDataSchema = z
+	.object({
+		message: z.string().optional(),
+	})
+	.loose();
+
+export type EventLogData = z.infer<typeof eventLogDataSchema>;
+
 export const eventLogLevelSchema = z.enum([
 	"error",
 	"warn",
@@ -15,7 +23,7 @@ export const eventSourceSchema = z.enum(["FRONTEND", "BACKEND"]);
 export type EventSource = z.infer<typeof eventSourceSchema>;
 
 export const eventLogEntrySchema = z.object({
-	data: z.record(z.string(), z.unknown()).optional(),
+	data: eventLogDataSchema.optional(),
 	event: z.string(),
 	level: eventLogLevelSchema,
 	source: eventSourceSchema,

@@ -1,13 +1,6 @@
-import type {
-	HttpIncomingData,
-	HttpOutgoingData,
-} from "@tally/utilities/telemetry/types";
+import { type Logger as CommonLogger } from "@tally/utilities/telemetry/logger";
+import type { HttpIncomingData } from "@tally/utilities/telemetry/types";
 
-export interface Logger {
-	debug: (event: string, data?: Record<string, unknown>) => void;
-	error: (event: string, data?: Record<string, unknown>) => void;
+export interface Logger extends CommonLogger {
 	httpIncoming: (event: string, data: HttpIncomingData) => void;
-	httpOutgoing: (event: string, data: HttpOutgoingData) => void;
-	info: (event: string, data?: Record<string, unknown>) => void;
-	warn: (event: string, data?: Record<string, unknown>) => void;
 }

@@ -1,6 +1,10 @@
 import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
-import { type EventLogLevel } from "@tally/data-models/contracts/api/postEvents";
+import {
+	type EventLogData,
+	type EventLogLevel,
+	type PostEventsRequest,
+} from "@tally/data-models/contracts/api/postEvents";
 import { sanitizeHeaders } from "../helpers";
 import type { Logger } from "../logger";
 import type { EventLogEntry, HttpOutgoingData } from "../types";
@@ -24,20 +28,20 @@ export class BatchingLogger implements Logger {
 		this.startTimer();
 	}
 
-	public error(event: string, data?: Record<string, unknown>): void {
+	public error(event: string, data?: EventLogData): void {
 		this.log("error", event, data);
 		this.flush();
 	}
 
-	public warn(event: string, data?: Record<string, unknown>): void {
+	public warn(event: string, data?: EventLogData): void {
 		this.log("warn", event, data);
 	}
 
-	public info(event: string, data?: Record<string, unknown>): void {
+	public info(event: string, data?: EventLogData): void {
 		this.log("info", event, data);
 	}
 
-	public debug(event: string, data?: Record<string, unknown>): void {
+	public debug(event: string, data?: EventLogData): void {
 		this.log("debug", event, data);
 	}
 
@@ -48,13 +52,17 @@ export class BatchingLogger implements Logger {
 			headers = sanitizeHeaders(data.headers);
 		}
 
-		this.log("http", event, { ...data, headers });
+		this.log("http", event, {
+			message: `${data.method} ${data.url}`,
+			...data,
+			headers,
+		});
 	}
 
 	private log(
 		level: EventLogLevel,
 		event: string,
-		data?: Record<string, unknown>,
+		data?: EventLogData,
 	): void {
 		const entry: EventLogEntry = {
 			data,
@@ -83,8 +91,12 @@ export class BatchingLogger implements Logger {
 		const headers = new Headers();
 		headers.set(ContentType, ApplicationJson);
 
+		const content: PostEventsRequest = {
+			events: eventsToSend,
+		};
+
 		fetch(this.endpoint, {
-			body: JSON.stringify({ events: eventsToSend }),
+			body: JSON.stringify(content),
 			headers,
 			keepalive: true,
 			method: Post,

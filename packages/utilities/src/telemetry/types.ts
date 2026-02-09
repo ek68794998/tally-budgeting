@@ -1,36 +1,39 @@
 import {
-	type EventLogLevel,
-	type EventSource,
+	eventLogDataSchema,
+	eventLogLevelSchema,
+	eventSourceSchema,
 } from "@tally/data-models/contracts/api/postEvents";
-import { type HttpHeaders } from "@tally/data-models/http/headers";
+import { httpHeadersSchema } from "@tally/data-models/http/headers";
+import z from "zod";
 
-export interface EventLogEntry {
-	data?: EventLogData;
-	event: string;
-	level: EventLogLevel;
-	source: EventSource;
-	timestamp: string;
-}
+export const eventLogEntrySchema = z.object({
+	data: eventLogDataSchema.optional(),
+	event: z.string(),
+	level: eventLogLevelSchema,
+	source: eventSourceSchema,
+	timestamp: z.string(),
+});
 
-export interface EventLogData {
-	[key: string]: unknown;
-	message?: string;
-}
+export type EventLogEntry = z.infer<typeof eventLogEntrySchema>;
 
-export interface HttpIncomingData {
-	duration: number;
-	error?: unknown;
-	headers?: HttpHeaders;
-	method: string;
-	path: string;
-	statusCode: number;
-}
+export const httpIncomingDataSchema = z.object({
+	duration: z.number(),
+	error: z.unknown().optional(),
+	headers: httpHeadersSchema.optional(),
+	method: z.string(),
+	path: z.string(),
+	statusCode: z.number(),
+});
 
-export interface HttpOutgoingData {
-	duration?: number;
-	error?: unknown;
-	headers?: HttpHeaders;
-	method: string;
-	statusCode?: number;
-	url: string;
-}
+export type HttpIncomingData = z.infer<typeof httpIncomingDataSchema>;
+
+export const httpOutgoingDataSchema = z.object({
+	duration: z.number().optional(),
+	error: z.unknown().optional(),
+	headers: httpHeadersSchema.optional(),
+	method: z.string(),
+	statusCode: z.number().optional(),
+	url: z.string(),
+});
+
+export type HttpOutgoingData = z.infer<typeof httpOutgoingDataSchema>;
