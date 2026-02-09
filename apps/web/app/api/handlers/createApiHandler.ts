@@ -10,6 +10,7 @@ import {
 } from "@tally/data-models/contracts/api/types";
 import { StructuredError } from "@tally/data-models/error/structuredError";
 import { type NextRequest, NextResponse } from "next/server";
+import { telemetry } from "../../telemetry";
 import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
@@ -100,8 +101,7 @@ const executeHandlerAsync = async <
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
 
-		// TODO (#2) Consolidate this logging.
-		console.error(error);
+		telemetry.error("API_HANDLER_ERROR", { error });
 
 		if (error instanceof HttpError) {
 			apiError = {
@@ -138,16 +138,11 @@ const logRequest = (
 	duration: number,
 	error: ApiError | undefined,
 ) => {
-	const text = `${new Date().toISOString()} [${eventName}] ${method} ${path} returned ${statusCode} after ${duration}ms`;
-
-	if (error) {
-		// TODO (#2) Consolidate this logging.
-		console.error(text);
-		console.error(error);
-		return;
-	}
-
-	// TODO (#2) Integrate with telemetry service
-	// eslint-disable-next-line no-console
-	console.log(text);
+	telemetry.httpIncoming(eventName, {
+		duration,
+		error,
+		method,
+		path,
+		statusCode,
+	});
 };
