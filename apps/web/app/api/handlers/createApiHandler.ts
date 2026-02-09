@@ -1,3 +1,4 @@
+import { hrtime } from "node:process";
 import {
 	type HttpStatusCode,
 	InternalServerError,
@@ -15,6 +16,8 @@ import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
 import { type ApiHandler, type ApiResult, type RequestSchemata } from "./types";
+
+const nanosecondsInOneMillisecond = 1_000_000;
 
 interface ApiHandlerDefinition<
 	TBody,
@@ -35,7 +38,7 @@ export const createApiHandler =
 	async (request, { params }): Promise<NextResponse> => {
 		const { eventName } = definition;
 
-		const startTime = Date.now();
+		const startTime = hrtime.bigint();
 		const routeParams = await params;
 
 		const { data, error, statusCode } = await executeHandlerAsync(
@@ -44,7 +47,9 @@ export const createApiHandler =
 			routeParams,
 		);
 
-		const duration = Date.now() - startTime;
+		const endTime = hrtime.bigint();
+		const durationNanoseconds = Number(endTime - startTime);
+		const duration = durationNanoseconds / nanosecondsInOneMillisecond;
 
 		logRequest(
 			eventName,

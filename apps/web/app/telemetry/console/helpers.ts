@@ -25,5 +25,5 @@ export const formatData = (
 		return "";
 	}
 
-	return `\n${JSON.stringify(data, null, 2)}`;
+	return `:: ${JSON.stringify(data, null, 2)}`;
 };

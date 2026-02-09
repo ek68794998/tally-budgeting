@@ -41,7 +41,10 @@ export class ConsoleLogger implements Logger {
 	}
 
 	public httpIncoming(event: string, data: HttpIncomingData): void {
-		const sanitizedData: Record<string, unknown> = { ...data };
+		const sanitizedData: Record<string, unknown> = {
+			...data,
+			direction: "INCOMING",
+		};
 
 		if (data.headers) {
 			sanitizedData.headers = sanitizeHeaders(data.headers);
@@ -51,7 +54,10 @@ export class ConsoleLogger implements Logger {
 	}
 
 	public httpOutgoing(event: string, data: HttpOutgoingData): void {
-		const sanitizedData: Record<string, unknown> = { ...data };
+		const sanitizedData: Record<string, unknown> = {
+			...data,
+			direction: "OUTGOING",
+		};
 
 		if (data.headers) {
 			sanitizedData.headers = sanitizeHeaders(data.headers);
@@ -69,19 +75,30 @@ export class ConsoleLogger implements Logger {
 			return;
 		}
 
+		const { message, ...restData } = data ?? {};
+
 		const timestamp = formatTimestamp();
 		const levelTag = formatLogLevel(level);
 		const source: EventSource = "BACKEND";
-		const formattedData = formatData(data);
+		const formattedData = formatData(restData);
 
-		const message = `${timestamp} ${levelTag} [${source}] ${event}${formattedData}`;
+		const outputParts = [
+			timestamp,
+			levelTag,
+			`[${source}]`,
+			event,
+			message,
+			formattedData,
+		].filter(Boolean);
+
+		const output = outputParts.join(" ");
 
 		if (level === "error") {
-			console.error(message);
+			console.error(output);
 		} else if (level === "warn") {
-			console.warn(message);
+			console.warn(output);
 		} else {
-			console.info(message);
+			console.info(output);
 		}
 	}
 
