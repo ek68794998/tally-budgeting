@@ -85,7 +85,7 @@
 		"overBudgetCount": "{count} over budget",
 		"overview": {
 			"aboveAverage": "<bold>{amount}</bold>",
-			"aboveAverageSubtitle": "{amountOver} over monthly average of {averageBudget} ({months, plural, =1 {{totalBudget} / month} other {{totalBudget} / {months} months}}); {remaining} remaining this period",
+			"aboveAverageSubtitle": "{amountOver} over monthly average of {averageBudget} ({months, plural, =1 {{totalBudget} / month} other {{totalBudget} / {months} months}}); {remaining} from cap",
 			"budgetChange": "<bold>{lastSpend}</bold> → <spentFmt>{currentSpend}</spentFmt>",
 			"budgetChangeOverSubtitle": "{amountOver} over budget; {change} since previous {months, plural, =1 {month} other {{months}-month period}}",
 			"budgetChangeUnderSubtitle": "{change} since previous {months, plural, =1 {month} other {{months}-month period}}",
@@ -102,6 +102,7 @@
 			"title": "Overview"
 		},
 		"quickPulse": {
+			"income": "Against <bold>{amount}</bold> net income",
 			"month": "Last Month",
 			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
 			"title": "Quick Pulse",
