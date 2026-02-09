@@ -53,6 +53,7 @@ All generated code must past type checks and linting.
 
 ## Things Claude Should NOT Do
 
+- Don't add imports before adding the code (because it will be deleted by the linter); always write code first and imports second, OR at the same time
 - Don't add comments to silence linting or type checks unless explicitly instructed to do so
 - Don't skip error handling
 - Don't make breaking API changes without discussion
