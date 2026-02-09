@@ -1,6 +1,7 @@
 {
 	"$schema": "https://turborepo.com/schema.json",
 	"globalEnv": [
+		"LOG_LEVEL",
 		"NODE_ENV",
 		"POSTGRES_CONNECTION_STRING",
 		"POSTGRES_POOL_MAXIMUM"

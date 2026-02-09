@@ -9,6 +9,7 @@ const apiRoutes = {
 		base: "/api/categories",
 		sub: "/api/categories/sub",
 	},
+	events: "/api/events",
 	netWorth: {
 		snapshots: "/api/net-worth/snapshots",
 	},

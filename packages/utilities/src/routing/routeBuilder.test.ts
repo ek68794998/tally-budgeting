@@ -14,6 +14,7 @@ describe("routeBuilder", () => {
 			expect(api.budget.summary).toBe("/api/budget/summary");
 			expect(api.categories.base).toBe("/api/categories");
 			expect(api.categories.sub).toBe("/api/categories/sub");
+			expect(api.events).toBe("/api/events");
 			expect(api.netWorth.snapshots).toBe("/api/net-worth/snapshots");
 		});
 
