@@ -39,7 +39,7 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 				value: (
 					<div className="flex w-full flex-col items-start gap-2 font-normal">
 						<h3 className="text-2xl">{budgetText}</h3>
-						<div className="h-8 w-full rounded-lg bg-stone-500">
+						<div className="h-8 w-full rounded-lg bg-stone-300 dark:bg-stone-600">
 							<div
 								className={twMerge(
 									"h-full rounded-lg",
