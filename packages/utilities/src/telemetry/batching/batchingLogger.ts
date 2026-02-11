@@ -2,11 +2,11 @@ import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
 	type EventLogData,
+	type EventLogEntry,
 	type EventLogLevel,
 	type PostEventsRequest,
 } from "@tally/data-models/contracts/api/postEvents";
 import { BaseLogger } from "../baseLogger";
-import type { EventLogEntry } from "../types";
 
 export class BatchingLogger extends BaseLogger {
 	private readonly endpoint: string;
@@ -34,6 +34,14 @@ export class BatchingLogger extends BaseLogger {
 		this.flush();
 	}
 
+	public event(event: EventLogEntry): void {
+		this.batch.push(event);
+
+		if (this.batch.length >= this.maxBatchSize) {
+			this.flush();
+		}
+	}
+
 	protected log(
 		level: EventLogLevel,
 		event: string,
@@ -47,11 +55,7 @@ export class BatchingLogger extends BaseLogger {
 			timestamp: new Date().toISOString(),
 		};
 
-		this.batch.push(entry);
-
-		if (this.batch.length >= this.maxBatchSize) {
-			this.flush();
-		}
+		this.event(entry);
 	}
 
 	private flush(): void {

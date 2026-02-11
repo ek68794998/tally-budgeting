@@ -1,4 +1,7 @@
-import { type EventLogData } from "@tally/data-models/contracts/api/postEvents";
+import {
+	type EventLogData,
+	type EventLogEntry,
+} from "@tally/data-models/contracts/api/postEvents";
 import type { HttpOutgoingData } from "./types";
 
 export type HttpRequestEndKeys = "duration" | "error" | "statusCode";
@@ -11,6 +14,7 @@ export interface ProfilerCallback<TData extends object> {
 export interface Logger {
 	debug: StandardLogFn;
 	error: StandardLogFn;
+	event: (event: EventLogEntry) => void;
 	httpOutgoing: (
 		event: string,
 		data: Omit<HttpOutgoingData, HttpRequestEndKeys>,

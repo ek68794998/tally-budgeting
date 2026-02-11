@@ -1,20 +1,5 @@
-import {
-	eventLogDataSchema,
-	eventLogLevelSchema,
-	eventSourceSchema,
-} from "@tally/data-models/contracts/api/postEvents";
 import { httpHeadersSchema } from "@tally/data-models/http/headers";
 import z from "zod";
-
-export const eventLogEntrySchema = z.object({
-	data: eventLogDataSchema.optional(),
-	event: z.string(),
-	level: eventLogLevelSchema,
-	source: eventSourceSchema,
-	timestamp: z.string(),
-});
-
-export type EventLogEntry = z.infer<typeof eventLogEntrySchema>;
 
 export const httpIncomingDataSchema = z.object({
 	error: z.unknown().optional(),

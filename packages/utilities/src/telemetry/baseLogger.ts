@@ -1,5 +1,6 @@
 import {
 	type EventLogData,
+	type EventLogEntry,
 	type EventLogLevel,
 } from "@tally/data-models/contracts/api/postEvents";
 import { sanitizeHeaders } from "./helpers";
@@ -87,6 +88,8 @@ export abstract class BaseLogger implements Logger {
 			},
 		};
 	}
+
+	public abstract event(event: EventLogEntry): void;
 
 	protected abstract log(
 		level: EventLogLevel,

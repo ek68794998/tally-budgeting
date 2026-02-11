@@ -1,6 +1,6 @@
 import {
+	type EventLogEntry,
 	type EventLogLevel,
-	type EventSource,
 } from "@tally/data-models/contracts/api/postEvents";
 import { BaseLogger } from "@tally/utilities/telemetry/baseLogger";
 import {
@@ -26,27 +26,16 @@ export class ConsoleLogger extends BaseLogger {
 		this.minLevel = minLevel;
 	}
 
-	public httpIncoming(
-		event: string,
-		data: Omit<HttpIncomingData, HttpRequestEndKeys>,
-	): ProfilerCallback<HttpIncomingData> {
-		return this.http(event, "incoming", data);
-	}
+	public event(entry: EventLogEntry): void {
+		const { data, event, level, source, timestamp } = entry;
 
-	protected log(
-		level: EventLogLevel,
-		event: string,
-		data?: Record<string, unknown>,
-	): void {
 		if (!this.shouldLog(level)) {
 			return;
 		}
 
 		const { message, ...restData } = data ?? {};
 
-		const timestamp = formatTimestamp();
 		const levelTag = formatLogLevel(level);
-		const source: EventSource = "BACKEND";
 		const formattedData = formatData(restData);
 
 		const outputParts = [
@@ -67,6 +56,31 @@ export class ConsoleLogger extends BaseLogger {
 		} else {
 			console.info(output);
 		}
+	}
+
+	public httpIncoming(
+		event: string,
+		data: Omit<HttpIncomingData, HttpRequestEndKeys>,
+	): ProfilerCallback<HttpIncomingData> {
+		return this.http(event, "incoming", data);
+	}
+
+	protected log(
+		level: EventLogLevel,
+		event: string,
+		data?: Record<string, unknown>,
+	): void {
+		if (!this.shouldLog(level)) {
+			return;
+		}
+
+		this.event({
+			data,
+			event,
+			level,
+			source: "BACKEND",
+			timestamp: formatTimestamp(),
+		});
 	}
 
 	private shouldLog(level: EventLogLevel): boolean {
