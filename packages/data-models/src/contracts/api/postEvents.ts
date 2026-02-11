@@ -1,5 +1,7 @@
 import z from "zod";
 
+const maxEventsPerRequest = 400;
+
 export const eventLogDataSchema = z
 	.object({
 		message: z.string().optional(),
@@ -33,7 +35,7 @@ export const eventLogEntrySchema = z.object({
 export type EventLogEntry = z.infer<typeof eventLogEntrySchema>;
 
 export const postEventsRequestSchema = z.object({
-	events: z.array(eventLogEntrySchema),
+	events: z.array(eventLogEntrySchema).max(maxEventsPerRequest),
 });
 
 export type PostEventsRequest = z.infer<typeof postEventsRequestSchema>;
