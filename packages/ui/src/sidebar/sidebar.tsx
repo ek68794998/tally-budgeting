@@ -2,8 +2,6 @@
 
 import {
 	IconBeach,
-	IconDashboard,
-	IconDashboardFilled,
 	IconPig,
 	IconPigFilled,
 	IconReceipt,
@@ -12,6 +10,7 @@ import {
 	IconSettingsFilled,
 	IconWallet,
 } from "@tabler/icons-react";
+import { buildWebRoute, web } from "@tally/utilities/routing/routeBuilder";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { SidebarLogo } from "./sidebarLogo";
@@ -63,37 +62,30 @@ export const Sidebar = ({ className }: Props) => {
 					]}
 					menuItems={[
 						createMenuItem({
-							DefaultIconComponent: IconDashboard,
-							FilledIconComponent: IconDashboardFilled,
-							id: "summary",
-							label: t("summary.title"),
-							path: "/",
-						}),
-						createMenuItem({
 							DefaultIconComponent: IconWallet,
 							id: "budget",
 							label: t("budget.title"),
-							path: "/budget",
+							path: buildWebRoute(web.home),
 						}),
 						createMenuItem({
 							DefaultIconComponent: IconReceipt,
 							FilledIconComponent: IconReceiptFilled,
 							id: "transactions",
 							label: t("transactions.title"),
-							path: "/transactions",
+							path: buildWebRoute(web.transactions.base),
 						}),
 						createMenuItem({
 							DefaultIconComponent: IconPig,
 							FilledIconComponent: IconPigFilled,
 							id: "assets",
 							label: t("assets.title"),
-							path: "/assets",
+							path: buildWebRoute(web.assets),
 						}),
 						createMenuItem({
 							DefaultIconComponent: IconBeach,
 							id: "retirement",
 							label: t("retirement.title"),
-							path: "/retirement",
+							path: buildWebRoute(web.retirement),
 						}),
 					]}
 				/>

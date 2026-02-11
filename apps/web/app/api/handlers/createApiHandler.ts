@@ -10,6 +10,7 @@ import {
 } from "@tally/data-models/contracts/api/types";
 import { StructuredError } from "@tally/data-models/error/structuredError";
 import { type NextRequest, NextResponse } from "next/server";
+import { telemetry } from "../../telemetry/telemetry";
 import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
@@ -21,7 +22,7 @@ interface ApiHandlerDefinition<
 	TParams,
 	TResponse extends ApiResponse,
 > {
-	bodyParser?: (request: NextRequest) => Promise<unknown>;
+	bodyParser?: (request: NextRequest) => Promise<TBody>;
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
 	schemata: RequestSchemata<TBody, TQuery, TParams>;
@@ -34,7 +35,11 @@ export const createApiHandler =
 	async (request, { params }): Promise<NextResponse> => {
 		const { eventName } = definition;
 
-		const startTime = Date.now();
+		const { end: endProfiling } = telemetry().httpIncoming(eventName, {
+			method: request.method,
+			path: request.nextUrl.pathname,
+		});
+
 		const routeParams = await params;
 
 		const { data, error, statusCode } = await executeHandlerAsync(
@@ -43,22 +48,18 @@ export const createApiHandler =
 			routeParams,
 		);
 
-		const duration = Date.now() - startTime;
-
-		logRequest(
-			eventName,
-			request.method,
-			request.nextUrl.pathname,
-			statusCode,
-			duration,
-			error,
-		);
-
 		const response: ApiResponse = {
 			...data,
 			error,
 			success: isSuccessHttpStatusCode(statusCode),
 		};
+
+		endProfiling({
+			error,
+			method: request.method,
+			path: request.nextUrl.pathname,
+			statusCode,
+		});
 
 		if (statusCode === NoContent) {
 			// https://github.com/vercel/next.js/discussions/51118
@@ -100,8 +101,7 @@ const executeHandlerAsync = async <
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
 
-		// TODO (#2) Consolidate this logging.
-		console.error(error);
+		telemetry().error("API_HANDLER_ERROR", { error });
 
 		if (error instanceof HttpError) {
 			apiError = {
@@ -128,26 +128,4 @@ const executeHandlerAsync = async <
 			statusCode,
 		};
 	}
-};
-
-const logRequest = (
-	eventName: string,
-	method: string,
-	path: string,
-	statusCode: number,
-	duration: number,
-	error: ApiError | undefined,
-) => {
-	const text = `${new Date().toISOString()} [${eventName}] ${method} ${path} returned ${statusCode} after ${duration}ms`;
-
-	if (error) {
-		// TODO (#2) Consolidate this logging.
-		console.error(text);
-		console.error(error);
-		return;
-	}
-
-	// TODO (#2) Integrate with telemetry service
-	// eslint-disable-next-line no-console
-	console.log(text);
 };

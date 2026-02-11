@@ -167,7 +167,7 @@ describe("Budget API helpers", () => {
 		});
 
 		it("should detect above-average spending in multi-month budget", () => {
-			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+			const endDate = createValidDateTime("2025-01-10T00:00:00.000Z");
 
 			const subcategories: Subcategory[] = [
 				createTestSubcategory(1, "Gifts", 120000, 12),
@@ -280,7 +280,7 @@ describe("Budget API helpers", () => {
 			expect(result.budgetBreakdown).toHaveLength(3);
 		});
 
-		it("should exclude income and neutral budgets", () => {
+		it("should exclude income and neutral budgets from expense tracking", () => {
 			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
 
 			const subcategories: Subcategory[] = [
@@ -305,6 +305,102 @@ describe("Budget API helpers", () => {
 			expect(result.quickPulse.lastMonth.spent).toBe(450);
 			expect(result.budgetBreakdown).toHaveLength(1);
 			expect(result.budgetBreakdown[0]?.subcategoryId).toBe(1);
+		});
+
+		it("should track income separately in quick pulse for last month", () => {
+			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+
+			const subcategories: Subcategory[] = [
+				createTestSubcategory(1, "Groceries", 50000, 1, "expense"),
+				createTestSubcategory(2, "Salary", 500000, 1, "income"),
+				createTestSubcategory(3, "Freelance", 200000, 1, "income"),
+			];
+
+			const transactions: Transaction[] = [
+				createTestTransaction(1, 1, "2025-02-05", 45000, "debit"),
+				createTestTransaction(2, 2, "2025-02-01", 500000, "credit"),
+				createTestTransaction(3, 3, "2025-02-15", 180000, "credit"),
+			];
+
+			const result = createBudgetSummaryData({
+				endDate,
+				subcategories,
+				transactions,
+			});
+
+			expect(result.quickPulse.lastMonth.income).toBe(6800);
+			expect(result.quickPulse.lastMonth.spent).toBe(450);
+		});
+
+		it("should track income separately in quick pulse for last 12 months", () => {
+			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+
+			const subcategories: Subcategory[] = [
+				createTestSubcategory(1, "Groceries", 50000, 1, "expense"),
+				createTestSubcategory(2, "Salary", 500000, 1, "income"),
+			];
+
+			const transactions: Transaction[] = [
+				createTestTransaction(1, 1, "2025-02-05", 45000, "debit"),
+				createTestTransaction(2, 1, "2025-01-15", 48000, "debit"),
+				createTestTransaction(3, 1, "2024-06-10", 50000, "debit"),
+				createTestTransaction(4, 2, "2025-02-01", 500000, "credit"),
+				createTestTransaction(5, 2, "2025-01-01", 500000, "credit"),
+				createTestTransaction(6, 2, "2024-12-01", 500000, "credit"),
+				createTestTransaction(7, 2, "2024-11-01", 500000, "credit"),
+				createTestTransaction(8, 2, "2024-02-01", 500000, "credit"),
+			];
+
+			const result = createBudgetSummaryData({
+				endDate,
+				subcategories,
+				transactions,
+			});
+
+			expect(result.quickPulse.last12Months.income).toBe(20000);
+			expect(result.quickPulse.last12Months.spent).toBe(1430);
+		});
+
+		it("should handle zero income when no income transactions exist", () => {
+			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+
+			const subcategories: Subcategory[] = [
+				createTestSubcategory(1, "Groceries", 50000, 1, "expense"),
+			];
+
+			const transactions: Transaction[] = [
+				createTestTransaction(1, 1, "2025-02-05", 45000, "debit"),
+			];
+
+			const result = createBudgetSummaryData({
+				endDate,
+				subcategories,
+				transactions,
+			});
+
+			expect(result.quickPulse.lastMonth.income).toBe(0);
+			expect(result.quickPulse.last12Months.income).toBe(0);
+		});
+
+		it("should handle debit transactions on income subcategories as negative income", () => {
+			const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+
+			const subcategories: Subcategory[] = [
+				createTestSubcategory(1, "Salary", 500000, 1, "income"),
+			];
+
+			const transactions: Transaction[] = [
+				createTestTransaction(1, 1, "2025-02-01", 500000, "credit"),
+				createTestTransaction(2, 1, "2025-02-15", 50000, "debit"),
+			];
+
+			const result = createBudgetSummaryData({
+				endDate,
+				subcategories,
+				transactions,
+			});
+
+			expect(result.quickPulse.lastMonth.income).toBe(4500);
 		});
 
 		it("should handle empty transactions", () => {

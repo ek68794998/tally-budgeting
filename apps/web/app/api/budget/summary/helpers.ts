@@ -9,7 +9,10 @@ import {
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { Dollars } from "@tally/utilities/financial/dollars";
-import { getTransactionSpentValue } from "@tally/utilities/summary/helpers";
+import {
+	getTransactionEarnedValue,
+	getTransactionSpentValue,
+} from "@tally/utilities/financial/transactions";
 import { DateTime } from "luxon";
 
 export interface BudgetSummaryDates {
@@ -30,15 +33,15 @@ interface BudgetSummaryInput {
 	transactions: Transaction[];
 }
 
+interface TransactionTotals {
+	expenses: Map<number, number>;
+	income: Map<number, number>;
+}
+
 const getCurrentMonthWindow = (endDate: DateTime): DateWindow => {
 	const monthStart = endDate.startOf("month");
 	const monthEnd = endDate.endOf("month");
 	return { end: monthEnd, start: monthStart };
-};
-
-const getPreviousMonthWindow = (endDate: DateTime): DateWindow => {
-	const previousMonth = endDate.minus({ months: 1 });
-	return getCurrentMonthWindow(previousMonth);
 };
 
 const getCurrent12MonthWindow = (endDate: DateTime): DateWindow => {
@@ -74,12 +77,18 @@ const isTransactionInWindow = (
 	return txnDate >= window.start && txnDate <= window.end;
 };
 
-const calculateSpending = (
+const sumTotalMap = (totals: Map<number, number>) =>
+	Array.from(totals.values()).reduce((sum, val) => sum + val, 0);
+
+const countTransactionTotals = (
 	transactions: Transaction[],
 	subcategoryMap: Map<number, Subcategory>,
 	window: DateWindow,
-): Map<number, number> => {
-	const spendingBySubcategory = new Map<number, number>();
+): TransactionTotals => {
+	const totals: TransactionTotals = {
+		expenses: new Map<number, number>(),
+		income: new Map<number, number>(),
+	};
 
 	for (const transaction of transactions) {
 		if (!isTransactionInWindow(transaction, window)) {
@@ -92,16 +101,24 @@ const calculateSpending = (
 			continue;
 		}
 
-		const spent = getTransactionSpentValue(transaction, subcategory);
-		const currentSpent =
-			spendingBySubcategory.get(transaction.subcategoryId) || 0;
-		spendingBySubcategory.set(
-			transaction.subcategoryId,
-			currentSpent + spent,
-		);
+		let map: Map<number, number>;
+		let value: number;
+
+		if (subcategory.budget.type === "income") {
+			map = totals.income;
+			value = getTransactionEarnedValue(transaction, subcategory);
+		} else if (subcategory.budget.type === "expense") {
+			map = totals.expenses;
+			value = getTransactionSpentValue(transaction, subcategory);
+		} else {
+			continue;
+		}
+
+		const existingValue = map.get(transaction.subcategoryId) || 0;
+		map.set(transaction.subcategoryId, existingValue + value);
 	}
 
-	return spendingBySubcategory;
+	return totals;
 };
 
 interface BudgetSummaryData {
@@ -125,24 +142,20 @@ export const createBudgetSummaryData = (
 	);
 
 	const currentMonthWindow = getCurrentMonthWindow(endDate);
-	const previousMonthWindow = getPreviousMonthWindow(endDate);
 	const current12MonthWindow = getCurrent12MonthWindow(endDate);
 
-	const currentMonthSpending = calculateSpending(
-		transactions,
-		subcategoryMap,
-		currentMonthWindow,
-	);
-	const previousMonthSpending = calculateSpending(
-		transactions,
-		subcategoryMap,
-		previousMonthWindow,
-	);
-	const current12MonthSpending = calculateSpending(
-		transactions,
-		subcategoryMap,
-		current12MonthWindow,
-	);
+	const { expenses: currentMonthSpending, income: currentMonthIncome } =
+		countTransactionTotals(
+			transactions,
+			subcategoryMap,
+			currentMonthWindow,
+		);
+	const { expenses: current12MonthSpending, income: current12MonthIncome } =
+		countTransactionTotals(
+			transactions,
+			subcategoryMap,
+			current12MonthWindow,
+		);
 
 	let lastMonthBudgeted = 0;
 	let last12MonthsBudgeted = 0;
@@ -159,13 +172,10 @@ export const createBudgetSummaryData = (
 		last12MonthsBudgeted += budgetAmount * occurrencesIn12Months;
 	}
 
-	const lastMonthSpent = Array.from(currentMonthSpending.values()).reduce(
-		(sum, val) => sum + val,
-		0,
-	);
-	const last12MonthsSpent = Array.from(
-		current12MonthSpending.values(),
-	).reduce((sum, val) => sum + val, 0);
+	const lastMonthSpent = sumTotalMap(currentMonthSpending);
+	const last12MonthsSpent = sumTotalMap(current12MonthSpending);
+	const lastMonthIncome = sumTotalMap(currentMonthIncome);
+	const last12MonthsIncome = sumTotalMap(current12MonthIncome);
 
 	const overBudget: OverBudgetItem[] = [];
 	const aboveAverage: AboveAverageItem[] = [];
@@ -183,12 +193,12 @@ export const createBudgetSummaryData = (
 			subcategory.budget.frequency,
 		);
 
-		const currentPeriodSpending = calculateSpending(
+		const { expenses: currentPeriodSpending } = countTransactionTotals(
 			transactions,
 			subcategoryMap,
 			budgetPeriodWindow,
 		);
-		const previousPeriodSpending = calculateSpending(
+		const { expenses: previousPeriodSpending } = countTransactionTotals(
 			transactions,
 			subcategoryMap,
 			previousBudgetPeriodWindow,
@@ -223,12 +233,11 @@ export const createBudgetSummaryData = (
 			const monthlyAverage = Math.ceil(
 				budgetAmount / subcategory.budget.frequency,
 			);
-			const previousMonthSpent =
-				previousMonthSpending.get(subcategory.id) || 0;
+			const spentInMonth = currentMonthSpending.get(subcategory.id) || 0;
 
 			// Since this is an average and isn't precise, we add
 			// $1 here to prevent a "5-cent over" from showing up.
-			if (previousMonthSpent > monthlyAverage + 1) {
+			if (spentInMonth > monthlyAverage + 1) {
 				const spentInPeriod = currentSpent;
 				const remaining = budgetAmount - spentInPeriod;
 
@@ -236,7 +245,7 @@ export const createBudgetSummaryData = (
 					budgetTotal: budgetAmount,
 					monthlyAverage,
 					remaining,
-					spentThisMonth: previousMonthSpent,
+					spentThisMonth: spentInMonth,
 					spentThisPeriod: spentInPeriod,
 					subcategoryId: subcategory.id,
 					type: "aboveAverage",
@@ -275,10 +284,12 @@ export const createBudgetSummaryData = (
 		quickPulse: {
 			last12Months: {
 				budgeted: last12MonthsBudgeted,
+				income: last12MonthsIncome,
 				spent: last12MonthsSpent,
 			},
 			lastMonth: {
 				budgeted: lastMonthBudgeted,
+				income: lastMonthIncome,
 				spent: lastMonthSpent,
 			},
 		},

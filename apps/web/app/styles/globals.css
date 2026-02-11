@@ -17,6 +17,14 @@
 		--background: #0c0a09;
 		--foreground: #e7e5e4;
 	}
+
+	html {
+		color-scheme: dark;
+	}
+
+	.dark {
+		--heroui-overlay: 0 0% 0%;
+	}
 }
 
 html,
@@ -61,10 +69,4 @@ h6 {
 :disabled {
 	cursor: not-allowed;
 	pointer-events: all;
-}
-
-@media (prefers-color-scheme: dark) {
-	html {
-		color-scheme: dark;
-	}
 }

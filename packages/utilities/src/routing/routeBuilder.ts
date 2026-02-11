@@ -9,6 +9,7 @@ const apiRoutes = {
 		base: "/api/categories",
 		sub: "/api/categories/sub",
 	},
+	events: "/api/events",
 	netWorth: {
 		snapshots: "/api/net-worth/snapshots",
 	},
@@ -29,7 +30,6 @@ const webRoutes = {
 	home: "/",
 	netWorth: "/net-worth",
 	retirement: "/retirement",
-	summary: "/summary",
 	transactions: {
 		base: "/transactions",
 		rules: "/transactions/rules",

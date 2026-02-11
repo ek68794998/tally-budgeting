@@ -19,6 +19,7 @@ import { IconNote } from "@tabler/icons-react";
 import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
+import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useMemo, useState } from "react";
@@ -182,7 +183,9 @@ export const TransactionsTable: React.FC = () => {
 			const urlSearchParams = new URLSearchParams(searchParams);
 
 			const response = await fetch(
-				`/api/transactions?${urlSearchParams}`,
+				buildApiRoute(api.transactions.base, {
+					query: urlSearchParams,
+				}),
 				{ signal },
 			);
 

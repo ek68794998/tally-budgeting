@@ -25,12 +25,14 @@ export interface ApiResult<T extends ApiResponse> {
 
 export interface RequestParseErrorResult {
 	error: ApiError;
+	ip: string | undefined;
 	statusCode: HttpStatusCode;
 	success: false;
 }
 
 export interface RequestParseSuccessResult<TBody, TQuery, TParams> {
 	body: TBody;
+	ip: string;
 	params: TParams;
 	query: TQuery;
 	success: true;

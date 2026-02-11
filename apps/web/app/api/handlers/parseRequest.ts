@@ -1,6 +1,7 @@
 import { BadRequest } from "@ekumlin/typescript-toolkit/http";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import { type NextRequest } from "next/server";
+import { getIpAddress } from "../helpers";
 import { type RequestParseResult, type RequestSchemata } from "./types";
 
 export const parseRequestAsync = async <TBody, TQuery, TParams>(
@@ -9,6 +10,8 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 	routeParams: unknown,
 	schemata: RequestSchemata<TBody, TQuery, TParams>,
 ): Promise<RequestParseResult<TBody, TQuery, TParams>> => {
+	const ip = getIpAddress(req) ?? "(UNKNOWN)";
+
 	try {
 		const body: unknown = await (parser ? parser(req) : req.json()).catch(
 			() => ({}),
@@ -23,6 +26,7 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 						message: parsedBody.error.message /* TODO */,
 					},
 				},
+				ip,
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -40,6 +44,7 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 						message: parsedQuery.error.message /* TODO */,
 					},
 				},
+				ip,
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -55,6 +60,7 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 						message: parsedParams.error.message /* TODO */,
 					},
 				},
+				ip,
 				statusCode: BadRequest,
 				success: false,
 			};
@@ -62,6 +68,7 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 
 		return {
 			body: parsedBody.data,
+			ip,
 			params: parsedParams.data,
 			query: parsedQuery.data,
 			success: true,
@@ -76,6 +83,7 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 					message: "Failed to parse request" /* TODO */,
 				},
 			},
+			ip,
 			statusCode: BadRequest,
 			success: false,
 		};

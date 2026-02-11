@@ -14,6 +14,7 @@ describe("routeBuilder", () => {
 			expect(api.budget.summary).toBe("/api/budget/summary");
 			expect(api.categories.base).toBe("/api/categories");
 			expect(api.categories.sub).toBe("/api/categories/sub");
+			expect(api.events).toBe("/api/events");
 			expect(api.netWorth.snapshots).toBe("/api/net-worth/snapshots");
 		});
 
@@ -111,7 +112,6 @@ describe("routeBuilder", () => {
 			expect(web.transactions.rules).toBe("/transactions/rules");
 			expect(web.budget).toBe("/budget");
 			expect(web.assets).toBe("/assets");
-			expect(web.summary).toBe("/summary");
 			expect(web.retirement).toBe("/retirement");
 			expect(web.categories).toBe("/categories");
 			expect(web.netWorth).toBe("/net-worth");

@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const BudgetQuickPulseChart: React.FC<Props> = ({
-	data: { budgeted, spent },
+	data: { budgeted, income, spent },
 	title,
 }) => {
 	const t = useTranslations("budget.quickPulse");
@@ -38,8 +38,8 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 				title,
 				value: (
 					<div className="flex w-full flex-col items-start gap-2 font-normal">
-						<h3 className="text-center text-2xl">{budgetText}</h3>
-						<div className="h-8 w-full rounded-lg bg-stone-300">
+						<h3 className="text-2xl">{budgetText}</h3>
+						<div className="h-8 w-full rounded-lg bg-stone-300 dark:bg-stone-600">
 							<div
 								className={twMerge(
 									"h-full rounded-lg",
@@ -52,6 +52,12 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 								}}
 							/>
 						</div>
+						<h3 className="text-sm">
+							{t.rich("income", {
+								amount: formatCurrency(income),
+								bold: (chunks) => <b>{chunks}</b>,
+							})}
+						</h3>
 					</div>
 				),
 			}}
