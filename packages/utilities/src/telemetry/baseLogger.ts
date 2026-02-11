@@ -80,7 +80,7 @@ export abstract class BaseLogger implements Logger {
 		return {
 			end: (endData) => {
 				const durationMs = Date.now() - startTime;
-				this.log("info", `${event}:END`, {
+				this.log("http", `${event}:END`, {
 					...endData,
 					duration: durationMs,
 				});
