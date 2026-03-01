@@ -2,6 +2,7 @@ import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	addToast,
 	DatePicker,
+	type DateValue,
 	Input,
 	Modal,
 	ModalBody,
@@ -12,7 +13,6 @@ import {
 	type useDisclosure,
 } from "@heroui/react";
 import {
-	type CalendarDate,
 	getLocalTimeZone,
 	parseAbsoluteToLocal,
 	toCalendarDate,
@@ -50,7 +50,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 
 	const [accountId, setAccountId] = useState(0);
 	const [amount, setAmount] = useState(0);
-	const [date, setDate] = useState<CalendarDate | null>(
+	const [date, setDate] = useState<DateValue | null>(
 		today(getLocalTimeZone()),
 	);
 	const [happiness, setHappiness] = useState<HappinessLevel>(

@@ -35,9 +35,9 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 		(inputRow, accountName, customizations) => {
 			const { accounts, subcategories } = customizations;
 
-			const description = trimBoilerplateFromDescription(
-				inputRow.Merchant,
-			);
+			const description =
+				trimBoilerplateFromDescription(inputRow.Description) ||
+				trimBoilerplateFromDescription(inputRow.Merchant);
 			const { merchant, subcategoryId } = parseDescription(
 				description,
 				customizations,
