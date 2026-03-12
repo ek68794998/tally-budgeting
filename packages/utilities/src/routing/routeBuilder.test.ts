@@ -110,7 +110,7 @@ describe("routeBuilder", () => {
 			expect(web.home).toBe("/");
 			expect(web.transactions.base).toBe("/transactions");
 			expect(web.transactions.rules).toBe("/transactions/rules");
-			expect(web.budget).toBe("/budget");
+			expect(web.budget.base).toBe("/budget");
 			expect(web.assets).toBe("/assets");
 			expect(web.retirement).toBe("/retirement");
 			expect(web.categories).toBe("/categories");

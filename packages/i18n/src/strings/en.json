@@ -104,9 +104,14 @@
 		"quickPulse": {
 			"income": "Against <bold>{amount}</bold> net income",
 			"month": "Last Month",
+			"spending": "Spending details",
 			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
 			"title": "Quick Pulse",
 			"year": "Last 12 Months"
+		},
+		"spending": {
+			"chartTitle": "Spending by Category",
+			"otherLabel": "Other"
 		},
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
 		"spentOverall": "<bold>{spent}</bold> {period}",

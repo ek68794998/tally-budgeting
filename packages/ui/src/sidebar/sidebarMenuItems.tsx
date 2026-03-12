@@ -57,7 +57,7 @@ export const SidebarMenuItems: React.FC<Props> = ({
 			)}
 		</div>
 		<div className="text-center text-xs text-stone-500">
-			<div className="my-4 h-[1px] bg-stone-200" />
+			<div className="my-4 h-px bg-stone-200" />
 			{`© ${copyrightYear} Eric Kumlin`}
 		</div>
 	</div>

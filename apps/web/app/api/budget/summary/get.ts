@@ -18,8 +18,8 @@ import { createBudgetSummaryData } from "./helpers";
 const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
-export const GetBudgetRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:BUDGET",
+export const GetBudgetSummaryRouteAsync: NextResponseFn = createApiHandler({
+	eventName: "GET:BUDGET/SUMMARY",
 	handler: async ({
 		query: searchParams,
 	}): Promise<ApiResult<GetBudgetSummaryResponse>> => {
