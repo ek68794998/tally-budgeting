@@ -44,6 +44,8 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 	const [categoryId, setCategoryId] = useState(DefaultCategoryId);
 	const [description, setDescription] = useState("");
 	const [label, setLabel] = useState("");
+	const [percentNeeds, setPercentNeeds] = useState(0);
+	const [percentWants, setPercentWants] = useState(0);
 
 	const isModalOpen = isOpen && !!subcategory;
 
@@ -60,7 +62,29 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 		setCategoryId(subcategory.categoryId);
 		setDescription(subcategory.description);
 		setLabel(subcategory.label);
+		setPercentNeeds(subcategory.percentNeeds);
+		setPercentWants(
+			100 - subcategory.percentNeeds - subcategory.percentSavings,
+		);
 	}, [isModalOpen, subcategory]);
+
+	const updatePercentNeeds = (newNeeds: number) => {
+		if (newNeeds + percentWants > 100) {
+			setPercentWants(100 - newNeeds);
+		}
+
+		setPercentNeeds(newNeeds);
+	};
+
+	const updatePercentWants = (newWants: number) => {
+		if (newWants + percentNeeds > 100) {
+			setPercentNeeds(100 - newWants);
+		}
+
+		setPercentWants(newWants);
+	};
+
+	const percentSavings = 100 - percentNeeds - percentWants;
 
 	return (
 		<Modal
@@ -142,6 +166,44 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 								onValueChange={setBudgetFrequency}
 								value={budgetFrequency}
 							/>
+							{budgetType === "expense" ? (
+								<div className="flex justify-between gap-2">
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentNeeds",
+										)}
+										maxValue={100}
+										minValue={0}
+										onValueChange={updatePercentNeeds}
+										value={percentNeeds}
+									/>
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentWants",
+										)}
+										maxValue={100}
+										minValue={0}
+										onValueChange={updatePercentWants}
+										value={percentWants}
+									/>
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentSavings",
+										)}
+										readOnly={true}
+										value={percentSavings}
+									/>
+								</div>
+							) : null}
 							<Textarea
 								label={t(
 									"categoriesEdit.subcategoryColumns.description",
@@ -170,6 +232,8 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 									categoryId,
 									description,
 									label,
+									percentNeeds,
+									percentSavings,
 								});
 							}}
 							onSaveError={() =>

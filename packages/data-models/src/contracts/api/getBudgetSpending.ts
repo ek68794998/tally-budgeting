@@ -11,12 +11,16 @@ export type GetBudgetSpendingQuery = z.infer<
 >;
 
 export const getBudgetSpendingResponseSchema = createApiResponseSchema({
-	data: z.array(
+	incomeCents: z.int(),
+	spending: z.array(
 		z.object({
 			spentCents: z.int(),
 			subcategoryId: z.int(),
 		}),
 	),
+	spentOnNeedsCents: z.int(),
+	spentOnSavingsCents: z.int(),
+	spentOnWantsCents: z.int(),
 });
 
 export type GetBudgetSpendingResponse = z.infer<
