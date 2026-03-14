@@ -1,3 +1,4 @@
+import { type BudgetType } from "@tally/data-models/contracts/budgetType";
 import {
 	DefaultSubcategory,
 	type Subcategory,
@@ -24,7 +25,7 @@ describe("Budget API helpers", () => {
 			label: string,
 			amountCents: number,
 			frequency: number,
-			type: "expense" | "income" | "neutral" = "expense",
+			type: BudgetType = "expense",
 		): Subcategory => ({
 			...DefaultSubcategory,
 			budget: {

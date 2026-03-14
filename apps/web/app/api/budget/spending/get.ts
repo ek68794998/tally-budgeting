@@ -13,6 +13,7 @@ import { createApiHandler } from "../../handlers/createApiHandler";
 import { HttpError } from "../../handlers/httpError";
 import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
+import { calculateBudgetSpending } from "./helpers";
 
 const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 const txnsClientLazy = new Lazy(() => new TxnsClient());
@@ -48,74 +49,18 @@ export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
 
 		endProfiling();
 
-		const spending: GetBudgetSpendingResponse["spending"] = [];
-		const spendingBySubcategory: Record<number, number> = {};
-		let incomeCents = 0;
-		let spentOnNeedsCents = 0;
-		let spentOnSavingsCents = 0;
-		let spentOnWantsCents = 0;
-
-		for (const transaction of transactions) {
-			const { amountCents, subcategoryId } = transaction;
-			const subcategory = subcategories.find(
-				(s) => s.id === subcategoryId,
-			);
-
-			if (!subcategory) {
-				continue;
-			}
-
-			if (subcategory.budget.type === "neutral") {
-				continue;
-			}
-
-			if (subcategory.budget.type === "income") {
-				incomeCents += amountCents;
-			}
-
-			const percentSavings = subcategory.percentSavings / 100.0;
-			spentOnSavingsCents += percentSavings * amountCents;
-
-			if (subcategory.budget.type !== "expense") {
-				continue;
-			}
-
-			const percentNeeds = subcategory.percentNeeds / 100.0;
-			const percentWants = 1.0 - percentSavings - percentNeeds;
-
-			spentOnNeedsCents += percentNeeds * amountCents;
-			spentOnWantsCents += percentWants * amountCents;
-
-			spendingBySubcategory[subcategoryId] =
-				(spendingBySubcategory[subcategoryId] ?? 0) + amountCents;
-		}
-
-		for (const [subcategoryId, spentCents] of Object.entries(
-			spendingBySubcategory,
-		)) {
-			spending.push({
-				spentCents,
-				subcategoryId: Number(subcategoryId),
-			});
-		}
-
-		spending.sort((a, b) => b.spentCents - a.spentCents);
-
-		const notSpentCents = Math.max(
-			0,
-			incomeCents -
-				spentOnNeedsCents -
-				spentOnSavingsCents -
-				spentOnWantsCents,
-		);
+		const {
+			spending,
+			spentOnNeedsCents,
+			spentOnSavingsCents,
+			spentOnWantsCents,
+		} = calculateBudgetSpending({ subcategories, transactions });
 
 		const responseData: GetBudgetSpendingResponse = {
 			spending,
-			spentOnNeedsCents: Math.round(spentOnNeedsCents),
-			spentOnSavingsCents: Math.round(
-				spentOnSavingsCents + notSpentCents,
-			),
-			spentOnWantsCents: Math.round(spentOnWantsCents),
+			spentOnNeedsCents,
+			spentOnSavingsCents,
+			spentOnWantsCents,
 			success: true,
 		};
 

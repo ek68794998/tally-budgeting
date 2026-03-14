@@ -21,6 +21,7 @@ export const buildSubpageMap = (
 	entries: Parameters<typeof buildPageData>[],
 ): SubpageMap =>
 	entries.reduce<SubpageMap>((map, [route, title]) => {
-		map[getSlug(route) ?? ""] = buildPageData(route, title);
+		const { slug: _, ...rest } = buildPageData(route, title);
+		map[getSlug(route) ?? ""] = rest;
 		return map;
 	}, {});
