@@ -22,7 +22,10 @@ describe("budgetSpendingPage helpers", () => {
 
 			it("should return start and end of previous month when both are invalid strings", () => {
 				vi.setSystemTime(new Date("2024-04-10T12:00:00Z"));
-				const [start, end] = getDateWindow("not-a-date", "also-not-a-date");
+				const [start, end] = getDateWindow(
+					"not-a-date",
+					"also-not-a-date",
+				);
 
 				expect(start.toISODate()).toBe("2024-03-01");
 				expect(end.toISODate()).toBe("2024-03-31");
@@ -164,8 +167,20 @@ describe("budgetSpendingPage helpers", () => {
 
 		describe("leap year dates", () => {
 			it.each([
-				["as startDate with explicit endDate", "2024-02-29", "2024-03-15", "2024-02-29", "2024-03-15"],
-				["as endDate with explicit startDate", "2024-01-15", "2024-02-29", "2024-01-15", "2024-02-29"],
+				[
+					"as startDate with explicit endDate",
+					"2024-02-29",
+					"2024-03-15",
+					"2024-02-29",
+					"2024-03-15",
+				],
+				[
+					"as endDate with explicit startDate",
+					"2024-01-15",
+					"2024-02-29",
+					"2024-01-15",
+					"2024-02-29",
+				],
 			])("should handle Feb 29 %s", (_label, startIn, endIn, expectedStart, expectedEnd) => {
 				const [start, end] = getDateWindow(startIn, endIn);
 
