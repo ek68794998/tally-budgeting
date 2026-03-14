@@ -1,5 +1,6 @@
-import { Button, Link } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { type Icon } from "@tabler/icons-react";
+import NextLink from "next/link";
 
 export interface SidebarMenuItem {
 	href: string;
@@ -29,7 +30,7 @@ export const SidebarMenuItems: React.FC<Props> = ({
 		<div className="flex flex-1 flex-col gap-2">
 			{menuItems.map(({ href, IconComponent, id, isSelected, label }) => (
 				<Button
-					as={Link}
+					as={NextLink}
 					className="justify-start"
 					href={href}
 					key={id}
@@ -44,7 +45,7 @@ export const SidebarMenuItems: React.FC<Props> = ({
 			{footerMenuItems?.map(
 				({ href, IconComponent, id, isSelected, label }) => (
 					<Button
-						as={Link}
+						as={NextLink}
 						className="justify-start"
 						href={href}
 						key={id}
