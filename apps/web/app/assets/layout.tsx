@@ -1,6 +1,6 @@
+import { PageLayout } from "@tally/ui/common/pageLayout";
 import { HelpLink } from "@tally/ui/helpLink/helpLink";
 import { useTranslations } from "next-intl";
-import { PageLayout } from "../components/pageLayout";
 
 const AssetsLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const t = useTranslations();

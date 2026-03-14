@@ -4,6 +4,7 @@ import { createApiResponseSchema } from "./types";
 
 const quickPulsePeriodSchema = z.object({
 	budgeted: z.number(),
+	duration: z.enum(["last12Months", "lastMonth"]),
 	income: z.number(),
 	spent: z.number(),
 });

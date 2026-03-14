@@ -10,7 +10,7 @@ export const BudgetQuickPulseCharts: React.FC<Props> = ({ data }) => {
 	const t = useTranslations("budget.quickPulse");
 
 	return (
-		<div className="flex gap-4">
+		<div className="flex flex-wrap gap-4">
 			<div className="w-80">
 				<BudgetQuickPulseChart
 					data={data.lastMonth}

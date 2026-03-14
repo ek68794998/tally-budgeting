@@ -8,31 +8,31 @@ import {
 	DropdownTrigger,
 } from "@heroui/react";
 import { IconCategory, IconDots, IconList } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { web } from "@tally/utilities/routing/routeBuilder";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { type DropdownEntry } from "../types";
+import { type DropdownLinkEntry } from "../types";
 
 export const TransactionsMenuDropdown = () => {
-	const router = useRouter();
 	const t = useTranslations();
 
-	const dropdownEntries: DropdownEntry[] = useMemo(
+	const dropdownEntries: DropdownLinkEntry[] = useMemo(
 		() => [
 			{
-				action: () => router.push("/transactions/rules"),
+				href: web.transactions.rules,
 				IconComponent: IconList,
 				key: "rules",
 				label: t("transactions.rules.edit"),
 			},
 			{
-				action: () => router.push("/budget/categories"),
+				href: web.budget.categories,
 				IconComponent: IconCategory,
 				key: "categories",
 				label: t("budget.editCategories"),
 			},
 		],
-		[router, t],
+		[t],
 	);
 
 	return (
@@ -43,10 +43,11 @@ export const TransactionsMenuDropdown = () => {
 				</Button>
 			</DropdownTrigger>
 			<DropdownMenu items={dropdownEntries}>
-				{({ action, IconComponent, key, label }) => (
+				{({ href, IconComponent, key, label }) => (
 					<DropdownItem
+						as={NextLink}
+						href={href}
 						key={key}
-						onPress={action}
 						startContent={<IconComponent />}
 					>
 						{label}

@@ -110,11 +110,13 @@ describe("routeBuilder", () => {
 			expect(web.home).toBe("/");
 			expect(web.transactions.base).toBe("/transactions");
 			expect(web.transactions.rules).toBe("/transactions/rules");
-			expect(web.budget).toBe("/budget");
+			expect(web.transactions.upload).toBe("/transactions/upload");
+			expect(web.budget.base).toBe("/budget");
+			expect(web.budget.categories).toBe("/budget/categories");
+			expect(web.budget.spending).toBe("/budget/spending");
 			expect(web.assets).toBe("/assets");
 			expect(web.retirement).toBe("/retirement");
 			expect(web.categories).toBe("/categories");
-			expect(web.netWorth).toBe("/net-worth");
 		});
 
 		it("should build web routes without params", () => {

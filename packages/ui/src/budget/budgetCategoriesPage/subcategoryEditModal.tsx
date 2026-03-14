@@ -1,6 +1,7 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	addToast,
+	Checkbox,
 	Input,
 	Modal,
 	ModalBody,
@@ -43,7 +44,10 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 	const [budgetType, setBudgetType] = useState<BudgetType>("expense");
 	const [categoryId, setCategoryId] = useState(DefaultCategoryId);
 	const [description, setDescription] = useState("");
+	const [isPreTaxSavings, setIsPreTaxSavings] = useState(false);
 	const [label, setLabel] = useState("");
+	const [pctNeeds, setPctNeeds] = useState(0);
+	const [pctWants, setPctWants] = useState(0);
 
 	const isModalOpen = isOpen && !!subcategory;
 
@@ -59,8 +63,42 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 		setBudgetType(subcategory.budget.type);
 		setCategoryId(subcategory.categoryId);
 		setDescription(subcategory.description);
+		setIsPreTaxSavings(
+			subcategory.budget.type === "income" &&
+				subcategory.percentSavings > 99,
+		);
 		setLabel(subcategory.label);
+		setPctNeeds(subcategory.percentNeeds);
+		setPctWants(
+			100 - subcategory.percentNeeds - subcategory.percentSavings,
+		);
 	}, [isModalOpen, subcategory]);
+
+	const updatePctNeeds = (newNeeds: number) => {
+		if (newNeeds + pctWants > 100) {
+			setPctWants(100 - newNeeds);
+		}
+
+		setPctNeeds(newNeeds);
+	};
+
+	const updatePctWants = (newWants: number) => {
+		if (newWants + pctNeeds > 100) {
+			setPctNeeds(100 - newWants);
+		}
+
+		setPctWants(newWants);
+	};
+
+	const pctSavings = 100 - pctNeeds - pctWants;
+
+	let percentSavings = pctSavings;
+	let percentNeeds = pctNeeds;
+
+	if (budgetType === "income") {
+		percentNeeds = 0;
+		percentSavings = isPreTaxSavings ? 100 : 0;
+	}
 
 	return (
 		<Modal
@@ -115,6 +153,56 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 									</SelectItem>
 								))}
 							</Select>
+							{budgetType === "expense" ? (
+								<div className="flex justify-between gap-2">
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentNeeds",
+										)}
+										maxValue={100}
+										minValue={0}
+										onValueChange={updatePctNeeds}
+										value={pctNeeds}
+									/>
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentWants",
+										)}
+										maxValue={100}
+										minValue={0}
+										onValueChange={updatePctWants}
+										value={pctWants}
+									/>
+									<NumberInput
+										formatOptions={{
+											maximumFractionDigits: 0,
+										}}
+										label={t(
+											"categoriesEdit.subcategoryColumns.percentSavings",
+										)}
+										readOnly={true}
+										value={pctSavings}
+									/>
+								</div>
+							) : budgetType === "income" ? (
+								<Checkbox
+									classNames={{
+										label: "text-sm",
+									}}
+									isSelected={isPreTaxSavings}
+									onValueChange={setIsPreTaxSavings}
+								>
+									{t(
+										"categoriesEdit.subcategoryColumns.isPreTaxSavings",
+									)}
+								</Checkbox>
+							) : null}
 							<NumberInput
 								formatOptions={{
 									currency: "USD",
@@ -170,6 +258,8 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 									categoryId,
 									description,
 									label,
+									percentNeeds,
+									percentSavings,
 								});
 							}}
 							onSaveError={() =>

@@ -3,6 +3,7 @@ import "./styles/globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { getLocale } from "next-intl/server";
+import NextTopLoader from "nextjs-toploader";
 import { twMerge } from "tailwind-merge";
 import { ClientProviders } from "./clientProviders";
 import { ServerProviders } from "./serverProviders";
@@ -39,7 +40,13 @@ const RootLayout: React.FC<React.PropsWithChildren> = async ({ children }) => {
 				)}
 			>
 				<ServerProviders locale={locale}>
-					<ClientProviders>{children}</ClientProviders>
+					<ClientProviders>
+						<NextTopLoader
+							color="hsl(var(--heroui-primary-500))"
+							showSpinner={false}
+						/>
+						{children}
+					</ClientProviders>
 				</ServerProviders>
 			</body>
 		</html>

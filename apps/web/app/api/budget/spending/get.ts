@@ -1,9 +1,9 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
-	type GetBudgetSummaryResponse,
-	getBudgetQuerySchema,
-} from "@tally/data-models/contracts/api/getBudgetSummary";
+	type GetBudgetSpendingResponse,
+	getBudgetSpendingQuerySchema,
+} from "@tally/data-models/contracts/api/getBudgetSpending";
 import { DateTime } from "luxon";
 import z from "zod";
 import { SubcategoriesClient } from "../../../storage/subcategoriesClient";
@@ -13,64 +13,65 @@ import { createApiHandler } from "../../handlers/createApiHandler";
 import { HttpError } from "../../handlers/httpError";
 import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
-import { createBudgetSummaryData } from "./helpers";
+import { calculateBudgetSpending } from "./helpers";
 
 const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
-export const GetBudgetSummaryRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:BUDGET/SUMMARY",
+export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
+	eventName: "GET:BUDGET/SPENDING",
 	handler: async ({
 		query: searchParams,
-	}): Promise<ApiResult<GetBudgetSummaryResponse>> => {
+	}): Promise<ApiResult<GetBudgetSpendingResponse>> => {
 		const subcategoriesClient = subcategoriesClientLazy.get();
 		const txnsClient = txnsClientLazy.get();
 
-		const endMonth = Number(searchParams.endMonth);
-		const endYear = Number(searchParams.endYear);
+		const endDate = DateTime.fromISO(searchParams.endDate);
+		const startDate = DateTime.fromISO(searchParams.startDate);
 
-		const endDateMonth = DateTime.fromObject(
-			{ month: endMonth, year: endYear },
-			{ zone: "UTC" },
-		);
-
-		if (!endDateMonth.isValid) {
+		if (!endDate.isValid || !startDate.isValid) {
 			throw new HttpError(
-				"Invalid end date.",
+				"Invalid date.",
 				BadRequest,
 				"invalidQueryParameters",
 			);
 		}
 
-		const endDate = endDateMonth.endOf("month");
-		const searchStartDate = endDate.startOf("month").minus({ months: 23 });
-
 		const { end: endProfiling } = telemetry().profile(
-			"GET_BUDGET_SUMMARY_DATA",
+			"GET_BUDGET_SPENDING_DATA",
 		);
 
 		const subcategories = await subcategoriesClient.getSubcategoriesAsync();
 		const transactions = await txnsClient.getTransactionsInPeriodAsync(
-			searchStartDate,
-			endDate,
+			startDate.startOf("day"),
+			endDate.endOf("day"),
 		);
 
 		endProfiling();
 
-		const summaryData = createBudgetSummaryData({
-			endDate,
-			subcategories,
-			transactions,
-		});
+		const {
+			spending,
+			spentOnNeedsCents,
+			spentOnSavingsCents,
+			spentOnWantsCents,
+		} = calculateBudgetSpending({ subcategories, transactions });
+
+		const responseData: GetBudgetSpendingResponse = {
+			spending,
+			spentOnNeedsCents,
+			spentOnSavingsCents,
+			spentOnWantsCents,
+			success: true,
+		};
 
 		return {
-			data: summaryData,
+			data: responseData,
 			statusCode: Ok,
 		};
 	},
 	schemata: {
 		body: z.unknown(),
 		params: z.unknown(),
-		query: getBudgetQuerySchema,
+		query: getBudgetSpendingQuerySchema,
 	},
 });

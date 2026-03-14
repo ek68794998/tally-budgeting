@@ -1,3 +1,3 @@
-import { GetBudgetRouteAsync } from "./get";
+import { GetBudgetSummaryRouteAsync } from "./get";
 
-export { GetBudgetRouteAsync as GET };
+export { GetBudgetSummaryRouteAsync as GET };

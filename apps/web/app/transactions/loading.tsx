@@ -1,4 +1,4 @@
-import { SpinnerPage } from "../components/spinnerPage";
+import { SpinnerPage } from "@tally/ui/common/spinnerPage";
 
 const TransactionsLoading = () => <SpinnerPage />;
 

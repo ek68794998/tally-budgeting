@@ -284,11 +284,13 @@ export const createBudgetSummaryData = (
 		quickPulse: {
 			last12Months: {
 				budgeted: last12MonthsBudgeted,
+				duration: "last12Months",
 				income: last12MonthsIncome,
 				spent: last12MonthsSpent,
 			},
 			lastMonth: {
 				budgeted: lastMonthBudgeted,
+				duration: "lastMonth",
 				income: lastMonthIncome,
 				spent: lastMonthSpent,
 			},

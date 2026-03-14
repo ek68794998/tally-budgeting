@@ -1,4 +1,9 @@
+import { Link } from "@heroui/react";
+import { IconChevronsRight } from "@tabler/icons-react";
 import { type QuickPulsePeriod } from "@tally/data-models/contracts/api/getBudgetSummary";
+import { buildWebRoute, web } from "@tally/utilities/routing/routeBuilder";
+import { DateTime } from "luxon";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { DataCard } from "../../common/dataCard";
@@ -10,7 +15,7 @@ interface Props {
 }
 
 export const BudgetQuickPulseChart: React.FC<Props> = ({
-	data: { budgeted, income, spent },
+	data: { budgeted, duration, income, spent },
 	title,
 }) => {
 	const t = useTranslations("budget.quickPulse");
@@ -29,6 +34,15 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 				{chunks}
 			</span>
 		),
+	});
+
+	const endDate = DateTime.now().minus({ months: 1 }).endOf("month");
+	const startDate = endDate
+		.minus({ months: duration === "last12Months" ? 11 : 0 })
+		.startOf("month");
+
+	const spendingRoute = buildWebRoute(web.budget.spending, {
+		query: { end: endDate.toISODate(), start: startDate.toISODate() },
 	});
 
 	return (
@@ -57,6 +71,16 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 								amount: formatCurrency(income),
 								bold: (chunks) => <b>{chunks}</b>,
 							})}
+						</h3>
+						<h3 className="text-sm font-bold opacity-80">
+							<Link
+								as={NextLink}
+								className="flex items-center gap-1 text-inherit"
+								href={spendingRoute}
+							>
+								{t("spending")}
+								<IconChevronsRight size={12} />
+							</Link>
 						</h3>
 					</div>
 				),
