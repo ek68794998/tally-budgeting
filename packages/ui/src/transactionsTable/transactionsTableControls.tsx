@@ -23,7 +23,7 @@ import { type ODataLiteFilterExpression } from "@tally/utilities/oData/types";
 import { web } from "@tally/utilities/routing/routeBuilder";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
-import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useAssets } from "../hooks/store/useAssets";
@@ -50,7 +50,6 @@ export const TransactionsTableControls: React.FC<Props> = ({
 }) => {
 	const { assets } = useAssets();
 	const { subcategories } = useCategories();
-	const router = useRouter();
 	const t = useTranslations("transactions");
 
 	const [accountIds, setAccountIds] = useState<SharedSelection>(new Set());
@@ -117,13 +116,13 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				label: t("listControls.addOne"),
 			},
 			{
-				action: () => router.push(web.transactions.upload),
+				href: web.transactions.upload,
 				IconComponent: IconUpload,
 				key: "upload",
 				label: t("upload.action"),
 			},
 		],
-		[onNewTransaction, router, t],
+		[onNewTransaction, t],
 	);
 
 	const sortedAccounts = useMemo(
@@ -180,15 +179,34 @@ export const TransactionsTableControls: React.FC<Props> = ({
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu items={dropdownEntries}>
-							{({ action, IconComponent, key, label }) => (
-								<DropdownItem
-									key={key}
-									onPress={action}
-									startContent={<IconComponent />}
-								>
-									{label}
-								</DropdownItem>
-							)}
+							{(item) => {
+								const {
+									action,
+									IconComponent,
+									key,
+									label,
+									...entry
+								} = {
+									action: undefined,
+									...item,
+								};
+
+								if (action) {
+									entry.onPress = action;
+								} else {
+									entry.as = NextLink;
+								}
+
+								return (
+									<DropdownItem
+										key={key}
+										startContent={<IconComponent />}
+										{...entry}
+									>
+										{label}
+									</DropdownItem>
+								);
+							}}
 						</DropdownMenu>
 					</Dropdown>
 				</ButtonGroup>

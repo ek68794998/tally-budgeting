@@ -6,6 +6,7 @@ import {
 	DropdownTrigger,
 } from "@heroui/react";
 import { IconDots } from "@tabler/icons-react";
+import NextLink from "next/link";
 import { type DropdownEntry } from "../types";
 
 interface Props {
@@ -20,16 +21,28 @@ export const MoreDropdown: React.FC<Props> = ({ entries }) => (
 			</Button>
 		</DropdownTrigger>
 		<DropdownMenu items={entries}>
-			{({ action, IconComponent, key, label, ...entry }) => (
-				<DropdownItem
-					key={key}
-					onPress={action}
-					startContent={<IconComponent />}
-					{...entry}
-				>
-					{label}
-				</DropdownItem>
-			)}
+			{(item) => {
+				const { action, IconComponent, key, label, ...entry } = {
+					action: undefined,
+					...item,
+				};
+
+				if (action) {
+					entry.onPress = action;
+				} else {
+					entry.as = NextLink;
+				}
+
+				return (
+					<DropdownItem
+						key={key}
+						startContent={<IconComponent />}
+						{...entry}
+					>
+						{label}
+					</DropdownItem>
+				);
+			}}
 		</DropdownMenu>
 	</Dropdown>
 );

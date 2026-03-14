@@ -13,7 +13,7 @@ import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { type DropdownEntry } from "../types";
+import { type DropdownActionEntry } from "../types";
 
 interface Props {
 	onDelete: (selection: Selection) => void;
@@ -44,8 +44,8 @@ export const RulesTableControls: React.FC<Props> = ({
 		{ wait: debounceMilliseconds.toMillis() },
 	);
 
-	const dropdownEntries: DropdownEntry[] = useMemo(() => {
-		const entries: DropdownEntry[] = [];
+	const dropdownEntries: DropdownActionEntry[] = useMemo(() => {
+		const entries: DropdownActionEntry[] = [];
 
 		if (selectedRules === "all" || selectedRules.size > 0) {
 			entries.push({

@@ -9,25 +9,24 @@ import {
 } from "@heroui/react";
 import { IconCategory, IconDots } from "@tabler/icons-react";
 import { web } from "@tally/utilities/routing/routeBuilder";
-import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { type DropdownEntry } from "../../types";
+import { type DropdownLinkEntry } from "../../types";
 
 export const BudgetMenuDropdown = () => {
-	const router = useRouter();
 	const t = useTranslations("budget");
 
-	const dropdownEntries: DropdownEntry[] = useMemo(
+	const dropdownEntries: DropdownLinkEntry[] = useMemo(
 		() => [
 			{
-				action: () => router.push(web.budget.categories),
+				href: web.budget.categories,
 				IconComponent: IconCategory,
 				key: "edit",
 				label: t("editCategories"),
 			},
 		],
-		[router, t],
+		[t],
 	);
 
 	return (
@@ -38,10 +37,11 @@ export const BudgetMenuDropdown = () => {
 				</Button>
 			</DropdownTrigger>
 			<DropdownMenu items={dropdownEntries}>
-				{({ action, IconComponent, key, label }) => (
+				{({ href, IconComponent, key, label }) => (
 					<DropdownItem
+						as={NextLink}
+						href={href}
 						key={key}
-						onPress={action}
 						startContent={<IconComponent />}
 					>
 						{label}
