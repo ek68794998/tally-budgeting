@@ -8,6 +8,7 @@ import {
 	DropdownTrigger,
 } from "@heroui/react";
 import { IconCategory, IconDots } from "@tabler/icons-react";
+import { web } from "@tally/utilities/routing/routeBuilder";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -20,7 +21,7 @@ export const BudgetMenuDropdown = () => {
 	const dropdownEntries: DropdownEntry[] = useMemo(
 		() => [
 			{
-				action: () => router.push("/budget/categories"),
+				action: () => router.push(web.budget.categories),
 				IconComponent: IconCategory,
 				key: "edit",
 				label: t("editCategories"),

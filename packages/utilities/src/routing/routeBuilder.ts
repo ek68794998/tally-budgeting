@@ -28,6 +28,7 @@ const webRoutes = {
 	assets: "/assets",
 	budget: {
 		base: "/budget",
+		categories: "/budget/categories",
 		spending: "/budget/spending",
 	},
 	categories: "/categories",
@@ -36,6 +37,7 @@ const webRoutes = {
 	transactions: {
 		base: "/transactions",
 		rules: "/transactions/rules",
+		upload: "/transactions/upload",
 	},
 } as const;
 

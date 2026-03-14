@@ -20,6 +20,7 @@ import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { buildODataLiteFilter } from "@tally/utilities/oData/build";
 import { type ODataLiteFilterExpression } from "@tally/utilities/oData/types";
+import { web } from "@tally/utilities/routing/routeBuilder";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useRouter } from "next/navigation";
@@ -116,7 +117,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				label: t("listControls.addOne"),
 			},
 			{
-				action: () => router.push("/transactions/upload"),
+				action: () => router.push(web.transactions.upload),
 				IconComponent: IconUpload,
 				key: "upload",
 				label: t("upload.action"),
