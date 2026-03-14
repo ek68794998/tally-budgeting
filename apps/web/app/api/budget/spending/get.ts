@@ -101,11 +101,13 @@ export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
 
 		spending.sort((a, b) => b.spentCents - a.spentCents);
 
-		const notSpentCents =
+		const notSpentCents = Math.max(
+			0,
 			incomeCents -
-			spentOnNeedsCents -
-			spentOnSavingsCents -
-			spentOnWantsCents;
+				spentOnNeedsCents -
+				spentOnSavingsCents -
+				spentOnWantsCents,
+		);
 
 		const responseData: GetBudgetSpendingResponse = {
 			spending,

@@ -117,10 +117,14 @@
 			"areaChartTitle": "Spending by Area",
 			"areas": {
 				"needs": "Needs",
-				"savings": "Not Spent (Savings)",
+				"savings": "Savings",
 				"wants": "Wants"
 			},
 			"categoryChartTitle": "Spending by Category",
+			"controls": {
+				"endDate": "End Date",
+				"startDate": "Start Date"
+			},
 			"errors": {
 				"noData": "There is no spending data for the given period.",
 				"noDates": "At least one of start and end date must be provided as a valid ISO-8601 value."
