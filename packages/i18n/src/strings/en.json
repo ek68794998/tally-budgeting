@@ -61,6 +61,7 @@
 				"budgetType": "Budget Type",
 				"categoryId": "Category",
 				"description": "Description",
+				"isPreTaxSavings": "Used for Pre-Tax Savings?",
 				"label": "Label",
 				"percentNeeds": "% Needs",
 				"percentSavings": "% Savings",
@@ -107,7 +108,7 @@
 		"quickPulse": {
 			"income": "Against <bold>{amount}</bold> net income",
 			"month": "Last Month",
-			"spending": "View spending",
+			"spending": "View Spending",
 			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
 			"title": "Quick Pulse",
 			"year": "Last 12 Months"

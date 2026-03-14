@@ -75,7 +75,7 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
 						<h3 className="text-sm font-bold opacity-80">
 							<Link
 								as={NextLink}
-								className="flex items-center gap-1"
+								className="flex items-center gap-1 text-inherit"
 								href={spendingRoute}
 							>
 								{t("spending")}

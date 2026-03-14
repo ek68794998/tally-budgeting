@@ -34,7 +34,7 @@ export const SpendingView: React.FC = () => {
 
 	return (
 		<div className="grid grid-cols-2 gap-4">
-			{/* Table controls */}
+			{/* TODO Table controls */}
 			<Card isBlurred={true}>
 				<CardBody className="p-8">
 					<SpendingAreas
@@ -53,7 +53,6 @@ export const SpendingView: React.FC = () => {
 					/>
 				</CardBody>
 			</Card>
-			{/*  */}
 		</div>
 	);
 };

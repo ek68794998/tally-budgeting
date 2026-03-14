@@ -65,21 +65,25 @@ export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
 				continue;
 			}
 
-			if (subcategory.budget.type === "income") {
-				incomeCents += amountCents;
+			if (subcategory.budget.type === "neutral") {
 				continue;
 			}
+
+			if (subcategory.budget.type === "income") {
+				incomeCents += amountCents;
+			}
+
+			const percentSavings = subcategory.percentSavings / 100.0;
+			spentOnSavingsCents += percentSavings * amountCents;
 
 			if (subcategory.budget.type !== "expense") {
 				continue;
 			}
 
 			const percentNeeds = subcategory.percentNeeds / 100.0;
-			const percentSavings = subcategory.percentSavings / 100.0;
 			const percentWants = 1.0 - percentSavings - percentNeeds;
 
 			spentOnNeedsCents += percentNeeds * amountCents;
-			spentOnSavingsCents += percentSavings * amountCents;
 			spentOnWantsCents += percentWants * amountCents;
 
 			spendingBySubcategory[subcategoryId] =
@@ -104,7 +108,6 @@ export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
 			spentOnWantsCents;
 
 		const responseData: GetBudgetSpendingResponse = {
-			incomeCents,
 			spending,
 			spentOnNeedsCents: Math.round(spentOnNeedsCents),
 			spentOnSavingsCents: Math.round(

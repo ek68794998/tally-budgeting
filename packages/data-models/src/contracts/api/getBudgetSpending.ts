@@ -11,7 +11,6 @@ export type GetBudgetSpendingQuery = z.infer<
 >;
 
 export const getBudgetSpendingResponseSchema = createApiResponseSchema({
-	incomeCents: z.int(),
 	spending: z.array(
 		z.object({
 			spentCents: z.int(),
