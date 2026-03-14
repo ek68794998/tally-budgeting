@@ -71,8 +71,8 @@ export const SpendingAreas: React.FC<Props> = ({
 				},
 			]}
 			formatValue={formatCurrency}
-			showLegend={true}
-			size={300}
+			legend={{ enabled: true }}
+			size={340}
 			title={t("areaChartTitle")}
 		/>
 	);

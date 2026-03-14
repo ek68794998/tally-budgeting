@@ -124,7 +124,8 @@
 				"noData": "There is no spending data for the given period.",
 				"noDates": "At least one of start and end date must be provided as a valid ISO-8601 value."
 			},
-			"otherLabel": "Other"
+			"otherLabel": "Other",
+			"title": "Spending"
 		},
 		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
 		"spentOverall": "<bold>{spent}</bold> {period}",

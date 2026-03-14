@@ -71,8 +71,12 @@ export const SpendingChart: React.FC<Props> = ({
 		<DonutChart
 			data={reducedChartData}
 			formatValue={formatCurrency}
-			showLegend={false}
-			size={300}
+			legend={{
+				enabled: true,
+				maxItems: maximumChartItems / 2,
+				sortBy: "value",
+			}}
+			size={340}
 			title={t("categoryChartTitle")}
 		/>
 	);

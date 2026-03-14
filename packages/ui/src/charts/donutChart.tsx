@@ -29,23 +29,33 @@ interface DonutData {
 	value: number;
 }
 
+interface DonutLegendProps {
+	enabled?: boolean;
+	maxItems?: number;
+	sortBy?: "value" | "name";
+}
+
 interface Props {
 	data: DonutData[];
 	formatValue?: (value: number) => string;
 	innerRadius?: number;
+	legend?: DonutLegendProps;
 	outerRadius?: number;
-	showLegend?: boolean;
 	showTooltip?: boolean;
 	size?: number;
 	title?: string;
 }
 
+const defaultLegendProps: DonutLegendProps = {
+	enabled: true,
+};
+
 export const DonutChart: React.FC<Props> = ({
 	data,
 	formatValue = (value) => value.toString(),
 	innerRadius = 60,
+	legend = defaultLegendProps,
 	outerRadius = 120,
-	showLegend = true,
 	showTooltip = true,
 	size = 400,
 	title,
@@ -95,9 +105,33 @@ export const DonutChart: React.FC<Props> = ({
 	const renderCustomLegend: DefaultLegendContentType = (props) => {
 		const { payload } = props;
 
+		const payloadEntries = payload?.slice() ?? [];
+
+		if (!payloadEntries.length) {
+			return null;
+		}
+
+		payloadEntries.sort((a, b) => {
+			if (legend.sortBy === "value") {
+				return Number(b.payload?.value) - Number(a.payload?.value);
+			}
+
+			if (legend.sortBy === "name") {
+				const { value: aName = "" } = a;
+				const { value: bName = "" } = b;
+				return aName.localeCompare(bName);
+			}
+
+			return 0;
+		});
+
+		const legendEntries = legend.maxItems
+			? payloadEntries.slice(0, legend.maxItems)
+			: payloadEntries;
+
 		return (
-			<ul className="mt-4 flex flex-wrap justify-center gap-4">
-				{payload?.map((entry) => (
+			<ul className="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-1">
+				{legendEntries.map((entry) => (
 					<li className="flex items-center gap-2" key={entry.value}>
 						<div
 							className="h-3 w-3 rounded-full"
@@ -160,7 +194,7 @@ export const DonutChart: React.FC<Props> = ({
 							content={renderCustomTooltip}
 						/>
 					)}
-					{showLegend && <Legend content={renderCustomLegend} />}
+					{legend.enabled && <Legend content={renderCustomLegend} />}
 				</PieChart>
 			</ResponsiveContainer>
 		</div>
