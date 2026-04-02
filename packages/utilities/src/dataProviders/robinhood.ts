@@ -95,16 +95,6 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 					inputRow["Process Date"],
 					"M/d/yyyy",
 				);
-
-				console.log(
-					amountDollarsString,
-					"//",
-					description,
-					"//",
-					inputRowDate,
-					"//",
-					type,
-				);
 			}
 
 			const { merchant, subcategoryId } = parseDescription(
