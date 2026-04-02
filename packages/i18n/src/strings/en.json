@@ -29,11 +29,11 @@
 		},
 		"title": "Net Worth & Assets",
 		"types": {
-			"fixed_asset": "Fixed {plural, select, no {asset} other {assets}}",
-			"liquid_asset": "Liquid {plural, select, no {asset} other {assets}}",
-			"long_term_liability": "Long-term {plural, select, no {liability} other {liabilities}}",
-			"personal_asset": "Personal {plural, select, no {item} other {items}}",
-			"short_term_liability": "Short-term {plural, select, no {liability} other {liabilities}}"
+			"fixed_asset": "Fixed {plural, select, no {Asset} other {Assets}}",
+			"liquid_asset": "Liquid {plural, select, no {Asset} other {Assets}}",
+			"long_term_liability": "Long-term {plural, select, no {Liability} other {Liabilities}}",
+			"personal_asset": "Personal {plural, select, no {Item} other {Items}}",
+			"short_term_liability": "Short-term {plural, select, no {Liability} other {Liabilities}}"
 		}
 	},
 	"budget": {
@@ -168,6 +168,7 @@
 	"common": {
 		"actions": {
 			"cancel": "Cancel",
+			"createMore": "Create More",
 			"delete": "Delete",
 			"duplicate": "Duplicate",
 			"edit": "Edit",
@@ -307,6 +308,8 @@
 		"edit": {
 			"failureBody": "An error occurred while saving your transaction. Please try again later.",
 			"failureTitle": "Saving Transaction Failed",
+			"successBody": "Your transaction at {merchantName} for {amount} was saved.",
+			"successTitle": "Saved Successfully",
 			"title": "Edit {amount} transaction with {merchantName}"
 		},
 		"filter": {

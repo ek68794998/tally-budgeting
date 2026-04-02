@@ -1,13 +1,14 @@
 import { toError } from "@ekumlin/typescript-toolkit/error";
-import { Button, ModalFooter } from "@heroui/react";
+import { Button, Checkbox, ModalFooter } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface Props {
 	isSaveDisabled: boolean;
 	onClose: () => void;
-	onSave: () => Promise<void>;
+	onSave: (createMore: boolean) => Promise<void>;
 	onSaveError: (error: Error) => void;
+	showCreateMore?: boolean;
 }
 
 export const EditModalFooter: React.FC<Props> = ({
@@ -15,9 +16,11 @@ export const EditModalFooter: React.FC<Props> = ({
 	onClose,
 	onSave,
 	onSaveError,
+	showCreateMore,
 }) => {
 	const t = useTranslations();
 
+	const [isCreateMore, setIsCreateMore] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 
 	const handleClose = () => {
@@ -27,6 +30,16 @@ export const EditModalFooter: React.FC<Props> = ({
 
 	return (
 		<ModalFooter>
+			{showCreateMore ? (
+				<Checkbox
+					checked={isCreateMore}
+					onValueChange={setIsCreateMore}
+					size="sm"
+				>
+					{t("common.actions.createMore")}
+				</Checkbox>
+			) : null}
+			<div className="flex-1" />
 			<Button disabled={isSaving} onPress={handleClose} variant="light">
 				{t("common.actions.cancel")}
 			</Button>
@@ -38,8 +51,11 @@ export const EditModalFooter: React.FC<Props> = ({
 					const callbackAsync = async () => {
 						try {
 							setIsSaving(true);
-							await onSave();
-							handleClose();
+							await onSave(isCreateMore);
+
+							if (!isCreateMore) {
+								handleClose();
+							}
 						} catch (error) {
 							onSaveError(toError(error));
 						} finally {
