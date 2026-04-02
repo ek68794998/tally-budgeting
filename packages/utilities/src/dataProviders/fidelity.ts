@@ -111,6 +111,8 @@ export class FidelityDataProvider implements DataProvider<StatementRow> {
 
 		return !(
 			/^BILL\s*PAYMENT/.exec(description) ||
+			/\bDIVIDEND\b/.exec(description) ||
+			/\bINTEREST\b/.exec(description) ||
 			/\bDEBIT\b/.exec(description) ||
 			/^(CO|PARTIC)\s*CONTR/.exec(description)
 		);

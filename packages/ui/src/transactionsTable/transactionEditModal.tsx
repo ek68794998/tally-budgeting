@@ -65,7 +65,11 @@ export const TransactionEditModal: React.FC<Props> = ({
 	const isModalOpen = isOpen && !!transaction;
 
 	const canSave =
-		!!merchantName && !!date && !!subcategoryId && accountId > 0;
+		!!merchantName &&
+		!!date &&
+		!!subcategoryId &&
+		accountId > 0 &&
+		amount !== 0;
 
 	useEffect(() => {
 		if (!isModalOpen) {
@@ -105,7 +109,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 										amount: transactionAmountText,
 										merchantName: transaction.merchant,
 									})
-								: t("transactions.listControls.addOne")}
+								: t("transactions.table.addOne")}
 						</ModalHeader>
 						<ModalBody>
 							<TransactionEditDirectionButtons
@@ -160,11 +164,12 @@ export const TransactionEditModal: React.FC<Props> = ({
 						<EditModalFooter
 							isSaveDisabled={!canSave}
 							onClose={onClose}
-							onSave={async () => {
+							onSave={async (createMore) => {
 								invariant(
 									transaction,
 									"Transaction must be defined.",
 								);
+
 								await onSaveAsync({
 									...transaction,
 									accountId,
@@ -177,6 +182,26 @@ export const TransactionEditModal: React.FC<Props> = ({
 									subcategoryId,
 									type: transactionType,
 								});
+
+								if (createMore) {
+									setAmount(0);
+									setHappiness(HappinessLevelDefault);
+									setNotes("");
+
+									addToast({
+										color: "success",
+										description: t(
+											"transactions.edit.successBody",
+											{
+												amount: formatCurrency(amount),
+												merchantName,
+											},
+										),
+										title: t(
+											"transactions.edit.successTitle",
+										),
+									});
+								}
 							}}
 							onSaveError={() =>
 								addToast({
@@ -187,6 +212,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 									title: t("transactions.edit.failureTitle"),
 								})
 							}
+							showCreateMore={!transaction?.merchant}
 						/>
 					</>
 				)}

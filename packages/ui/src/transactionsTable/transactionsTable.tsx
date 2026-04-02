@@ -15,7 +15,7 @@ import {
 	Tooltip,
 	useDisclosure,
 } from "@heroui/react";
-import { IconNote } from "@tabler/icons-react";
+import { IconNote, IconZoomQuestion } from "@tabler/icons-react";
 import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
@@ -25,6 +25,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useMemo, useState } from "react";
 import { ZodError } from "zod";
 import { ModalDefaultTransaction } from "../common/modalDefault";
+import { ContentUnavailableView } from "../contentUnavailableView/contentUnavailableView";
 import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
 import { usePostTransaction } from "../hooks/api/usePostTransaction";
 import { useAssets } from "../hooks/store/useAssets";
@@ -273,7 +274,20 @@ export const TransactionsTable: React.FC = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={
-						error ? <TableLoadError error={error} /> : undefined
+						error ? (
+							<TableLoadError error={error} />
+						) : (
+							<ContentUnavailableView
+								IconComponent={
+									filterValue ? IconZoomQuestion : undefined
+								}
+								primaryText={
+									filterValue
+										? t("table.noneMatched")
+										: t("table.noneFound")
+								}
+							/>
+						)
 					}
 					isLoading={isLoading}
 					items={transactionsData}
