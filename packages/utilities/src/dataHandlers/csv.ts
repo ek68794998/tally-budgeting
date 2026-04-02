@@ -22,7 +22,7 @@ export const processCsvFile = (inputCsvContent: string) => {
 
 		const trimmedLine = inputCsvLine.trim();
 
-		if (trimmedLine.length === 0) {
+		if (trimmedLine.replace(/"/g, "").length === 0) {
 			break;
 		}
 
