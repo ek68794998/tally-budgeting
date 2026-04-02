@@ -109,7 +109,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 										amount: transactionAmountText,
 										merchantName: transaction.merchant,
 									})
-								: t("transactions.listControls.addOne")}
+								: t("transactions.table.addOne")}
 						</ModalHeader>
 						<ModalBody>
 							<TransactionEditDirectionButtons
@@ -169,6 +169,7 @@ export const TransactionEditModal: React.FC<Props> = ({
 									transaction,
 									"Transaction must be defined.",
 								);
+
 								await onSaveAsync({
 									...transaction,
 									accountId,

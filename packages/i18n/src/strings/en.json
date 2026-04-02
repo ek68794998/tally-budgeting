@@ -312,24 +312,24 @@
 			"successTitle": "Saved Successfully",
 			"title": "Edit {amount} transaction with {merchantName}"
 		},
-		"filter": {
-			"accountsAll": "All Accounts",
-			"accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
-			"categoriesAll": "All Categories",
-			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}"
-		},
 		"happiness": {
 			"level1": "Not Worth It",
 			"level2": "Neutral",
 			"level3": "Worth It"
 		},
-		"listControls": {
-			"addMany": "Add Transactions",
-			"addOne": "New Transaction",
-			"filterPlaceholder": "Search merchants…"
-		},
 		"rules": {
 			"edit": "Known Merchants"
+		},
+		"table": {
+			"accountsAll": "All Accounts",
+			"accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
+			"addMany": "Add Transactions",
+			"addOne": "New Transaction",
+			"categoriesAll": "All Categories",
+			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}",
+			"filterPlaceholder": "Search merchants…",
+			"noneFound": "No transactions found.",
+			"noneMatched": "No transactions matched your search."
 		},
 		"title": "Transactions",
 		"types": {

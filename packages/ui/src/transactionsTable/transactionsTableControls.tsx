@@ -113,7 +113,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 				action: onNewTransaction,
 				IconComponent: IconPlus,
 				key: "edit",
-				label: t("listControls.addOne"),
+				label: t("table.addOne"),
 			},
 			{
 				href: web.transactions.upload,
@@ -156,7 +156,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 					isClearable={true}
 					onClear={() => setSearchValue("")}
 					onValueChange={setSearchValue}
-					placeholder={t("listControls.filterPlaceholder")}
+					placeholder={t("table.filterPlaceholder")}
 					startContent={<IconSearch />}
 					value={searchValue}
 				/>
@@ -175,7 +175,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 								startContent={<IconPlus size={16} />}
 								variant="light"
 							>
-								{t("listControls.addMany")}
+								{t("table.addMany")}
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu items={dropdownEntries}>
@@ -225,8 +225,8 @@ export const TransactionsTableControls: React.FC<Props> = ({
 						renderValue={(items) =>
 							t(
 								isAccountFilterActive
-									? "filter.accountsSome"
-									: "filter.accountsAll",
+									? "table.accountsSome"
+									: "table.accountsAll",
 								{ count: items.length },
 							)
 						}
@@ -246,8 +246,8 @@ export const TransactionsTableControls: React.FC<Props> = ({
 						renderValue={(items) =>
 							t(
 								isSubcategoryFilterActive
-									? "filter.categoriesSome"
-									: "filter.categoriesAll",
+									? "table.categoriesSome"
+									: "table.categoriesAll",
 								{ count: items.length },
 							)
 						}
