@@ -1,0 +1,6 @@
+Date,Time,Cardholder,Amount,Points,Balance,Status,Type,Merchant,Description
+2026-01-04,"9:01 AM","Peter Parker",13.99,420,713.99,Posted,Purchase,"Teo's Market","TEOS MARKET 2125550100212-5550101 NY"
+2026-01-04,"9:00 AM","Peter Parker",13.99,0,,Declined,Purchase,"Teo's Market",
+2026-01-03,"9:00 AM","Peter Parker",-500.00,-1500,700.00,Posted,Refund,"Refund: Expedia","EXPEDIA 88899911122200 EXPEDIA.COM NY"
+2026-01-02,"9:00 AM","Peter Parker",-13.37,0,200.00,Posted,Payment,Payment,"PAYMENT - THANK YOU"
+2026-01-01,"9:00 PM","Peter Parker",13.99,420,213.37,Posted,Purchase,"Sal's Pizzeria","SQ *SALS PIZNewYork NY"

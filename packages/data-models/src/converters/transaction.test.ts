@@ -131,8 +131,8 @@ describe("transaction converters", () => {
 		};
 
 		const baseRow = {
-			...txnRow,
 			...subcategoryRow,
+			...txnRow,
 		};
 
 		it("converts a TxnRow to a Transaction", () => {

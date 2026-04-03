@@ -22,10 +22,10 @@ export default defineConfig({
 			reporter: ["text", "html", "json"],
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
-				branches: 65,
-				functions: 45,
-				lines: 10,
-				statements: 10,
+				branches: 70,
+				functions: 50,
+				lines: 20,
+				statements: 20,
 			},
 		},
 		exclude: [...configDefaults.exclude, "**/build/**"],

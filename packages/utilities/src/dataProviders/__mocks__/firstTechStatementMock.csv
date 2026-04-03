@@ -1,0 +1,6 @@
+"Transaction ID","Posting Date","Effective Date","Transaction Type","Amount","Check Number","Reference Number","Description","Transaction Category","Type","Balance","Memo","Extended Description"
+"20260110 010010 639,969 333,633,339,363","01/10/2026","01/10/2026","Credit","10000.00000","","0000000005","ACH Deposit CONTOSO  - PAYROLL","","Deposit","16400.00000","","ACH Deposit CONTOSO  - PAYROLL"
+"20260108 010010 336,333 333,633,339,336","01/08/2026","01/08/2026","Debit","-5000.00000","","0000000004","ACH Debit FIDELITY  - DEBITS","","ACH","6400.00000","","ACH Debit FIDELITY  - DEBITS"
+"20260106 010010 633 333,633,339,336","01/06/2026","01/06/2026","Debit","-100.00000","","0000000003","POS Transaction ContosoShops.biz     NEW YORK     NYUS","","Debit Card","11400.00000","","POS Transaction ContosoShops.biz     NEW YORK     NYUS"
+"20260104 010010 33,696 333,633,339,336","01/04/2026","01/04/2026","Debit","-500.00000","","0000000002","Withdrawal Transfer To ******1234 To Pay Bills","Transfer","Withdrawal","11500.00000","","Withdrawal Transfer To ******1234 To Pay Bills"
+"20260102 010010 336,636 333,633,339,333","01/02/2026","01/02/2026","Credit","1500.00000","","0000000001","Deposit Transfer From ******1234","Transfer","Deposit","12000.00000","","Deposit Transfer From ******1234"
