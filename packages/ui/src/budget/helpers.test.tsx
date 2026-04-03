@@ -1,5 +1,19 @@
+import {
+	IconBabyCarriage,
+	IconCar,
+	IconHome,
+	IconQuestionMark,
+	IconShoppingBag,
+} from "@tabler/icons-react";
+import { type Category } from "@tally/data-models/contracts/category";
+import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { describe, expect, it } from "vitest";
-import { calculateBudgetScore } from "./helpers";
+import {
+	calculateBudgetScore,
+	getBudgetScoreColor,
+	getIconForCategory,
+	getStartDate,
+} from "./helpers";
 
 interface TestCase {
 	budgeted: number;
@@ -150,6 +164,97 @@ describe("Budget page helpers", () => {
 				expectedScore?.toFixed(1) ?? "null";
 
 			expect(scoreToOneDecimal).toBe(expectedScoreToOneDecimal);
+		});
+	});
+
+	describe("getBudgetScoreColor", () => {
+		it.each([
+			[null, "default"],
+			[8, "success"],
+			[9, "success"],
+			[10, "success"],
+			[5, "warning"],
+			[7.9, "warning"],
+			[0, "danger"],
+			[4.9, "danger"],
+		] as const)("returns %s for score %s", (score, expected) => {
+			expect(getBudgetScoreColor(score)).toBe(expected);
+		});
+	});
+
+	describe("getStartDate", () => {
+		it.each([
+			[{ month: 6, year: 2024 }, 1, { month: 6, year: 2024 }],
+			[{ month: 6, year: 2024 }, 3, { month: 4, year: 2024 }],
+			[{ month: 2, year: 2024 }, 3, { month: 12, year: 2023 }],
+			[{ month: 1, year: 2024 }, 12, { month: 2, year: 2023 }],
+			[{ month: 6, year: 2024 }, 6, { month: 1, year: 2024 }],
+			[{ month: 3, year: 2025 }, 2, { month: 2, year: 2025 }],
+		] as const)("getStartDate(%o, %d) → %o", (endDate, months, expected) => {
+			expect(getStartDate(endDate, months)).toEqual(expected);
+		});
+	});
+
+	describe("getIconForCategory", () => {
+		const makeCategory = (label: string): Category => ({ id: 1, label });
+		const makeSubcategory = (label: string): Subcategory => ({
+			budget: { amountCents: 0, frequency: 1, type: "expense" },
+			categoryId: 1,
+			description: "",
+			id: 1,
+			label,
+			percentNeeds: 0,
+			percentSavings: 0,
+		});
+
+		it("returns DefaultIconComponent when no match", () => {
+			const result = getIconForCategory(
+				makeCategory("Zzz Unrecognized"),
+				undefined,
+				IconQuestionMark,
+			);
+
+			expect(result).toBe(IconQuestionMark);
+		});
+
+		it("matches category label via regex", () => {
+			const result = getIconForCategory(
+				makeCategory("Auto Insurance"),
+				undefined,
+				IconQuestionMark,
+			);
+
+			expect(result).toBe(IconCar);
+		});
+
+		it("prefers subcategory match over category match", () => {
+			const result = getIconForCategory(
+				makeCategory("Auto Expenses"),
+				makeSubcategory("Kids Activities"),
+				IconQuestionMark,
+			);
+
+			expect(result).toBe(IconBabyCarriage);
+		});
+
+		it("falls back to category match when subcategory has no match", () => {
+			const result = getIconForCategory(
+				makeCategory("Home Improvement"),
+				makeSubcategory("Unrecognized Sub"),
+				IconQuestionMark,
+			);
+
+			expect(result).toBe(IconHome);
+		});
+
+		it("returns category match when subcategory is undefined", () => {
+			const result = getIconForCategory(
+				makeCategory("Shopping Spree"),
+				undefined,
+				IconQuestionMark,
+			);
+
+			expect(result).toBe(IconShoppingBag);
 		});
 	});
 });
