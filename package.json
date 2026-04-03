@@ -14,7 +14,7 @@
 		"docker:logs": "docker compose -f deployment/docker-compose.yml logs -f",
 		"docker:up": "docker compose -f deployment/docker-compose.yml up -d",
 		"fix:biome": "biome format --write .",
-		"lint": "turbo run lint ; pnpm lint:biome",
+		"lint": "turbo run lint; rc1=$?; pnpm lint:biome; rc2=$?; exit $((rc1 + rc2))",
 		"lint:biome": "biome check",
 		"test": "vitest --no-watch",
 		"test:coverage": "vitest --coverage --no-watch",
