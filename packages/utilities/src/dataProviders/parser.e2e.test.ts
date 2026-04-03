@@ -263,9 +263,9 @@ describe("parser e2e", () => {
 			r.result === "success" ? [r.transaction] : [],
 		);
 
-		it("produces 5 successes and 1 ignored from 6 rows", () => {
-			expect(results).toHaveLength(6);
-			expect(successes).toHaveLength(5);
+		it("produces 6 successes and 1 ignored from 7 rows", () => {
+			expect(results).toHaveLength(7);
+			expect(successes).toHaveLength(6);
 			expect(results.filter((r) => r.result === "ignore")).toHaveLength(
 				1,
 			);
@@ -290,6 +290,8 @@ describe("parser e2e", () => {
 			[3, 100000, "credit"],
 			// Cash Div FAKE (CDIV) → credit $100.00
 			[4, 10000, "credit"],
+			// Cash Adjustment (JNLC) → debit $5.00 — exercises the ($X.XX) amount branch
+			[5, 500, "debit"],
 		])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
 			expect(successes[index]?.amountCents).toBe(amountCents);
 			expect(successes[index]?.type).toBe(type);

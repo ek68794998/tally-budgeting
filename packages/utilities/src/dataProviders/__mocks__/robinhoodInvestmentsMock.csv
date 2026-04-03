@@ -7,5 +7,6 @@
 CUSIP: 12345Y678
 Dividend Reinvestment","Buy","58.13953","$1.72","($100.00)"
 "1/1/2026","1/1/2026","1/1/2026","FAKE","Cash Div: R/D 2026-01-01 P/D 2026-01-01 - 1000 shares at 0.1000","CDIV","","","$100.00"
+"1/1/2026","1/1/2026","1/1/2026","","Cash Adjustment","JNLC","","","($5.00)"
 ""
 "","","","","","","","","","The data provided is for informational purposes only. Please consult a professional tax service or personal tax advisor if you need instructions on how to calculate cost basis or questions regarding your specific tax situation. Reminder: This data does not include Robinhood Crypto or Robinhood Spending activity."
