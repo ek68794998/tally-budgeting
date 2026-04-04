@@ -19,13 +19,6 @@ type TooltipProps<TValue extends ValueType, TName extends NameType> = Omit<
 	"accessibilityLayer"
 >;
 
-vi.mock("next-intl", () => ({
-	useTranslations: () =>
-		Object.assign((_key: string) => "", {
-			rich: (_key: string, _values?: unknown) => "",
-		}),
-}));
-
 vi.mock("recharts", () => ({
 	Cell: vi.fn(() => null),
 	Legend: vi.fn(() => null),

@@ -3,20 +3,17 @@ import { type TransactionRule } from "@tally/data-models/contracts/transactionRu
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { type StoreState } from "./storeState";
 
-interface TransactionRuleStore {
-	error: string | null;
-	fetchTransactionRules: () => Promise<void>;
-	isFetching: boolean;
-	isHydrated: boolean;
+export type TransactionRuleStore = StoreState<{
 	setTransactionRules: (transactionRules: TransactionRule[]) => void;
 	transactionRules: TransactionRule[];
-}
+}>;
 
 export const useTransactionRuleStore = create<TransactionRuleStore>()(
 	subscribeWithSelector((set, _get) => ({
 		error: null,
-		fetchTransactionRules: async () => {
+		fetch: async () => {
 			set({
 				isFetching: true,
 			});

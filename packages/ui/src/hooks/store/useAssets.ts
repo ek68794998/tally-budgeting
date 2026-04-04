@@ -1,21 +1,14 @@
 "use client";
 
 import { useAssetStore } from "@tally/utilities/state/asset";
-import { useEffect } from "react";
+import { useStoreState } from "./useStoreState";
 
 export const useAssets = () => {
 	const store = useAssetStore();
-
-	useEffect(() => {
-		if (!store.isHydrated && !store.isFetching) {
-			void store.fetchAssets();
-		}
-	}, [store]);
+	const storeState = useStoreState(store);
 
 	return {
+		...storeState,
 		assets: store.assets,
-		error: store.error,
-		isLoading: !store.isHydrated || store.isFetching,
-		refetch: store.fetchAssets,
 	};
 };

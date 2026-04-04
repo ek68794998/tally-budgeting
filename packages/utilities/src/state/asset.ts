@@ -2,20 +2,17 @@ import { getAssetsResponseSchema } from "@tally/data-models/contracts/api/getAss
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { create } from "zustand";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { type StoreState } from "./storeState";
 
-interface AssetStore {
+export type AssetStore = StoreState<{
 	assets: Asset[];
-	error: string | null;
-	fetchAssets: () => Promise<void>;
-	isFetching: boolean;
-	isHydrated: boolean;
 	setAssets: (assets: Asset[]) => void;
-}
+}>;
 
 export const useAssetStore = create<AssetStore>((set, _get) => ({
 	assets: [],
 	error: null,
-	fetchAssets: async () => {
+	fetch: async () => {
 		set({
 			isFetching: true,
 		});

@@ -17,7 +17,7 @@ vi.mock("@tabler/icons-react", () => ({
 
 vi.mock("@heroui/react", () => ({
 	Button: vi.fn(() => null),
-	Dropdown: vi.fn(({ children }: { children: React.ReactNode }) => (
+	Dropdown: vi.fn(({ children }: React.PropsWithChildren) => (
 		<div>{children}</div>
 	)),
 	DropdownItem: vi.fn(
@@ -45,7 +45,7 @@ vi.mock("@heroui/react", () => ({
 			items: unknown[];
 		}) => <div>{items.map((item) => children(item))}</div>,
 	),
-	DropdownTrigger: vi.fn(({ children }: { children: React.ReactNode }) => (
+	DropdownTrigger: vi.fn(({ children }: React.PropsWithChildren) => (
 		<div>{children}</div>
 	)),
 }));
