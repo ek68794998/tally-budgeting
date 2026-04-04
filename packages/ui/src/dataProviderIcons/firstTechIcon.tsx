@@ -1,9 +1,7 @@
 import { FirstTechLogoSvg } from "../images/firstTechLogo";
+import { type DataProviderIconProps } from "./types";
 
-interface Props {
-	containerSizePx: number;
-	sizePx: number;
-}
+type Props = DataProviderIconProps;
 
 export const FirstTechIcon: React.FC<Props> = ({ containerSizePx, sizePx }) => (
 	<div
