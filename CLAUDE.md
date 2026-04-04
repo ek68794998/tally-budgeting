@@ -47,9 +47,9 @@ All generated code must past type checks and linting.
 - Write tests for new functionality
 - Handle errors explicitly (okay to fill `catch` in with TODO if you're not sure); don't swallow them
 - Use comments in code ONLY IF the code is missing something (i.e., TODO), or the code is unusual, unconventional, or difficult to understand
-- When generating unit test files:
-    - Mock only the bare minimum required; do NOT mock dependencies simply to make writing the test easier
-    - Prefer `it.each` whenever writing multi-case unit tests
+- When generating unit tests, exercise the following principles:
+    - Minimal mocking: Mock only the bare minimum required; do NOT mock dependencies simply to make writing the test easier
+    - Reduce redundancy: After writing one or more unit tests, analyze the file to determine if there are any cases in which `it.each` would help reduce redundant test cases, AND check if there are any cases where the Arrange + Act blocks of a test are similar or the same and then merge the Assert blocks as well
 
 ## Things Claude Should NOT Do
 
