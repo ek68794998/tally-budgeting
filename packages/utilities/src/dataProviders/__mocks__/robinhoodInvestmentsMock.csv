@@ -1,0 +1,12 @@
+"Activity Date","Process Date","Settle Date","Instrument","Description","Trans Code","Quantity","Price","Amount"
+"1/31/2026","1/31/2026","1/31/2026","","Brokerage-held Cash Interest Payment","INT","","","$1.50"
+"1/30/2026","1/30/2026","1/30/2026","","Interest Payment","INT","","","$0.50"
+"1/4/2026","1/4/2026","1/4/2026","","Gold Deposit Boost Payment","GDBP","","","$1.50"
+"1/3/2026","1/3/2026","1/3/2026","","CONTOSOLTD","NOA","","","$1,000.00"
+"1/1/2026","1/1/2026","1/4/2026","FAKE","Definitely Very Real and Not Made-Up ETF
+CUSIP: 12345Y678
+Dividend Reinvestment","Buy","58.13953","$1.72","($100.00)"
+"1/1/2026","1/1/2026","1/1/2026","FAKE","Cash Div: R/D 2026-01-01 P/D 2026-01-01 - 1000 shares at 0.1000","CDIV","","","$100.00"
+"1/1/2026","1/1/2026","1/1/2026","","Cash Adjustment","JNLC","","","($5.00)"
+""
+"","","","","","","","","","The data provided is for informational purposes only. Please consult a professional tax service or personal tax advisor if you need instructions on how to calculate cost basis or questions regarding your specific tax situation. Reminder: This data does not include Robinhood Crypto or Robinhood Spending activity."

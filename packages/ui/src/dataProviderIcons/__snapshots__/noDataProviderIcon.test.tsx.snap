@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NoDataProviderIcon > renders correctly 1`] = `
+<div>
+  <div
+    class="flex items-center justify-center rounded-sm bg-stone-500 text-white/70"
+    style="height: 30px; width: 30px;"
+  >
+    (react:IconCash)
+  </div>
+</div>
+`;

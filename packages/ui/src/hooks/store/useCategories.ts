@@ -1,22 +1,15 @@
 "use client";
 
 import { useCategoryStore } from "@tally/utilities/state/category";
-import { useEffect } from "react";
+import { useStoreState } from "./useStoreState";
 
 export const useCategories = () => {
 	const store = useCategoryStore();
-
-	useEffect(() => {
-		if (!store.isHydrated && !store.isFetching) {
-			void store.fetchCategories();
-		}
-	}, [store]);
+	const storeState = useStoreState(store);
 
 	return {
+		...storeState,
 		categories: store.categories,
-		error: store.error,
-		isLoading: !store.isHydrated || store.isFetching,
-		refetch: store.fetchCategories,
 		subcategories: store.subcategories,
 	};
 };

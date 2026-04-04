@@ -1,0 +1,5 @@
+Requested date,Fulfilled date,Transaction type,Pre-tax,Roth,Employer,Total,Transaction Id
+"Jan 5, 2026","Jan 5, 2026",Dividend,1.50,0.00,0.50,2.00,TXN-070AB00C
+"Jan 3, 2026","Jan 4, 2026",Guideline Investments Account Fee,1.00,0.00,0.00,1.00,TXN-040AB00C
+"Jan 2, 2026","Jan 3, 2026",Payroll,500.00,0.00,333.33,833.33,TXN-030AB00C
+"Jan 1, 2026","Jan 1, 2026",Dividend,1.50,0.00,0.50,2.00,TXN-010AB00C

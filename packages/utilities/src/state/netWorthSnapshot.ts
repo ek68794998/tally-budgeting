@@ -3,20 +3,17 @@ import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnap
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { type StoreState } from "./storeState";
 
-interface NetWorthSnapshotStore {
-	error: string | null;
-	fetchSnapshots: () => Promise<void>;
-	isFetching: boolean;
-	isHydrated: boolean;
+export type NetWorthSnapshotStore = StoreState<{
 	setSnapshots: (snapshots: NetWorthSnapshot[]) => void;
 	snapshots: NetWorthSnapshot[];
-}
+}>;
 
 export const useNetWorthSnapshotStore = create<NetWorthSnapshotStore>()(
 	subscribeWithSelector((set, _get) => ({
 		error: null,
-		fetchSnapshots: async () => {
+		fetch: async () => {
 			set({
 				isFetching: true,
 			});

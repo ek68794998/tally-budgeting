@@ -40,16 +40,19 @@ pnpm fix:biome    # Auto-fix Biome formatting
 
 All generated code must past type checks and linting.
 
-- Prefer `interface` over `type`; never use `enum` (use string literal unions instead)
-- Prefer `const` lambda variables to `function` declarations (as both locals and members)
-- Use descriptive variable names
-- Keep functions small and focused
-- Write tests for new functionality
-- Handle errors explicitly (okay to fill `catch` in with TODO if you're not sure); don't swallow them
-- Use comments in code ONLY IF the code is missing something (i.e., TODO), or the code is unusual, unconventional, or difficult to understand
-- When generating unit test files:
-    - Mock only the bare minimum required; do NOT mock dependencies simply to make writing the test easier
-    - Prefer `it.each` whenever writing multi-case unit tests
+- Prefer `interface` over `type`; never use `enum` (use string literal unions instead).
+- Prefer `const` lambda variables to `function` declarations (as both locals and members).
+- Use descriptive variable names.
+- Keep functions small and focused.
+- Write tests for new functionality.
+- Handle errors explicitly (okay to fill `catch` in with TODO if you're not sure); don't swallow them.
+- Use comments in code ONLY IF the code is missing something (i.e., TODO), or the code is unusual, unconventional, or difficult to understand.
+- When generating unit tests, exercise the following principles:
+    - Minimal mocking: Mock only the bare minimum required; do NOT mock dependencies simply to make writing the test easier
+    - Component mocking: When making unit tests for components, all nested components should be mocked with either:
+        - A **string mock** when building snapshot tests. (Example: `vi.mock('./whatever', () => ({ WhateverComponent: "WhateverComponent" }))`)
+        - A **stub mock** in all other cases: interaction, assertion on props passed to the child (using `expect.toHaveBeenCalledWith`), querying something in the child to see which assets were passed through the props, etc. (Example: `vi.mock('./whatever', () => ({ WhateverComponent: () => <div data-testid="whatever" /> }))`)
+    - Reduce redundancy: After writing one or more unit tests, analyze the file to determine if there are any cases in which `it.each` would help reduce redundant test cases, AND check if there are any cases where the Arrange + Act blocks of a test are similar or the same and then merge the Assert blocks as well.
 
 ## Things Claude Should NOT Do
 

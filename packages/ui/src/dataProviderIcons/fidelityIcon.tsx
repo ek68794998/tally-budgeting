@@ -1,9 +1,7 @@
 import { FidelityLogoSvg } from "../images/fidelityLogo";
+import { type DataProviderIconProps } from "./types";
 
-interface Props {
-	containerSizePx: number;
-	sizePx: number;
-}
+type Props = DataProviderIconProps;
 
 export const FidelityIcon: React.FC<Props> = ({ containerSizePx, sizePx }) => (
 	<div

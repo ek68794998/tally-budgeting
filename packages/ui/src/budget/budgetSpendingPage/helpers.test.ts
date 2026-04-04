@@ -1,7 +1,81 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { getDateWindow } from "./helpers";
+import { buildChartData, getDateWindow } from "./helpers";
+
+const makeItem = (name: string, value: number) => ({
+	color: "#000",
+	name,
+	value,
+});
 
 describe("budgetSpendingPage helpers", () => {
+	describe("buildChartData", () => {
+		it.each([
+			[[makeItem("A", 10), makeItem("B", 20)], 5],
+			[[makeItem("A", 10), makeItem("B", 20), makeItem("C", 30)], 3],
+		] as const)("returns items unchanged when count is at or below maxItems", (items, maxItems) => {
+			expect(buildChartData([...items], maxItems, "Other")).toEqual([
+				...items,
+			]);
+		});
+
+		it("groups items beyond maxItems into Other bucket", () => {
+			const items = [
+				makeItem("A", 100),
+				makeItem("B", 50),
+				makeItem("C", 30),
+				makeItem("D", 20),
+				makeItem("E", 10),
+			];
+
+			const result = buildChartData(items, 3, "Other");
+			const [first, second, other] = result;
+
+			// Keeps first maxItems-1 = 2 items, then "Other" combines the rest
+			expect(result).toHaveLength(3);
+			expect(first).toEqual(makeItem("A", 100));
+			expect(second).toEqual(makeItem("B", 50));
+			expect(other?.name).toBe("Other");
+			expect(other?.value).toBe(30 + 20 + 10); // sum of items[2..4]
+		});
+
+		it("uses the color from the item at index maxItems-1 for the Other bucket", () => {
+			const items = [
+				{ color: "#red", name: "A", value: 10 },
+				{ color: "#blue", name: "B", value: 20 },
+				{ color: "#green", name: "C", value: 30 },
+			];
+
+			const [, otherBucket] = buildChartData(items, 2, "Other");
+
+			// other bucket takes color from items[maxItems-1] = items[1] = #blue
+			expect(otherBucket?.color).toBe("#blue");
+			expect(otherBucket?.name).toBe("Other");
+		});
+
+		it("returns a single Other item when maxItems is 1", () => {
+			const items = [makeItem("A", 5), makeItem("B", 15)];
+
+			const result = buildChartData(items, 1, "Other");
+			expect(result).toHaveLength(1);
+
+			const [onlyItem] = result;
+			expect(onlyItem?.name).toBe("Other");
+			expect(onlyItem?.value).toBe(5 + 15);
+		});
+
+		it("uses the provided otherLabel", () => {
+			const items = [
+				makeItem("A", 1),
+				makeItem("B", 2),
+				makeItem("C", 3),
+			];
+
+			const [, otherBucket] = buildChartData(items, 2, "Övriga");
+
+			expect(otherBucket?.name).toBe("Övriga");
+		});
+	});
+
 	describe("getDateWindow", () => {
 		describe("both dates undefined or invalid", () => {
 			beforeEach(() => {

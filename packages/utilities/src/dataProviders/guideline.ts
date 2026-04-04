@@ -3,6 +3,7 @@ import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
+import { validateIsStatementRow } from "./helpers";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -18,14 +19,11 @@ const statementRowSchema = z.object({
 	Roth: z.string(),
 	Total: z.string(),
 	"Transaction Id": z.string(),
-	"Transaction type": z.string(),
+	"Transaction type": z.string().min(1),
 	/* eslint-enable @typescript-eslint/naming-convention */
 });
 
 type StatementRow = z.infer<typeof statementRowSchema>;
-
-const isStatementRow = (obj: unknown): obj is StatementRow =>
-	statementRowSchema.safeParse(obj).success;
 
 export class GuidelineDataProvider implements DataProvider<StatementRow> {
 	public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
@@ -68,23 +66,8 @@ export class GuidelineDataProvider implements DataProvider<StatementRow> {
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
 		obj,
 		validationErrors,
-	): obj is StatementRow => {
-		validationErrors.length = 0;
-
-		if (isStatementRow(obj)) {
-			const { "Transaction type": description } = obj;
-
-			if (!description) {
-				validationErrors.push("No description found.");
-			}
-
-			return validationErrors.length === 0;
-		} else {
-			validationErrors.push("Data shape does not match expected type.");
-		}
-
-		return false;
-	};
+	): obj is StatementRow =>
+		validateIsStatementRow(obj, statementRowSchema, validationErrors);
 }
 
 const trimBoilerplateFromDescription = (originalDescription: string) =>

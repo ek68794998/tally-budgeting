@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GuidelineIcon > renders correctly 1`] = `
+<div>
+  <div
+    class="flex items-center justify-center rounded-sm bg-[#191817]"
+    style="height: 30px; width: 30px;"
+  >
+    (react:GuidelineLogoSvg)
+  </div>
+</div>
+`;

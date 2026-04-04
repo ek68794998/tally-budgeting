@@ -1,9 +1,7 @@
 import { ChaseLogoSvg } from "../images/chaseLogo";
+import { type DataProviderIconProps } from "./types";
 
-interface Props {
-	containerSizePx: number;
-	sizePx: number;
-}
+type Props = DataProviderIconProps;
 
 export const ChaseIcon: React.FC<Props> = ({ containerSizePx, sizePx }) => (
 	<div

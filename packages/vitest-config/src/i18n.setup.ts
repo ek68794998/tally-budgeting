@@ -33,8 +33,16 @@ const messages = flattenMessages(en);
 
 vi.mock("next-intl", () => ({
 	useLocale: () => "en",
-	useTranslations: (namespace?: string) => (key: string) => {
-		const fullKey = namespace ? `${namespace}.${key}` : key;
-		return messages[fullKey] || key;
+	useTranslations: (namespace?: string) => {
+		const translate = (key: string) => {
+			const fullKey = namespace ? `${namespace}.${key}` : key;
+			return messages[fullKey] || key;
+		};
+
+		const richTranslate = (_key: string, _values?: unknown) => "";
+
+		return Object.assign(translate, {
+			rich: richTranslate,
+		});
 	},
 }));

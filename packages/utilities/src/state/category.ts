@@ -4,22 +4,19 @@ import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { type StoreState } from "./storeState";
 
-interface CategoryStore {
+export type CategoryStore = StoreState<{
 	categories: Category[];
-	error: string | null;
-	fetchCategories: () => Promise<void>;
-	isFetching: boolean;
-	isHydrated: boolean;
 	setCategories: (categories: Category[]) => void;
 	subcategories: Subcategory[];
-}
+}>;
 
 export const useCategoryStore = create<CategoryStore>()(
 	subscribeWithSelector((set, _get) => ({
 		categories: [],
 		error: null,
-		fetchCategories: async () => {
+		fetch: async () => {
 			set({
 				isFetching: true,
 			});

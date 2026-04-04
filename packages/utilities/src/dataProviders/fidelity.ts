@@ -3,6 +3,7 @@ import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
+import { validateIsStatementRow } from "./helpers";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -29,9 +30,6 @@ const transactionRowSchema = z.object({
 });
 
 type TransactionRow = z.infer<typeof transactionRowSchema>;
-
-const isTransactionRow = (obj: unknown): obj is TransactionRow =>
-	transactionRowSchema.safeParse(obj).success;
 
 const retirementContributionRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
@@ -122,18 +120,27 @@ export class FidelityDataProvider implements DataProvider<StatementRow> {
 		obj,
 		validationErrors,
 	): obj is StatementRow => {
-		validationErrors.length = 0;
+		const errors1: string[] = [];
+		const errors2: string[] = [];
 
-		if (isTransactionRow(obj)) {
-			const { Action: description } = obj;
+		if (validateIsStatementRow(obj, transactionRowSchema, errors1)) {
+			return true;
+		}
 
-			if (!description) {
-				validationErrors.push("No description found.");
-			}
+		if (
+			validateIsStatementRow(
+				obj,
+				retirementContributionRowSchema,
+				errors2,
+			)
+		) {
+			return true;
+		}
 
-			return validationErrors.length === 0;
-		} else if (!isRetirementContributionRow(obj)) {
-			validationErrors.push("Data shape does not match expected type.");
+		if (errors1.length) {
+			validationErrors.push(...errors1);
+		} else if (errors2.length) {
+			validationErrors.push(...errors2);
 		}
 
 		return false;

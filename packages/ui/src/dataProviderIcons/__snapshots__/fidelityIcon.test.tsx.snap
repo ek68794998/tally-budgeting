@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FidelityIcon > renders correctly 1`] = `
+<div>
+  <div
+    class="flex items-center justify-center rounded-sm bg-[#368727]"
+    style="height: 30px; width: 30px;"
+  >
+    (react:FidelityLogoSvg)
+  </div>
+</div>
+`;

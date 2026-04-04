@@ -14,9 +14,10 @@ interface Props {
 	size?: DataProviderIconSize;
 }
 
-export const DataProviderIcon: React.FC<Props> = (props) => {
-	const { provider, size = "md" } = props;
-
+export const DataProviderIcon: React.FC<Props> = ({
+	provider,
+	size = "md",
+}) => {
 	const paddingRatio = getDataProviderPaddingRatio();
 	const sizePx = getDataProviderSizePx(size);
 

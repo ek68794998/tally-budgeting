@@ -1,21 +1,14 @@
 "use client";
 
 import { useNetWorthSnapshotStore } from "@tally/utilities/state/netWorthSnapshot";
-import { useEffect } from "react";
+import { useStoreState } from "./useStoreState";
 
 export const useNetWorthSnapshots = () => {
 	const store = useNetWorthSnapshotStore();
-
-	useEffect(() => {
-		if (!store.isHydrated && !store.isFetching) {
-			void store.fetchSnapshots();
-		}
-	}, [store]);
+	const storeState = useStoreState(store);
 
 	return {
-		error: store.error,
-		isLoading: !store.isHydrated || store.isFetching,
-		refetch: store.fetchSnapshots,
+		...storeState,
 		snapshots: store.snapshots,
 	};
 };

@@ -1,9 +1,7 @@
 import { GuidelineLogoSvg } from "../images/guidelineLogo";
+import { type DataProviderIconProps } from "./types";
 
-interface Props {
-	containerSizePx: number;
-	sizePx: number;
-}
+type Props = DataProviderIconProps;
 
 export const GuidelineIcon: React.FC<Props> = ({ containerSizePx, sizePx }) => (
 	<div
