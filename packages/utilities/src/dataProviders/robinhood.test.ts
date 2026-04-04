@@ -430,6 +430,133 @@ describe("RobinhoodDataProvider", () => {
 				),
 			).toThrow("does not match provider");
 		});
+
+		describe("investment statement rows", () => {
+			it("should convert a credit investment row", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$25.00",
+					Description: "AAPL Dividend",
+					Instrument: "AAPL",
+					Price: "$185.00",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "DIV",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Robinhood Gold Card",
+					customizations,
+				);
+
+				expect(result.type).toBe("credit");
+				expect(result.amountCents).toBe(2500);
+				expect(result.merchant).toBe("(AAPL) AAPL Dividend");
+			});
+
+			it("should convert a debit investment row with parenthesized amount", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "($50.00)",
+					Description: "Interest Charged",
+					Instrument: "",
+					Price: "",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "INTR",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Robinhood Gold Card",
+					customizations,
+				);
+
+				expect(result.type).toBe("debit");
+				expect(result.amountCents).toBe(5000);
+			});
+
+			it("should strip $ and commas from amount", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$1,234.56",
+					Description: "Large Credit",
+					Instrument: "SPY",
+					Price: "$450.00",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "DIV",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Robinhood Gold Card",
+					customizations,
+				);
+
+				expect(result.amountCents).toBe(123456);
+			});
+
+			it("should use just description when Instrument is empty", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$10.00",
+					Description: "Cash Interest",
+					Instrument: "",
+					Price: "",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "INT",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Robinhood Gold Card",
+					customizations,
+				);
+
+				expect(result.merchant).toBe("Cash Interest");
+			});
+
+			it("should parse date from Process Date field", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/10/2024",
+					Amount: "$5.00",
+					Description: "Dividend",
+					Instrument: "VTI",
+					Price: "$200.00",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "DIV",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Robinhood Gold Card",
+					customizations,
+				);
+
+				expect(result.date).toBe(
+					DateTime.fromFormat("1/15/2024", "M/d/yyyy").toISO(),
+				);
+			});
+		});
 	});
 
 	describe("isStatementRowIgnored", () => {
@@ -491,6 +618,70 @@ describe("RobinhoodDataProvider", () => {
 			expect(provider.isStatementRowIgnored(creditRow)).toBe(false);
 		});
 
+		describe("investment statement rows", () => {
+			it.each([
+				["Buy", "Buy"],
+				["Sell", "Sell"],
+			])("should ignore %s trans code", (_label, transCode) => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$100.00",
+					Description: "Some stock",
+					Instrument: "AAPL",
+					Price: "$185.00",
+					"Process Date": "1/15/2024",
+					Quantity: "1",
+					"Settle Date": "1/17/2024",
+					"Trans Code": transCode,
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				expect(provider.isStatementRowIgnored(row)).toBe(true);
+			});
+
+			it.each([
+				["Dividend Reinvestment", "Dividend Reinvestment"],
+				["DIVIDEND  REINVESTMENT", "DIVIDEND  REINVESTMENT"],
+				["balance payment", "balance payment"],
+				["auto balance payment", "auto balance payment"],
+			])("should ignore description containing '%s'", (_label, description) => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$10.00",
+					Description: description,
+					Instrument: "",
+					Price: "",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "MISC",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				expect(provider.isStatementRowIgnored(row)).toBe(true);
+			});
+
+			it("should not ignore dividend income (non-reinvestment)", () => {
+				const row = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					"Activity Date": "1/15/2024",
+					Amount: "$25.00",
+					Description: "Dividend Income",
+					Instrument: "AAPL",
+					Price: "",
+					"Process Date": "1/15/2024",
+					Quantity: "0",
+					"Settle Date": "1/17/2024",
+					"Trans Code": "DIV",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				expect(provider.isStatementRowIgnored(row)).toBe(false);
+			});
+		});
+
 		it("should not ignore transactions with payment in description", () => {
 			const row = {
 				/* eslint-disable @typescript-eslint/naming-convention */
@@ -532,7 +723,7 @@ describe("RobinhoodDataProvider", () => {
 			const result = provider.validateIsStatementRow(validRow, errors);
 
 			expect(result).toBe(true);
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(0);
 		});
 
 		it("should reject invalid rows with appropriate errors", () => {
@@ -566,40 +757,32 @@ describe("RobinhoodDataProvider", () => {
 			expect(
 				provider.validateIsStatementRow(emptyMerchantRow, errors1),
 			).toBe(false);
-			expect(errors1).toEqual(["No description found."]);
+			expect(errors1).toHaveLength(1);
 
 			const errors2: string[] = [];
 			expect(
 				provider.validateIsStatementRow(wrongShapeRow, errors2),
 			).toBe(false);
-			expect(errors2).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors2).toHaveLength(10);
 
 			const errors3: string[] = [];
 			expect(
 				provider.validateIsStatementRow(missingFieldsRow, errors3),
 			).toBe(false);
-			expect(errors3).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors3).toHaveLength(8);
 
 			const errors4: string[] = [];
 			expect(provider.validateIsStatementRow(null, errors4)).toBe(false);
-			expect(errors4).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors4).toHaveLength(1);
 
 			const errors5: string[] = [];
 			expect(provider.validateIsStatementRow(undefined, errors5)).toBe(
 				false,
 			);
-			expect(errors5).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors5).toHaveLength(1);
 		});
 
-		it("should clear validation errors array before validation", () => {
+		it("should not clear validation errors array before validation", () => {
 			const validRow = {
 				/* eslint-disable @typescript-eslint/naming-convention */
 				Amount: "10.00",
@@ -618,7 +801,7 @@ describe("RobinhoodDataProvider", () => {
 			const errors = ["old error"];
 			provider.validateIsStatementRow(validRow, errors);
 
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(1);
 		});
 	});
 });

@@ -430,7 +430,7 @@ describe("GuidelineDataProvider", () => {
 			const result = provider.validateIsStatementRow(validRow, errors);
 
 			expect(result).toBe(true);
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(0);
 		});
 
 		it("should reject invalid rows with appropriate errors", () => {
@@ -465,40 +465,34 @@ describe("GuidelineDataProvider", () => {
 					errors1,
 				),
 			).toBe(false);
-			expect(errors1).toEqual(["No description found."]);
+			expect(errors1).toEqual([
+				"Transaction type: Too small: expected string to have >=1 characters",
+			]);
 
 			const errors2: string[] = [];
 			expect(
 				provider.validateIsStatementRow(wrongShapeRow, errors2),
 			).toBe(false);
-			expect(errors2).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors2).toHaveLength(8);
 
 			const errors3: string[] = [];
 			expect(
 				provider.validateIsStatementRow(missingFieldsRow, errors3),
 			).toBe(false);
-			expect(errors3).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors3).toHaveLength(6);
 
 			const errors4: string[] = [];
 			expect(provider.validateIsStatementRow(null, errors4)).toBe(false);
-			expect(errors4).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors4).toHaveLength(1);
 
 			const errors5: string[] = [];
 			expect(provider.validateIsStatementRow(undefined, errors5)).toBe(
 				false,
 			);
-			expect(errors5).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors5).toHaveLength(1);
 		});
 
-		it("should clear validation errors array before validation", () => {
+		it("should not clear validation errors array before validation", () => {
 			const validRow = {
 				/* eslint-disable @typescript-eslint/naming-convention */
 				Employer: "ACME Corp",
@@ -515,7 +509,7 @@ describe("GuidelineDataProvider", () => {
 			const errors = ["old error"];
 			provider.validateIsStatementRow(validRow, errors);
 
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(1);
 		});
 	});
 });

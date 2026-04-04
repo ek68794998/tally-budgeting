@@ -553,7 +553,7 @@ describe("FidelityDataProvider", () => {
 			const result = provider.validateIsStatementRow(validRow, errors);
 
 			expect(result).toBe(true);
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(0);
 		});
 
 		it("should validate a correct retirement contribution row", () => {
@@ -570,8 +570,8 @@ describe("FidelityDataProvider", () => {
 			const errors: string[] = [];
 			const result = provider.validateIsStatementRow(validRow, errors);
 
-			expect(result).toBe(false);
-			expect(errors).toEqual([]);
+			expect(result).toBe(true);
+			expect(errors).toHaveLength(0);
 		});
 
 		it("should reject transaction rows with empty action", () => {
@@ -596,9 +596,9 @@ describe("FidelityDataProvider", () => {
 			expect(
 				provider.validateIsStatementRow(emptyActionRow, errors),
 			).toBe(false);
-			expect(errors).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors).toContain(
+				"Action: Too small: expected string to have >=1 characters",
+			);
 		});
 
 		it("should reject invalid rows with appropriate errors", () => {
@@ -617,34 +617,26 @@ describe("FidelityDataProvider", () => {
 			expect(
 				provider.validateIsStatementRow(wrongShapeRow, errors1),
 			).toBe(false);
-			expect(errors1).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors1).toHaveLength(12);
 
 			const errors2: string[] = [];
 			expect(
 				provider.validateIsStatementRow(missingFieldsRow, errors2),
 			).toBe(false);
-			expect(errors2).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors2).toHaveLength(10);
 
 			const errors3: string[] = [];
 			expect(provider.validateIsStatementRow(null, errors3)).toBe(false);
-			expect(errors3).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors3).toHaveLength(1);
 
 			const errors4: string[] = [];
 			expect(provider.validateIsStatementRow(undefined, errors4)).toBe(
 				false,
 			);
-			expect(errors4).toEqual([
-				"Data shape does not match expected type.",
-			]);
+			expect(errors4).toHaveLength(1);
 		});
 
-		it("should clear validation errors array before validation", () => {
+		it("should not clear validation errors array before validation", () => {
 			const validRow = {
 				/* eslint-disable @typescript-eslint/naming-convention */
 				"Accrued Interest ($)": "",
@@ -665,7 +657,7 @@ describe("FidelityDataProvider", () => {
 			const errors = ["old error"];
 			provider.validateIsStatementRow(validRow, errors);
 
-			expect(errors).toEqual([]);
+			expect(errors).toHaveLength(1);
 		});
 	});
 });

@@ -5,6 +5,7 @@ import { DateTime, type DateTimeMaybeValid } from "luxon";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
+import { validateIsStatementRow } from "./helpers";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -18,7 +19,7 @@ const goldCardStatementRowSchema = z.object({
 	Cardholder: z.string(),
 	Date: z.string(),
 	Description: z.string(),
-	Merchant: z.string(),
+	Merchant: z.string().min(1),
 	Points: z.string(),
 	Status: z.string(),
 	Time: z.string(),
@@ -32,7 +33,7 @@ const investmentStatementRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
 	"Activity Date": z.string(),
 	Amount: z.string(),
-	Description: z.string(),
+	Description: z.string().min(1),
 	Instrument: z.string(),
 	Price: z.string(),
 	"Process Date": z.string(),
@@ -45,10 +46,6 @@ const investmentStatementRowSchema = z.object({
 type InvestmentStatementRow = z.infer<typeof investmentStatementRowSchema>;
 
 type StatementRow = GoldCardStatementRow | InvestmentStatementRow;
-
-const isStatementRow = (obj: unknown): obj is StatementRow =>
-	goldCardStatementRowSchema.safeParse(obj).success ||
-	investmentStatementRowSchema.safeParse(obj).success;
 
 export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 	public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
@@ -152,19 +149,23 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 		obj,
 		validationErrors,
 	): obj is StatementRow => {
-		validationErrors.length = 0;
+		const errors1: string[] = [];
+		const errors2: string[] = [];
 
-		if (isStatementRow(obj)) {
-			const description =
-				"Merchant" in obj ? obj.Merchant : obj.Description;
+		if (validateIsStatementRow(obj, goldCardStatementRowSchema, errors1)) {
+			return true;
+		}
 
-			if (!description) {
-				validationErrors.push("No description found.");
-			}
+		if (
+			validateIsStatementRow(obj, investmentStatementRowSchema, errors2)
+		) {
+			return true;
+		}
 
-			return validationErrors.length === 0;
-		} else {
-			validationErrors.push("Data shape does not match expected type.");
+		if (errors1.length) {
+			validationErrors.push(...errors1);
+		} else if (errors2.length) {
+			validationErrors.push(...errors2);
 		}
 
 		return false;

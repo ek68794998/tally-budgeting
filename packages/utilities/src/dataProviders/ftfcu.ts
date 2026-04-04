@@ -4,6 +4,7 @@ import { transactionDirectionSchema } from "@tally/data-models/contracts/transac
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
+import { validateIsStatementRow } from "./helpers";
 import {
 	type CsvRowToTransactionFn,
 	type DataProvider,
@@ -15,7 +16,7 @@ const statementRowSchema = z.object({
 	Amount: z.string(),
 	Balance: z.string(),
 	"Check Number": z.string(),
-	Description: z.string(),
+	Description: z.string().min(1),
 	"Effective Date": z.string(),
 	"Extended Description": z.string(),
 	Memo: z.string(),
@@ -29,9 +30,6 @@ const statementRowSchema = z.object({
 });
 
 type StatementRow = z.infer<typeof statementRowSchema>;
-
-const isStatementRow = (obj: unknown): obj is StatementRow =>
-	statementRowSchema.safeParse(obj).success;
 
 class FtfcuDataProvider implements DataProvider<StatementRow> {
 	public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
@@ -87,23 +85,8 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
 		obj,
 		validationErrors,
-	): obj is StatementRow => {
-		validationErrors.length = 0;
-
-		if (isStatementRow(obj)) {
-			const { Description: description } = obj;
-
-			if (!description) {
-				validationErrors.push("No description found.");
-			}
-
-			return validationErrors.length === 0;
-		} else {
-			validationErrors.push("Data shape does not match expected type.");
-		}
-
-		return false;
-	};
+	): obj is StatementRow =>
+		validateIsStatementRow(obj, statementRowSchema, validationErrors);
 }
 
 export const trimBoilerplateFromDescription = (originalDescription: string) => {
