@@ -1,3 +1,4 @@
+import { unreachable } from "@ekumlin/typescript-toolkit/values";
 import { type AccountProviderType } from "@tally/data-models/contracts/accountProviderType";
 import { AppleIcon } from "./appleIcon";
 import { ChaseIcon } from "./chaseIcon";
@@ -8,6 +9,7 @@ import { getDataProviderPaddingRatio, getDataProviderSizePx } from "./helpers";
 import { NoDataProviderIcon } from "./noDataProviderIcon";
 import { RobinhoodIcon } from "./robinhoodIcon";
 import { type DataProviderIconSize } from "./types";
+import { VestwellIcon } from "./vestwellIcon";
 
 interface Props {
 	provider: AccountProviderType | null;
@@ -22,6 +24,15 @@ export const DataProviderIcon: React.FC<Props> = ({
 	const sizePx = getDataProviderSizePx(size);
 
 	const containerSizePx = sizePx * paddingRatio;
+
+	if (!provider) {
+		return (
+			<NoDataProviderIcon
+				containerSizePx={containerSizePx}
+				sizePx={sizePx}
+			/>
+		);
+	}
 
 	switch (provider) {
 		case "apple":
@@ -60,12 +71,14 @@ export const DataProviderIcon: React.FC<Props> = ({
 					sizePx={sizePx}
 				/>
 			);
-		default:
+		case "vestwell":
 			return (
-				<NoDataProviderIcon
+				<VestwellIcon
 					containerSizePx={containerSizePx}
 					sizePx={sizePx}
 				/>
 			);
+		default:
+			return unreachable(provider);
 	}
 };

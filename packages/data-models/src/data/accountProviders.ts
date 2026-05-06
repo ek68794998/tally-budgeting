@@ -18,6 +18,10 @@ export const AccountProviders = {
 		id: "robinhood",
 		name: "Robinhood",
 	},
+	vestwell: {
+		id: "vestwell",
+		name: "Vestwell",
+	},
 } as const satisfies Record<AccountProviderType, AccountProvider>;
 
 invariant(

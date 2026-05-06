@@ -9,6 +9,7 @@ import { FirstTechFederalDataProvider } from "./ftfcu";
 import { GuidelineDataProvider } from "./guideline";
 import { RobinhoodDataProvider } from "./robinhood";
 import { type CsvTransaction, type TransactionCustomizations } from "./types";
+import { VestwellDataProvider } from "./vestwell";
 
 interface TransactionParseResultFailure {
 	errors: string[];
@@ -146,6 +147,25 @@ export const parseRowAsTransaction = (
 
 		case "robinhood": {
 			const provider = new RobinhoodDataProvider();
+
+			if (
+				provider.validateIsStatementRow(inputRow, validationErrors) &&
+				!provider.isStatementRowIgnored(inputRow)
+			) {
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
+				);
+			}
+
+			break;
+		}
+
+		case "vestwell": {
+			const provider = new VestwellDataProvider();
 
 			if (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
