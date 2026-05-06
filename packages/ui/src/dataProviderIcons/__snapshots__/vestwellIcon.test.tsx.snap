@@ -3,7 +3,7 @@
 exports[`VestwellIcon > renders correctly 1`] = `
 <div>
   <div
-    class="flex items-center justify-center rounded-sm bg-[#004DFF]"
+    class="flex items-center justify-center rounded-sm bg-[#004dff]"
     style="height: 30px; width: 30px;"
   >
     (react:VestwellLogoSvg)
