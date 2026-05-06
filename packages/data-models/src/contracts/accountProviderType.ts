@@ -7,6 +7,7 @@ export const accountProviderTypeSchema = z.enum([
 	"firstTechFederal",
 	"guideline",
 	"robinhood",
+	"vestwell",
 ]);
 
 export type AccountProviderType = z.infer<typeof accountProviderTypeSchema>;
