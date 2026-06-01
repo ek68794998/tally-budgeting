@@ -1,0 +1,8 @@
+"Transaction date","Transaction settlement date","Transaction type","Attempted Amount","Final Transaction","Status","Balance","Merchant","Description"
+"01/28/2026","01/28/2026","Deposit","$1.50","$1.50","Approved","$318.01",,"Pre-tax contribution for 01/28/2026"
+"01/28/2026","01/28/2026","Deposit","$2.50","$2.50","Approved","$316.51",,"Pre-tax contribution for 01/28/2026"
+"01/14/2026","01/14/2026","Deposit","$1.50","$1.50","Approved","$314.01",,"Pre-tax contribution for 01/14/2026"
+"01/14/2026","01/14/2026","Deposit","$2.50","$2.50","Approved","$312.51",,"Pre-tax contribution for 01/14/2026"
+"01/03/2026","01/04/2026","--","$0.01","$0.01","Approved","$310.01",,"Investment Dividend"
+"01/02/2026","01/03/2026","Card Swipe","$690","$690","Approved","$310","What's Up, Doc   Ontario     CA","What's Up, Doc   Ontario     CA"
+"01/01/2026","01/02/2026","--","$0.01","$0.01","Approved","$1,000",,"Interest accrual for Dec 2025"
