@@ -436,13 +436,22 @@ describe("FirstTechFederalDataProvider", () => {
 			);
 		});
 
-		it("should ignore internal transfer transactions", () => {
-			const withdrawalTransferRow = {
+		it.each([
+			"Withdrawal Transfer to Savings *1234",
+			"Deposit Transfer from Checking *5678",
+			"Withdrawal Xfer to Savings *1234",
+			"Deposit Xfer from Checking *5678",
+			"Withdrawal: Transfer to Savings *1234",
+			"Deposit: Transfer from Checking *5678",
+			"Withdrawal: Xfer to Savings *1234",
+			"Deposit: Xfer from Checking *5678",
+		])("should ignore internal transfer transaction: %s", (description) => {
+			const row = {
 				/* eslint-disable @typescript-eslint/naming-convention */
 				Amount: "-100.00",
 				Balance: "900.00",
 				"Check Number": "",
-				Description: "Withdrawal Transfer to Savings *1234",
+				Description: description,
 				"Effective Date": "01/15/2024",
 				"Extended Description": "",
 				Memo: "",
@@ -455,20 +464,7 @@ describe("FirstTechFederalDataProvider", () => {
 				/* eslint-enable @typescript-eslint/naming-convention */
 			};
 
-			const depositTransferRow = {
-				...withdrawalTransferRow,
-				/* eslint-disable @typescript-eslint/naming-convention */
-				Amount: "100.00",
-				Description: "Deposit Transfer from Checking *5678",
-				/* eslint-enable @typescript-eslint/naming-convention */
-			};
-
-			expect(provider.isStatementRowIgnored(withdrawalTransferRow)).toBe(
-				true,
-			);
-			expect(provider.isStatementRowIgnored(depositTransferRow)).toBe(
-				true,
-			);
+			expect(provider.isStatementRowIgnored(row)).toBe(true);
 		});
 
 		it("should not ignore regular transactions", () => {

@@ -96,6 +96,20 @@ const ftfcuRow = {
 	/* eslint-enable @typescript-eslint/naming-convention */
 };
 
+const ripplingRow = {
+	/* eslint-disable @typescript-eslint/naming-convention */
+	"Attempted Amount": "-10.00",
+	Balance: "990.00",
+	Description: "COFFEE SHOP",
+	"Final Transaction": "-10.00",
+	Merchant: "Coffee Shop",
+	Status: "Completed",
+	"Transaction date": "2024-01-15",
+	"Transaction settlement date": "2024-01-16",
+	"Transaction type": "Card Swipe",
+	/* eslint-enable @typescript-eslint/naming-convention */
+};
+
 const guidelineRow = {
 	/* eslint-disable @typescript-eslint/naming-convention */
 	Employer: "Acme Corp",
@@ -126,6 +140,7 @@ describe("parseRowAsTransaction", () => {
 			["fidelity", fidelityRow, makeAccount("fidelity")],
 			["firstTechFederal", ftfcuRow, makeAccount("firstTechFederal")],
 			["guideline", guidelineRow, makeAccount("guideline")],
+			["rippling", ripplingRow, makeAccount("rippling")],
 		])("returns success for a valid %s row", (_provider, row, account) => {
 			const customizations = {
 				...baseCustomizations,

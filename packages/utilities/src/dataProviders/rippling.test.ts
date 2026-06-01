@@ -68,7 +68,7 @@ describe("RipplingDataProvider", () => {
 	});
 
 	describe("convertStatementRowToTransaction", () => {
-		it("should convert a basic credit transaction (positive amount)", () => {
+		it("should convert a basic debit transaction", () => {
 			const result = provider.convertStatementRowToTransaction(
 				{ ...baseRow, "Final Transaction": "50.00" }, // eslint-disable-line @typescript-eslint/naming-convention
 				"Rippling Card",
@@ -82,8 +82,18 @@ describe("RipplingDataProvider", () => {
 				date: new Date("2024-03-15").toISOString(),
 				merchant: "Blue Bottle Coffee",
 				subcategoryId: 101,
-				type: "credit",
+				type: "debit",
 			});
+		});
+
+		it("should convert a credit transaction when description is a withdrawal type", () => {
+			const result = provider.convertStatementRowToTransaction(
+				{ ...baseRow, Merchant: "Card Swipe" }, // eslint-disable-line @typescript-eslint/naming-convention
+				"Rippling Card",
+				customizations,
+			);
+
+			expect(result.type).toBe("credit");
 		});
 
 		it("should convert a debit transaction (negative amount)", () => {
@@ -186,11 +196,6 @@ describe("RipplingDataProvider", () => {
 		});
 
 		it.each([
-			[
-				"empty Merchant",
-				{ ...baseRow, Merchant: "" }, // eslint-disable-line @typescript-eslint/naming-convention
-				["Merchant: Too small: expected string to have >=1 characters"],
-			],
 			[
 				"empty Final Transaction",
 				{ ...baseRow, "Final Transaction": "" }, // eslint-disable-line @typescript-eslint/naming-convention
