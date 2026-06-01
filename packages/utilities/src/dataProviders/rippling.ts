@@ -1,6 +1,5 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
-import { transactionDirectionSchema } from "@tally/data-models/contracts/transactionDirection";
 import { z } from "zod";
 import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
@@ -13,40 +12,37 @@ import {
 
 const statementRowSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
-	Amount: z.string(),
+	"Attempted Amount": z.string(),
 	Balance: z.string(),
-	"Check Number": z.string(),
 	Description: z.string().min(1),
-	"Effective Date": z.string(),
-	"Extended Description": z.string(),
-	Memo: z.string(),
-	"Posting Date": z.string(),
-	"Reference Number": z.string(),
-	"Transaction Category": z.string(),
-	"Transaction ID": z.string(),
-	"Transaction Type": z.string(),
-	Type: z.string(),
+	"Final Transaction": z.string().min(1),
+	Merchant: z.string(),
+	Status: z.string(),
+	"Transaction date": z.string().min(1),
+	"Transaction settlement date": z.string(),
+	"Transaction type": z.string(),
 	/* eslint-enable @typescript-eslint/naming-convention */
 });
 
 type StatementRow = z.infer<typeof statementRowSchema>;
 
-class FtfcuDataProvider implements DataProvider<StatementRow> {
+const withdrawalTransactionTypes: string[] = ["Card Swipe"] as const;
+
+export class RipplingDataProvider implements DataProvider<StatementRow> {
 	public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
 		(inputRow, accountName, customizations) => {
 			const { accounts, subcategories } = customizations;
 
-			const description = trimBoilerplateFromDescription(
-				inputRow.Description,
-			);
+			const description = (
+				inputRow.Merchant || inputRow.Description
+			).trim();
 			const { merchant, subcategoryId } = parseDescription(
 				description,
 				customizations,
 			);
 
 			const account = accounts.find(
-				(a) =>
-					a.name === accountName && a.provider === "firstTechFederal",
+				(a) => a.name === accountName && a.provider === "rippling",
 			);
 			invariant(
 				account,
@@ -57,30 +53,27 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 				subcategories.find((s) => s.id === subcategoryId) ??
 				DefaultSubcategory;
 
-			const transactionType = inputRow["Transaction Type"].toLowerCase();
-			const transactionDirection =
-				transactionType === "check" ? "debit" : transactionType;
+			const amountCents = Dollars.toCents(
+				inputRow["Final Transaction"].replace(/[$,]/g, ""),
+			);
 
 			return {
 				accountId: account.id,
-				amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
+				amountCents: Math.abs(amountCents),
 				categoryId: subcategory.categoryId,
-				date: new Date(inputRow["Posting Date"]).toISOString(),
+				date: new Date(inputRow["Transaction date"]).toISOString(),
 				merchant,
 				subcategoryId: subcategory.id,
-				type: transactionDirectionSchema.parse(transactionDirection),
+				type: withdrawalTransactionTypes.includes(description)
+					? "credit"
+					: "debit",
 			};
 		};
 
 	public isStatementRowIgnored = (inputRow: StatementRow) => {
 		const { Description: description } = inputRow;
 
-		return !!(
-			/-\s*AUTOPAY/.exec(description) ||
-			/-\s*PAYMENT/.exec(description) ||
-			/(Withdrawal|Deposit)\s*(Xfer|Transfer).*\*/.exec(description) ||
-			/(Withdrawal|Deposit):\s*(Xfer|Transfer).*\*/.exec(description)
-		);
+		return !!/^Investment$/.exec(description);
 	};
 
 	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
@@ -89,14 +82,3 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 	): obj is StatementRow =>
 		validateIsStatementRow(obj, statementRowSchema, validationErrors);
 }
-
-export const trimBoilerplateFromDescription = (originalDescription: string) => {
-	let description = originalDescription;
-
-	description = description.replace(/\s*POS Transaction\s*/i, " ");
-	description = description.replace(/\s*ACH Debit\s*/i, " ");
-
-	return description.trim();
-};
-
-export { FtfcuDataProvider as FirstTechFederalDataProvider };

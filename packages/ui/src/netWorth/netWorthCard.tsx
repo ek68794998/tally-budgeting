@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { toError } from "@ekumlin/typescript-toolkit/error";
+import { addToast, Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { IconCameraPlus } from "@tabler/icons-react";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import { Dollars } from "@tally/utilities/financial/dollars";
@@ -57,12 +58,24 @@ export const NetWorthCard: React.FC<Props> = ({
 	const chartData: typeof snapshots = [...snapshotsSorted, currentSnapshot];
 
 	const handleAddSnapshot = async () => {
-		// TODO Feedback for user
-		await postSnapshotAsync({
-			id: -1,
-			...currentSnapshot,
-		});
-		await refetch();
+		try {
+			await postSnapshotAsync({
+				id: -1,
+				...currentSnapshot,
+			});
+			await refetch();
+			addToast({
+				color: "success",
+				title: t("addSnapshotSuccess"),
+			});
+		} catch (e) {
+			const error = toError(e);
+			addToast({
+				color: "danger",
+				description: error.message,
+				title: t("addSnapshotFailure"),
+			});
+		}
 	};
 
 	return (

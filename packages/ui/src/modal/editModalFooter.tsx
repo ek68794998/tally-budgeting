@@ -32,7 +32,7 @@ export const EditModalFooter: React.FC<Props> = ({
 		<ModalFooter>
 			{showCreateMore ? (
 				<Checkbox
-					checked={isCreateMore}
+					isSelected={isCreateMore}
 					onValueChange={setIsCreateMore}
 					size="sm"
 				>

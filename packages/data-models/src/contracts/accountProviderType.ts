@@ -6,6 +6,7 @@ export const accountProviderTypeSchema = z.enum([
 	"fidelity",
 	"firstTechFederal",
 	"guideline",
+	"rippling",
 	"robinhood",
 	"vestwell",
 ]);

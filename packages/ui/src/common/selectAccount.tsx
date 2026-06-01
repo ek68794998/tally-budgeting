@@ -11,6 +11,7 @@ interface Props {
 	label?: string;
 	onChange: (value: Asset) => void;
 	selectProps?: Partial<Omit<SelectProps<Asset>, "children">>;
+	showInactive?: boolean;
 	showOnlyWithProvider?: boolean;
 	value: Asset | number | undefined;
 }
@@ -19,13 +20,20 @@ export const SelectAccount: React.FC<Props> = ({
 	label: inputLabel,
 	onChange,
 	selectProps,
+	showInactive = false,
 	showOnlyWithProvider = false,
 	value,
 }) => {
 	const { assets } = useAssets();
 
 	const availableAccounts = assets
-		.filter(({ provider }) => !showOnlyWithProvider || !!provider)
+		.filter(({ active, provider }) => {
+			if (!showInactive && !active) {
+				return false;
+			}
+
+			return !showOnlyWithProvider || !!provider;
+		})
 		.sort((a, b) => a.name.localeCompare(b.name));
 
 	const selectedAccount = isNumber(value)

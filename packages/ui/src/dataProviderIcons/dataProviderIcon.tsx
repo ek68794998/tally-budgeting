@@ -7,6 +7,7 @@ import { FirstTechIcon } from "./firstTechIcon";
 import { GuidelineIcon } from "./guidelineIcon";
 import { getDataProviderPaddingRatio, getDataProviderSizePx } from "./helpers";
 import { NoDataProviderIcon } from "./noDataProviderIcon";
+import { RipplingIcon } from "./ripplingIcon";
 import { RobinhoodIcon } from "./robinhoodIcon";
 import { type DataProviderIconSize } from "./types";
 import { VestwellIcon } from "./vestwellIcon";
@@ -60,6 +61,13 @@ export const DataProviderIcon: React.FC<Props> = ({
 		case "guideline":
 			return (
 				<GuidelineIcon
+					containerSizePx={containerSizePx}
+					sizePx={sizePx}
+				/>
+			);
+		case "rippling":
+			return (
+				<RipplingIcon
 					containerSizePx={containerSizePx}
 					sizePx={sizePx}
 				/>

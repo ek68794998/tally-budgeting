@@ -6,8 +6,9 @@ import {
 	parseDate,
 	today,
 } from "@internationalized/date";
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { useTranslations } from "next-intl";
+import { useDebounceCallback } from "../../hooks/useDebounceCallback";
 
 interface Props {
 	endDate: DateTime<true> | undefined;
@@ -15,6 +16,10 @@ interface Props {
 	onChangeStartDate: (date: DateTime<true>) => void;
 	startDate: DateTime<true> | undefined;
 }
+
+const debounceDuration = Duration.fromObject({
+	milliseconds: 500,
+});
 
 export const SpendingTableControls: React.FC<Props> = ({
 	endDate,
@@ -29,40 +34,41 @@ export const SpendingTableControls: React.FC<Props> = ({
 		: undefined;
 	const endDateValue = endDate ? parseDate(endDate.toISODate()) : undefined;
 
-	const handleChangeDate = (
-		date: CalendarDate | null,
-		type: "start" | "end",
-	) => {
-		if (!date) {
-			return;
-		}
+	const { run: handleChangeDate } = useDebounceCallback(
+		(date: CalendarDate | null, type: "start" | "end") => {
+			if (!date) {
+				return;
+			}
 
-		const dateTime = DateTime.fromISO(`${date.toString()}T12:00:00Z`);
-		invariant(dateTime.isValid);
+			const dateTime = DateTime.fromISO(`${date.toString()}T12:00:00Z`);
+			invariant(dateTime.isValid);
 
-		const callback = type === "start" ? onChangeStartDate : onChangeEndDate;
-		callback(dateTime);
-	};
+			const callback =
+				type === "start" ? onChangeStartDate : onChangeEndDate;
+			callback(dateTime);
+		},
+		{ wait: debounceDuration.toMillis() },
+	);
 
 	return (
 		<div className="flex gap-4">
 			{startDateValue ? (
 				<DatePicker
+					defaultValue={startDateValue}
 					label={t("startDate")}
 					maxValue={endDateValue}
 					onChange={(v) => handleChangeDate(v, "start")}
-					value={startDateValue}
 				/>
 			) : (
 				<DatePicker isDisabled={true} />
 			)}
 			{endDateValue ? (
 				<DatePicker
+					defaultValue={endDateValue}
 					label={t("endDate")}
 					maxValue={today(getLocalTimeZone())}
 					minValue={startDateValue}
 					onChange={(v) => handleChangeDate(v, "end")}
-					value={endDateValue}
 				/>
 			) : (
 				<DatePicker isDisabled={true} />

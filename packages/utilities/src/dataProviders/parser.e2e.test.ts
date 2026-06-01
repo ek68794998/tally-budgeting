@@ -253,6 +253,48 @@ describe("parser e2e", () => {
 		});
 	});
 
+	describe("rippling", () => {
+		const account = makeAccount("rippling");
+		const results = parseFile(
+			readMock("ripplingStatementMock.csv"),
+			account,
+		);
+		const successes = results.flatMap((r) =>
+			r.result === "success" ? [r.transaction] : [],
+		);
+
+		it("produces 7 successes and 0 ignored from 7 rows", () => {
+			expect(results).toHaveLength(7);
+			expect(successes).toHaveLength(7);
+			expect(results.filter((r) => r.result === "ignore")).toHaveLength(
+				0,
+			);
+			expect(results.filter((r) => r.result === "failure")).toHaveLength(
+				0,
+			);
+		});
+
+		it.each<[number, number, TransactionDirection]>([
+			// Pre-tax contribution → debit $1.50
+			[0, 150, "debit"],
+			// Pre-tax contribution → debit $2.50
+			[1, 250, "debit"],
+			// Pre-tax contribution → debit $1.50
+			[2, 150, "debit"],
+			// Pre-tax contribution → debit $2.50
+			[3, 250, "debit"],
+			// Investment Dividend → debit $0.01
+			[4, 1, "debit"],
+			// Card swipe at What's Up, Doc → debit $690.00
+			[5, 69000, "debit"],
+			// Interest accrual for Dec 2025 → debit $0.01
+			[6, 1, "debit"],
+		])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
+			expect(successes[index]?.amountCents).toBe(amountCents);
+			expect(successes[index]?.type).toBe(type);
+		});
+	});
+
 	describe("robinhood investments", () => {
 		const account = makeAccount("robinhood");
 		const results = parseFile(

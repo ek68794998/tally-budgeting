@@ -22,6 +22,8 @@
 		"listTitle": "Your Assets",
 		"netWorth": {
 			"addSnapshot": "New Snapshot",
+			"addSnapshotFailure": "Snapshot Not Saved",
+			"addSnapshotSuccess": "Snapshot Saved",
 			"assetDistribution": "Asset Distribution",
 			"delta": "{delta} since {date}",
 			"liabilityDistribution": "Liability Distribution",
