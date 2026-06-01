@@ -78,7 +78,8 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
 		return !!(
 			/-\s*AUTOPAY/.exec(description) ||
 			/-\s*PAYMENT/.exec(description) ||
-			/(Withdrawal|Deposit)\s*Transfer.*\*/.exec(description)
+			/(Withdrawal|Deposit)\s*(Xfer|Transfer).*\*/.exec(description) ||
+			/(Withdrawal|Deposit):\s*(Xfer|Transfer).*\*/.exec(description)
 		);
 	};
 
