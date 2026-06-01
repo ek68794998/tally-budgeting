@@ -29,7 +29,7 @@
 		"framer-motion": "^12.23.16",
 		"kysely": "^0.28.9",
 		"luxon": "^3.7.2",
-		"next": "^15.5.9",
+		"next": "^15.5.19",
 		"next-intl": "^4.3.9",
 		"nextjs-toploader": "^3.9.17",
 		"pg": "^8.16.3",
