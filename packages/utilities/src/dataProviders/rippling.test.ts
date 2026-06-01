@@ -5,8 +5,8 @@ import {
 	type Subcategory,
 } from "@tally/data-models/contracts/subcategory";
 import { beforeEach, describe, expect, it } from "vitest";
-import { type TransactionCustomizations } from "./types";
 import { RipplingDataProvider } from "./rippling";
+import { type TransactionCustomizations } from "./types";
 
 const baseRow = {
 	/* eslint-disable @typescript-eslint/naming-convention */
@@ -210,14 +210,11 @@ describe("RipplingDataProvider", () => {
 					"Transaction date: Too small: expected string to have >=1 characters",
 				],
 			],
-		])(
-			"should reject row with %s",
-			(_label, row, expectedErrors) => {
-				const errors: string[] = [];
-				expect(provider.validateIsStatementRow(row, errors)).toBe(false);
-				expect(errors).toEqual(expectedErrors);
-			},
-		);
+		])("should reject row with %s", (_label, row, expectedErrors) => {
+			const errors: string[] = [];
+			expect(provider.validateIsStatementRow(row, errors)).toBe(false);
+			expect(errors).toEqual(expectedErrors);
+		});
 
 		it("should reject wrong-shape object with multiple errors", () => {
 			const errors: string[] = [];
