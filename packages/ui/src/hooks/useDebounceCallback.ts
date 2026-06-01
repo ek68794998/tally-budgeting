@@ -8,9 +8,12 @@ export const useDebounceCallback = <T extends Callback>(
 	callback: T,
 	options?: DebounceOptions,
 ) => {
-	const { cancel, flush, run } = useDebounceFn(callback, options);
+	const { cancel, flush, ...rest } = useDebounceFn(callback, options);
 
-	const runTyped: T = run;
+	// Because of how `lodash` is imported, there is no type-safety
+	// for the `run` function, requiring us to use type coercion.
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	const runTyped: T = rest.run;
 
 	return useMemo(
 		() => ({
