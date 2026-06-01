@@ -119,7 +119,7 @@ export const RuleEditModal: React.FC<Props> = ({
 								}}
 								description={
 									<Checkbox
-										checked={!ignoreCase}
+										isSelected={!ignoreCase}
 										onValueChange={(v) => setIgnoreCase(!v)}
 										size="sm"
 									>
