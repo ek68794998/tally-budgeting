@@ -14,6 +14,10 @@ export const AccountProviders = {
 		id: "guideline",
 		name: "Guideline",
 	},
+	rippling: {
+		id: "rippling",
+		name: "Rippling",
+	},
 	robinhood: {
 		id: "robinhood",
 		name: "Robinhood",

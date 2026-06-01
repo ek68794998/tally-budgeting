@@ -7,6 +7,7 @@ import { ChaseDataProvider } from "./chase";
 import { FidelityDataProvider } from "./fidelity";
 import { FirstTechFederalDataProvider } from "./ftfcu";
 import { GuidelineDataProvider } from "./guideline";
+import { RipplingDataProvider } from "./rippling";
 import { RobinhoodDataProvider } from "./robinhood";
 import { type CsvTransaction, type TransactionCustomizations } from "./types";
 import { VestwellDataProvider } from "./vestwell";
@@ -128,6 +129,25 @@ export const parseRowAsTransaction = (
 
 		case "guideline": {
 			const provider = new GuidelineDataProvider();
+
+			if (
+				provider.validateIsStatementRow(inputRow, validationErrors) &&
+				!provider.isStatementRowIgnored(inputRow)
+			) {
+				setTransaction(
+					provider.convertStatementRowToTransaction(
+						inputRow,
+						account.name,
+						customizations,
+					),
+				);
+			}
+
+			break;
+		}
+
+		case "rippling": {
+			const provider = new RipplingDataProvider();
 
 			if (
 				provider.validateIsStatementRow(inputRow, validationErrors) &&
