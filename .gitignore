@@ -2,6 +2,7 @@
 
 # Local work
 _local
+tmp
 
 # Dependencies
 node_modules
