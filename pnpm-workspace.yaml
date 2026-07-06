@@ -1,8 +1,15 @@
-packages:
-  - apps/*
-  - packages/*
+allowBuilds:
+  '@heroui/shared-utils': true
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  sharp: true
 onlyBuiltDependencies:
   - '@heroui/shared-utils'
   - '@tailwindcss/oxide'
   - esbuild
   - sharp
+packages:
+  - apps/*
+  - packages/*
+pmOnFail: warn
