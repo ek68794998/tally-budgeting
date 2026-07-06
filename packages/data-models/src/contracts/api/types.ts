@@ -5,6 +5,7 @@ import { sortDirectionSchema } from "../types";
 export const apiErrorSchema = z.object({
 	code: errorCodeSchema,
 	params: z.record(z.string(), z.string()).optional(),
+	type: z.string().optional(),
 });
 
 export type ApiError = z.infer<typeof apiErrorSchema>;
