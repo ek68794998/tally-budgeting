@@ -10,6 +10,7 @@ export const processCsvFile = (inputCsvContent: string) => {
 	const csvLines: string[] = [];
 
 	let foundMainSection = false;
+	let hasDataRows = false;
 
 	for (const inputCsvLine of inputCsvLines) {
 		if (!foundMainSection) {
@@ -23,7 +24,15 @@ export const processCsvFile = (inputCsvContent: string) => {
 		const trimmedLine = inputCsvLine.trim();
 
 		if (trimmedLine.replace(/"/g, "").length === 0) {
-			break;
+			if (hasDataRows) {
+				break;
+			}
+
+			continue;
+		}
+
+		if (csvLines.length >= 1) {
+			hasDataRows = true;
 		}
 
 		csvLines.push(trimmedLine);

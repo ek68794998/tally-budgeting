@@ -47,6 +47,24 @@ describe("processCsvFile", () => {
 		expect(processCsvFile(input)).toBe(expected);
 	});
 
+	it("should not stop if there's a blank line after the headers", () => {
+		const input = [
+			"Date,Description,Amount",
+			"",
+			"2024-01-01,Coffee,5.00",
+			"",
+			"Footer information",
+			"More footer data",
+		].join("\n");
+
+		const expected = [
+			"Date,Description,Amount",
+			"2024-01-01,Coffee,5.00",
+		].join("\n");
+
+		expect(processCsvFile(input)).toBe(expected);
+	});
+
 	it("should trim whitespace from each line", () => {
 		const input = [
 			"  Date,Description,Amount  ",

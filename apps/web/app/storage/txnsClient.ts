@@ -131,6 +131,10 @@ export class TxnsClient extends DatabaseClient {
 			withoutId(convertTransactionToTxnRow(r)),
 		);
 
+		if (transactions.length <= 0) {
+			return;
+		}
+
 		await this.database
 			.insertInto(TableName)
 			.values(transactions)
