@@ -47,10 +47,13 @@ describe("processCsvFile", () => {
 		expect(processCsvFile(input)).toBe(expected);
 	});
 
-	it("should not stop if there's a blank line after the headers", () => {
+	it.each([
+		["a single blank line", [""]],
+		["multiple blank lines", ["", "", ""]],
+	])("should not stop if there's %s after the headers", (_description, blankLines) => {
 		const input = [
 			"Date,Description,Amount",
-			"",
+			...blankLines,
 			"2024-01-01,Coffee,5.00",
 			"",
 			"Footer information",
