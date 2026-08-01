@@ -490,23 +490,24 @@ describe("FidelityDataProvider", () => {
 		});
 
 		describe("retirement contribution rows", () => {
-			it("should not ignore contribution transactions", () => {
-				const contributionRow: RetirementContributionRow = {
+			it.each([
+				"Contributions",
+				"Interest",
+			])("should not ignore %s transactions", (transactionType) => {
+				const row: RetirementContributionRow = {
 					/* eslint-disable @typescript-eslint/naming-convention */
 					"Amount ($)": "500.00",
 					Date: "01/15/2024",
 					Investment: "FIDELITY 500 INDEX FUND",
 					"Shares/Unit": "2.5",
-					"Transaction Type": "Contributions",
+					"Transaction Type": transactionType,
 					/* eslint-enable @typescript-eslint/naming-convention */
 				};
 
-				expect(provider.isStatementRowIgnored(contributionRow)).toBe(
-					false,
-				);
+				expect(provider.isStatementRowIgnored(row)).toBe(false);
 			});
 
-			it("should ignore non-contribution retirement transactions", () => {
+			it("should ignore other retirement transactions", () => {
 				const dividendRow: RetirementContributionRow = {
 					/* eslint-disable @typescript-eslint/naming-convention */
 					"Amount ($)": "25.00",

@@ -107,18 +107,21 @@ const executeHandlerAsync = async <
 			apiError = {
 				code: error.code,
 				params: error.params,
+				type: "HttpError",
 			};
 			statusCode = error.status;
 		} else if (error instanceof StructuredError) {
 			apiError = {
 				code: error.code,
 				params: error.params,
+				type: "StructuredError",
 			};
 			statusCode = InternalServerError;
 		} else {
 			apiError = {
 				code: "http500",
 				params: {},
+				type: typeof error,
 			};
 			statusCode = InternalServerError;
 		}
