@@ -105,7 +105,8 @@ export const AssetEditModal: React.FC<Props> = ({
 							<NumberInput
 								formatOptions={{
 									currency: "USD",
-									maximumFractionDigits: 0,
+									maximumFractionDigits: 2,
+									minimumFractionDigits: 0,
 									style: "currency",
 								}}
 								label={t("assets.columns.value")}
