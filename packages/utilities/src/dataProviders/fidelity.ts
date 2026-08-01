@@ -102,7 +102,9 @@ export class FidelityDataProvider implements DataProvider<StatementRow> {
 
 	public isStatementRowIgnored = (inputRow: StatementRow) => {
 		if (isRetirementContributionRow(inputRow)) {
-			return inputRow["Transaction Type"] !== "Contributions";
+			return !["Contributions", "Interest"].includes(
+				inputRow["Transaction Type"],
+			);
 		}
 
 		const { Action: description } = inputRow;
