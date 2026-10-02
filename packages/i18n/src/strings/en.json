@@ -65,9 +65,9 @@
 				"description": "Description",
 				"isPreTaxSavings": "Used for Pre-Tax Savings?",
 				"label": "Label",
-				"percentNeeds": "% Needs",
-				"percentSavings": "% Savings",
-				"percentWants": "% Wants"
+				"percentNeeds": "Needs",
+				"percentSavings": "Savings",
+				"percentWants": "Wants"
 			},
 			"subcategoryCount": "{count} subcategories",
 			"title": "Categories"

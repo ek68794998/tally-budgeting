@@ -100,6 +100,10 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 		percentSavings = isPreTaxSavings ? 100 : 0;
 	}
 
+	const renderPercentContent = () => (
+		<div className="text-xs opacity-50">{"%"}</div>
+	);
+
 	return (
 		<Modal
 			autoFocus={true}
@@ -156,6 +160,7 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 							{budgetType === "expense" ? (
 								<div className="flex justify-between gap-2">
 									<NumberInput
+										endContent={renderPercentContent()}
 										formatOptions={{
 											maximumFractionDigits: 0,
 										}}
@@ -168,6 +173,7 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 										value={pctNeeds}
 									/>
 									<NumberInput
+										endContent={renderPercentContent()}
 										formatOptions={{
 											maximumFractionDigits: 0,
 										}}
@@ -180,6 +186,7 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 										value={pctWants}
 									/>
 									<NumberInput
+										endContent={renderPercentContent()}
 										formatOptions={{
 											maximumFractionDigits: 0,
 										}}

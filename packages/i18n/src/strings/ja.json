@@ -65,9 +65,9 @@
 				"description": "説明",
 				"isPreTaxSavings": "税引前貯蓄に使用",
 				"label": "ラベル",
-				"percentNeeds": "必需品の割合（%）",
-				"percentSavings": "貯蓄の割合（%）",
-				"percentWants": "願望の割合（%）"
+				"percentNeeds": "必需品の割合",
+				"percentSavings": "貯蓄の割合",
+				"percentWants": "願望の割合"
 			},
 			"subcategoryCount": "サブカテゴリー{count}件",
 			"title": "カテゴリー"
