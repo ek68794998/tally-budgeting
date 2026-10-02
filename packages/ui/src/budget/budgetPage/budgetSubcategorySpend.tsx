@@ -2,7 +2,7 @@ import { Chip, Progress, Tooltip } from "@heroui/react";
 import { IconHelpCircle } from "@tabler/icons-react";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Dollars } from "@tally/utilities/financial/dollars";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "../../format";
 import { getSpentText } from "../helpers";
 import { type BudgetDate } from "../types";
@@ -20,6 +20,7 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
 }) => {
 	const { budget, description, label } = subcategory;
 
+	const locale = useLocale();
 	const t = useTranslations("budget");
 
 	const budgetAmount = Dollars.fromCents(budget.amountCents);
@@ -61,7 +62,7 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
 			value={amountPaid}
 			valueLabel={
 				<span className="text-sm opacity-70">
-					{getSpentText(amountPaid, budget, periodEnd, t)}
+					{getSpentText(amountPaid, budget, periodEnd, t, locale)}
 				</span>
 			}
 		/>

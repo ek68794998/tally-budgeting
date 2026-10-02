@@ -1,17 +1,31 @@
 {
 	"assets": {
+		"about": "このカードは資産ページについて説明します。",
+		"activeNo": "無効",
+		"activeYes": "有効",
 		"columns": {
 			"name": "名前",
+			"provider": "金融機関",
 			"type": "種類",
 			"value": "金額"
 		},
 		"edit": "{assetName}を編集",
 		"listControls": {
 			"addOne": "新規資産",
-			"filterPlaceholder": "検索..."
+			"deleteAction": "はい、削除する",
+			"deleteBody": "{merchant}を資産から削除してもよろしいですか？削除せずに非表示にしたい場合は、無効にすることをご検討ください。",
+			"deleteTitle": "資産を削除",
+			"filterPlaceholder": "検索…",
+			"setActiveNo": "無効にする",
+			"setActiveYes": "有効にする"
 		},
+		"listTitle": "あなたの資産",
 		"netWorth": {
+			"addSnapshot": "新規スナップショット",
+			"addSnapshotFailure": "スナップショットを保存できませんでした",
+			"addSnapshotSuccess": "スナップショットを保存しました",
 			"assetDistribution": "資産の内訳",
+			"delta": "{date}以降 {delta}",
 			"liabilityDistribution": "負債の内訳",
 			"title": "純資産"
 		},
@@ -25,10 +39,106 @@
 		}
 	},
 	"budget": {
-		"durations": {
-			"periodMonths": "{months}ヶ月"
+		"about": "このカードは予算ページについて説明します。",
+		"categoriesEdit": {
+			"categoryColumns": {
+				"label": "ラベル"
+			},
+			"deleteCategoryAction": "はい、すべて削除する",
+			"deleteCategoryDescription": "<bold>「{label}」</bold>カテゴリーと<bold>すべてのサブカテゴリー</bold>が削除されます。これらのサブカテゴリーを使用している取引は未分類になります。<bold>この操作は元に戻せません。</bold>",
+			"deleteCategoryTitle": "カテゴリーを削除しますか？",
+			"deleteSubcategoryAction": "はい、削除する",
+			"deleteSubcategoryDescription": "<bold>「{label}」</bold>サブカテゴリーが削除され、このサブカテゴリーを使用している取引は未分類になります。<bold>この操作は元に戻せません。</bold>",
+			"deleteSubcategoryTitle": "サブカテゴリーを削除しますか？",
+			"description": "予算に設定したカテゴリーの一覧です。各カテゴリーについて、<bold>{endDate}</bold>時点の直近の期間における支出額と予算額を表示しています。",
+			"editCategory": "{label}を編集",
+			"editSubcategory": "{label}を編集",
+			"newCategory": "新規カテゴリー",
+			"newSubcategory": "新規サブカテゴリー",
+			"noCategories": "カテゴリーがまだありません。「{newCategory}」をクリックして作成してください。",
+			"noSubcategories": "サブカテゴリーがまだありません。「{newSubcategory}」をクリックして作成してください。",
+			"subcategoryColumns": {
+				"budgetAmount": "予算額",
+				"budgetFrequency": "予算の頻度",
+				"budgetType": "予算の種類",
+				"categoryId": "カテゴリー",
+				"description": "説明",
+				"isPreTaxSavings": "税引前貯蓄に使用",
+				"label": "ラベル",
+				"percentNeeds": "必需品の割合（%）",
+				"percentSavings": "貯蓄の割合（%）",
+				"percentWants": "願望の割合（%）"
+			},
+			"subcategoryCount": "サブカテゴリー{count}件",
+			"title": "カテゴリー"
 		},
+		"categoriesView": {
+			"description": "予算に設定したカテゴリーの一覧です。各カテゴリーについて、<bold>{endDate}</bold>時点の直近の期間における支出額と予算額を表示しています。",
+			"title": "カテゴリー別内訳"
+		},
+		"columns": {
+			"budget": "予算",
+			"label": "ラベル"
+		},
+		"durations": {
+			"multipleMonths": "{month}以降",
+			"oneMonth": "{month}",
+			"periodMonths": "{months}ヶ月",
+			"perPeriod": "{period}ごとに<bold>{amount}</bold>"
+		},
+		"editCategories": "カテゴリー",
+		"overBudget": "予算を{amount}超過",
+		"overBudgetCount": "{count}件が予算超過",
+		"overview": {
+			"aboveAverage": "<bold>{amount}</bold>",
+			"aboveAverageSubtitle": "月平均{averageBudget}（{months, plural, other {{totalBudget} / {months}ヶ月}}）を{amountOver}超過。上限まであと{remaining}",
+			"budgetChange": "<bold>{lastSpend}</bold> → <spentFmt>{currentSpend}</spentFmt>",
+			"budgetChangeOverSubtitle": "予算を{amountOver}超過。前の{months}ヶ月間と比べて{change}",
+			"budgetChangeUnderSubtitle": "前の{months}ヶ月間と比べて{change}",
+			"overBudget": "<bold>{budget}</bold>中<bold>{spent}</bold>",
+			"overBudgetSubtitle": "{months, plural, =1 {{endMonth}} other {{startMonth}～{endMonth}}}",
+			"sectionAboveAverageSubtitle": "{count}件が月平均を超えましたが、総予算の範囲内です",
+			"sectionAboveAverageTitle": "平均を上回る支出",
+			"sectionImprovedSubtitle": "前期から{count}件の予算が目標内に戻りました",
+			"sectionImprovedTitle": "軌道に復帰",
+			"sectionOverBudgetSubtitle": "今期は{count}件の予算が上限を超えました",
+			"sectionOverBudgetTitle": "予算超過",
+			"sectionWorsenedSubtitle": "前期から{count}件の予算が上限を超えました",
+			"sectionWorsenedTitle": "新たな超過",
+			"title": "概要"
+		},
+		"quickPulse": {
+			"income": "純収入<bold>{amount}</bold>に対して",
+			"month": "先月",
+			"spending": "支出を見る",
+			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
+			"title": "クイックパルス",
+			"year": "過去12ヶ月"
+		},
+		"spending": {
+			"areaChartTitle": "分野別支出",
+			"areas": {
+				"needs": "必需品",
+				"savings": "貯蓄",
+				"wants": "願望"
+			},
+			"categoryChartTitle": "カテゴリー別支出",
+			"controls": {
+				"endDate": "終了日",
+				"startDate": "開始日"
+			},
+			"errors": {
+				"noData": "指定された期間の支出データはありません。",
+				"noDates": "開始日と終了日の少なくとも一方を、有効なISO-8601形式で指定してください。"
+			},
+			"otherLabel": "その他",
+			"title": "支出"
+		},
+		"spentInBudget": "<bold>{budget}</bold>中<bold>{spent}</bold> {period}",
+		"spentOverall": "<bold>{spent}</bold> {period}",
 		"summary": {
+			"cardTitle": "予算スコア",
+			"description": "予算の概要です。これらの集計値は、<bold>{endDate}</bold>時点の<bold>過去{months}ヶ月間</bold>を示しています。総合スコアは、予算内に収められたか、また予算と収入の間にどれだけ余裕があったかに基づいています。",
 			"explanations": {
 				"score0": "今期は基礎が不足していました。初心者でも困難な時期でも、再構築は可能です。",
 				"score1": "今期は厳しい状況でした。経験者でも大変な月はあります。前に進むことが大切です。",
@@ -41,15 +151,35 @@
 				"score8": "今期は素晴らしい成果です。一般的な課題を克服し、賢明な判断をしています。",
 				"score9": "今期は卓越した管理です。支出を巧みに処理し、ミスはほぼありません。",
 				"score10": "今期は完璧です。財務管理を習得し、一貫して賢い選択をしました。"
-			}
+			},
+			"overview": "キャッシュフロー",
+			"subtitleBudget": "総予算",
+			"subtitleIncome": "収入{income}",
+			"subtitleRemaining": "総貯蓄額",
+			"subtitleSpending": "総支出",
+			"title": "予算の概要"
 		},
-		"title": "予算"
+		"title": "予算",
+		"types": {
+			"expense": "支出",
+			"income": "収入",
+			"neutral": "再配分"
+		},
+		"underBudget": "目標内"
 	},
 	"common": {
 		"actions": {
 			"cancel": "キャンセル",
+			"createMore": "続けて作成",
 			"delete": "削除",
+			"duplicate": "複製",
 			"edit": "編集",
+			"move": {
+				"bottom": "最下部へ移動",
+				"down": "下へ移動",
+				"top": "最上部へ移動",
+				"up": "上へ移動"
+			},
 			"ok": "OK",
 			"save": "保存"
 		},
@@ -57,15 +187,34 @@
 			"tooltipPercentage": "割合：<bold>{value}</bold>",
 			"tooltipValue": "金額：<bold>{value}</bold>"
 		},
+		"masterDetail": {
+			"detailEmptyState": "項目を選択すると詳細が表示されます。",
+			"masterEmptyState": "表示できる項目がありません。"
+		},
 		"table": {
 			"error": "テーブルデータを読み込めません",
 			"errorBody": "データの読み込み中に問題が発生しました。"
+		}
+	},
+	"error": {
+		"api": {
+			"errorBody": "リクエストに失敗しました。接続を確認して、もう一度お試しください。",
+			"errorTitle": "リクエスト失敗",
+			"validationErrorBody": "サーバーが予期しない形式のデータを返しました。もう一度お試しください。",
+			"validationErrorTitle": "検証エラー"
+		},
+		"fullPage": {
+			"ctaReload": "ページを再読み込み",
+			"ctaReset": "もう一度試す",
+			"description": "サーバーで次のエラーが発生しました：",
+			"title": "このページを読み込めませんでした。"
 		}
 	},
 	"help": {
 		"link": "{subject}について"
 	},
 	"retirement": {
+		"about": "このカードは退職ページについて説明します。",
 		"chart": {
 			"title": "累積退職貯蓄",
 			"tooltipTitle": "{age}歳"
@@ -102,6 +251,7 @@
 		"title": "退職・年金"
 	},
 	"rules": {
+		"about": "このカードはルールページについて説明します。",
 		"columns": {
 			"category": "カテゴリー",
 			"merchant": "店舗名",
@@ -118,9 +268,11 @@
 		"listControls": {
 			"addOne": "新規ルール",
 			"deleteAction": "削除する",
+			"deleteAllTitle": "すべて削除",
 			"deleteBody": "{merchant}のルールを削除してもよろしいですか？",
+			"deleteSelectedTitle": "選択項目を削除",
 			"deleteTitle": "ルールを削除",
-			"filterPlaceholder": "検索..."
+			"filterPlaceholder": "検索…"
 		},
 		"title": "取引ルール"
 	},
@@ -128,11 +280,12 @@
 		"title": "設定"
 	},
 	"summary": {
+		"about": "このカードはサマリーページについて説明します。",
 		"spendCard": {
-			"earnedMonthly": "今月の収入",
-			"earnedYearly": "今年の収入",
-			"spendMonthly": "今月の支出",
-			"spendYearly": "今年の支出"
+			"earnedMonthly": "{period}の収入",
+			"earnedYearly": "{period}の収入",
+			"spendMonthly": "{period}の支出",
+			"spendYearly": "{period}の支出"
 		},
 		"spendChart": {
 			"earned": "収入",
@@ -143,11 +296,13 @@
 		"title": "サマリー"
 	},
 	"transactions": {
+		"about": "このカードは取引ページについて説明します。",
 		"columns": {
 			"account": "口座",
 			"amount": "金額",
 			"category": "カテゴリー",
 			"date": "日付",
+			"happiness": "満足度",
 			"merchant": "加盟店",
 			"notes": "メモ",
 			"type": "種別"
@@ -155,14 +310,32 @@
 		"edit": {
 			"failureBody": "取引の保存中にエラーが発生しました。後でもう一度お試しください。",
 			"failureTitle": "取引の保存に失敗しました",
+			"successBody": "{merchantName}での{amount}の取引を保存しました。",
+			"successTitle": "保存しました",
 			"title": "{merchantName}の{amount}取引を編集"
+		},
+		"happiness": {
+			"level1": "価値なし",
+			"level2": "普通",
+			"level3": "価値あり"
 		},
 		"listControls": {
 			"addOne": "取引を追加",
-			"filterPlaceholder": "検索..."
+			"filterPlaceholder": "検索…"
 		},
 		"rules": {
 			"edit": "ルールを編集"
+		},
+		"table": {
+			"accountsAll": "すべての口座",
+			"accountsSome": "{count}件の口座",
+			"addMany": "取引を追加",
+			"addOne": "新規取引",
+			"categoriesAll": "すべてのカテゴリー",
+			"categoriesSome": "{count}件のカテゴリー",
+			"filterPlaceholder": "店舗を検索…",
+			"noneFound": "取引が見つかりません。",
+			"noneMatched": "検索に一致する取引はありません。"
 		},
 		"title": "取引履歴",
 		"types": {
@@ -192,7 +365,7 @@
 			"selectAccount": "登録済みの金融機関に関連付けられた口座を選択してください。",
 			"selectedProvider": "この口座は<bold>{provider}</bold>に関連付けられています。",
 			"validateAgain": "カテゴリー分けを再実行",
-			"waitingForFile": "取引のアップロード中..."
+			"waitingForFile": "取引のアップロード中…"
 		}
 	}
 }

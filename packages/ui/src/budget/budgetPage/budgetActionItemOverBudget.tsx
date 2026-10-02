@@ -1,6 +1,6 @@
 import { type OverBudgetItem } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { DateTime } from "luxon";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "../../format";
 import {
 	BudgetActionItemCell,
@@ -16,6 +16,7 @@ export const BudgetActionItemOverBudget: React.FC<Props> = ({
 	periodEnd,
 	...restProps
 }) => {
+	const locale = useLocale();
 	const t = useTranslations("budget");
 
 	const periodEndDate = DateTime.fromObject({ ...periodEnd });
@@ -23,11 +24,15 @@ export const BudgetActionItemOverBudget: React.FC<Props> = ({
 		months: data.frequency - 1,
 	});
 
-	const dateLabelFmt =
-		periodEndDate.year === periodStartDate.year ? "MMMM" : "MMMM yyyy";
+	const dateLabelFormat: Intl.DateTimeFormatOptions =
+		periodEndDate.year === periodStartDate.year
+			? { month: "long" }
+			: { month: "long", year: "numeric" };
 
-	const endLabel = periodEndDate.toFormat(dateLabelFmt);
-	const startLabel = periodStartDate.toFormat(dateLabelFmt);
+	const endLabel = periodEndDate.toLocaleString(dateLabelFormat, { locale });
+	const startLabel = periodStartDate.toLocaleString(dateLabelFormat, {
+		locale,
+	});
 
 	return (
 		<BudgetActionItemCell
