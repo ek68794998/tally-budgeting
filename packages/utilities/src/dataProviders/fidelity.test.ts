@@ -291,6 +291,34 @@ describe("FidelityDataProvider", () => {
 				});
 			});
 
+			it("should convert a retirement contribution with an unlabeled amount column", () => {
+				const row: RetirementContributionRow = {
+					/* eslint-disable @typescript-eslint/naming-convention */
+					Amount: "100.00",
+					Date: "09/10/2026",
+					Investment: "ABCDEF",
+					"Shares/Unit": "1.000",
+					"Transaction Type": "Contributions",
+					/* eslint-enable @typescript-eslint/naming-convention */
+				};
+
+				const result = provider.convertStatementRowToTransaction(
+					row,
+					"Fidelity Cash Management",
+					customizations,
+				);
+
+				expect(result).toEqual({
+					accountId: 1,
+					amountCents: 10000,
+					categoryId: DefaultCategoryId,
+					date: new Date("09/10/2026").toISOString(),
+					merchant: "ABCDEF",
+					subcategoryId: DefaultSubcategoryId,
+					type: "credit",
+				});
+			});
+
 			it("should handle negative amounts in retirement contributions", () => {
 				const row: RetirementContributionRow = {
 					/* eslint-disable @typescript-eslint/naming-convention */

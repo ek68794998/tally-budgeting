@@ -162,4 +162,77 @@ describe("processCsvFile", () => {
 		expect(processCsvFile(input)).toContain('"Coffee, Tea"');
 		expect(processCsvFile(input)).toContain('"Lunch, Dinner"');
 	});
+
+	describe("with comma-delimited preamble lines", () => {
+		const expected = [
+			"Date,Investment,Transaction Type,Amount,Shares/Unit",
+			'09/10/2026,ABCDEF,Contributions,"100.00","1.000"',
+		].join("\n");
+
+		it.each([
+			[
+				"separated by blank lines",
+				[
+					"Plan name:,MYPLANNAME          ",
+					"Date Range,09/01/2026 - 09/30/2026,,,,",
+					"",
+					"",
+					"Date,Investment,Transaction Type,Amount,Shares/Unit",
+					'09/10/2026,ABCDEF,Contributions,"100.00","1.000"',
+				],
+			],
+			[
+				"not separated by blank lines",
+				[
+					"  Plan name:,MYPLANNAME",
+					"Date Range,09/01/2026 - 09/30/2026,,,,  ",
+					"Date,Investment,Transaction Type,Amount,Shares/Unit",
+					'09/10/2026,ABCDEF,Contributions,"100.00","1.000"',
+				],
+			],
+			[
+				"with Windows line endings",
+				[
+					"Plan name:,MYPLANNAME\r",
+					"Date Range,09/01/2026 - 09/30/2026,,,,\r",
+					"\r",
+					"Date,Investment,Transaction Type,Amount,Shares/Unit\r",
+					'09/10/2026,ABCDEF,Contributions,"100.00","1.000"\r',
+				],
+			],
+			[
+				"whose cell count matches the header",
+				[
+					"Plan name:,MYPLANNAME,,,",
+					"Date,Investment,Transaction Type,Amount,Shares/Unit",
+					'09/10/2026,ABCDEF,Contributions,"100.00","1.000"',
+				],
+			],
+		])("should skip preamble lines %s", (_description, inputLines) => {
+			expect(processCsvFile(inputLines.join("\n"))).toBe(expected);
+		});
+	});
+
+	it("should find the header when the first data row spans multiple lines", () => {
+		const input = [
+			"Generated,2024-01-01",
+			"Date,Description,Amount",
+			'2024-01-01,"Coffee',
+			'and tea",5.00',
+		].join("\n");
+
+		const expected = [
+			"Date,Description,Amount",
+			'2024-01-01,"Coffee',
+			'and tea",5.00',
+		].join("\n");
+
+		expect(processCsvFile(input)).toBe(expected);
+	});
+
+	it("should fall back to the first line with commas when no header is followed by a matching row", () => {
+		const input = ["Header", "Date,Description,Amount"].join("\n");
+
+		expect(processCsvFile(input)).toBe("Date,Description,Amount");
+	});
 });
