@@ -5,19 +5,23 @@ description: Create a PR with conventional commit format
 
 ## Prerequisites
 
-- `<BRANCH_NAME>`: The name of the branch without any forbidden characters (like slashes, ampersands, etc.).
+- `<BRANCH_NAME>`: The name of the branch with any forbidden characters (like slashes, ampersands, etc.) replaced with `_`
+- The branch must be pushed; if it has not been pushed yet, ask the user if either they can push it, or permit you to push it instead
 
 ## Instructions
 
 Create a pull request:
 
-1. Execute a single command to get the current branch diff, write it to `tmp/<BRANCH_NAME>.diff`, and return the number of lines in the file
-2. If the `tmp/<BRANCH_NAME>.diff` has more than 200 lines, run the diff-summarizer subagent on `tmp/<BRANCH_NAME>.diff`; otherwise, read the file directly
+1. Execute a single command to get the current branch diff, write it to `tmp/diffs/<BRANCH_NAME>.diff`, and return the number of lines in the file
+2. If the `tmp/diffs/<BRANCH_NAME>.diff` has more than 200 lines, run the `diff-summarizer` subagent on `tmp/diffs/<BRANCH_NAME>.diff`; otherwise, read the file directly
 3. Use the output of that agent to determine the remaining steps
-2. Determine the diff's commit TYPE (one of 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test')
-3. Determine the diff's commit SCOPE ('web' if major changes are inside web & UI projects only; otherwise 'all')
+4. Determine the diff's commit TYPE:
+    - One of: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'
+5. Determine the diff's commit SCOPE:
+    - The primary directory with changes (a name within `packages/` folder or `app/` folder)
+    - If the changes are balanced across multiple folders, use 'frontend' or 'backend' if they are focused on one in particular; otherwise, use 'all'
 6. Generate a conventional commit TITLE for the pull request illustrating the most important 1–2 change(s) in less than 80 characters; ensure TITLE starts with an uppercase letter and does not have the TYPE as the first word
-7. Generate a BODY for the pull request with:
+7. Generate a BODY for the pull request with the following (do not include linting & unit testing in "Testing" as these are done by gated builds):
    ## Changes
    - <Bullet points of what changed>
    

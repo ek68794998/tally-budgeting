@@ -31,15 +31,21 @@ const transactionRowSchema = z.object({
 
 type TransactionRow = z.infer<typeof transactionRowSchema>;
 
-const retirementContributionRowSchema = z.object({
+const retirementContributionRowBaseSchema = z.object({
 	/* eslint-disable @typescript-eslint/naming-convention */
-	"Amount ($)": z.string(),
 	Date: z.string(),
 	Investment: z.string().min(1),
 	"Shares/Unit": z.string(),
 	"Transaction Type": z.string(),
 	/* eslint-enable @typescript-eslint/naming-convention */
 });
+
+const retirementContributionRowSchema = z.union([
+	/* eslint-disable @typescript-eslint/naming-convention */
+	retirementContributionRowBaseSchema.extend({ "Amount ($)": z.string() }),
+	retirementContributionRowBaseSchema.extend({ Amount: z.string() }),
+	/* eslint-enable @typescript-eslint/naming-convention */
+]);
 
 export type RetirementContributionRow = z.infer<
 	typeof retirementContributionRowSchema
@@ -87,7 +93,9 @@ export class FidelityDataProvider implements DataProvider<StatementRow> {
 				subcategories.find((s) => s.id === subcategoryId) ??
 				DefaultSubcategory;
 
-			const amount = Dollars.toCents(inputRow["Amount ($)"]);
+			const amount = Dollars.toCents(
+				"Amount" in inputRow ? inputRow.Amount : inputRow["Amount ($)"],
+			);
 
 			return {
 				accountId: account.id,

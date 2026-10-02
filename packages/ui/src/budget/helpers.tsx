@@ -177,6 +177,7 @@ export const getSpentText = (
 	budget: Subcategory["budget"],
 	endDate: BudgetDate,
 	t: ReturnType<typeof useTranslations<"budget">>,
+	locale: string,
 ) => {
 	const startDate = getStartDate(endDate, budget.frequency);
 	const budgetAmount = Dollars.fromCents(budget.amountCents);
@@ -194,7 +195,7 @@ export const getSpentText = (
 		const endMonthName = DateTime.fromObject({
 			month: endDate.month,
 			year: endDate.year,
-		}).toFormat("LLL");
+		}).toLocaleString({ month: "short" }, { locale });
 
 		spendingPeriod = t("durations.oneMonth", {
 			month: endMonthName,
@@ -203,7 +204,13 @@ export const getSpentText = (
 		const startMonthName = DateTime.fromObject({
 			month: startDate.month,
 			year: startDate.year,
-		}).toFormat(startDate.year === endDate.year ? "LLL" : "LLL yyyy");
+		}).toLocaleString(
+			{
+				month: "short",
+				year: startDate.year === endDate.year ? undefined : "numeric",
+			},
+			{ locale },
+		);
 
 		spendingPeriod = t("durations.multipleMonths", {
 			month: startMonthName,

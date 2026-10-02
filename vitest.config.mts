@@ -19,7 +19,7 @@ export default defineConfig({
 				"**/vitest-config/**",
 			],
 			provider: "v8",
-			reporter: ["text", "html", "json"],
+			reporter: ["text", "text-summary", "html"],
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
 				branches: 73,

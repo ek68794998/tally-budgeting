@@ -75,8 +75,9 @@ export const NetWorthOverTimeCard: React.FC<Props> = ({ data }) => {
 		return (
 			<div className="bg-background border-background-300 rounded border p-2 shadow-sm">
 				<p className="text-sm font-medium">
-					{DateTime.fromISO(tooltipPayload.date).toFormat(
-						"MMM dd, yyyy",
+					{DateTime.fromISO(tooltipPayload.date).toLocaleString(
+						{ day: "numeric", month: "long", year: "numeric" },
+						{ locale },
 					)}
 				</p>
 				<p className="text-success-600 text-sm">

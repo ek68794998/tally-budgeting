@@ -137,6 +137,33 @@ describe("parser e2e", () => {
 		});
 	});
 
+	describe("fidelity retirement", () => {
+		const account = makeAccount("fidelity");
+		const results = parseFile(
+			readMock("fidelityRetirementStatementMock.csv"),
+			account,
+		);
+		const successes = results.flatMap((r) =>
+			r.result === "success" ? [r.transaction] : [],
+		);
+
+		it("produces 2 successes and 1 ignored from 3 rows", () => {
+			expect(results).toHaveLength(3);
+			expect(successes).toHaveLength(2);
+			expect(results.filter((r) => r.result === "ignore")).toHaveLength(
+				1,
+			);
+			expect(results.filter((r) => r.result === "failure")).toHaveLength(
+				0,
+			);
+		});
+
+		it.each([0, 1])("success[%i] is a $100.00 credit", (index) => {
+			expect(successes[index]?.amountCents).toBe(10000);
+			expect(successes[index]?.type).toBe("credit");
+		});
+	});
+
 	describe("first tech federal", () => {
 		const account = makeAccount("firstTechFederal");
 		const results = parseFile(

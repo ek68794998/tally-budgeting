@@ -6,7 +6,7 @@ import { type BudgetBreakdownItem } from "@tally/data-models/contracts/api/getBu
 import { sortAndFlattenCategories } from "@tally/utilities/categories/sortAndFlattenCategories";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { DateTime } from "luxon";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { useCategories } from "../../hooks/store/useCategories";
 import { getIconForCategory } from "../helpers";
@@ -21,6 +21,7 @@ interface Props {
 export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 	const { categories, subcategories } = useCategories();
 
+	const locale = useLocale();
 	const t = useTranslations("budget");
 
 	const endDate = DateTime.fromObject(periodEnd).endOf("month");
@@ -39,7 +40,10 @@ export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 			<p className="mb-2 text-sm opacity-70">
 				{t.rich("categoriesView.description", {
 					bold: (chunks) => <b>{chunks}</b>,
-					endDate: endDate.toFormat("LLLL"),
+					endDate: endDate.toLocaleString(
+						{ month: "short" },
+						{ locale },
+					),
 				})}
 			</p>
 			<Accordion selectionMode="multiple">
