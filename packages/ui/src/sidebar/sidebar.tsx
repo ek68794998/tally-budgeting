@@ -2,6 +2,7 @@
 
 import {
 	IconBeach,
+	IconLogout,
 	IconPig,
 	IconPigFilled,
 	IconReceipt,
@@ -10,9 +11,16 @@ import {
 	IconSettingsFilled,
 	IconWallet,
 } from "@tabler/icons-react";
-import { buildWebRoute, web } from "@tally/utilities/routing/routeBuilder";
-import { usePathname } from "next/navigation";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
+import {
+	api,
+	buildApiRoute,
+	buildWebRoute,
+	web,
+} from "@tally/utilities/routing/routeBuilder";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useAuth } from "../auth/authContext";
 import { SidebarLogo } from "./sidebarLogo";
 import { type SidebarMenuItem, SidebarMenuItems } from "./sidebarMenuItems";
 
@@ -29,6 +37,14 @@ type PartialMenuItem = Pick<SidebarMenuItem, "id" | "label"> & {
 export const Sidebar = ({ className }: Props) => {
 	const t = useTranslations();
 	const pathName = usePathname();
+	const router = useRouter();
+	const { isAuthEnabled } = useAuth();
+
+	const logoutAsync = async () => {
+		await apiFetch(buildApiRoute(api.auth.logout), { method: "POST" });
+		router.replace(buildWebRoute(web.login));
+		router.refresh();
+	};
 
 	const createMenuItem = (item: PartialMenuItem): SidebarMenuItem => {
 		const { DefaultIconComponent, FilledIconComponent, path, ...rest } =
@@ -51,6 +67,20 @@ export const Sidebar = ({ className }: Props) => {
 			<div className="flex h-full flex-col gap-4">
 				<SidebarLogo />
 				<SidebarMenuItems
+					footerActions={
+						isAuthEnabled
+							? [
+									{
+										IconComponent: IconLogout,
+										id: "logout",
+										label: t("auth.logout"),
+										onPress: () => {
+											void logoutAsync();
+										},
+									},
+								]
+							: []
+					}
 					footerMenuItems={[
 						createMenuItem({
 							DefaultIconComponent: IconSettings,

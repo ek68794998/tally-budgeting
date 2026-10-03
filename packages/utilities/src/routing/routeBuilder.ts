@@ -2,6 +2,10 @@ import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 
 const apiRoutes = {
 	assets: "/api/assets",
+	auth: {
+		login: "/api/auth/login",
+		logout: "/api/auth/logout",
+	},
 	budget: {
 		spending: "/api/budget/spending",
 		summary: "/api/budget/summary",
@@ -32,6 +36,7 @@ const webRoutes = {
 		spending: "/budget/spending",
 	},
 	home: "/",
+	login: "/login",
 	retirement: "/retirement",
 	transactions: {
 		base: "/transactions",

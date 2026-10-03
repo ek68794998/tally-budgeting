@@ -10,7 +10,15 @@ export interface SidebarMenuItem {
 	label: string;
 }
 
+export interface SidebarAction {
+	IconComponent: Icon;
+	id: string;
+	label: string;
+	onPress: () => void;
+}
+
 interface Props {
+	footerActions?: SidebarAction[];
 	footerMenuItems?: SidebarMenuItem[];
 	menuItems: SidebarMenuItem[];
 }
@@ -23,6 +31,7 @@ const copyrightYear =
 		: `${copyrightStartYear}–${currentYear}`;
 
 export const SidebarMenuItems: React.FC<Props> = ({
+	footerActions,
 	footerMenuItems,
 	menuItems,
 }) => (
@@ -56,6 +65,17 @@ export const SidebarMenuItems: React.FC<Props> = ({
 					</Button>
 				),
 			)}
+			{footerActions?.map(({ IconComponent, id, label, onPress }) => (
+				<Button
+					className="justify-start"
+					key={id}
+					onPress={onPress}
+					startContent={<IconComponent />}
+					variant="light"
+				>
+					{label}
+				</Button>
+			))}
 		</div>
 		<div className="text-center text-xs text-stone-500">
 			<div className="my-4 h-px bg-stone-200" />
