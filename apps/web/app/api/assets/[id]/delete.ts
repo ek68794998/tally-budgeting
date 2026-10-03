@@ -1,6 +1,6 @@
 import { NoContent } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
-import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
+import { deleteAssetParamsSchema } from "@tally/data-models/contracts/api/deleteAsset";
 import z from "zod";
 import { AssetsClient } from "../../../storage/assetsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
@@ -22,7 +22,7 @@ export const DeleteAssetsIdRouteAsync: NextResponseFn = createApiHandler({
 	},
 	schemata: {
 		body: z.unknown(),
-		params: deleteTransactionRuleParamsSchema,
+		params: deleteAssetParamsSchema,
 		query: z.unknown(),
 	},
 });
