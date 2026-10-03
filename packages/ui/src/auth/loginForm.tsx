@@ -77,6 +77,7 @@ export const LoginForm: React.FC<Props> = ({ onSuccess }) => {
 				label={t("passwordLabel")}
 				onValueChange={setPassword}
 				type="password"
+				validationBehavior="aria"
 				value={password}
 			/>
 			<Button
