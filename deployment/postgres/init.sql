@@ -92,6 +92,11 @@ CREATE TABLE IF NOT EXISTS txn_rule (
 		ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS app_setting (
+	key TEXT PRIMARY KEY,
+	value TEXT NOT NULL
+);
+
 -- Indexes for common query patterns
 CREATE INDEX IF NOT EXISTS idx_txn_date ON txn(date);
 CREATE INDEX IF NOT EXISTS idx_txn_account ON txn(account);
