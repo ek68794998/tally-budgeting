@@ -12,6 +12,9 @@ const registerAsync = async (): Promise<void> => {
 				"Authentication is disabled via DANGEROUSLY_DISABLE_AUTH. Anyone who can reach this server can read and modify all data.",
 		});
 	}
+
+	const { migrateToLatestAsync } = await import("./app/storage/migrate");
+	await migrateToLatestAsync();
 };
 
 export { registerAsync as register };

@@ -140,6 +140,10 @@ Tally is protected by a single shared password, and the app refuses to start wit
 - **Changing the password logs out all sessions.**
 - **Using your own auth proxy:** set `DANGEROUSLY_DISABLE_AUTH=1` to turn off Tally's login. Anyone who can reach the app can then read and modify all data, so only do this when something else in front of it enforces authentication.
 
+## Database Migrations
+
+The schema is managed by Kysely migrations in `apps/web/app/storage/migrations/`, applied automatically when the app starts. To add one, create `000N_<name>.ts` exporting a `Migration` (typed against `Kysely<unknown>`) and append it to `migrationEntries` in `migrationProvider.ts`.
+
 ## CSV Import
 
 Tally supports importing transactions from CSV files. The format requirements vary by institution.
