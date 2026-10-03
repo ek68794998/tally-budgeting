@@ -35,12 +35,17 @@ cd tally-budgeting
 pnpm install
 ```
 
-3. Start the development database:
+3. Create your local environment file from the template, and set `POSTGRES_CONNECTION_STRING` (see [Environment Variables](#environment-variables)):
+```bash
+cp apps/web/.env.default apps/web/.env.development.local
+```
+
+4. Start the development database:
 ```bash
 pnpm dev:db:up
 ```
 
-4. Start the development server:
+5. Start the development server:
 ```bash
 pnpm dev
 ```
@@ -82,6 +87,14 @@ This builds the application image for `linux/amd64` and saves it to `tally-budge
 
 ### Running with Docker Compose
 
+Before starting, create `deployment/.env` and set a database password:
+
+```bash
+echo "DB_PASSWORD=<choose-a-strong-password>" > deployment/.env
+```
+
+Then:
+
 ```bash
 # Start all services
 pnpm docker:up
@@ -93,13 +106,25 @@ pnpm docker:logs
 pnpm docker:down
 ```
 
-The Docker Compose configuration includes both the application and PostgreSQL database.
+The Docker Compose configuration includes both the application and PostgreSQL database. The app is served on port `7856`.
 
 ## Configuration
 
 ### Environment Variables
 
-_TBD_
+The web app reads the following variables. For local development, set them in `apps/web/.env.development.local` (copied from `apps/web/.env.default`). With Docker Compose, the app's variables are set for you in `deployment/docker-compose.yml`.
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `POSTGRES_CONNECTION_STRING` | Yes | — | PostgreSQL connection string. For the development database, use `postgresql://tally:tally_dev_password@localhost:5432/tally`. |
+| `POSTGRES_POOL_MAXIMUM` | No | `10` | Maximum number of pooled database connections. |
+| `LOG_LEVEL` | No | `info` | Backend log level: `error`, `warn`, `info`, `http`, or `debug`. |
+
+Docker Compose itself reads one variable from `deployment/.env`:
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. |
 
 ### Authentication
 
