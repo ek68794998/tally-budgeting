@@ -28,10 +28,10 @@ export default defineConfig({
 			reporter: ["text", "text-summary", "html"],
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
-				branches: 92,
-				functions: 85,
-				lines: 57,
-				statements: 57,
+				branches: 96,
+				functions: 95,
+				lines: 98,
+				statements: 98,
 			},
 		},
 		exclude: [...configDefaults.exclude, "**/build/**"],
@@ -39,6 +39,8 @@ export default defineConfig({
 		include: ["**/(src|app)/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
 		projects: [
 			{
+				// The web app's tsconfig preserves JSX for Next.js, which would otherwise compile to the classic runtime.
+				esbuild: { jsx: "automatic" },
 				test: {
 					environment: "happy-dom",
 					include: ["**/*.{test,spec}.{tsx,jsx}"],

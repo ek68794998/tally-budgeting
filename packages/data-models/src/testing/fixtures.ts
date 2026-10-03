@@ -43,7 +43,7 @@ export const buildTransaction = (
 ): Transaction => ({
 	amountCents: 25_00,
 	categoryId: 1,
-	date: "2025-01-15T00:00:00.000Z",
+	date: "2025-01-15T12:00:00.000Z",
 	happiness: 2,
 	id: 1,
 	merchant: "Coffee Shop",
