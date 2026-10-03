@@ -1,4 +1,5 @@
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
+import { isBoolean } from "@ekumlin/typescript-toolkit/types";
 import { MaxTransactionsPerPage } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import {
@@ -160,12 +161,9 @@ const applyFilters = (
 		const column = mapFilterFieldToColumn(fe.field);
 
 		if (fe.operator === "eq") {
-			/* eslint-disable */
 			// Kysely doesn't permit us to send Boolean values for comparison
-			// if the database has no Boolean columns. However, it is still
-			// safe to send these values to the database—not that we ever do.
-			const value = fe.value as any; // TODO
-			/* eslint-enable */
+			// if the database has no Boolean columns.
+			const value = isBoolean(fe.value) ? `${fe.value}` : fe.value;
 
 			return queryBuilder.eb(column, "=", value);
 		}
