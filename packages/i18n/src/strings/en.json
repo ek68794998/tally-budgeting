@@ -37,6 +37,24 @@
 			"short_term_liability": "Short-term {plural, select, no {Liability} other {Liabilities}}"
 		}
 	},
+	"auth": {
+		"login": {
+			"error": {
+				"invalidPassword": "Incorrect password.",
+				"serverError": "The server couldn't process your login. Check the server logs for details.",
+				"tooManyAttempts": "Too many attempts. Please try again later.",
+				"unknown": "Something went wrong. Please try again."
+			},
+			"passwordLabel": "Password",
+			"submit": "Log In",
+			"title": "Log In"
+		},
+		"logout": "Log Out",
+		"sessionExpired": {
+			"message": "Your session has expired. Refresh the page or click here to <link>continue</link>.",
+			"title": "Session Expired"
+		}
+	},
 	"budget": {
 		"categoriesEdit": {
 			"categoryColumns": {
