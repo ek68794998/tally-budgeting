@@ -98,6 +98,26 @@ describe("AssetsTable", () => {
 		expect(postAssetAsync).toHaveBeenCalledWith(checking);
 		expect(refetch).toHaveBeenCalledOnce();
 		expect(lastEditModalProps()?.asset).toBeNull();
+		expect(lastEditModalProps()?.modalState.isOpen).toBe(false);
+	});
+
+	it("doesn't open the editor when deleting after creating an asset", async () => {
+		render(<AssetsTable assets={[checking]} />);
+
+		act(() => {
+			vi.mocked(AssetsTableControls).mock.lastCall?.[0].onNewAsset();
+		});
+		await act(
+			() =>
+				lastEditModalProps()?.onSaveAsync(ModalDefaultAsset) ??
+				Promise.resolve(),
+		);
+		act(() => {
+			getCardProps()[0]?.onDelete();
+		});
+
+		expect(lastEditModalProps()?.asset).toBeNull();
+		expect(lastConfirmationProps()?.modalState.isOpen).toBe(true);
 	});
 
 	it("toggles an asset's active state", async () => {
@@ -118,7 +138,7 @@ describe("AssetsTable", () => {
 		render(<AssetsTable assets={[checking]} />);
 
 		await expect(lastConfirmationProps()?.onConfirmAsync()).rejects.toThrow(
-			"Active rule must be defined",
+			"Asset to delete must be defined",
 		);
 
 		act(() => {
