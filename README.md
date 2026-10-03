@@ -130,6 +130,10 @@ Docker Compose itself reads one variable from `deployment/.env`:
 
 _TBD_
 
+## Database Migrations
+
+The schema is managed by Kysely migrations in `apps/web/app/storage/migrations/`, applied automatically when the app starts. To add one, create `000N_<name>.ts` exporting a `Migration` (typed against `Kysely<unknown>`) and append it to `migrationEntries` in `migrationProvider.ts`.
+
 ## CSV Import
 
 Tally supports importing transactions from CSV files. The format requirements vary by institution.
