@@ -7,44 +7,42 @@ const unprocessedItemSchema = z.record(z.string(), z.string());
 
 export type UnprocessedItem = z.Infer<typeof unprocessedItemSchema>;
 
+const toUnprocessedItem = (row: unknown): UnprocessedItem => {
+	const parsedRow = unprocessedItemSchema.safeParse(row);
+	return parsedRow.success ? parsedRow.data : {};
+};
+
+/** Groups an upload's results, converting each failed `[message, row]` result into its row with an error column. */
 export const groupUploadResults = (
 	response: PostTransactionsUploadResponse,
+	errorColumnLabel: string,
 ) => {
-	const itemHeaders: string[] = [];
-	const itemsCategorized: Transaction[] = [];
-	const itemsUncategorized: Transaction[] = [];
-	const itemsFailed: unknown[] = [...response.rowsFailed];
-	const itemsIgnored: unknown[] = [...response.rowsIgnored];
-
-	const firstUnprocessedRow = itemsFailed[0] ?? itemsIgnored[0];
-
-	if (firstUnprocessedRow) {
-		itemHeaders.push(...Object.keys(firstUnprocessedRow));
-	}
+	const transactionsCategorized: Transaction[] = [];
+	const transactionsUncategorized: Transaction[] = [];
 
 	for (const transaction of response.rowsProcessed) {
 		if (transaction.subcategoryId === DefaultSubcategoryId) {
-			itemsUncategorized.push(transaction);
+			transactionsUncategorized.push(transaction);
 			continue;
 		}
 
-		itemsCategorized.push(transaction);
+		transactionsCategorized.push(transaction);
 	}
 
 	return {
-		inputCsvHeaders: itemHeaders,
-		rowsFailed: itemsFailed,
-		rowsIgnored: itemsIgnored,
-		transactionsCategorized: itemsCategorized,
-		transactionsUncategorized: itemsUncategorized,
+		rowsFailed: response.rowsFailed.map(([message, row]) => ({
+			[errorColumnLabel]: message,
+			...toUnprocessedItem(row),
+		})),
+		rowsIgnored: response.rowsIgnored.map(toUnprocessedItem),
+		transactionsCategorized,
+		transactionsUncategorized,
 	};
 };
 
-export const toUnprocessedItems = (rows: unknown[]): UnprocessedItem[] =>
-	rows.map((row) => {
-		const parsedRow = unprocessedItemSchema.safeParse(row);
-		return parsedRow.success ? parsedRow.data : {};
-	});
+export const getUnprocessedItemHeaders = (
+	items: UnprocessedItem[],
+): string[] => [...new Set(items.flatMap((item) => Object.keys(item)))];
 
 /** Collapses transactions to one entry per merchant, keeping the last one seen. */
 export const countTransactionsByMerchant = (

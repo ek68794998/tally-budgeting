@@ -145,7 +145,7 @@ describe("useTransactionsTable", () => {
 		expect(getRequestedParams().get("page")).toBe("2");
 	});
 
-	it("opens the editor for a new, existing, or duplicated transaction", async () => {
+	it("opens the editor for a new, existing, or duplicated transaction without changing the original", async () => {
 		const { result } = await renderTableAsync();
 
 		act(() => {
@@ -168,12 +168,16 @@ describe("useTransactionsTable", () => {
 		});
 
 		act(() => {
+			result.current.editModalState.onClose();
+			result.current.editTransaction(7);
+		});
+		expect(result.current.activeTransaction?.id).toBe(7);
+
+		act(() => {
 			result.current.editTransaction(999);
 			result.current.duplicateTransaction(999);
 		});
-		expect(result.current.activeTransaction?.id).toBe(
-			ModalDefaultTransaction.id,
-		);
+		expect(result.current.activeTransaction?.id).toBe(7);
 	});
 
 	it("saves a transaction and reloads the page", async () => {

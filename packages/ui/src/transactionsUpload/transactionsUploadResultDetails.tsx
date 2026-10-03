@@ -27,8 +27,9 @@ import { usePostTransactionRule } from "../hooks/api/usePostTransactionRule";
 import { RuleEditModal } from "../rulesTable/ruleEditModal";
 import {
 	countTransactionsByMerchant,
+	getUnprocessedItemHeaders,
 	groupUploadResults,
-	toUnprocessedItems,
+	type UnprocessedItem,
 } from "./helpers";
 import { TransactionsUploadResultTransactionRow } from "./transactionsUploadResultTransactionRow";
 
@@ -55,19 +56,19 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 	>(null);
 
 	const {
-		inputCsvHeaders,
 		rowsFailed,
 		rowsIgnored,
 		transactionsCategorized,
 		transactionsUncategorized,
-	} = useMemo(() => groupUploadResults(response), [response]);
+	} = useMemo(
+		() => groupUploadResults(response, t("upload.resultCard.errorColumn")),
+		[response, t],
+	);
 
-	const unprocessedItemHeaders = inputCsvHeaders.map((header) => ({
-		header,
-	}));
-
-	const renderUnprocessedItemTable = (rows: unknown[]) => {
-		const items = toUnprocessedItems(rows);
+	const renderUnprocessedItemTable = (items: UnprocessedItem[]) => {
+		const unprocessedItemHeaders = getUnprocessedItemHeaders(items).map(
+			(header) => ({ header }),
+		);
 
 		return (
 			<Table

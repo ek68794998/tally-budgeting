@@ -87,23 +87,29 @@ describe("TransactionsUploadResultDetails", () => {
 		expect(screen.getByText("PAYMENT THANK YOU")).toBeInTheDocument();
 	});
 
-	// Known bug: the API sends failed rows as `[error, row]` tuples, but they are rendered as header-keyed records
-	// (which also replaces the ignored rows' headers with "0" and "1").
-	it.fails("shows the original columns of failed rows", () => {
+	it("shows failed rows with their error and original columns, separately from ignored rows", () => {
 		render(
 			<TransactionsUploadResultDetails
 				response={{
 					rowsFailed: [["Invalid amount", failedRow]],
-					rowsIgnored: [],
+					rowsIgnored: [ignoredRow],
 					rowsProcessed: [],
 					success: true,
 				}}
 			/>,
 		);
 
+		expand("Ignored Transactions");
 		expand("Failed Transactions");
 
+		expect(screen.getByText("Invalid amount")).toBeInTheDocument();
 		expect(screen.getByText("BROKEN ROW")).toBeInTheDocument();
+		expect(screen.getByText("PAYMENT THANK YOU")).toBeInTheDocument();
+		expect(
+			screen
+				.getAllByRole("columnheader")
+				.map(({ textContent }) => textContent),
+		).toEqual(["Amount", "Description", "Error", "Amount", "Description"]);
 	});
 
 	it("opens the rule editor for an uncategorized merchant and saves the rule", async () => {

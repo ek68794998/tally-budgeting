@@ -2,8 +2,8 @@ import { buildTransaction } from "@tally/data-models/testing/fixtures";
 import { describe, expect, it } from "vitest";
 import {
 	countTransactionsByMerchant,
+	getUnprocessedItemHeaders,
 	groupUploadResults,
-	toUnprocessedItems,
 } from "./helpers";
 
 const ignoredRow = Object.fromEntries([
@@ -14,52 +14,66 @@ const categorized = buildTransaction({ id: 1, subcategoryId: 4 });
 const uncategorized = buildTransaction({ id: 2, subcategoryId: -1 });
 
 describe("groupUploadResults", () => {
-	it("splits processed rows by categorization and takes headers from ignored rows", () => {
+	it("splits processed rows by categorization and keeps ignored rows as records", () => {
 		expect(
-			groupUploadResults({
-				rowsFailed: [],
-				rowsIgnored: [ignoredRow],
-				rowsProcessed: [categorized, uncategorized],
-				success: true,
-			}),
+			groupUploadResults(
+				{
+					rowsFailed: [],
+					rowsIgnored: [ignoredRow, "not a record"],
+					rowsProcessed: [categorized, uncategorized],
+					success: true,
+				},
+				"Error",
+			),
 		).toEqual({
-			inputCsvHeaders: ["Amount", "Description"],
 			rowsFailed: [],
-			rowsIgnored: [ignoredRow],
+			rowsIgnored: [ignoredRow, {}],
 			transactionsCategorized: [categorized],
 			transactionsUncategorized: [uncategorized],
 		});
 	});
 
-	it("has no headers when every row was processed", () => {
-		expect(
-			groupUploadResults({
-				rowsFailed: [],
+	it("puts each failed row's message in an error column before its CSV columns", () => {
+		const { rowsFailed } = groupUploadResults(
+			{
+				rowsFailed: [
+					["Missing amount", ignoredRow],
+					["Unreadable row", null],
+				],
 				rowsIgnored: [],
 				rowsProcessed: [],
 				success: true,
-			}).inputCsvHeaders,
-		).toEqual([]);
-	});
+			},
+			"Error",
+		);
 
-	// Known bug: failed rows are `[message, row]` tuples, so the headers become "0" and "1".
-	it.fails("takes headers from the CSV row inside a failed result", () => {
-		expect(
-			groupUploadResults({
-				rowsFailed: [["Missing amount", ignoredRow]],
-				rowsIgnored: [],
-				rowsProcessed: [],
-				success: true,
-			}).inputCsvHeaders,
-		).toEqual(["Amount", "Description"]);
+		expect(rowsFailed).toEqual([
+			{
+				...Object.fromEntries([["Error", "Missing amount"]]),
+				...ignoredRow,
+			},
+			Object.fromEntries([["Error", "Unreadable row"]]),
+		]);
+		expect(getUnprocessedItemHeaders(rowsFailed)).toEqual([
+			"Error",
+			"Amount",
+			"Description",
+		]);
 	});
 });
 
-describe("toUnprocessedItems", () => {
-	it("keeps string records and blanks anything else", () => {
+describe("getUnprocessedItemHeaders", () => {
+	it("collects every column in first-seen order", () => {
 		expect(
-			toUnprocessedItems([ignoredRow, ["Missing amount", ignoredRow]]),
-		).toEqual([ignoredRow, {}]);
+			getUnprocessedItemHeaders([
+				ignoredRow,
+				Object.fromEntries([
+					["Description", "X"],
+					["Memo", "Y"],
+				]),
+			]),
+		).toEqual(["Amount", "Description", "Memo"]);
+		expect(getUnprocessedItemHeaders([])).toEqual([]);
 	});
 });
 
