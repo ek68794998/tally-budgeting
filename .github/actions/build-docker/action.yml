@@ -6,3 +6,4 @@ runs:
   steps:
     - name: Compile Docker image
       run: pnpm docker:build
+      shell: bash
