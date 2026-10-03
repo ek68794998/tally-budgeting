@@ -131,8 +131,8 @@ export const AssetEditModal: React.FC<Props> = ({
 							onSaveError={() =>
 								addToast({
 									color: "danger",
-									description: "TODO",
-									title: "TODO",
+									description: t("error.api.errorBody"),
+									title: t("error.api.errorTitle"),
 								})
 							}
 						/>

@@ -1,6 +1,5 @@
 {
 	"assets": {
-		"about": "This card explains the assets page.",
 		"activeNo": "Inactive",
 		"activeYes": "Active",
 		"columns": {
@@ -39,7 +38,6 @@
 		}
 	},
 	"budget": {
-		"about": "This card explains the budget page.",
 		"categoriesEdit": {
 			"categoryColumns": {
 				"label": "Label"
@@ -215,7 +213,6 @@
 		"title": "About {subject}"
 	},
 	"retirement": {
-		"about": "This card explains the retirement page.",
 		"chart": {
 			"title": "Cumulative Savings",
 			"tooltipTitle": "Age {age}"
@@ -252,7 +249,6 @@
 		"title": "Retirement"
 	},
 	"rules": {
-		"about": "This card explains the rules page.",
 		"columns": {
 			"category": "Category",
 			"merchant": "Merchant Name",
@@ -283,7 +279,6 @@
 		"title": "Settings"
 	},
 	"summary": {
-		"about": "This card explains the summary page.",
 		"spendCard": {
 			"earnedMonthly": "Income in {period}",
 			"earnedYearly": "Income in {period}",
@@ -299,7 +294,6 @@
 		"title": "Summary"
 	},
 	"transactions": {
-		"about": "This card explains the transactions page.",
 		"columns": {
 			"account": "Account",
 			"amount": "Amount",
