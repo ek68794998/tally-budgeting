@@ -60,6 +60,7 @@ export const useTransactionForm = (
 				accountId,
 				amountCents: Dollars.toCents(amount),
 				date: date ? `${date.toString()}T12:00:00Z` : transaction.date,
+				happiness,
 				merchant: merchantName,
 				notes,
 				subcategoryId,

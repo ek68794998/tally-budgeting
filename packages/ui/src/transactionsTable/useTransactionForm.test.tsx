@@ -82,8 +82,7 @@ describe("useTransactionForm", () => {
 		);
 	});
 
-	// Known bug: `buildTransaction` (and the modal's save before extraction) never includes `happiness`.
-	it.fails("saves an edited happiness level", () => {
+	it("saves an edited happiness level", () => {
 		const { result } = renderHook(() => useTransactionForm(coffee, true));
 
 		act(() => {
