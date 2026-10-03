@@ -29,8 +29,8 @@
 		"typescript": "5.9.2",
 		"vitest": "^3.2.4"
 	},
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@11.1.2",
 	"engines": {
-		"node": ">=20"
+		"node": ">=22"
 	}
 }
