@@ -1,5 +1,6 @@
 import { NotFound, Ok } from "@ekumlin/typescript-toolkit/http";
 import { addToast } from "@heroui/react";
+import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
@@ -103,5 +104,45 @@ describe("useApiResponseValidator", () => {
 				"The server returned data in an unexpected format. Please try again.",
 			title: "Validation Error",
 		});
+	});
+
+	it("returns false without a toast on 401, leaving it to the session handler", async () => {
+		vi.mocked(addToast).mockClear();
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: new Response(null, { status: 401 }),
+			responseSchema: z.unknown(),
+		});
+
+		expect(validationResult).toBe(false);
+		expect(addToast).not.toHaveBeenCalled();
+	});
+
+	it("treats an empty body as undefined", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+
+		const validationResult = await result.current.validateApiResponseAsync({
+			response: new Response(null, { status: 204 }),
+			responseSchema: z.undefined(),
+		});
+
+		expect(validationResult).toBeUndefined();
+	});
+
+	it("rethrows errors other than a JSON syntax error", async () => {
+		const { result } = renderHook(() => useApiResponseValidator());
+		const response = mockIncompleteObject<Response>({
+			json: () => Promise.reject(new Error("stream failed")),
+			ok: true,
+			status: Ok,
+		});
+
+		await expect(
+			result.current.validateApiResponseAsync({
+				response,
+				responseSchema: z.unknown(),
+			}),
+		).rejects.toThrow("stream failed");
 	});
 });
