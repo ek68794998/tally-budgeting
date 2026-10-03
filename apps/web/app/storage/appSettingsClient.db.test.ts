@@ -1,12 +1,4 @@
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
 
 const testDatabase = createTestDatabaseHandle();
@@ -23,7 +15,6 @@ const importFreshClient = () => {
 describe("getOrCreateSessionSecretAsync", () => {
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 
 	it("creates a secret once, then reuses it from cache and from the database", async () => {
 		const first = await importFreshClient();

@@ -1,7 +1,9 @@
+import { openAsBlob } from "node:fs";
 import { PGlite, types } from "@electric-sql/pglite";
 import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { Kysely, Migrator, PostgresDialect, sql } from "kysely";
 import { type Pool } from "pg";
+import { inject } from "vitest";
 import { type Database } from "../database";
 import { migrationProvider } from "../migrations/migrationProvider";
 
@@ -12,7 +14,7 @@ export interface TestDatabase {
 	resetAsync: () => Promise<void>;
 }
 
-// Adapts PGlite to the subset of the `pg` Pool API that Kysely's PostgresDialect uses.
+/** Adapts PGlite to the subset of the `pg` Pool API that Kysely's PostgresDialect uses. */
 const createPglitePool = (pglite: PGlite) => {
 	const client = {
 		query: async (statement: string, parameters: unknown[]) => {
@@ -38,8 +40,11 @@ const createPglitePool = (pglite: PGlite) => {
 
 export const createTestDatabaseAsync = async (): Promise<TestDatabase> => {
 	const pglite = await PGlite.create({
-		// Match `pg`, which returns BIGINT columns as strings.
-		parsers: { [types.INT8]: (value: string) => value },
+		loadDataDir: await openAsBlob(inject("pgliteDataDirPath")),
+		parsers: {
+			// Match `pg`, which returns BIGINT columns as strings.
+			[types.INT8]: (value: string) => value,
+		},
 	});
 
 	const database = new Kysely<Database>({
@@ -75,7 +80,14 @@ export const createTestDatabaseAsync = async (): Promise<TestDatabase> => {
 	return { closeAsync, database, pglite, resetAsync };
 };
 
-// Defers creation to `setUpAsync` so callers can register it in `beforeAll` inside their `describe`.
+declare global {
+	var _sharedTestDatabase: Promise<TestDatabase> | undefined;
+}
+
+/**
+ * Creates a handle to the test database, but defers creation until `setUpAsync` is called.
+ * Every test file in a worker shares one database; on exit, the worker returns PGlite's memory to the OS.
+ */
 export const createTestDatabaseHandle = () => {
 	let testDatabase: TestDatabase | undefined;
 
@@ -95,8 +107,8 @@ export const createTestDatabaseHandle = () => {
 		},
 		resetAsync: () => getTestDatabase().resetAsync(),
 		setUpAsync: async () => {
-			testDatabase = await createTestDatabaseAsync();
+			globalThis._sharedTestDatabase ??= createTestDatabaseAsync();
+			testDatabase = await globalThis._sharedTestDatabase;
 		},
-		tearDownAsync: () => getTestDatabase().closeAsync(),
 	};
 };

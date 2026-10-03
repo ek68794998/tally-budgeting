@@ -3,15 +3,7 @@ import {
 	buildCategory,
 	buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { CategoriesClient } from "./categoriesClient";
 import { SubcategoriesClient } from "./subcategoriesClient";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
@@ -27,7 +19,6 @@ describe("CategoriesClient", () => {
 
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 	const createClient = () => new CategoriesClient(testDatabase.database);
 
 	it("inserts categories after the seeded default", async () => {

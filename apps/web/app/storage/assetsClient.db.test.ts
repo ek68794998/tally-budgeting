@@ -1,13 +1,5 @@
 import { buildAsset } from "@tally/data-models/testing/fixtures";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { assertAuthenticatedAsync } from "../auth/verifyRequest";
 import { AssetsClient } from "./assetsClient";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
@@ -21,7 +13,6 @@ describe("AssetsClient", () => {
 
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 	const createClient = () => new AssetsClient(testDatabase.database);
 
 	it("inserts single and multiple assets and reads them back in id order", async () => {

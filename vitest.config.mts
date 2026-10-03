@@ -61,11 +61,17 @@ export default defineConfig({
 			{
 				test: {
 					environment: "node",
+					globalSetup: [
+						"apps/web/app/storage/testing/pgliteGlobalSetup.ts",
+					],
 					include: ["**/*.db.test.ts"],
 					name: "integration-db",
-					// Each PGlite instance holds ~800 MB, so run database tests one file at a time.
 					pool: "forks",
-					poolOptions: { forks: { singleFork: true } },
+					poolOptions: {
+						// PGlite memory is only returned to the OS when its process exits,
+						// so every database test file shares one fork and one instance.
+						forks: { singleFork: true },
+					},
 				},
 			},
 		],

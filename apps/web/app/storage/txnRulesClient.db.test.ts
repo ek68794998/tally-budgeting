@@ -1,13 +1,5 @@
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
 import { TxnRulesClient } from "./txnRulesClient";
 
@@ -28,7 +20,6 @@ describe("TxnRulesClient", () => {
 
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 	const createClient = () => new TxnRulesClient(testDatabase.database);
 
 	it("reads rules ordered by priority, then id", async () => {

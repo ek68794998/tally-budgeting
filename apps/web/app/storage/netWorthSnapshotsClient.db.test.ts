@@ -1,13 +1,5 @@
 import { buildNetWorthSnapshot } from "@tally/data-models/testing/fixtures";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { NetWorthSnapshotsClient } from "./netWorthSnapshotsClient";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
 
@@ -20,7 +12,6 @@ describe("NetWorthSnapshotsClient", () => {
 
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 	const createClient = () =>
 		new NetWorthSnapshotsClient(testDatabase.database);
 

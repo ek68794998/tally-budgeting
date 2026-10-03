@@ -5,15 +5,7 @@ import {
 	buildTransaction,
 } from "@tally/data-models/testing/fixtures";
 import { DateTime } from "luxon";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { AssetsClient } from "./assetsClient";
 import { CategoriesClient } from "./categoriesClient";
 import { SubcategoriesClient } from "./subcategoriesClient";
@@ -68,7 +60,6 @@ describe("TxnsClient", () => {
 
 	beforeAll(testDatabase.setUpAsync);
 	beforeEach(testDatabase.resetAsync);
-	afterAll(testDatabase.tearDownAsync);
 	const createClient = () => new TxnsClient(testDatabase.database);
 
 	beforeEach(async () => {
