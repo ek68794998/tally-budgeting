@@ -30,13 +30,13 @@ export const createFilterParamsSchema = () =>
 
 export const createPaginationParamsSchema = (maximumPerPage: number) =>
 	z.object({
-		limit: z
-			.string()
+		limit: z.coerce
+			.number()
+			.int()
 			.min(1)
 			.max(maximumPerPage)
-			.transform(Number)
 			.default(maximumPerPage),
-		page: z.string().min(1).transform(Number).default(1),
+		page: z.coerce.number().int().min(1).default(1),
 	});
 
 export const createSortParamsSchema = (fieldNames: string[]) =>

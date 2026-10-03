@@ -58,26 +58,19 @@ describe("transactions routes", () => {
 		});
 	});
 
-	it("GET rejects an unknown sort field", async () => {
+	it.each([
+		"sortBy=notes",
+		"limit=1000",
+		"limit=0",
+		"limit=abc",
+		"page=abc",
+		"page=0",
+		"page=1.5",
+	])("GET rejects invalid query parameters: %s", async (query) => {
 		const { json, status } = await callRouteAsync(
 			GetTransactionsRouteAsync,
 			{
-				url: "http://localhost/api/transactions?sortBy=notes",
-			},
-		);
-
-		expect(status).toBe(400);
-		expect(json).toMatchObject({
-			error: { code: "invalidQueryParameters" },
-		});
-	});
-
-	// Known bug: the pagination schema bounds the string length of `limit`, not its numeric value.
-	it.fails("GET rejects a limit above the maximum", async () => {
-		const { json, status } = await callRouteAsync(
-			GetTransactionsRouteAsync,
-			{
-				url: "http://localhost/api/transactions?limit=1000",
+				url: `http://localhost/api/transactions?${query}`,
 			},
 		);
 
