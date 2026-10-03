@@ -6,3 +6,4 @@ runs:
   steps:
     - name: Run unit tests with coverage
       run: pnpm test:coverage
+      shell: bash
