@@ -3,6 +3,7 @@ import { HelpLink } from "@tally/ui/helpLink/helpLink";
 import { buildSubpageMap } from "@tally/utilities/routing/pageData";
 import { web } from "@tally/utilities/routing/routeBuilder";
 import { useTranslations } from "next-intl";
+import { HelpContent } from "../help/helpContent";
 
 const TransactionsLayout: React.FC<React.PropsWithChildren> = ({
 	children,
@@ -17,10 +18,9 @@ const TransactionsLayout: React.FC<React.PropsWithChildren> = ({
 	return (
 		<PageLayout
 			actions={
-				<HelpLink
-					linkPath="/help/transactions"
-					subject={t("transactions.title")}
-				/>
+				<HelpLink subject={t("transactions.title")}>
+					<HelpContent topic="transactions" />
+				</HelpLink>
 			}
 			knownSubpages={subpages}
 			title={t("transactions.title")}

@@ -211,6 +211,7 @@
 		}
 	},
 	"help": {
+		"aiDisclaimer": "このヘルプの内容の一部はAIによって生成されたもので、誤りが含まれている可能性があります。",
 		"title": "{subject}について"
 	},
 	"retirement": {

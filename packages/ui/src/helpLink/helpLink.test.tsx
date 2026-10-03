@@ -1,66 +1,93 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useRouter } from "next/navigation";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { HelpLink } from "./helpLink";
 
-vi.mock("next/navigation", () => ({
-	useRouter: vi.fn(),
-}));
+vi.mock("@heroui/react", async () => {
+	const { useState } = await import("react");
 
-vi.mock("@heroui/react", () => ({
-	Button: vi.fn(
-		({
-			children,
-			onPress,
-		}: {
-			children: React.ReactNode;
-			onPress: () => void;
-		}) => (
-			<button onClick={onPress} type="button">
-				{children}
-			</button>
+	return {
+		Button: vi.fn(
+			({
+				children,
+				onPress,
+				...rest
+			}: React.PropsWithChildren<{
+				"aria-label"?: string;
+				onPress: () => void;
+			}>) => (
+				<button
+					aria-label={rest["aria-label"]}
+					onClick={onPress}
+					type="button"
+				>
+					{children}
+				</button>
+			),
 		),
-	),
-	Tooltip: vi.fn(({ children }: { children: React.ReactNode }) => (
-		<>{children}</>
-	)),
-}));
+		Drawer: vi.fn(
+			({
+				children,
+				isOpen,
+			}: React.PropsWithChildren<{ isOpen: boolean }>) =>
+				isOpen ? <div data-testid="drawer">{children}</div> : null,
+		),
+		DrawerBody: vi.fn(({ children }: React.PropsWithChildren) => (
+			<div data-testid="drawer-body">{children}</div>
+		)),
+		DrawerContent: vi.fn(({ children }: React.PropsWithChildren) => (
+			<>{children}</>
+		)),
+		DrawerHeader: vi.fn(({ children }: React.PropsWithChildren) => (
+			<h2>{children}</h2>
+		)),
+		Tooltip: vi.fn(({ children }: React.PropsWithChildren) => (
+			<>{children}</>
+		)),
+		useDisclosure: () => {
+			const [isOpen, setIsOpen] = useState(false);
+			return {
+				isOpen,
+				onOpen: () => setIsOpen(true),
+				onOpenChange: setIsOpen,
+			};
+		},
+	};
+});
 
 vi.mock("@tabler/icons-react", () => ({
 	IconHelp: vi.fn(() => null),
 }));
 
-const mockUseRouter = vi.mocked(useRouter);
+const helpTitle = /^About/;
 
 describe("HelpLink", () => {
-	const mockPush = vi.fn();
-
-	beforeEach(() => {
-		vi.clearAllMocks();
-		mockUseRouter.mockReturnValue(
-			mockIncompleteObject<ReturnType<typeof useRouter>>({
-				push: mockPush,
-			}),
-		);
-	});
-
-	it("renders a button", () => {
-		render(<HelpLink linkPath="/help/budget" subject="Budget" />);
-		expect(screen.getByRole("button")).toBeInTheDocument();
-	});
-
-	it("calls router.push with linkPath when pressed", () => {
-		render(<HelpLink linkPath="/help/budget" subject="Budget" />);
-		fireEvent.click(screen.getByRole("button"));
-		expect(mockPush).toHaveBeenCalledWith("/help/budget");
-	});
-
-	it("navigates to the correct path for different linkPaths", () => {
+	it("renders a labeled button and keeps the drawer closed initially", () => {
 		render(
-			<HelpLink linkPath="/help/transactions" subject="Transactions" />,
+			<HelpLink subject="Budget">
+				<p>{"Help content"}</p>
+			</HelpLink>,
 		);
-		fireEvent.click(screen.getByRole("button"));
-		expect(mockPush).toHaveBeenCalledWith("/help/transactions");
+
+		expect(
+			screen.getByRole("button", { name: helpTitle }),
+		).toBeInTheDocument();
+		expect(screen.queryByTestId("drawer")).not.toBeInTheDocument();
+	});
+
+	it("opens a drawer with the subject title and help content when pressed", () => {
+		render(
+			<HelpLink subject="Budget">
+				<p>{"Help content"}</p>
+			</HelpLink>,
+		);
+
+		fireEvent.click(screen.getByRole("button", { name: helpTitle }));
+
+		expect(
+			screen.getByRole("heading", { name: helpTitle }),
+		).toBeInTheDocument();
+		expect(screen.getByTestId("drawer-body")).toHaveTextContent(
+			"Help content",
+		);
 	});
 });

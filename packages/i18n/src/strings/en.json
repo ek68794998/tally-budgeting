@@ -211,6 +211,7 @@
 		}
 	},
 	"help": {
+		"aiDisclaimer": "Some of this help content was generated with AI and may contain mistakes.",
 		"title": "About {subject}"
 	},
 	"retirement": {
