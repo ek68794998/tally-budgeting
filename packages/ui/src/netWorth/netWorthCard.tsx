@@ -81,7 +81,7 @@ export const NetWorthCard: React.FC<Props> = ({
 	return (
 		<Card className={className} isBlurred={true}>
 			<CardHeader className="flex items-start justify-between p-4">
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col gap-2">
 					<h2 className="text-4xl">
 						<span className="mr-2 opacity-70">{`${t("title")}:`}</span>
 						<span className="font-black">
@@ -89,7 +89,7 @@ export const NetWorthCard: React.FC<Props> = ({
 						</span>
 					</h2>
 					{date ? (
-						<h3 className="text-2xl opacity-70">
+						<h3 className="text-xl font-semibold">
 							<NetWorthCardDelta
 								currentDollars={netWorth}
 								previousDateIso={date}

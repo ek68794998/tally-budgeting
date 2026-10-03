@@ -21,9 +21,9 @@ export const NetWorthCardDelta: React.FC<Props> = ({
 	const netWorthDelta = currentDollars - previousDollars;
 	const netWorthDeltaColor =
 		netWorthDelta > 0
-			? "text-success-500"
+			? "text-success-600"
 			: netWorthDelta < 0
-				? "text-danger-500"
+				? "text-danger-600"
 				: "opacity-70";
 	const netWorthDeltaText = formatCurrency(netWorthDelta, {
 		showPlusSymbol: true,
