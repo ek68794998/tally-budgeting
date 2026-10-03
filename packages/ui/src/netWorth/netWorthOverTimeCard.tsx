@@ -73,7 +73,12 @@ export const NetWorthOverTimeCard: React.FC<Props> = ({ data }) => {
 		const tooltipPayload = chartDataPointSchema.parse(tooltipData.payload);
 
 		return (
-			<div className="bg-background border-background-300 rounded border p-2 shadow-sm">
+			<div
+				className="
+					bg-background border-background-300 rounded-sm border p-2
+					shadow-sm
+				"
+			>
 				<p className="text-sm font-medium">
 					{DateTime.fromISO(tooltipPayload.date).toLocaleString(
 						{ day: "numeric", month: "long", year: "numeric" },

@@ -42,7 +42,7 @@ export const HelpContent: React.FC<Props> = async ({ topic }) => {
 	return (
 		<div className="flex flex-col gap-2">
 			<Content />
-			<div className="text-default-600 text-xs">{t("aiDisclaimer")}</div>
+			<div className="text-xs text-default-600">{t("aiDisclaimer")}</div>
 		</div>
 	);
 };

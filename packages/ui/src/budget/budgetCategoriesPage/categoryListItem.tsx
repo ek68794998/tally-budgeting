@@ -27,7 +27,10 @@ export const CategoryListItem: React.FC<Props> = ({
 
 	return (
 		<Button
-			className="grid h-[unset] w-full grid-cols-[auto_1fr] items-center justify-between gap-x-2 gap-y-0 p-2 text-left"
+			className="
+				grid h-[unset] w-full grid-cols-[auto_1fr] items-center
+				justify-between gap-x-2 gap-y-0 p-2 text-left
+			"
 			onPress={onClick}
 			variant={isSelected ? "solid" : "light"}
 		>

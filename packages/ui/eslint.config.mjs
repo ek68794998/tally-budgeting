@@ -9,5 +9,10 @@ export default [
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
+		settings: {
+			"better-tailwindcss": {
+				entryPoint: `${import.meta.dirname}/src/tailwind.css`,
+			},
+		},
 	},
 ];

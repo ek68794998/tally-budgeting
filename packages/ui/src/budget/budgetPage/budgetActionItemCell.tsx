@@ -30,7 +30,7 @@ export const BudgetActionItemCell: React.FC<Props> = ({
 	return (
 		<div className="ml-4 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
 			<div className="row-span-2">
-				<div className="bg-default/40 rounded p-1">
+				<div className="bg-default/40 rounded-sm p-1">
 					<IconComponent size={16} />
 				</div>
 			</div>

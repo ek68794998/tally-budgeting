@@ -83,7 +83,14 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 				onFilterChange={setFilterValue}
 				onNewAsset={() => handleStartEdit(ModalDefaultAsset)}
 			/>
-			<div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @4xl:grid-cols-3 @7xl:grid-cols-4">
+			<div
+				className="
+					grid grid-cols-1 gap-4
+					@xl:grid-cols-2
+					@4xl:grid-cols-3
+					@7xl:grid-cols-4
+				"
+			>
 				{displayedAssets.map((asset) => (
 					<AssetCard
 						asset={asset}

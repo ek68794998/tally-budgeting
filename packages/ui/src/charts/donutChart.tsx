@@ -78,7 +78,12 @@ export const DonutChart: React.FC<Props> = ({
 		);
 
 		return (
-			<div className="bg-background border-background-300 rounded border p-2 shadow-sm">
+			<div
+				className="
+					bg-background border-background-300 rounded-sm border p-2
+					shadow-sm
+				"
+			>
 				<p className="text-sm font-medium">{tooltipData.name}</p>
 				<p className="text-sm">
 					{t.rich("tooltipValue", {
@@ -134,7 +139,7 @@ export const DonutChart: React.FC<Props> = ({
 				{legendEntries.map((entry) => (
 					<li className="flex items-center gap-2" key={entry.value}>
 						<div
-							className="h-3 w-3 rounded-full"
+							className="size-3 rounded-full"
 							style={{ backgroundColor: entry.color }}
 						/>
 						<span className="text-sm text-stone-700">
