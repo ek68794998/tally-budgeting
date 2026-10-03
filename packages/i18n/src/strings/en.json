@@ -211,7 +211,7 @@
 		}
 	},
 	"help": {
-		"link": "About {subject}"
+		"title": "About {subject}"
 	},
 	"retirement": {
 		"about": "This card explains the retirement page.",
@@ -306,6 +306,11 @@
 			"merchant": "Merchant",
 			"notes": "Notes",
 			"type": "Type"
+		},
+		"delete": {
+			"action": "Yes, Delete",
+			"body": "Are you sure you want to delete the {amount} transaction with {merchantName}? This cannot be undone.",
+			"title": "Delete Transaction"
 		},
 		"edit": {
 			"failureBody": "An error occurred while saving your transaction. Please try again later.",

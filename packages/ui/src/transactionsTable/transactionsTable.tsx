@@ -1,5 +1,6 @@
 "use client";
 
+import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	Chip,
 	Pagination,
@@ -24,6 +25,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useMemo, useState } from "react";
 import { ZodError } from "zod";
+import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultTransaction } from "../common/modalDefault";
 import { ContentUnavailableView } from "../contentUnavailableView/contentUnavailableView";
 import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
@@ -45,6 +47,7 @@ export const TransactionsTable: React.FC = () => {
 	const { assets, isLoading: assetsLoading } = useAssets();
 	const { isLoading: categoriesLoading, subcategories } = useCategories();
 	const { deleteTransactionAsync } = useDeleteTransaction();
+	const deleteModalState = useDisclosure();
 	const editModalState = useDisclosure();
 	const locale = useLocale();
 	const { postTransactionAsync } = usePostTransaction();
@@ -56,6 +59,8 @@ export const TransactionsTable: React.FC = () => {
 	const [filterValue, setFilterValue] = useState("");
 	const [page, setPage] = useState(1);
 	const [selection, setSelection] = useState<Selection>(new Set());
+	const [transactionToDelete, setTransactionToDelete] =
+		useState<TransactionTableData | null>(null);
 	const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
 		column: "date",
 		direction: "descending",
@@ -135,7 +140,8 @@ export const TransactionsTable: React.FC = () => {
 			getValue: (item) => (
 				<TransactionRowDropdown
 					onDelete={() => {
-						void deleteTransactionAsync(item.id);
+						setTransactionToDelete(item);
+						deleteModalState.onOpen();
 					}}
 					onDuplicate={() => {
 						const transactionFromData = data?.transactions.find(
@@ -323,6 +329,24 @@ export const TransactionsTable: React.FC = () => {
 					incrementEditsMade();
 				}}
 				transaction={activeTransaction}
+			/>
+			<ConfirmationModal
+				body={t("delete.body", {
+					amount: transactionToDelete?.amount ?? "",
+					merchantName: transactionToDelete?.merchant ?? "",
+				})}
+				confirmText={t("delete.action")}
+				isDestructive={true}
+				modalState={deleteModalState}
+				onConfirmAsync={async () => {
+					invariant(
+						transactionToDelete,
+						"Transaction to delete must be defined",
+					);
+					await deleteTransactionAsync(transactionToDelete.id);
+					incrementEditsMade();
+				}}
+				title={t("delete.title")}
 			/>
 		</div>
 	);
