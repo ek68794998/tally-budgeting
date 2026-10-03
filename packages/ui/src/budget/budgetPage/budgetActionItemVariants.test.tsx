@@ -95,16 +95,11 @@ describe("budget action item variants", () => {
 	it("describes a budget overage", () => {
 		renderBudgetChange(150);
 
-		expect(getText()[0]).toBe("$100 → $150");
-		expect(getText()[1]).toMatch(/^\$50 over budget; /u);
+		expect(getText()).toEqual([
+			"$100 → $150",
+			"$50 over budget; +50% since previous month",
+		]);
 		expect(screen.getByText("$150")).toHaveClass("text-danger-600");
-	});
-
-	// Known bug: an overage reports `current / previous` (+150%) rather than the change (+50%).
-	it.fails("reports the percent change of a budget overage", () => {
-		renderBudgetChange(150);
-
-		expect(getText()[1]).toBe("$50 over budget; +50% since previous month");
 	});
 
 	it.each([
