@@ -1,6 +1,7 @@
 import { BadRequest } from "@ekumlin/typescript-toolkit/http";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import { type NextRequest } from "next/server";
+import { telemetry } from "../../telemetry/telemetry";
 import { getIpAddress } from "../helpers";
 import { type RequestParseResult, type RequestSchemata } from "./types";
 
@@ -19,12 +20,15 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 		const parsedBody = schemata.body.safeParse(body);
 
 		if (!parsedBody.success) {
+			telemetry().error("API_REQUEST_INVALID", {
+				errorMessage: parsedBody.error.message,
+				ip,
+			});
+
 			return {
 				error: {
 					code: "invalidRequestBody",
-					params: {
-						message: parsedBody.error.message /* TODO */,
-					},
+					params: {},
 				},
 				ip,
 				statusCode: BadRequest,
@@ -37,12 +41,15 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 		const parsedQuery = schemata.query.safeParse(searchParams);
 
 		if (!parsedQuery.success) {
+			telemetry().error("API_REQUEST_INVALID", {
+				errorMessage: parsedQuery.error.message,
+				ip,
+			});
+
 			return {
 				error: {
 					code: "invalidQueryParameters",
-					params: {
-						message: parsedQuery.error.message /* TODO */,
-					},
+					params: {},
 				},
 				ip,
 				statusCode: BadRequest,
@@ -53,12 +60,15 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 		const parsedParams = schemata.params.safeParse(routeParams);
 
 		if (!parsedParams.success) {
+			telemetry().error("API_REQUEST_INVALID", {
+				errorMessage: parsedParams.error.message,
+				ip,
+			});
+
 			return {
 				error: {
 					code: "invalidRouteParameters",
-					params: {
-						message: parsedParams.error.message /* TODO */,
-					},
+					params: {},
 				},
 				ip,
 				statusCode: BadRequest,
@@ -74,14 +84,12 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 			success: true,
 		};
 	} catch (error) {
-		console.error(error); /* TODO */
+		telemetry().error("API_REQUEST_PARSE_FAILED", { error });
 
 		return {
 			error: {
 				code: "invalidRequestShape",
-				params: {
-					message: "Failed to parse request" /* TODO */,
-				},
+				params: {},
 			},
 			ip,
 			statusCode: BadRequest,

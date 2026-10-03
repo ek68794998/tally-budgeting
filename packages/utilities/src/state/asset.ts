@@ -1,7 +1,9 @@
+import { toError } from "@ekumlin/typescript-toolkit/error";
 import { getAssetsResponseSchema } from "@tally/data-models/contracts/api/getAssets";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { create } from "zustand";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
 
 export type AssetStore = StoreState<{
@@ -28,8 +30,11 @@ export const useAssetStore = create<AssetStore>((set, _get) => ({
 				isFetching: false,
 				isHydrated: true,
 			});
-		} catch (_error) {
-			// TODO
+		} catch (error) {
+			telemetry().error("STORE_FETCH_FAILED", {
+				errorMessage: toError(error).message,
+				store: "asset",
+			});
 			set({
 				error: "Failed to fetch assets",
 				isFetching: false,
