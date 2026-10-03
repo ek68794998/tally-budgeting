@@ -45,13 +45,17 @@ export const SidebarMenuItems: React.FC<Props> = ({
 
 		const commonProps: ButtonProps = {
 			className: "justify-start",
-			key: id,
 			startContent: <IconComponent />,
 		};
 
 		if ("onPress" in item) {
 			return (
-				<Button {...commonProps} onPress={item.onPress} variant="light">
+				<Button
+					{...commonProps}
+					key={id}
+					onPress={item.onPress}
+					variant="light"
+				>
 					{label}
 				</Button>
 			);
@@ -62,6 +66,7 @@ export const SidebarMenuItems: React.FC<Props> = ({
 				{...commonProps}
 				as={NextLink}
 				href={item.href}
+				key={id}
 				variant={item.isSelected ? "flat" : "light"}
 			>
 				{label}
