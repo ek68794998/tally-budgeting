@@ -20,6 +20,7 @@ import { IconNote, IconZoomQuestion } from "@tabler/icons-react";
 import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -189,7 +190,7 @@ export const TransactionsTable: React.FC = () => {
 		queryFn: async ({ signal }) => {
 			const urlSearchParams = new URLSearchParams(searchParams);
 
-			const response = await fetch(
+			const response = await apiFetch(
 				buildApiRoute(api.transactions.base, {
 					query: urlSearchParams,
 				}),

@@ -3,6 +3,7 @@ import { getNetWorthSnapshotsResponseSchema } from "@tally/data-models/contracts
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { apiFetch } from "../routing/apiFetch";
 import { api, buildApiRoute } from "../routing/routeBuilder";
 import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
@@ -21,7 +22,7 @@ export const useNetWorthSnapshotStore = create<NetWorthSnapshotStore>()(
 			});
 
 			try {
-				const response = await fetch(
+				const response = await apiFetch(
 					buildApiRoute(api.netWorth.snapshots),
 				);
 				const responseJson: unknown = await response.json();

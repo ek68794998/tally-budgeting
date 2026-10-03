@@ -4,6 +4,7 @@ import {
 	type PatchTransactionRulesReorderRequest,
 	patchTransactionRulesReorderResponseSchema,
 } from "@tally/data-models/contracts/api/patchTransactionRulesReorder";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -16,7 +17,7 @@ export const usePatchTransactionRulesReorder = () => {
 		mutationFn: async (ruleIds: number[]) => {
 			const body: PatchTransactionRulesReorderRequest = { ruleIds };
 
-			const response = await fetch(
+			const response = await apiFetch(
 				buildApiRoute(api.transactions.rules.order),
 				{
 					body: JSON.stringify(body),
