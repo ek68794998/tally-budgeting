@@ -82,20 +82,14 @@ describe("AssetEditModal", () => {
 		expect(addToast).toHaveBeenCalledOnce();
 	});
 
-	// Known bug: the modal treats `id === -1` as new, but `ModalDefaultAsset` (used for new assets) has `id: 0`.
-	it.fails("titles a new asset as such", () => {
+	it("titles a new asset as such and disables saving without a name", () => {
 		renderModal(ModalDefaultAsset);
 
 		expect(screen.getByText("New Asset")).toBeInTheDocument();
+		expect(lastFooterProps()?.isSaveDisabled).toBe(true);
 	});
 
-	it("disables saving without a name and stays closed without an asset", () => {
-		renderModal(buildAsset({ id: -1, name: "" }));
-
-		expect(screen.getByText("New Asset")).toBeInTheDocument();
-		expect(lastFooterProps()?.isSaveDisabled).toBe(true);
-
-		vi.clearAllMocks();
+	it("stays closed without an asset", () => {
 		renderModal(null);
 
 		expect(lastFooterProps()).toBeUndefined();
