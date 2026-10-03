@@ -35,7 +35,7 @@ export const getDatabase = (): Kysely<Database> => {
 	} = process.env;
 
 	invariant(
-		connectionString,
+		!!connectionString,
 		"You must have configured the POSTGRES_CONNECTION_STRING setting in your environment's .env file.",
 	);
 

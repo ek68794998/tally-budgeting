@@ -15,8 +15,11 @@ describe("getDatabase", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("throws when no connection string is configured", async () => {
-		vi.stubEnv("POSTGRES_CONNECTION_STRING", undefined);
+	it.each([
+		undefined,
+		"",
+	])("throws when the connection string is %j", async (connectionString) => {
+		vi.stubEnv("POSTGRES_CONNECTION_STRING", connectionString);
 		const getDatabase = await importGetDatabaseAsync();
 
 		expect(() => getDatabase()).toThrow(/POSTGRES_CONNECTION_STRING/);
