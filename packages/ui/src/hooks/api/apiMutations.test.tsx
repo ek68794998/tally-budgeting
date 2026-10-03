@@ -58,6 +58,7 @@ const deleteAssetCase: MutationCase = {
 };
 
 const deleteCases: MutationCase[] = [
+	deleteAssetCase,
 	{
 		expectedMethod: "DELETE",
 		expectedUrl: "/api/categories/4",
@@ -239,20 +240,8 @@ describe("API mutation hooks", () => {
 		expect(addToast).not.toHaveBeenCalled();
 	});
 
-	// Known bug: `useDeleteAsset` validates with `z.object({})`, which rejects the API's empty 204 body.
-	it.fails("useDeleteAsset accepts the empty 204 the API returns", async () => {
-		const { mutationResult } = await mutateAsync(
-			deleteAssetCase,
-			new Response(null, { status: 204 }),
-		);
-
-		expect(mutationResult).not.toBe(false);
-	});
-
 	it.each(
-		[deleteAssetCase, ...deleteCases, ...bodyCases].map(
-			(c) => [c.name, c] as const,
-		),
+		[...deleteCases, ...bodyCases].map((c) => [c.name, c] as const),
 	)("%s returns false and toasts when the request fails", async (_name, mutationCase) => {
 		const { mutationResult } = await mutateAsync(
 			mutationCase,

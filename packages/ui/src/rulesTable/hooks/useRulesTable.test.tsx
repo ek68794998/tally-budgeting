@@ -2,6 +2,7 @@ import { type TransactionRule } from "@tally/data-models/contracts/transactionRu
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ModalDefaultTransactionRule } from "../../common/modalDefault";
 import { useDeleteTransactionRule } from "../../hooks/api/useDeleteTransactionRule";
 import { usePatchTransactionRulesReorder } from "../../hooks/api/usePatchTransactionRulesReorder";
 import { usePostTransactionRule } from "../../hooks/api/usePostTransactionRule";
@@ -79,6 +80,21 @@ describe("useRulesTable", () => {
 		expect(result.current.displayedRules).toEqual([coffee]);
 	});
 
+	it("closes the editor after saving so a later delete doesn't reopen it", async () => {
+		const { result } = renderRulesTable();
+
+		act(() => {
+			result.current.handleEdit(coffee);
+		});
+		await act(() => result.current.handleSaveAsync(coffee));
+		act(() => {
+			result.current.openDeleteModal(gas);
+		});
+
+		expect(result.current.editModalState.isOpen).toBe(false);
+		expect(result.current.deleteModalState.isOpen).toBe(true);
+	});
+
 	it("opens the edit modal for an existing or a new rule", () => {
 		const { result } = renderRulesTable();
 
@@ -93,10 +109,8 @@ describe("useRulesTable", () => {
 			result.current.handleNewRule();
 		});
 
-		expect(result.current.activeRule).toMatchObject({
-			id: -1,
-			matcher: { flags: "i", pattern: "" },
-		});
+		// The API treats negative IDs as existing rows, so a new rule must use the default (non-negative) ID.
+		expect(result.current.activeRule).toBe(ModalDefaultTransactionRule);
 	});
 
 	it.each([

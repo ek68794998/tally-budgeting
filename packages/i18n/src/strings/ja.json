@@ -378,6 +378,7 @@
 				"countIgnored": "{count}件無視",
 				"countUncategorized": "{count}件未分類",
 				"descriptionUnprocessed": "以下の項目は、アップロードされたファイルに記載されている通りに表示されています。",
+				"errorColumn": "エラー",
 				"titleFailed": "失敗した取引",
 				"titleIgnored": "無視された取引",
 				"titleUncategorized": "未分類の取引"

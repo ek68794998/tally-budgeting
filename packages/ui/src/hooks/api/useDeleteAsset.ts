@@ -1,12 +1,10 @@
 import { Delete } from "@ekumlin/typescript-toolkit/http";
+import { deleteAssetResponseSchema } from "@tally/data-models/contracts/api/deleteAsset";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { z } from "zod";
 import { useApiResponseValidator } from "../useApiResponseValidator";
-
-const deleteAssetResponseSchema = z.object({});
 
 export const useDeleteAsset = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
