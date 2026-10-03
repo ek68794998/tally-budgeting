@@ -56,14 +56,27 @@ export const useRulesTable = () => {
 	);
 
 	const handleBulkDeleteAsync = useCallback(async () => {
-		try {
-			for (const rule of bulkDeleteRules) {
+		const failedRules: TransactionRule[] = [];
+		let firstError: unknown = null;
+
+		for (const rule of bulkDeleteRules) {
+			try {
 				await deleteTransactionRuleAsync(rule.id);
+			} catch (error) {
+				firstError ??= error;
+				failedRules.push(rule);
 			}
-		} finally {
-			void refetchTransactionRules();
-			setBulkDeleteRules([]);
-			setSelection(new Set());
+		}
+
+		void refetchTransactionRules();
+		setBulkDeleteRules(failedRules);
+		setSelection(new Set(failedRules.map(getRuleRowKey)));
+
+		if (failedRules.length > 0) {
+			throw new Error(
+				`Failed to delete ${failedRules.length} of ${bulkDeleteRules.length} rules`,
+				{ cause: firstError },
+			);
 		}
 	}, [bulkDeleteRules, deleteTransactionRuleAsync, refetchTransactionRules]);
 

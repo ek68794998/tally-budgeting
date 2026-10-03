@@ -40,6 +40,7 @@ export const ConfirmationModal: React.FC<Props> = ({
 
 		try {
 			await onConfirmAsync();
+			onClose();
 		} catch (error) {
 			addToast({
 				color: "danger",
@@ -52,7 +53,6 @@ export const ConfirmationModal: React.FC<Props> = ({
 			});
 		} finally {
 			setIsConfirming(false);
-			onClose();
 		}
 	};
 

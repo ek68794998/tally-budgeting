@@ -266,10 +266,10 @@
 			"addOne": "新規ルール",
 			"deleteAction": "削除する",
 			"deleteAllBody": "表示されている{count}件のルールをすべて削除してもよろしいですか？",
-			"deleteAllTitle": "すべて削除",
+			"deleteAllTitle": "すべて削除（{count}件）",
 			"deleteBody": "{merchant}のルールを削除してもよろしいですか？",
 			"deleteSelectedBody": "選択した{count}件のルールを削除してもよろしいですか？",
-			"deleteSelectedTitle": "選択項目を削除",
+			"deleteSelectedTitle": "選択項目を削除（{count}件）",
 			"deleteTitle": "ルールを削除",
 			"filterPlaceholder": "検索…"
 		},

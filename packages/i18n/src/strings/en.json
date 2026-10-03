@@ -266,10 +266,10 @@
 			"addOne": "New Rule",
 			"deleteAction": "Yes, Delete",
 			"deleteAllBody": "Are you sure you want to delete all {count} rules shown?",
-			"deleteAllTitle": "Delete All",
+			"deleteAllTitle": "Delete All ({count})",
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
 			"deleteSelectedBody": "Are you sure you want to delete the {count} selected rules?",
-			"deleteSelectedTitle": "Delete Selected",
+			"deleteSelectedTitle": "Delete Selected ({count})",
 			"deleteTitle": "Delete Rule",
 			"filterPlaceholder": "Search…"
 		},

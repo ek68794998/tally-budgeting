@@ -16,6 +16,7 @@ import { useMemo, useState } from "react";
 import { type DropdownActionEntry } from "../types";
 
 interface Props {
+	displayedCount: number;
 	onDelete: (selection: Selection) => void;
 	onFilterChange: (value: string) => void;
 	onNewRule: () => void;
@@ -27,6 +28,7 @@ const debounceMilliseconds = Duration.fromObject({
 });
 
 export const RulesTableControls: React.FC<Props> = ({
+	displayedCount,
 	onDelete,
 	onFilterChange,
 	onNewRule,
@@ -59,12 +61,18 @@ export const RulesTableControls: React.FC<Props> = ({
 					selectedRules === "all"
 						? "listControls.deleteAllTitle"
 						: "listControls.deleteSelectedTitle",
+					{
+						count:
+							selectedRules === "all"
+								? displayedCount
+								: selectedRules.size,
+					},
 				),
 			});
 		}
 
 		return entries;
-	}, [onDelete, selectedRules, t]);
+	}, [displayedCount, onDelete, selectedRules, t]);
 
 	return (
 		<div className="flex justify-between gap-4">

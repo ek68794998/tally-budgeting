@@ -86,6 +86,7 @@ export const RulesTable: React.FC = () => {
 	return (
 		<div className="flex flex-col gap-4">
 			<RulesTableControls
+				displayedCount={displayedRules.length}
 				onDelete={openBulkDeleteModal}
 				onFilterChange={setFilterValue}
 				onNewRule={handleNewRule}
@@ -145,6 +146,7 @@ export const RulesTable: React.FC = () => {
 					selection === "all"
 						? "listControls.deleteAllTitle"
 						: "listControls.deleteSelectedTitle",
+					{ count: bulkDeleteRules.length },
 				)}
 			/>
 			<ConfirmationModal
