@@ -1,4 +1,6 @@
+import { toError } from "@ekumlin/typescript-toolkit/error";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
@@ -7,7 +9,9 @@ import {
 	ModalHeader,
 	type useDisclosure,
 } from "@heroui/react";
+import { telemetry } from "@tally/utilities/telemetry/telemetry";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 interface Props {
 	body: React.ReactNode;
@@ -29,6 +33,28 @@ export const ConfirmationModal: React.FC<Props> = ({
 	title,
 }) => {
 	const t = useTranslations();
+	const [isConfirming, setIsConfirming] = useState(false);
+
+	const confirmAsync = async (onClose: () => void) => {
+		setIsConfirming(true);
+
+		try {
+			await onConfirmAsync();
+		} catch (error) {
+			addToast({
+				color: "danger",
+				description: t("error.api.errorBody"),
+				title: t("error.api.errorTitle"),
+			});
+
+			telemetry().error("CONFIRMATION_ACTION_FAILED", {
+				errorMessage: toError(error).message,
+			});
+		} finally {
+			setIsConfirming(false);
+			onClose();
+		}
+	};
 
 	return (
 		<Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -43,9 +69,9 @@ export const ConfirmationModal: React.FC<Props> = ({
 							</Button>
 							<Button
 								color={isDestructive ? "danger" : "primary"}
+								isLoading={isConfirming}
 								onPress={() => {
-									void onConfirmAsync();
-									onClose();
+									void confirmAsync(onClose);
 								}}
 							>
 								{confirmText || t("common.actions.ok")}
