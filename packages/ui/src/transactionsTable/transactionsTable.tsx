@@ -1,11 +1,8 @@
 "use client";
 
-import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	Chip,
 	Pagination,
-	type Selection,
-	type SortDescriptor,
 	Spinner,
 	Table,
 	TableBody,
@@ -14,67 +11,49 @@ import {
 	TableHeader,
 	TableRow,
 	Tooltip,
-	useDisclosure,
 } from "@heroui/react";
 import { IconNote, IconZoomQuestion } from "@tabler/icons-react";
-import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { isAccount } from "@tally/data-models/data/accountHelpers";
-import { apiFetch } from "@tally/utilities/routing/apiFetch";
-import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useMemo, useState } from "react";
-import { ZodError } from "zod";
+import { useTranslations } from "next-intl";
+import { type ReactNode } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
-import { ModalDefaultTransaction } from "../common/modalDefault";
 import { ContentUnavailableView } from "../contentUnavailableView/contentUnavailableView";
-import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
-import { usePostTransaction } from "../hooks/api/usePostTransaction";
-import { useAssets } from "../hooks/store/useAssets";
-import { useCategories } from "../hooks/store/useCategories";
 import { TableLoadError } from "../table/tableLoadError";
-import { getTransactionsTableData } from "./helpers";
 import { TransactionEditModal } from "./transactionEditModal";
 import { TransactionRowDropdown } from "./transactionRowDropdown";
 import { TransactionsTableControls } from "./transactionsTableControls";
 import { type TransactionTableData } from "./types";
-
-type TransactionKey = keyof Transaction | "actions";
-
-const transactionsPerPage = 15;
+import {
+	type TransactionKey,
+	transactionSortFields,
+	useTransactionsTable,
+} from "./useTransactionsTable";
 
 export const TransactionsTable: React.FC = () => {
-	const { assets, isLoading: assetsLoading } = useAssets();
-	const { isLoading: categoriesLoading, subcategories } = useCategories();
-	const { deleteTransactionAsync } = useDeleteTransaction();
-	const deleteModalState = useDisclosure();
-	const editModalState = useDisclosure();
-	const locale = useLocale();
-	const { postTransactionAsync } = usePostTransaction();
 	const t = useTranslations("transactions");
-
-	const [activeTransaction, setActiveTransaction] =
-		useState<Transaction | null>(null);
-	const [editsMade, setEditsMade] = useState(0);
-	const [filterValue, setFilterValue] = useState("");
-	const [page, setPage] = useState(1);
-	const [selection, setSelection] = useState<Selection>(new Set());
-	const [transactionToDelete, setTransactionToDelete] =
-		useState<TransactionTableData | null>(null);
-	const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-		column: "date",
-		direction: "descending",
-	});
-
-	const incrementEditsMade = () => setEditsMade((v) => v + 1);
-
-	const accounts = assets.filter(isAccount);
-
-	const editTransaction = (toEdit: Transaction) => {
-		setActiveTransaction(toEdit);
-		editModalState.onOpen();
-	};
+	const {
+		activeTransaction,
+		confirmDeleteAsync,
+		deleteModalState,
+		duplicateTransaction,
+		editModalState,
+		editTransaction,
+		error,
+		filterValue,
+		isLoading,
+		pageCount,
+		requestDelete,
+		saveTransactionAsync,
+		selectedPage,
+		selection,
+		setFilterValue,
+		setPage,
+		setSelection,
+		setSortDescriptor,
+		sortDescriptor,
+		startNewTransaction,
+		transactionsData,
+		transactionToDelete,
+	} = useTransactionsTable();
 
 	const columns: {
 		getValue: (item: TransactionTableData) => ReactNode;
@@ -86,7 +65,7 @@ export const TransactionsTable: React.FC = () => {
 			getValue: (item) => item.date,
 			key: "date",
 			label: t("columns.date"),
-			sortField: "date",
+			sortField: transactionSortFields.date,
 		},
 		{
 			getValue: (item) => {
@@ -108,19 +87,19 @@ export const TransactionsTable: React.FC = () => {
 			},
 			key: "merchant",
 			label: t("columns.merchant"),
-			sortField: "merchant",
+			sortField: transactionSortFields.merchant,
 		},
 		{
 			getValue: (item) => item.subcategory,
 			key: "subcategoryId",
 			label: t("columns.category"),
-			sortField: "category",
+			sortField: transactionSortFields.subcategoryId,
 		},
 		{
 			getValue: (item) => item.account,
 			key: "accountId",
 			label: t("columns.account"),
-			sortField: "account",
+			sortField: transactionSortFields.accountId,
 		},
 		{
 			getValue: (item) => (
@@ -135,38 +114,14 @@ export const TransactionsTable: React.FC = () => {
 			getValue: (item) => item.amount,
 			key: "amountCents",
 			label: t("columns.amount"),
-			sortField: "amountCents",
+			sortField: transactionSortFields.amountCents,
 		},
 		{
 			getValue: (item) => (
 				<TransactionRowDropdown
-					onDelete={() => {
-						setTransactionToDelete(item);
-						deleteModalState.onOpen();
-					}}
-					onDuplicate={() => {
-						const transactionFromData = data?.transactions.find(
-							(transaction) => transaction.id === item.id,
-						);
-
-						if (!transactionFromData) {
-							return;
-						}
-
-						transactionFromData.id = ModalDefaultTransaction.id;
-						editTransaction(transactionFromData);
-					}}
-					onEdit={() => {
-						const transactionFromData = data?.transactions.find(
-							(transaction) => transaction.id === item.id,
-						);
-
-						if (!transactionFromData) {
-							return;
-						}
-
-						editTransaction(transactionFromData);
-					}}
+					onDelete={() => requestDelete(item)}
+					onDuplicate={() => duplicateTransaction(item.id)}
+					onEdit={() => editTransaction(item.id)}
 				/>
 			),
 			key: "actions",
@@ -174,72 +129,11 @@ export const TransactionsTable: React.FC = () => {
 		},
 	];
 
-	const searchParams = {
-		direction: String(sortDescriptor.direction),
-		filter: String(filterValue).trim(),
-		limit: String(transactionsPerPage),
-		page: String(page),
-		sortBy: String(
-			columns.find((c) => c.key === sortDescriptor.column)?.sortField ??
-				"date",
-		),
-	};
-
-	const { data, error, isFetching } = useQuery({
-		placeholderData: keepPreviousData,
-		queryFn: async ({ signal }) => {
-			const urlSearchParams = new URLSearchParams(searchParams);
-
-			const response = await apiFetch(
-				buildApiRoute(api.transactions.base, {
-					query: urlSearchParams,
-				}),
-				{ signal },
-			);
-
-			const json: unknown = await response.json();
-			const { nextLink: _, ...result } =
-				getTransactionsResponseSchema.parse(json);
-
-			return result;
-		},
-		queryKey: ["transactions", searchParams, editsMade],
-		retry: (failureCount, attemptError) => {
-			if (failureCount >= 3) {
-				return false;
-			}
-
-			if (attemptError instanceof ZodError) {
-				return false;
-			}
-
-			return true;
-		},
-	});
-
-	const pageCount = Math.ceil((data?.count ?? 0) / transactionsPerPage);
-
-	const transactionsData = useMemo(
-		() =>
-			getTransactionsTableData(data?.transactions || [], {
-				accounts,
-				locale,
-				subcategories,
-			}),
-		[accounts, data, locale, subcategories],
-	);
-
-	const isLoading = isFetching || categoriesLoading || assetsLoading;
-	const selectedPage = Math.min(page, pageCount);
-
 	return (
 		<div className="flex flex-col gap-4">
 			<TransactionsTableControls
 				onFilterChange={setFilterValue}
-				onNewTransaction={() => {
-					setActiveTransaction(ModalDefaultTransaction);
-					editModalState.onOpen();
-				}}
+				onNewTransaction={startNewTransaction}
 			/>
 			<Table
 				aria-label={t("title")}
@@ -325,10 +219,7 @@ export const TransactionsTable: React.FC = () => {
 			</Table>
 			<TransactionEditModal
 				modalState={editModalState}
-				onSaveAsync={async (transaction) => {
-					await postTransactionAsync(transaction);
-					incrementEditsMade();
-				}}
+				onSaveAsync={saveTransactionAsync}
 				transaction={activeTransaction}
 			/>
 			<ConfirmationModal
@@ -339,14 +230,7 @@ export const TransactionsTable: React.FC = () => {
 				confirmText={t("delete.action")}
 				isDestructive={true}
 				modalState={deleteModalState}
-				onConfirmAsync={async () => {
-					invariant(
-						transactionToDelete,
-						"Transaction to delete must be defined",
-					);
-					await deleteTransactionAsync(transactionToDelete.id);
-					incrementEditsMade();
-				}}
+				onConfirmAsync={confirmDeleteAsync}
 				title={t("delete.title")}
 			/>
 		</div>
