@@ -38,7 +38,7 @@ describe("CategoryEditModal", () => {
 			/>,
 		);
 
-		expect(screen.getByText("Edit {label}")).toBeInTheDocument();
+		expect(screen.getByText("Edit Food")).toBeInTheDocument();
 
 		fireEvent.change(screen.getByLabelText("Label"), {
 			target: { value: "Groceries" },

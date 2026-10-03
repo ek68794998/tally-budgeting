@@ -69,7 +69,14 @@ describe("TransactionsUploadResultDetails", () => {
 			/>,
 		);
 
-		expect(screen.getAllByText(/^\{count\} /u)).toHaveLength(4);
+		for (const chip of [
+			"1 categorized",
+			"1 uncategorized",
+			"1 ignored",
+			"0 failed",
+		]) {
+			expect(screen.getByText(chip)).toBeInTheDocument();
+		}
 
 		expand("Uncategorized Transactions");
 		expand("Ignored Transactions");

@@ -27,7 +27,6 @@ export default defineConfig({
 			provider: "v8",
 			reporter: ["text", "text-summary", "html"],
 			thresholds: {
-				// TODO (#13) Bring these up as we add tests.
 				branches: 96,
 				functions: 95,
 				lines: 98,

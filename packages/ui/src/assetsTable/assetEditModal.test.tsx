@@ -50,7 +50,7 @@ describe("AssetEditModal", () => {
 		const house = buildAsset({ name: "House", type: "fixed_asset" });
 		const { onSaveAsync } = renderModal(house);
 
-		expect(screen.getByText("Edit {assetName}")).toBeInTheDocument();
+		expect(screen.getByText("Edit House")).toBeInTheDocument();
 
 		fireEvent.change(screen.getByLabelText("Name"), {
 			target: { value: "Condo" },

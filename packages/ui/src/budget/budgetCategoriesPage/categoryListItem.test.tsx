@@ -26,7 +26,7 @@ describe("CategoryListItem", () => {
 			"className",
 			expectedClass,
 		);
-		expect(screen.getByText("{count} subcategories")).toBeInTheDocument();
+		expect(screen.getByText("2 subcategories")).toBeInTheDocument();
 
 		fireEvent.click(screen.getByRole("button"));
 

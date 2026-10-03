@@ -122,8 +122,8 @@ describe("RulesTable", () => {
 	});
 
 	it.each([
-		{ expectedTitle: "Delete All ({count})", selection: "all" as const },
-		{ expectedTitle: "Delete Selected ({count})", selection: new Set([1]) },
+		{ expectedTitle: "Delete All (1)", selection: "all" as const },
+		{ expectedTitle: "Delete Selected (1)", selection: new Set([1]) },
 	])("titles bulk deletion as '$expectedTitle'", ({
 		expectedTitle,
 		selection,

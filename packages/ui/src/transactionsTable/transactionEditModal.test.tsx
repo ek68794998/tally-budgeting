@@ -54,7 +54,7 @@ describe("TransactionEditModal", () => {
 		);
 
 		expect(
-			screen.getByText("Edit {amount} transaction with {merchantName}"),
+			screen.getByText("Edit $4.50 transaction with Coffee Shop"),
 		).toBeInTheDocument();
 		expect(lastFooterProps()).toMatchObject({
 			isSaveDisabled: false,

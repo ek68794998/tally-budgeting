@@ -65,7 +65,7 @@ describe("RuleEditModal", () => {
 	it("edits and saves an existing rule as active", async () => {
 		const { onSaveAsync } = renderModal({ merchantToMatch: "SQ *COFFEE" });
 
-		expect(screen.getByText("Edit {ruleName}")).toBeInTheDocument();
+		expect(screen.getByText("Edit Coffee")).toBeInTheDocument();
 		expect(lastAlertProps()).toEqual({
 			isRegexMismatch: false,
 			merchantToMatch: "SQ *COFFEE",

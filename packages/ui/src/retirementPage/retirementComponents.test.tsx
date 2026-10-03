@@ -128,7 +128,7 @@ describe("retirement components", () => {
 			"$250k",
 		);
 		expect(tooltipProps?.formatter(1234)).toEqual(["$1,234", null]);
-		expect(tooltipProps?.labelFormatter(65)).toBe("Age {age}");
+		expect(tooltipProps?.labelFormatter(65)).toBe("Age 65");
 	});
 
 	it("shows the savings remaining at retirement and at life expectancy", () => {
@@ -137,8 +137,8 @@ describe("retirement components", () => {
 		expect(
 			vi.mocked(DataCard).mock.calls.map(([props]) => props.data),
 		).toEqual([
-			{ title: "Estimated Savings at {age}", value: "$1,500,000" },
-			{ title: "Estimated Savings at {age}", value: "$0" },
+			{ title: "Estimated Savings at 65", value: "$1,500,000" },
+			{ title: "Estimated Savings at 90", value: "$0" },
 		]);
 	});
 

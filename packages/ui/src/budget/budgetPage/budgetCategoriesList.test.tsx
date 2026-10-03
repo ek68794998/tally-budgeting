@@ -65,7 +65,7 @@ describe("BudgetCategoriesList", () => {
 		expect(screen.getByText("Housing")).toBeInTheDocument();
 		expect(screen.getByText("On target")).toBeInTheDocument();
 		expect(screen.getByText("Food")).toBeInTheDocument();
-		expect(screen.getByText("{count} over budget")).toBeInTheDocument();
+		expect(screen.getByText("1 over budget")).toBeInTheDocument();
 		expect(screen.queryByText("Unused")).toBeNull();
 	});
 });

@@ -53,8 +53,8 @@ describe("RulesTableControls", () => {
 	});
 
 	it.each([
-		{ selectedRules: "all" as const, title: "Delete All ({count})" },
-		{ selectedRules: new Set([1]), title: "Delete Selected ({count})" },
+		{ selectedRules: "all" as const, title: "Delete All (4)" },
+		{ selectedRules: new Set([1]), title: "Delete Selected (1)" },
 	])("offers '$title' for the selection", ({ selectedRules, title }) => {
 		const { onDelete } = renderControls({ selectedRules });
 

@@ -19,7 +19,7 @@ describe("NetWorthCardDelta", () => {
 			/>,
 		);
 
-		expect(screen.getByText("{delta} since {date}")).toHaveClass(
+		expect(screen.getByText(/ since January 15$/u)).toHaveClass(
 			expectedClass,
 		);
 	});

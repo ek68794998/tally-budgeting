@@ -60,7 +60,7 @@ describe("SubcategoryEditModal", () => {
 		const rent = buildSubcategory({ label: "Rent" });
 		const { onSaveAsync } = renderModal(rent);
 
-		expect(screen.getByText("Edit {label}")).toBeInTheDocument();
+		expect(screen.getByText("Edit Rent")).toBeInTheDocument();
 		expect(screen.getByLabelText("Needs")).toBeInTheDocument();
 
 		fireEvent.change(screen.getByLabelText("Description"), {
