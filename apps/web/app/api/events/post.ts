@@ -13,6 +13,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 
 export const PostEventsRouteAsync: NextResponseFn = createApiHandler({
+	access: "public",
 	eventName: "POST:EVENTS",
 	handler: async ({ body, ip }) => {
 		const rateLimiterResult = await enforceRateLimitAsync(
