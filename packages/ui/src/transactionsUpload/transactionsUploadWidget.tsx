@@ -110,7 +110,9 @@ export const TransactionsUploadWidget: React.FC = () => {
 				[TextCsv]: [".csv"],
 			}}
 			disabled={disabled}
-			onDrop={(files) => uploadFile(files[0] ?? null, true)}
+			onDrop={(files) => {
+				void uploadFile(files[0] ?? null, true);
+			}}
 		>
 			{({ getInputProps, getRootProps, isDragActive, isDragReject }) => (
 				<div {...getRootProps()}>

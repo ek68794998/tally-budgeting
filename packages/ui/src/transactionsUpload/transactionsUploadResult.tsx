@@ -31,7 +31,7 @@ export const TransactionsUploadResult: React.FC = () => {
 					<Button
 						isDisabled={!showResults}
 						onPress={() => {
-							uploadSelectedFile(true);
+							void uploadSelectedFile(true);
 						}}
 						startContent={<IconFlask />}
 					>
@@ -40,8 +40,14 @@ export const TransactionsUploadResult: React.FC = () => {
 					<Button
 						isDisabled={!showResults}
 						onPress={() => {
-							uploadSelectedFile(false);
-							setSelectedFile(null); // TODO Await the above
+							void (async () => {
+								const succeeded =
+									await uploadSelectedFile(false);
+
+								if (succeeded) {
+									setSelectedFile(null);
+								}
+							})();
 						}}
 						startContent={<IconDeviceFloppy />}
 					>
