@@ -120,8 +120,7 @@ describe("useTransactionsTable", () => {
 	it.each([
 		{ column: "merchant", expected: "merchant" },
 		{ column: "subcategoryId", expected: "category" },
-		// Known bug: the API only accepts `amount`, so this request is rejected.
-		{ column: "amountCents", expected: "amountCents" },
+		{ column: "amountCents", expected: "amount" },
 		{ column: "type", expected: "date" },
 	])("requests sortBy=$expected when sorting by $column", async ({
 		column,

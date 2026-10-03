@@ -29,7 +29,7 @@ const maxQueryAttempts = 3;
 
 export const transactionSortFields: Partial<Record<TransactionKey, string>> = {
 	accountId: "account",
-	amountCents: "amountCents",
+	amountCents: "amount",
 	date: "date",
 	merchant: "merchant",
 	subcategoryId: "category",
@@ -143,8 +143,10 @@ export const useTransactionsTable = () => {
 				return;
 			}
 
-			transactionFromData.id = ModalDefaultTransaction.id;
-			editTransaction(transactionFromData);
+			editTransaction({
+				...transactionFromData,
+				id: ModalDefaultTransaction.id,
+			});
 		},
 		editModalState,
 		editTransaction: (id: number) => {
