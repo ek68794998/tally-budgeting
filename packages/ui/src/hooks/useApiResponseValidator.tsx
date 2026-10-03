@@ -1,6 +1,9 @@
 "use client";
 
-import { isSuccessHttpStatusCode } from "@ekumlin/typescript-toolkit/http";
+import {
+	isSuccessHttpStatusCode,
+	Unauthorized,
+} from "@ekumlin/typescript-toolkit/http";
 import { addToast } from "@heroui/react";
 import { telemetry } from "@tally/utilities/telemetry/telemetry";
 import { useTranslations } from "next-intl";
@@ -22,11 +25,14 @@ export const useApiResponseValidator = () => {
 			const { response, responseSchema } = options;
 
 			if (!response.ok) {
-				addToast({
-					color: "danger",
-					description: t("errorBody"),
-					title: t("errorTitle"),
-				});
+				// Allow this to be handled at a global level.
+				if (response.status !== Unauthorized) {
+					addToast({
+						color: "danger",
+						description: t("errorBody"),
+						title: t("errorTitle"),
+					});
+				}
 
 				telemetry().error("API_REQUEST_NOT_OK", {
 					statusCode: response.status,

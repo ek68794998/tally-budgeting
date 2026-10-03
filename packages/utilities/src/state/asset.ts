@@ -2,6 +2,7 @@ import { toError } from "@ekumlin/typescript-toolkit/error";
 import { getAssetsResponseSchema } from "@tally/data-models/contracts/api/getAssets";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { create } from "zustand";
+import { apiFetch } from "../routing/apiFetch";
 import { api, buildApiRoute } from "../routing/routeBuilder";
 import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
@@ -20,7 +21,7 @@ export const useAssetStore = create<AssetStore>((set, _get) => ({
 		});
 
 		try {
-			const response = await fetch(buildApiRoute(api.assets));
+			const response = await apiFetch(buildApiRoute(api.assets));
 			const responseJson: unknown = await response.json();
 			const { assets } = getAssetsResponseSchema.parse(responseJson);
 

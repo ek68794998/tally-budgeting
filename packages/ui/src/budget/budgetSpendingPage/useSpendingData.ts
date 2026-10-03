@@ -4,6 +4,7 @@ import {
 	type GetBudgetSpendingResponse,
 	getBudgetSpendingResponseSchema,
 } from "@tally/data-models/contracts/api/getBudgetSpending";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { type DateTime } from "luxon";
@@ -35,7 +36,7 @@ export const useSpendingData = (
 			};
 			const urlSearchParams = new URLSearchParams(lookupParams);
 
-			const response = await fetch(
+			const response = await apiFetch(
 				buildApiRoute(api.budget.spending, { query: urlSearchParams }),
 				{ signal },
 			);

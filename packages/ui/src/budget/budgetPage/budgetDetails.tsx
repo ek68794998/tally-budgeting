@@ -6,6 +6,7 @@ import {
 	type GetBudgetQuery,
 	getBudgetSummaryResponseSchema,
 } from "@tally/data-models/contracts/api/getBudgetSummary";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { telemetry } from "@tally/utilities/telemetry/telemetry";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -34,7 +35,7 @@ export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
 		queryFn: async ({ signal }) => {
 			const urlSearchParams = new URLSearchParams(searchParams);
 
-			const response = await fetch(
+			const response = await apiFetch(
 				buildApiRoute(api.budget.summary, { query: urlSearchParams }),
 				{ signal },
 			);

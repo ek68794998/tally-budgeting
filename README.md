@@ -119,16 +119,26 @@ The web app reads the following variables. For local development, set them in `a
 | `POSTGRES_CONNECTION_STRING` | Yes | — | PostgreSQL connection string. For the development database, use `postgresql://tally:tally_dev_password@localhost:5432/tally`. |
 | `POSTGRES_POOL_MAXIMUM` | No | `10` | Maximum number of pooled database connections. |
 | `LOG_LEVEL` | No | `info` | Backend log level: `error`, `warn`, `info`, `http`, or `debug`. |
+| `APP_PASSWORD` | Yes (unless `APP_PASSWORD_FILE` or `DANGEROUSLY_DISABLE_AUTH` is set) | — | Shared password required to use the app. |
+| `APP_PASSWORD_FILE` | No | — | Path to a file containing the password (whitespace is trimmed). Set this instead of `APP_PASSWORD`, not both. |
+| `DANGEROUSLY_DISABLE_AUTH` | No | — | Set to `1` to disable authentication entirely. |
 
 Docker Compose itself reads one variable from `deployment/.env`:
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. |
+| `APP_PASSWORD` | Yes (production) | — | Shared app password, passed through to the web container. `docker compose up` fails if it is unset. |
 
 ### Authentication
 
-_TBD_
+Tally is protected by a single shared password, and the app refuses to start without one.
+
+- **Set the password:** put `APP_PASSWORD=...` in `deployment/.env` (or `apps/web/.env.development.local` for development). To keep it out of the environment, set `APP_PASSWORD_FILE` to a file (for example a Docker secret) containing the password. Set only one of the two.
+- **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
+- **It is a single shared credential:** there are no per-user accounts and no per-user audit trail.
+- **Changing the password logs out all sessions.**
+- **Using your own auth proxy:** set `DANGEROUSLY_DISABLE_AUTH=1` to turn off Tally's login. Anyone who can reach the app can then read and modify all data, so only do this when something else in front of it enforces authentication.
 
 ## Database Migrations
 

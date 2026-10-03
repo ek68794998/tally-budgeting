@@ -3,6 +3,7 @@ import { getTransactionRulesResponseSchema } from "@tally/data-models/contracts/
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { apiFetch } from "../routing/apiFetch";
 import { api, buildApiRoute } from "../routing/routeBuilder";
 import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
@@ -21,7 +22,7 @@ export const useTransactionRuleStore = create<TransactionRuleStore>()(
 			});
 
 			try {
-				const response = await fetch(
+				const response = await apiFetch(
 					buildApiRoute(api.transactions.rules.base),
 				);
 				const responseJson: unknown = await response.json();

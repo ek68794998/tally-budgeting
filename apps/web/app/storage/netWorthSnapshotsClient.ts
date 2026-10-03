@@ -12,7 +12,9 @@ export const TableName = "net_worth_snapshot" as const satisfies keyof Database;
 
 export class NetWorthSnapshotsClient extends DatabaseClient {
 	public async getNetWorthSnapshotsAsync(): Promise<NetWorthSnapshot[]> {
-		const rows = await this.database
+		const database = await this.getAuthorizedDatabaseAsync();
+
+		const rows = await database
 			.selectFrom(TableName)
 			.selectAll()
 			.orderBy("id", "asc")
@@ -31,11 +33,13 @@ export class NetWorthSnapshotsClient extends DatabaseClient {
 	public async upsertNetWorthSnapshotsAsync(
 		values: NetWorthSnapshot | NetWorthSnapshot[],
 	): Promise<void> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const netWorthSnapshots = rowOrRowsAsRows(values).map((r) =>
 			withoutId(convertNetWorthSnapshotToNetWorthSnapshotRow(r)),
 		);
 
-		await this.database
+		await database
 			.insertInto(TableName)
 			.values(netWorthSnapshots)
 			.onConflict((oc) =>

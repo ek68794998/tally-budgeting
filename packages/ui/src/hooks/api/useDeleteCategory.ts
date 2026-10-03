@@ -1,5 +1,6 @@
 import { Delete } from "@ekumlin/typescript-toolkit/http";
 import { deleteCategoryResponseSchema } from "@tally/data-models/contracts/api/deleteCategory";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -10,7 +11,7 @@ export const useDeleteCategory = () => {
 
 	const { mutateAsync } = useMutation({
 		mutationFn: async (id: number) => {
-			const response = await fetch(
+			const response = await apiFetch(
 				buildApiRoute(api.categories.base, { params: [id] }),
 				{ method: Delete },
 			);

@@ -1,8 +1,12 @@
+import { toError } from "@ekumlin/typescript-toolkit/error";
 import {
+	Forbidden,
 	type HttpStatusCode,
 	InternalServerError,
 	isSuccessHttpStatusCode,
 	NoContent,
+	TooManyRequests,
+	Unauthorized,
 } from "@ekumlin/typescript-toolkit/http";
 import {
 	type ApiError,
@@ -10,11 +14,24 @@ import {
 } from "@tally/data-models/contracts/api/types";
 import { StructuredError } from "@tally/data-models/error/structuredError";
 import { type NextRequest, NextResponse } from "next/server";
+import { RateLimiterMemory } from "rate-limiter-flexible";
+import { SessionCookieName } from "../../auth/cookie";
+import { isAuthenticatedAsync } from "../../auth/verifyRequest";
 import { telemetry } from "../../telemetry/telemetry";
+import { enforceRateLimitAsync, getIpAddress } from "../helpers";
 import { type NextResponseFn } from "../types";
 import { HttpError } from "./httpError";
 import { parseRequestAsync } from "./parseRequest";
 import { type ApiHandler, type ApiResult, type RequestSchemata } from "./types";
+
+const safeMethods = new Set(["GET", "HEAD"]);
+
+const globalRateLimiter = new RateLimiterMemory({
+	duration: 10,
+	points: 300,
+});
+
+export type ApiAccess = "authenticated" | "public";
 
 interface ApiHandlerDefinition<
 	TBody,
@@ -22,6 +39,7 @@ interface ApiHandlerDefinition<
 	TParams,
 	TResponse extends ApiResponse,
 > {
+	access?: ApiAccess;
 	bodyParser?: (request: NextRequest) => Promise<TBody>;
 	eventName: string;
 	handler: ApiHandler<TBody, TQuery, TParams, TResponse>;
@@ -79,9 +97,20 @@ const executeHandlerAsync = async <
 	request: NextRequest,
 	routeParams: unknown,
 ): Promise<ApiResult<TResponse>> => {
-	const { bodyParser, handler, schemata } = definition;
+	const {
+		access = "authenticated",
+		bodyParser,
+		handler,
+		schemata,
+	} = definition;
 
 	try {
+		const guardResult = await guardRequestAsync(request, access);
+
+		if (guardResult) {
+			return guardResult;
+		}
+
 		const parseResult = await parseRequestAsync(
 			request,
 			bodyParser,
@@ -101,7 +130,10 @@ const executeHandlerAsync = async <
 		let apiError: ApiError;
 		let statusCode: HttpStatusCode;
 
-		telemetry().error("API_HANDLER_ERROR", { error });
+		telemetry().error("API_HANDLER_ERROR", {
+			error,
+			errorMessage: toError(error).message,
+		});
 
 		if (error instanceof HttpError) {
 			apiError = {
@@ -131,4 +163,62 @@ const executeHandlerAsync = async <
 			statusCode,
 		};
 	}
+};
+
+const isCrossOriginRequest = (request: NextRequest): boolean => {
+	const origin = request.headers.get("origin");
+
+	if (safeMethods.has(request.method) || !origin) {
+		return false;
+	}
+
+	const expectedHost =
+		request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+
+	try {
+		return new URL(origin).host !== expectedHost;
+	} catch {
+		return true;
+	}
+};
+
+const guardRequestAsync = async (
+	request: NextRequest,
+	access: ApiAccess,
+): Promise<ApiResult<never> | undefined> => {
+	if (isCrossOriginRequest(request)) {
+		return {
+			error: { code: "http403", params: {} },
+			statusCode: Forbidden,
+		};
+	}
+
+	const ip = getIpAddress(request) ?? "(UNKNOWN)";
+	const rateLimiterResult = await enforceRateLimitAsync(
+		globalRateLimiter,
+		ip,
+		1,
+	);
+
+	if (rateLimiterResult.shouldThrottle) {
+		return {
+			error: { code: "http429", params: {} },
+			statusCode: TooManyRequests,
+		};
+	}
+
+	const isAuthenticated =
+		access === "public" ||
+		(await isAuthenticatedAsync(
+			request.cookies.get(SessionCookieName)?.value,
+		));
+
+	if (!isAuthenticated) {
+		return {
+			error: { code: "http401", params: {} },
+			statusCode: Unauthorized,
+		};
+	}
+
+	return undefined;
 };

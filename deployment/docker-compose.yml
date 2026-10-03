@@ -4,8 +4,9 @@ services:
       context: ..
       dockerfile: apps/web/Dockerfile
     environment:
-      POSTGRES_CONNECTION_STRING: postgresql://tally:${DB_PASSWORD}@db:5432/tally
+      APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in deployment/.env}
       NODE_ENV: production
+      POSTGRES_CONNECTION_STRING: postgresql://tally:${DB_PASSWORD}@db:5432/tally
     depends_on:
       db:
         condition: service_healthy

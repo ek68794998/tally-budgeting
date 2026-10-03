@@ -5,6 +5,7 @@ import {
 	postAssetResponseSchema,
 } from "@tally/data-models/contracts/api/postAsset";
 import { type Asset } from "@tally/data-models/contracts/asset";
+import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -17,7 +18,7 @@ export const usePostAsset = () => {
 		mutationFn: async (asset: Asset) => {
 			const body: PostAssetRequest = { asset };
 
-			const response = await fetch(buildApiRoute(api.assets), {
+			const response = await apiFetch(buildApiRoute(api.assets), {
 				body: JSON.stringify(body),
 				headers: {
 					[ContentType]: ApplicationJson,

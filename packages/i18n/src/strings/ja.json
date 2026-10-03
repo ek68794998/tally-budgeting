@@ -37,6 +37,24 @@
 			"short_term_liability": "短期負債"
 		}
 	},
+	"auth": {
+		"login": {
+			"error": {
+				"invalidPassword": "パスワードが正しくありません。",
+				"serverError": "サーバーでログインを処理できませんでした。詳細はサーバーのログを確認してください。",
+				"tooManyAttempts": "試行回数が多すぎます。しばらくしてからもう一度お試しください。",
+				"unknown": "問題が発生しました。もう一度お試しください。"
+			},
+			"passwordLabel": "パスワード",
+			"submit": "ログイン",
+			"title": "ログイン"
+		},
+		"logout": "ログアウト",
+		"sessionExpired": {
+			"message": "セッションの有効期限が切れました。ページを更新するか、こちらから<link>続ける</link>。",
+			"title": "セッション期限切れ"
+		}
+	},
 	"budget": {
 		"categoriesEdit": {
 			"categoryColumns": {
