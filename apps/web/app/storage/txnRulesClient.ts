@@ -12,14 +12,15 @@ export const TableName = "txn_rule" as const satisfies keyof Database;
 
 export class TxnRulesClient extends DatabaseClient {
 	public async deleteTransactionRuleAsync(id: number): Promise<void> {
-		await this.database
-			.deleteFrom(TableName)
-			.where("id", "=", id)
-			.execute();
+		const database = await this.getAuthorizedDatabaseAsync();
+
+		await database.deleteFrom(TableName).where("id", "=", id).execute();
 	}
 
 	public async getTransactionRulesAsync(): Promise<TransactionRule[]> {
-		const rows = await this.database
+		const database = await this.getAuthorizedDatabaseAsync();
+
+		const rows = await database
 			.selectFrom(TableName)
 			.selectAll()
 			.orderBy("priority", "asc")
@@ -37,22 +38,23 @@ export class TxnRulesClient extends DatabaseClient {
 	public async insertTransactionRulesAsync(
 		values: TransactionRule | TransactionRule[],
 	): Promise<void> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const transactionRules = rowOrRowsAsRows(values).map((r) =>
 			withoutId(convertTransactionRuleToTxnRuleRow(r)),
 		);
 
-		await this.database
-			.insertInto(TableName)
-			.values(transactionRules)
-			.execute();
+		await database.insertInto(TableName).values(transactionRules).execute();
 	}
 
 	public async updateTransactionRuleAsync(
 		value: TransactionRule,
 	): Promise<void> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const row = convertTransactionRuleToTxnRuleRow(value);
 
-		await this.database
+		await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
@@ -62,7 +64,9 @@ export class TxnRulesClient extends DatabaseClient {
 	public async updateTransactionRulesOrderAsync(
 		ruleIds: number[],
 	): Promise<void> {
-		await this.database.transaction().execute(async (trx) => {
+		const database = await this.getAuthorizedDatabaseAsync();
+
+		await database.transaction().execute(async (trx) => {
 			for (const [index, id] of ruleIds.entries()) {
 				// Skip checking if the rows exist.
 				// This ensures that if you delete it on one tab, and

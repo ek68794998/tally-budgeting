@@ -33,15 +33,16 @@ export const TableName = "txn" as const satisfies keyof Database;
 
 export class TxnsClient extends DatabaseClient {
 	public async deleteTransactionAsync(id: number): Promise<void> {
-		await this.database
-			.deleteFrom(TableName)
-			.where("id", "=", id)
-			.execute();
+		const database = await this.getAuthorizedDatabaseAsync();
+
+		await database.deleteFrom(TableName).where("id", "=", id).execute();
 	}
 
 	public async getTransactionsAsync(
 		options?: GetRowsOptions,
 	): Promise<GetAllQueryResult<Transaction>> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const {
 			collectionParams: {
 				direction = "ascending",
@@ -54,7 +55,7 @@ export class TxnsClient extends DatabaseClient {
 
 		const filterExpressions = parseODataLiteFilter(filter);
 
-		const query = this.database
+		const query = database
 			.selectFrom(TableName)
 			.leftJoin(
 				SubcategoryTableName,
@@ -97,11 +98,13 @@ export class TxnsClient extends DatabaseClient {
 		startDate: DateTime,
 		endDate: DateTime,
 	): Promise<Transaction[]> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		if (!startDate.isValid || !endDate.isValid) {
 			throw new Error("Invalid date range provided.");
 		}
 
-		const rows = await this.database
+		const rows = await database
 			.selectFrom(TableName)
 			.leftJoin(
 				SubcategoryTableName,
@@ -131,6 +134,8 @@ export class TxnsClient extends DatabaseClient {
 	public async insertTransactionsAsync(
 		values: Transaction | Transaction[],
 	): Promise<void> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const transactions = rowOrRowsAsRows(values).map((r) =>
 			withoutId(convertTransactionToTxnRow(r)),
 		);
@@ -139,16 +144,15 @@ export class TxnsClient extends DatabaseClient {
 			return;
 		}
 
-		await this.database
-			.insertInto(TableName)
-			.values(transactions)
-			.execute();
+		await database.insertInto(TableName).values(transactions).execute();
 	}
 
 	public async updateTransactionAsync(value: Transaction): Promise<void> {
+		const database = await this.getAuthorizedDatabaseAsync();
+
 		const row = convertTransactionToTxnRow(value);
 
-		await this.database
+		await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
