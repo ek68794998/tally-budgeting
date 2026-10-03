@@ -1,6 +1,5 @@
 {
 	"assets": {
-		"about": "このカードは資産ページについて説明します。",
 		"activeNo": "無効",
 		"activeYes": "有効",
 		"columns": {
@@ -39,7 +38,6 @@
 		}
 	},
 	"budget": {
-		"about": "このカードは予算ページについて説明します。",
 		"categoriesEdit": {
 			"categoryColumns": {
 				"label": "ラベル"
@@ -215,7 +213,6 @@
 		"title": "{subject}について"
 	},
 	"retirement": {
-		"about": "このカードは退職ページについて説明します。",
 		"chart": {
 			"title": "累積退職貯蓄",
 			"tooltipTitle": "{age}歳"
@@ -252,7 +249,6 @@
 		"title": "退職・年金"
 	},
 	"rules": {
-		"about": "このカードはルールページについて説明します。",
 		"columns": {
 			"category": "カテゴリー",
 			"merchant": "店舗名",
@@ -269,9 +265,11 @@
 		"listControls": {
 			"addOne": "新規ルール",
 			"deleteAction": "削除する",
-			"deleteAllTitle": "すべて削除",
+			"deleteAllBody": "表示されている{count}件のルールをすべて削除してもよろしいですか？",
+			"deleteAllTitle": "すべて削除（{count}件）",
 			"deleteBody": "{merchant}のルールを削除してもよろしいですか？",
-			"deleteSelectedTitle": "選択項目を削除",
+			"deleteSelectedBody": "選択した{count}件のルールを削除してもよろしいですか？",
+			"deleteSelectedTitle": "選択項目を削除（{count}件）",
 			"deleteTitle": "ルールを削除",
 			"filterPlaceholder": "検索…"
 		},
@@ -281,7 +279,6 @@
 		"title": "設定"
 	},
 	"summary": {
-		"about": "このカードはサマリーページについて説明します。",
 		"spendCard": {
 			"earnedMonthly": "{period}の収入",
 			"earnedYearly": "{period}の収入",
@@ -297,7 +294,6 @@
 		"title": "サマリー"
 	},
 	"transactions": {
-		"about": "このカードは取引ページについて説明します。",
 		"columns": {
 			"account": "口座",
 			"amount": "金額",

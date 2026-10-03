@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { type Key, type ReactNode } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
 import { useCategories } from "../hooks/store/useCategories";
-import { useRulesTable } from "./hooks/useRulesTable";
+import { getRuleRowKey, useRulesTable } from "./hooks/useRulesTable";
 import { RuleEditModal } from "./ruleEditModal";
 import { RuleRowDropdown } from "./ruleRowDropdown";
 import { RulesTableControls } from "./rulesTableControls";
@@ -25,15 +25,19 @@ export const RulesTable: React.FC = () => {
 	const { subcategories } = useCategories();
 	const {
 		activeRule,
+		bulkDeleteModalState,
+		bulkDeleteRules,
 		deleteModalState,
 		displayedRules,
 		editModalState,
+		handleBulkDeleteAsync,
 		handleDeleteAsync,
 		handleEdit,
 		handleNewRule,
 		handleReorderAsync,
 		handleSaveAsync,
 		isLoading,
+		openBulkDeleteModal,
 		openDeleteModal,
 		selection,
 		setFilterValue,
@@ -82,9 +86,8 @@ export const RulesTable: React.FC = () => {
 	return (
 		<div className="flex flex-col gap-4">
 			<RulesTableControls
-				onDelete={() => {
-					// TODO
-				}}
+				displayedCount={displayedRules.length}
+				onDelete={openBulkDeleteModal}
 				onFilterChange={setFilterValue}
 				onNewRule={handleNewRule}
 				selectedRules={selection}
@@ -112,25 +115,39 @@ export const RulesTable: React.FC = () => {
 					items={displayedRules}
 					loadingContent={<Spinner />}
 				>
-					{(item) => {
-						const { id, merchantName } = item;
-
-						return (
-							<TableRow key={`${id}-${merchantName}`}>
-								{(columnKey) => (
-									<TableCell>
-										{getRowValue(item, columnKey)}
-									</TableCell>
-								)}
-							</TableRow>
-						);
-					}}
+					{(item) => (
+						<TableRow key={getRuleRowKey(item)}>
+							{(columnKey) => (
+								<TableCell>
+									{getRowValue(item, columnKey)}
+								</TableCell>
+							)}
+						</TableRow>
+					)}
 				</TableBody>
 			</Table>
 			<RuleEditModal
 				modalState={editModalState}
 				onSaveAsync={handleSaveAsync}
 				rule={activeRule}
+			/>
+			<ConfirmationModal
+				body={t(
+					selection === "all"
+						? "listControls.deleteAllBody"
+						: "listControls.deleteSelectedBody",
+					{ count: bulkDeleteRules.length },
+				)}
+				confirmText={t("listControls.deleteAction")}
+				isDestructive={true}
+				modalState={bulkDeleteModalState}
+				onConfirmAsync={handleBulkDeleteAsync}
+				title={t(
+					selection === "all"
+						? "listControls.deleteAllTitle"
+						: "listControls.deleteSelectedTitle",
+					{ count: bulkDeleteRules.length },
+				)}
 			/>
 			<ConfirmationModal
 				body={t("listControls.deleteBody", {

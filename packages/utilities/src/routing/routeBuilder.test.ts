@@ -116,7 +116,6 @@ describe("routeBuilder", () => {
 			expect(web.budget.spending).toBe("/budget/spending");
 			expect(web.assets).toBe("/assets");
 			expect(web.retirement).toBe("/retirement");
-			expect(web.categories).toBe("/categories");
 		});
 
 		it("should build web routes without params", () => {

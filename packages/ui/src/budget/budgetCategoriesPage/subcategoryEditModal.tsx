@@ -38,6 +38,7 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 	subcategory,
 }) => {
 	const t = useTranslations("budget");
+	const tError = useTranslations("error.api");
 
 	const [budgetAmount, setBudgetAmount] = useState(0);
 	const [budgetFrequency, setBudgetFrequency] = useState(1);
@@ -272,8 +273,8 @@ export const SubcategoryEditModal: React.FC<Props> = ({
 							onSaveError={() =>
 								addToast({
 									color: "danger",
-									description: "Failed" /* TODO */,
-									title: "Failed" /* TODO */,
+									description: tError("errorBody"),
+									title: tError("errorTitle"),
 								})
 							}
 						/>

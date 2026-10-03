@@ -9,7 +9,10 @@ import {
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { txnRowSchema } from "@tally/data-models/database/txnRow";
 import { parseODataLiteFilter } from "@tally/utilities/oData/parse";
-import { type ODataLiteFilterExpression } from "@tally/utilities/oData/types";
+import {
+	type ODataLiteFilterExpression,
+	type ODataLiteFilterOperator,
+} from "@tally/utilities/oData/types";
 import { type ExpressionBuilder, type StringReference } from "kysely";
 import { type DateTime } from "luxon";
 import { type Database } from "./database";
@@ -153,20 +156,24 @@ export class TxnsClient extends DatabaseClient {
 	}
 }
 
+const comparisonOperators = {
+	eq: "=",
+	ge: ">=",
+	gt: ">",
+	le: "<=",
+	lt: "<",
+	ne: "<>",
+} as const satisfies Record<
+	Exclude<ODataLiteFilterOperator, "like" | "in">,
+	string
+>;
+
 const applyFilters = (
 	queryBuilder: ExpressionBuilder<Database, typeof TableName>,
 	filterExpressions: ODataLiteFilterExpression[],
 ) => {
 	const conditions = filterExpressions.map((fe) => {
 		const column = mapFilterFieldToColumn(fe.field);
-
-		if (fe.operator === "eq") {
-			// Kysely doesn't permit us to send Boolean values for comparison
-			// if the database has no Boolean columns.
-			const value = isBoolean(fe.value) ? `${fe.value}` : fe.value;
-
-			return queryBuilder.eb(column, "=", value);
-		}
 
 		if (fe.operator === "like") {
 			return queryBuilder.eb(column, "like", buildLikePattern(fe.value));
@@ -177,9 +184,11 @@ const applyFilters = (
 			return queryBuilder.eb(column, "in", values);
 		}
 
-		// TODO More operators.
-		// TODO Error handling.
-		throw new Error(`Unsupported operator: ${fe.operator}`);
+		// Kysely doesn't permit us to send Boolean values for comparison
+		// if the database has no Boolean columns.
+		const value = isBoolean(fe.value) ? `${fe.value}` : fe.value;
+
+		return queryBuilder.eb(column, comparisonOperators[fe.operator], value);
 	});
 
 	if (conditions.length === 0) {

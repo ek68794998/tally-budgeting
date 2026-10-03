@@ -83,8 +83,8 @@ export const CategoryEditModal: React.FC<Props> = ({
 							onSaveError={() =>
 								addToast({
 									color: "danger",
-									description: "Failed" /* TODO */,
-									title: "Failed" /* TODO */,
+									description: t("error.api.errorBody"),
+									title: t("error.api.errorTitle"),
 								})
 							}
 						/>

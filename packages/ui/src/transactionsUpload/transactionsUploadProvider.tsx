@@ -1,6 +1,9 @@
 "use client";
 
-import { Post } from "@ekumlin/typescript-toolkit/http";
+import {
+	isSuccessHttpStatusCode,
+	Post,
+} from "@ekumlin/typescript-toolkit/http";
 import {
 	type PostTransactionsUploadRequest,
 	type PostTransactionsUploadResponse,
@@ -35,27 +38,31 @@ interface TransactionsUploadContextValue {
 	setUploadResponse: (
 		response: PostTransactionsUploadResponse | null,
 	) => void;
-	uploadFile: (file: File | null, isValidationOnly: boolean) => void;
+	uploadFile: (
+		file: File | null,
+		isValidationOnly: boolean,
+	) => Promise<boolean>;
 	uploadResponse: PostTransactionsUploadResponse | null;
-	uploadSelectedFile: (isValidationOnly: boolean) => void;
+	uploadSelectedFile: (isValidationOnly: boolean) => Promise<boolean>;
 }
 
 const TransactionsUploadContext = createContext<
 	TransactionsUploadContextValue | undefined
 >(undefined);
 
+/** Resolves to whether the upload completed with a success status code. */
 const uploadFile = (
 	file: File | null,
 	account: Asset | null,
 	isValidationOnly: boolean,
 	callbacks: TransactionsUploadCallbacks | null,
-) => {
+): Promise<boolean> => {
 	const { onSelectNone, onUploadFinish, onUploadProgress, onUploadStart } =
 		callbacks ?? {};
 
 	if (!file || !account) {
 		onSelectNone?.();
-		return;
+		return Promise.resolve(false);
 	}
 
 	onUploadStart?.(file);
@@ -68,23 +75,26 @@ const uploadFile = (
 
 	const formData = buildFormData(formBody);
 
-	const xhr = new XMLHttpRequest();
+	return new Promise((resolve) => {
+		const xhr = new XMLHttpRequest();
 
-	xhr.upload.onprogress = (event) => {
-		const percentage = (event.loaded / event.total) * 100;
-		onUploadProgress?.(percentage);
-	};
+		xhr.upload.onprogress = (event) => {
+			const percentage = (event.loaded / event.total) * 100;
+			onUploadProgress?.(percentage);
+		};
 
-	xhr.onreadystatechange = () => {
-		if (xhr.readyState !== XMLHttpRequest.DONE) {
-			return;
-		}
+		xhr.onreadystatechange = () => {
+			if (xhr.readyState !== XMLHttpRequest.DONE) {
+				return;
+			}
 
-		onUploadFinish?.(xhr.responseText, xhr.status, xhr.statusText);
-	};
+			onUploadFinish?.(xhr.responseText, xhr.status, xhr.statusText);
+			resolve(isSuccessHttpStatusCode(xhr.status));
+		};
 
-	xhr.open(Post, "/api/transactions/upload");
-	xhr.send(formData);
+		xhr.open(Post, "/api/transactions/upload");
+		xhr.send(formData);
+	});
 };
 
 export const TransactionsUploadProvider: React.FC<React.PropsWithChildren> = ({
@@ -102,7 +112,7 @@ export const TransactionsUploadProvider: React.FC<React.PropsWithChildren> = ({
 			setUploadResponse(null);
 
 			if (!file) {
-				return;
+				return Promise.resolve(false);
 			}
 
 			return uploadFile(file, account, isValidationOnly, uploadCallbacks);

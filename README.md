@@ -26,7 +26,7 @@ _Coming soon_
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:ek68794998/tally-budgeting.git
+git clone https://github.com/ek68794998/tally-budgeting.git
 cd tally-budgeting
 ```
 
@@ -134,6 +134,17 @@ _TBD_
 
 Tally supports importing transactions from CSV files. The format requirements vary by institution.
 
+Supported institutions:
+
+- Apple Wallet
+- Chase Bank
+- Fidelity Investments
+- First Tech FCU
+- Guideline
+- Rippling
+- Robinhood
+- Vestwell
+
 _Detailed CSV format documentation coming soon._
 
 ## Tech Stack
@@ -163,4 +174,4 @@ Tally is designed with privacy in mind. All data is stored locally on your own i
 
 ---
 
-**Note**: This is v1 of Tally, released as open-source for self-hosting. The codebase is under active development, and some features may change.
+**Note**: This is an early version of Tally, released as open-source for self-hosting. The codebase is under active development, and some features may change.

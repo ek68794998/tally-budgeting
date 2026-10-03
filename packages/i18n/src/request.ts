@@ -15,8 +15,11 @@ export const getLocaleAsync = async () => {
 	const requestHeaders = await headers();
 	const requestHeaderEntries = Object.fromEntries(requestHeaders.entries());
 	const negotiator = new Negotiator({ headers: requestHeaderEntries });
-	const locale = match(negotiator.languages(), Locales, DefaultLocale);
-	return locale;
+
+	// Without an `Accept-Language` header, Negotiator returns `["*"]`, which `match` rejects.
+	const languages = negotiator.languages().filter((l) => l !== "*");
+
+	return match(languages, Locales, DefaultLocale);
 };
 
 const getMessagesAsync = async (

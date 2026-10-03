@@ -1,9 +1,11 @@
+import { toError } from "@ekumlin/typescript-toolkit/error";
 import { getCategoriesResponseSchema } from "@tally/data-models/contracts/api/getCategories";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { api, buildApiRoute } from "../routing/routeBuilder";
+import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
 
 export type CategoryStore = StoreState<{
@@ -36,8 +38,11 @@ export const useCategoryStore = create<CategoryStore>()(
 					isHydrated: true,
 					subcategories,
 				});
-			} catch (_error) {
-				// TODO
+			} catch (error) {
+				telemetry().error("STORE_FETCH_FAILED", {
+					errorMessage: toError(error).message,
+					store: "category",
+				});
 				set({
 					error: "Failed to fetch categories",
 					isFetching: false,
