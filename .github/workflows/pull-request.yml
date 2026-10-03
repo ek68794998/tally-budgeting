@@ -8,9 +8,12 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}
 
+# Jobs run on separate runners so that memory-heavy steps (PGlite database
+# tests, the Docker build) don't compete.
+
 jobs:
-  build:
-    name: Build & test
+  lint:
+    name: Lint & type check
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -28,12 +31,29 @@ jobs:
         - name: Check types
           uses: ./.github/actions/type-check
 
-      - name: Build packages and app
-        run: pnpm build
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-      - parallel:
-        - name: Unit tests
-          uses: ./.github/actions/test
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
 
-        - name: Build Docker image
-          uses: ./.github/actions/build-docker
+      - name: Initialize environment
+        uses: ./.github/actions/setup
+
+      - name: Unit tests
+        uses: ./.github/actions/test
+
+  docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        uses: ./.github/actions/build-docker

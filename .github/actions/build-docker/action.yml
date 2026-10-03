@@ -1,9 +1,19 @@
 name: Build
-description: Builds the Docker image for the app.
+description: Builds the Docker image for the app, reusing cached layers from previous runs.
 
 runs:
   using: composite
   steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
     - name: Compile Docker image
-      run: pnpm docker:build
-      shell: bash
+      uses: docker/build-push-action@v7
+      with:
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        context: .
+        file: apps/web/Dockerfile
+        platforms: linux/amd64
+        push: false
+        tags: tally-budgeting
