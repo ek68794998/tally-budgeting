@@ -46,7 +46,9 @@
 		"zustand": "^5.0.8"
 	},
 	"devDependencies": {
+		"@electric-sql/pglite": "^0.5.8",
 		"@tally/eslint-config": "workspace:*",
+		"@tally/testing": "workspace:*",
 		"@tally/typescript-config": "workspace:*",
 		"@types/luxon": "^3.7.1",
 		"@types/mdx": "^2.0.14",

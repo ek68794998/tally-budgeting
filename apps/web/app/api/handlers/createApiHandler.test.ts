@@ -1,9 +1,11 @@
 import { NoContent } from "@ekumlin/typescript-toolkit/http";
+import { StructuredError } from "@tally/data-models/error/structuredError";
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import z from "zod";
 import { isAuthenticatedAsync } from "../../auth/verifyRequest";
 import { createApiHandler } from "./createApiHandler";
+import { HttpError } from "./httpError";
 
 vi.mock("../../auth/verifyRequest", () => ({
 	isAuthenticatedAsync: vi.fn(),
@@ -132,5 +134,54 @@ describe("createApiHandler guards", () => {
 
 		expect(statuses.slice(0, 300).every((s) => s === NoContent)).toBe(true);
 		expect(statuses[300]).toBe(429);
+	});
+});
+
+describe("createApiHandler error mapping", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		mockIsAuthenticated.mockResolvedValue(true);
+	});
+
+	it.each([
+		{
+			error: new HttpError("Nope", 404, "http404", { id: "1" }),
+			expectedBody: {
+				error: {
+					code: "http404",
+					params: { id: "1" },
+					type: "HttpError",
+				},
+				success: false,
+			},
+			expectedStatus: 404,
+		},
+		{
+			error: new StructuredError("Broken", "invalidAccount"),
+			expectedBody: {
+				error: { code: "invalidAccount", type: "StructuredError" },
+				success: false,
+			},
+			expectedStatus: 500,
+		},
+		{
+			error: "a thrown string",
+			expectedBody: {
+				error: { code: "http500", params: {}, type: "string" },
+				success: false,
+			},
+			expectedStatus: 500,
+		},
+	])("maps a thrown $error.constructor.name to $expectedStatus", async ({
+		error,
+		expectedBody,
+		expectedStatus,
+	}) => {
+		handler.mockRejectedValueOnce(error);
+
+		const response = await callAsync(buildRoute(), buildRequest("GET"));
+
+		expect(response.status).toBe(expectedStatus);
+		await expect(response.json()).resolves.toEqual(expectedBody);
 	});
 });

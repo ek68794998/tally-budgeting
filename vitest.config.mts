@@ -28,10 +28,10 @@ export default defineConfig({
 			reporter: ["text", "text-summary", "html"],
 			thresholds: {
 				// TODO (#13) Bring these up as we add tests.
-				branches: 82,
-				functions: 64,
-				lines: 30,
-				statements: 30,
+				branches: 88,
+				functions: 76,
+				lines: 43,
+				statements: 43,
 			},
 		},
 		exclude: [...configDefaults.exclude, "**/build/**"],
@@ -52,8 +52,19 @@ export default defineConfig({
 			{
 				test: {
 					environment: "node",
+					exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
 					include: ["**/*.{test,spec}.{ts,js}"],
 					name: "unit-ts",
+				},
+			},
+			{
+				test: {
+					environment: "node",
+					include: ["**/*.db.test.ts"],
+					name: "integration-db",
+					// Each PGlite instance holds ~800 MB, so run database tests one file at a time.
+					pool: "forks",
+					poolOptions: { forks: { singleFork: true } },
 				},
 			},
 		],
