@@ -1,6 +1,6 @@
 import { buildAsset } from "@tally/data-models/testing/fixtures";
 import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SelectAccount } from "../common/selectAccount";
 import { TransactionsUploadAccount } from "./transactionsUploadAccount";
@@ -53,9 +53,11 @@ describe("TransactionsUploadAccount", () => {
 			buildAsset({ id: 3, provider: "chase" }),
 		);
 
+		render(props?.selectProps?.description);
+
 		expect(props?.value).toBe(3);
-		expect(props?.selectProps?.description).not.toBe(
-			"Please select an account associated with a known financial provider.",
+		expect(screen.getByText("Chase Bank").closest("div")?.textContent).toBe(
+			"This account is associated with Chase Bank.",
 		);
 	});
 });

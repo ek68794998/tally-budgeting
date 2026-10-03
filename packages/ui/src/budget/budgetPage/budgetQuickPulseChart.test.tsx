@@ -42,6 +42,9 @@ describe("BudgetQuickPulseChart", () => {
 		);
 
 		expect(screen.getByText("Pulse")).toBeInTheDocument();
+		expect(screen.getByText(`$${spent}`)).toHaveClass(
+			expectedBar.replace("bg-", "text-"),
+		);
 		expect(
 			screen
 				.getByText("View Spending")

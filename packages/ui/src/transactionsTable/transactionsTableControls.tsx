@@ -2,7 +2,6 @@ import {
 	Button,
 	ButtonGroup,
 	Dropdown,
-	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
 	Input,
@@ -20,9 +19,9 @@ import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { web } from "@tally/utilities/routing/routeBuilder";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
-import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { renderDropdownEntry } from "../common/renderDropdownEntry";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
 import { getTableFilterProps } from "../table/helpers";
@@ -138,34 +137,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu items={dropdownEntries}>
-							{(item) => {
-								const {
-									action,
-									IconComponent,
-									key,
-									label,
-									...entry
-								} = {
-									action: undefined,
-									...item,
-								};
-
-								if (action) {
-									entry.onPress = action;
-								} else {
-									entry.as = NextLink;
-								}
-
-								return (
-									<DropdownItem
-										key={key}
-										startContent={<IconComponent />}
-										{...entry}
-									>
-										{label}
-									</DropdownItem>
-								);
-							}}
+							{renderDropdownEntry}
 						</DropdownMenu>
 					</Dropdown>
 				</ButtonGroup>

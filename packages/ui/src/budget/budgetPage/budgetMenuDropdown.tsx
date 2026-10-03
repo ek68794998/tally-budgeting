@@ -1,17 +1,11 @@
 "use client";
 
-import {
-	Button,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-} from "@heroui/react";
+import { Button, Dropdown, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { IconCategory, IconDots } from "@tabler/icons-react";
 import { web } from "@tally/utilities/routing/routeBuilder";
-import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
+import { renderDropdownEntry } from "../../common/renderDropdownEntry";
 import { type DropdownLinkEntry } from "../../types";
 
 export const BudgetMenuDropdown = () => {
@@ -37,16 +31,7 @@ export const BudgetMenuDropdown = () => {
 				</Button>
 			</DropdownTrigger>
 			<DropdownMenu items={dropdownEntries}>
-				{({ href, IconComponent, key, label }) => (
-					<DropdownItem
-						as={NextLink}
-						href={href}
-						key={key}
-						startContent={<IconComponent />}
-					>
-						{label}
-					</DropdownItem>
-				)}
+				{renderDropdownEntry}
 			</DropdownMenu>
 		</Dropdown>
 	);
