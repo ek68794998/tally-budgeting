@@ -22,17 +22,23 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth/authContext";
 import { SidebarLogo } from "./sidebarLogo";
-import { type SidebarMenuItem, SidebarMenuItems } from "./sidebarMenuItems";
+import {
+	type SidebarAction,
+	SidebarMenuItems,
+	type SidebarMenuLink,
+} from "./sidebarMenuItems";
 
 interface Props {
 	className?: string;
 }
 
-type PartialMenuItem = Pick<SidebarMenuItem, "id" | "label"> & {
-	DefaultIconComponent: SidebarMenuItem["IconComponent"];
-	FilledIconComponent?: SidebarMenuItem["IconComponent"];
+type PartialMenuLink = Pick<SidebarMenuLink, "id" | "label"> & {
+	DefaultIconComponent: SidebarMenuLink["IconComponent"];
+	FilledIconComponent?: SidebarMenuLink["IconComponent"];
 	path: string;
 };
+
+type PartialMenuItem = PartialMenuLink | SidebarAction;
 
 export const Sidebar = ({ className }: Props) => {
 	const t = useTranslations();
@@ -46,7 +52,11 @@ export const Sidebar = ({ className }: Props) => {
 		router.refresh();
 	};
 
-	const createMenuItem = (item: PartialMenuItem): SidebarMenuItem => {
+	const createMenuItem = (item: PartialMenuItem) => {
+		if ("onPress" in item) {
+			return item;
+		}
+
 		const { DefaultIconComponent, FilledIconComponent, path, ...rest } =
 			item;
 		const isSelected = pathName === path;
@@ -67,20 +77,6 @@ export const Sidebar = ({ className }: Props) => {
 			<div className="flex h-full flex-col gap-4">
 				<SidebarLogo />
 				<SidebarMenuItems
-					footerActions={
-						isAuthEnabled
-							? [
-									{
-										IconComponent: IconLogout,
-										id: "logout",
-										label: t("auth.logout"),
-										onPress: () => {
-											void logoutAsync();
-										},
-									},
-								]
-							: []
-					}
 					footerMenuItems={[
 						createMenuItem({
 							DefaultIconComponent: IconSettings,
@@ -89,6 +85,15 @@ export const Sidebar = ({ className }: Props) => {
 							label: t("settings.title"),
 							path: "/settings",
 						}),
+						isAuthEnabled &&
+							createMenuItem({
+								IconComponent: IconLogout,
+								id: "logout",
+								label: t("auth.logout"),
+								onPress: () => {
+									void logoutAsync();
+								},
+							}),
 					]}
 					menuItems={[
 						createMenuItem({
