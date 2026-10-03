@@ -62,7 +62,12 @@ export const MasterPanel = <T,>({
 			<Card
 				className={twMerge(
 					containerClassName,
-					isItemSelected ? "hidden @xl:block" : "@xl:block",
+					isItemSelected
+						? `
+							hidden
+							@xl:block
+						`
+						: "@xl:block",
 				)}
 				isBlurred={true}
 			>

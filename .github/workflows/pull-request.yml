@@ -21,11 +21,19 @@ jobs:
       - name: Initialize environment
         uses: ./.github/actions/setup
 
+      - parallel:
+        - name: Lint
+          uses: ./.github/actions/lint
+
+        - name: Check types
+          uses: ./.github/actions/type-check
+
       - name: Build packages and app
         run: pnpm build
 
-      - name: Run unit tests with coverage
-        run: pnpm test:coverage
+      - parallel:
+        - name: Unit tests
+          uses: ./.github/actions/test
 
-      - name: Compile Docker image
-        run: pnpm docker:build
+        - name: Build Docker image
+          uses: ./.github/actions/build-docker

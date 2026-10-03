@@ -27,7 +27,7 @@ export const TransactionsUploadResultTransactionRow: React.FC<Props> = ({
 							{ showCentsIfLessThanDigits: 4 },
 						)}
 			</Chip>
-			<div className="flex-1 overflow-hidden font-mono text-nowrap overflow-ellipsis">
+			<div className="flex-1 overflow-hidden font-mono text-nowrap text-ellipsis">
 				{transaction.merchant}
 			</div>
 			<div>

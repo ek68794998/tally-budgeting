@@ -41,11 +41,16 @@ export const AssetCard: React.FC<Props> = ({
 					!active && "opacity-60",
 				)}
 			>
-				<h2 className="mb-2 flex items-center gap-2 font-serif text-xl font-bold whitespace-nowrap">
+				<h2
+					className="
+						mb-2 flex items-center gap-2 font-serif text-xl
+						font-bold whitespace-nowrap
+					"
+				>
 					<div className="flex-0">
 						<DataProviderIcon provider={provider} size="md" />
 					</div>
-					<span className="min-w-0 overflow-hidden overflow-ellipsis">
+					<span className="min-w-0 overflow-hidden text-ellipsis">
 						{name}
 					</span>
 				</h2>

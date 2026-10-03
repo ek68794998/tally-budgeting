@@ -211,7 +211,8 @@
 		}
 	},
 	"help": {
-		"link": "{subject}について"
+		"aiDisclaimer": "このヘルプの内容の一部はAIによって生成されたもので、誤りが含まれている可能性があります。",
+		"title": "{subject}について"
 	},
 	"retirement": {
 		"about": "このカードは退職ページについて説明します。",
@@ -306,6 +307,11 @@
 			"merchant": "加盟店",
 			"notes": "メモ",
 			"type": "種別"
+		},
+		"delete": {
+			"action": "削除する",
+			"body": "{merchantName}での{amount}の取引を削除してもよろしいですか？この操作は元に戻せません。",
+			"title": "取引を削除"
 		},
 		"edit": {
 			"failureBody": "取引の保存中にエラーが発生しました。後でもう一度お試しください。",

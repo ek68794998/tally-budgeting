@@ -29,7 +29,10 @@ export const DetailPanel = <T,>({
 		<div
 			className={twMerge(
 				isNullOrUndefined(selectedKey)
-					? "mt-3 hidden @xl:block"
+					? `
+						mt-3 hidden
+						@xl:block
+					`
 					: "block",
 				className,
 			)}

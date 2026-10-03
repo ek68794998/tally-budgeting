@@ -1,0 +1,11 @@
+name: Build
+description: Builds all apps and packages in the monorepo via Turbo.
+
+runs:
+  using: composite
+  steps:
+    - name: Run build
+      shell: bash
+      env:
+        CI: "true"
+      run: pnpm build

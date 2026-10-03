@@ -1,0 +1,9 @@
+name: Type Check
+description: Checks TypeScript types across the monorepo.
+
+runs:
+  using: composite
+  steps:
+    - name: Check types
+      shell: bash
+      run: pnpm check-types

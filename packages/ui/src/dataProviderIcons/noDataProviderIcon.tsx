@@ -8,7 +8,10 @@ export const NoDataProviderIcon: React.FC<Props> = ({
 	sizePx,
 }) => (
 	<div
-		className="flex items-center justify-center rounded-sm bg-stone-500 text-white/70"
+		className="
+			flex items-center justify-center rounded-sm bg-stone-500
+			text-white/70
+		"
 		style={{
 			height: containerSizePx,
 			width: containerSizePx,

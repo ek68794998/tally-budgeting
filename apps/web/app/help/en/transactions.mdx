@@ -1,0 +1,35 @@
+The Transactions page lists every transaction you've imported or entered. Your budget is calculated from these transactions.
+
+## Browsing Transactions
+
+- Search by merchant, or use the filters to narrow the list to specific accounts or categories.
+- Select a column header to sort by it.
+- Use the **⋯** menu on a row to **Edit**, **Duplicate** or **Delete** a transaction.
+
+Each transaction has a date, merchant, category, account, type (**Income** or **Expense**), amount and optional notes. You can also mark whether a purchase felt **Worth It**, **Neutral** or **Not Worth It**.
+
+## Importing a File
+
+Most banks and brokerages can export your history as a CSV file. To import one:
+
+1. Select **Import File**.
+2. Choose the account the file came from. The account must have an institution set on the **Net Worth & Assets** page.
+3. Drop in the CSV file. Tally previews the result before saving anything:
+   - **Categorized**: matched one of your known merchants.
+   - **Uncategorized**: didn't match a known merchant. Select **Auto-categorize** to create a rule for it.
+   - **Ignored**: rows that aren't transactions, such as notes or summary lines in the file.
+   - **Failed**: rows Tally couldn't read.
+4. After adding rules, select **Re-run Categorization** to update the preview.
+5. Select **Confirm & Save** to import the transactions.
+
+Supported institutions are Apple Wallet, Chase Bank, Fidelity Investments, First Tech Federal Credit Union, Guideline, Rippling, Robinhood and Vestwell.
+
+## Known Merchants
+
+Known merchants are rules that clean up merchant names and assign categories automatically during import. Each rule has:
+
+- **Expression to Match**: a regular expression checked against the transaction description from your bank. Matching ignores letter case unless you turn on **Case-sensitive?**.
+- **Merchant Name**: the name Tally shows instead of the raw description. Use `$1` to insert the text matched by the expression's first capture group.
+- **Category**: the subcategory to assign.
+
+Rules are checked from top to bottom, and the first match wins. Use the **⋯** menu on a rule to move it up or down.

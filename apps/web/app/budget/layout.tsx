@@ -4,6 +4,7 @@ import { HelpLink } from "@tally/ui/helpLink/helpLink";
 import { buildSubpageMap } from "@tally/utilities/routing/pageData";
 import { web } from "@tally/utilities/routing/routeBuilder";
 import { useTranslations } from "next-intl";
+import { HelpContent } from "../help/helpContent";
 
 const BudgetLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const t = useTranslations();
@@ -17,10 +18,9 @@ const BudgetLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 		<PageLayout
 			actions={
 				<>
-					<HelpLink
-						linkPath="/help/budget"
-						subject={t("budget.title")}
-					/>
+					<HelpLink subject={t("budget.title")}>
+						<HelpContent topic="budget" />
+					</HelpLink>
 					<BudgetMenuDropdown />
 				</>
 			}

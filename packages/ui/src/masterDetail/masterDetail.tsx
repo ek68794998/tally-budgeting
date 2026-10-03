@@ -58,7 +58,12 @@ export const MasterDetail = <T,>({
 
 	return (
 		<div className={twMerge("@container", className)}>
-			<div className="grid grid-cols-1 gap-6 @xl:grid-cols-[300px_1fr]">
+			<div
+				className="
+					grid grid-cols-1 gap-6
+					@xl:grid-cols-[300px_1fr]
+				"
+			>
 				<MasterPanel
 					actions={masterActions}
 					className={masterClassName}

@@ -1,4 +1,4 @@
-import tailwindPlugin from "eslint-plugin-tailwindcss";
+import betterTailwindCss from "eslint-plugin-better-tailwindcss";
 
 /**
  * A custom ESLint configuration for Tailwind CSS.
@@ -6,32 +6,27 @@ import tailwindPlugin from "eslint-plugin-tailwindcss";
  * @type {import("eslint").Linter.Config[]}
  */
 export const eslintConfigTailwind = [
-	...tailwindPlugin.configs["flat/recommended"],
+	betterTailwindCss.configs.recommended,
 	{
 		rules: {
-			"tailwindcss/no-custom-classname": [
+			"better-tailwindcss/enforce-consistent-line-wrapping": [
+				"warn",
+				{
+					indent: "tab",
+					tabWidth: 4,
+				},
+			],
+			"better-tailwindcss/no-unknown-classes": [
 				"error",
 				{
-					whitelist: [
+					// Unlike eslint-plugin-tailwindcss, class names are matched including their variants (e.g., `hover:`)
+					ignore: [
 						// Hero UI
-						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|background|divider)(-[0-9]+)?(/[0-9]+)?$",
-						"^(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(primary|secondary|danger|warning|success)-[0-9]+(/[0-9]+)?$",
+						"^(?:[^:\\s]+:)*(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|background|divider)(-[0-9]+)?(/[0-9]+)?$",
+						"^(?:[^:\\s]+:)*(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(primary|secondary|danger|warning|success)(-[0-9]+)?(/[0-9]+)?$",
 					],
 				},
 			],
-		},
-		settings: {
-			tailwindcss: {
-				callees: ["twMerge"],
-				config: {
-					content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
-					plugins: [],
-					theme: {
-						extend: {},
-					},
-					variants: {},
-				},
-			},
 		},
 	},
 ];

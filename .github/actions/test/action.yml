@@ -1,0 +1,9 @@
+name: Unit Tests
+description: Runs unit tests with coverage.
+
+runs:
+  using: composite
+  steps:
+    - name: Run unit tests with coverage
+      run: pnpm test:coverage
+      shell: bash

@@ -118,7 +118,10 @@ export const TransactionsUploadWidget: React.FC = () => {
 						className={twMerge(
 							"border-2 border-dashed border-stone-600/5",
 							!disabled &&
-								"cursor-pointer hover:border-stone-600/50",
+								`
+									cursor-pointer
+									hover:border-stone-600/50
+								`,
 							isDragActive &&
 								!isDragReject &&
 								"border-green-800/50",
