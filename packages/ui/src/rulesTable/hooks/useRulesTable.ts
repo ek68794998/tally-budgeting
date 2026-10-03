@@ -9,7 +9,11 @@ import { useTransactionRules } from "../../hooks/store/useTransactionRules";
 import { reorderRows } from "../../table/helpers";
 import { type ReorderPosition } from "../../table/types";
 
+export const getRuleRowKey = ({ id, merchantName }: TransactionRule) =>
+	`${id}-${merchantName}`;
+
 export const useRulesTable = () => {
+	const bulkDeleteModalState = useDisclosure();
 	const { deleteTransactionRuleAsync } = useDeleteTransactionRule();
 	const deleteModalState = useDisclosure();
 	const editModalState = useDisclosure();
@@ -23,6 +27,9 @@ export const useRulesTable = () => {
 	} = useTransactionRules();
 
 	const [activeRule, setActiveRule] = useState<TransactionRule | null>(null);
+	const [bulkDeleteRules, setBulkDeleteRules] = useState<TransactionRule[]>(
+		[],
+	);
 	const [filterValue, setFilterValue] = useState("");
 	const [selection, setSelection] = useState<Selection>(new Set());
 
@@ -47,6 +54,18 @@ export const useRulesTable = () => {
 		},
 		[deleteTransactionRuleAsync, refetchTransactionRules],
 	);
+
+	const handleBulkDeleteAsync = useCallback(async () => {
+		try {
+			for (const rule of bulkDeleteRules) {
+				await deleteTransactionRuleAsync(rule.id);
+			}
+		} finally {
+			void refetchTransactionRules();
+			setBulkDeleteRules([]);
+			setSelection(new Set());
+		}
+	}, [bulkDeleteRules, deleteTransactionRuleAsync, refetchTransactionRules]);
 
 	const handleEdit = useCallback(
 		(rule: TransactionRule) => {
@@ -97,6 +116,20 @@ export const useRulesTable = () => {
 		[postTransactionRuleAsync, refetchTransactionRules],
 	);
 
+	const openBulkDeleteModal = useCallback(
+		(rulesSelection: Selection) => {
+			setBulkDeleteRules(
+				rulesSelection === "all"
+					? displayedRules
+					: displayedRules.filter((rule) =>
+							rulesSelection.has(getRuleRowKey(rule)),
+						),
+			);
+			bulkDeleteModalState.onOpen();
+		},
+		[bulkDeleteModalState, displayedRules],
+	);
+
 	const openDeleteModal = useCallback(
 		(rule: TransactionRule) => {
 			setActiveRule(rule);
@@ -108,16 +141,20 @@ export const useRulesTable = () => {
 	return useMemo(
 		() => ({
 			activeRule,
+			bulkDeleteModalState,
+			bulkDeleteRules,
 			deleteModalState,
 			displayedRules,
 			editModalState,
 			filterValue,
+			handleBulkDeleteAsync,
 			handleDeleteAsync,
 			handleEdit,
 			handleNewRule,
 			handleReorderAsync,
 			handleSaveAsync,
 			isLoading,
+			openBulkDeleteModal,
 			openDeleteModal,
 			selection,
 			setFilterValue,
@@ -125,16 +162,20 @@ export const useRulesTable = () => {
 		}),
 		[
 			activeRule,
+			bulkDeleteModalState,
+			bulkDeleteRules,
 			deleteModalState,
 			displayedRules,
 			editModalState,
 			filterValue,
+			handleBulkDeleteAsync,
 			handleDeleteAsync,
 			handleEdit,
 			handleNewRule,
 			handleReorderAsync,
 			handleSaveAsync,
 			isLoading,
+			openBulkDeleteModal,
 			openDeleteModal,
 			selection,
 		],

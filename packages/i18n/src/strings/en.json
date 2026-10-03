@@ -269,8 +269,10 @@
 		"listControls": {
 			"addOne": "New Rule",
 			"deleteAction": "Yes, Delete",
+			"deleteAllBody": "Are you sure you want to delete all {count} rules shown?",
 			"deleteAllTitle": "Delete All",
 			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
+			"deleteSelectedBody": "Are you sure you want to delete the {count} selected rules?",
 			"deleteSelectedTitle": "Delete Selected",
 			"deleteTitle": "Delete Rule",
 			"filterPlaceholder": "Search…"
