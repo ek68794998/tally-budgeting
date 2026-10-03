@@ -31,7 +31,6 @@ const webRoutes = {
 		categories: "/budget/categories",
 		spending: "/budget/spending",
 	},
-	categories: "/categories",
 	home: "/",
 	retirement: "/retirement",
 	transactions: {
