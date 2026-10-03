@@ -2,7 +2,6 @@ import {
 	Button,
 	ButtonGroup,
 	Dropdown,
-	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
 	Input,
@@ -13,6 +12,7 @@ import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { renderDropdownEntry } from "../common/renderDropdownEntry";
 import { type DropdownActionEntry } from "../types";
 
 interface Props {
@@ -101,22 +101,7 @@ export const RulesTableControls: React.FC<Props> = ({
 						</Button>
 					</DropdownTrigger>
 					<DropdownMenu items={dropdownEntries}>
-						{({
-							action,
-							IconComponent,
-							key,
-							label,
-							...restProps
-						}) => (
-							<DropdownItem
-								{...restProps}
-								key={key}
-								onPress={action}
-								startContent={<IconComponent />}
-							>
-								{label}
-							</DropdownItem>
-						)}
+						{renderDropdownEntry}
 					</DropdownMenu>
 				</Dropdown>
 			) : null}

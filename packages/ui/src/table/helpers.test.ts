@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { reorderRows } from "./helpers";
+import { getTableFilterProps, reorderRows } from "./helpers";
 
 interface TestItem {
 	id: number;
@@ -344,6 +344,25 @@ describe("table helpers", () => {
 				expect(result[0]).toBe(item2);
 				expect(result[1]).toBe(item1);
 				expect(result[2]).toBe(item3);
+			});
+		});
+	});
+
+	describe("getTableFilterProps", () => {
+		it.each([
+			{ color: "primary", isFilterActive: true },
+			{ color: undefined, isFilterActive: false },
+		])("highlights the filter only when active ($isFilterActive)", ({
+			color,
+			isFilterActive,
+		}) => {
+			const props = getTableFilterProps("Account", isFilterActive);
+
+			expect(props).toHaveProperty("aria-label", "Account");
+			expect(props).toMatchObject({
+				color,
+				placeholder: "Account",
+				selectionMode: "multiple",
 			});
 		});
 	});

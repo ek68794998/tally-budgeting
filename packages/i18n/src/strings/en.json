@@ -374,6 +374,7 @@
 				"countIgnored": "{count} ignored",
 				"countUncategorized": "{count} uncategorized",
 				"descriptionUnprocessed": "The items below are shown as they appeared in the file you uploaded.",
+				"errorColumn": "Error",
 				"titleFailed": "Failed Transactions",
 				"titleIgnored": "Ignored Transactions",
 				"titleUncategorized": "Uncategorized Transactions"

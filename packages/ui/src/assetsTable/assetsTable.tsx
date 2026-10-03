@@ -27,7 +27,8 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 	const { postAssetAsync } = usePostAsset();
 	const t = useTranslations("assets");
 
-	const [activeAsset, setActiveAsset] = useState<Asset | null>(null);
+	const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
+	const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
 	const [filterValue, setFilterValue] = useState("");
 
 	const displayedAssets = assets
@@ -46,25 +47,26 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 
 	const handleDeleteAsync = async (asset: Asset) => {
 		await deleteAssetAsync(asset.id);
-		setActiveAsset(null);
+		setAssetToDelete(null);
 
 		void refetch();
 	};
 
 	const handleSaveAsync = async (asset: Asset) => {
 		await postAssetAsync(asset);
-		setActiveAsset(null);
+		editModalState.onClose();
+		setAssetToEdit(null);
 
 		void refetch();
 	};
 
 	const handleStartDelete = (asset: Asset) => {
-		setActiveAsset(asset);
+		setAssetToDelete(asset);
 		deleteModalState.onOpen();
 	};
 
 	const handleStartEdit = (asset: Asset) => {
-		setActiveAsset(asset);
+		setAssetToEdit(asset);
 		editModalState.onOpen();
 	};
 
@@ -105,19 +107,19 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 			</div>
 			<ConfirmationModal
 				body={t("listControls.deleteBody", {
-					merchant: activeAsset?.name ?? "",
+					merchant: assetToDelete?.name ?? "",
 				})}
 				confirmText={t("listControls.deleteAction")}
 				isDestructive={true}
 				modalState={deleteModalState}
 				onConfirmAsync={async () => {
-					invariant(activeAsset, "Active rule must be defined");
-					await handleDeleteAsync(activeAsset);
+					invariant(assetToDelete, "Asset to delete must be defined");
+					await handleDeleteAsync(assetToDelete);
 				}}
 				title={t("listControls.deleteTitle")}
 			/>
 			<AssetEditModal
-				asset={activeAsset}
+				asset={assetToEdit}
 				modalState={editModalState}
 				onSaveAsync={handleSaveAsync}
 			/>

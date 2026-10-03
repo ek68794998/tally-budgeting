@@ -46,8 +46,12 @@
 		"zustand": "^5.0.8"
 	},
 	"devDependencies": {
+		"@electric-sql/pglite": "^0.5.8",
 		"@tally/eslint-config": "workspace:*",
+		"@tally/testing": "workspace:*",
 		"@tally/typescript-config": "workspace:*",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.1",
 		"@types/luxon": "^3.7.1",
 		"@types/mdx": "^2.0.14",
 		"@types/node": "^22.15.3",

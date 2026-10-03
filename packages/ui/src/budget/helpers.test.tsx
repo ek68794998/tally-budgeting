@@ -7,13 +7,28 @@ import {
 } from "@tabler/icons-react";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { describe, expect, it } from "vitest";
+import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { render, screen } from "@testing-library/react";
+import { type ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+import { formatCurrency } from "../format";
 import {
 	calculateBudgetScore,
 	getBudgetScoreColor,
+	getBudgetScoreExplanation,
 	getIconForCategory,
+	getSpentText,
 	getStartDate,
 } from "./helpers";
+
+type BudgetTranslator = Parameters<typeof getSpentText>[3];
+
+interface RichValues {
+	bold: (chunks: ReactNode) => ReactNode;
+	budget: string;
+	period: string;
+	spent: string;
+}
 
 interface TestCase {
 	budgeted: number;
@@ -255,6 +270,102 @@ describe("Budget page helpers", () => {
 			);
 
 			expect(result).toBe(IconShoppingBag);
+		});
+	});
+
+	describe("getBudgetScoreExplanation", () => {
+		const t = dangerouslyCoerceType<BudgetTranslator>((key: string) => key);
+
+		it.each([
+			[null, "summary.explanations.score0"],
+			[0, "summary.explanations.score0"],
+			[7.9, "summary.explanations.score7"],
+			[10, "summary.explanations.score10"],
+		] as const)("explains score %s with %s", (score, expected) => {
+			expect(getBudgetScoreExplanation(score, t)).toBe(expected);
+		});
+
+		it("rejects a score outside 0-10", () => {
+			expect(() => getBudgetScoreExplanation(11, t)).toThrow(
+				"Invalid index 11",
+			);
+		});
+	});
+
+	describe("getSpentText", () => {
+		const rich = vi.fn((key: string, values: RichValues) => ({
+			key,
+			values,
+		}));
+		const t = dangerouslyCoerceType<BudgetTranslator>(
+			Object.assign(
+				(key: string, values?: Record<string, string>) =>
+					`${key}(${values?.month ?? ""})`,
+				{ rich },
+			),
+		);
+
+		it.each([
+			{
+				amountCents: 100_00,
+				endDate: { month: 3, year: 2025 },
+				expectedKey: "spentInBudget",
+				expectedPeriod: "durations.oneMonth(Mar)",
+				frequency: 1,
+			},
+			{
+				amountCents: 1200_00,
+				endDate: { month: 3, year: 2025 },
+				expectedKey: "spentInBudget",
+				expectedPeriod: "durations.multipleMonths(Jan)",
+				frequency: 3,
+			},
+			{
+				amountCents: 0,
+				endDate: { month: 2, year: 2025 },
+				expectedKey: "spentOverall",
+				expectedPeriod: "durations.multipleMonths(Dec 2024)",
+				frequency: 3,
+			},
+		])("describes $frequency month(s) ending $endDate.month/$endDate.year as $expectedPeriod", ({
+			amountCents,
+			endDate,
+			expectedKey,
+			expectedPeriod,
+			frequency,
+		}) => {
+			const spentText = getSpentText(
+				5.5,
+				{ amountCents, frequency, type: "expense" },
+				endDate,
+				t,
+				"en-US",
+			);
+
+			expect(spentText).toMatchObject({ key: expectedKey });
+			expect(rich.mock.lastCall?.[1]).toMatchObject({
+				budget: formatCurrency(amountCents / 100, {
+					showCentsIfLessThanDigits: 2,
+				}),
+				period: expectedPeriod,
+				spent: "$5.50",
+			});
+		});
+
+		it("renders bold chunks", () => {
+			const spentText = getSpentText(
+				1,
+				{ amountCents: 1, frequency: 1, type: "expense" },
+				{ month: 1, year: 2025 },
+				t,
+				"en-US",
+			);
+
+			const [, values] = rich.mock.lastCall ?? [];
+			render(<div>{values?.bold("total")}</div>);
+
+			expect(spentText).toMatchObject({ key: "spentInBudget" });
+			expect(screen.getByText("total").tagName).toBe("B");
 		});
 	});
 });

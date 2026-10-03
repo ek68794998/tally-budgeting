@@ -1,8 +1,6 @@
-import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
 	addToast,
 	DatePicker,
-	type DateValue,
 	Input,
 	Modal,
 	ModalBody,
@@ -12,28 +10,16 @@ import {
 	Textarea,
 	type useDisclosure,
 } from "@heroui/react";
-import {
-	getLocalTimeZone,
-	parseAbsoluteToLocal,
-	toCalendarDate,
-	today,
-} from "@internationalized/date";
-import {
-	type HappinessLevel,
-	HappinessLevelDefault,
-} from "@tally/data-models/contracts/happinessLevel";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import { SelectAccount } from "../common/selectAccount";
 import { SelectSubcategory } from "../common/selectSubcategory";
 import { formatCurrency } from "../format";
 import { EditModalFooter } from "../modal/editModalFooter";
 import { TransactionEditDirectionButtons } from "./transactionEditDirectionButtons";
 import { TransactionHappinessSelect } from "./transactionHappinessSelect";
+import { useTransactionForm } from "./useTransactionForm";
 
 interface Props {
 	modalState: ReturnType<typeof useDisclosure>;
@@ -48,43 +34,29 @@ export const TransactionEditModal: React.FC<Props> = ({
 }) => {
 	const t = useTranslations();
 
-	const [accountId, setAccountId] = useState(0);
-	const [amount, setAmount] = useState(0);
-	const [date, setDate] = useState<DateValue | null>(
-		today(getLocalTimeZone()),
-	);
-	const [happiness, setHappiness] = useState<HappinessLevel>(
-		HappinessLevelDefault,
-	);
-	const [merchantName, setMerchantName] = useState("");
-	const [notes, setNotes] = useState("");
-	const [subcategoryId, setSubcategoryId] = useState(DefaultSubcategoryId);
-	const [transactionType, setTransactionType] =
-		useState<TransactionDirection>("debit");
-
 	const isModalOpen = isOpen && !!transaction;
 
-	const canSave =
-		!!merchantName &&
-		!!date &&
-		!!subcategoryId &&
-		accountId > 0 &&
-		amount !== 0;
-
-	useEffect(() => {
-		if (!isModalOpen) {
-			return;
-		}
-
-		setAccountId(transaction.accountId ?? -1);
-		setAmount(Dollars.fromCents(transaction.amountCents));
-		setDate(toCalendarDate(parseAbsoluteToLocal(transaction.date)));
-		setHappiness(transaction.happiness);
-		setMerchantName(transaction.merchant);
-		setNotes(transaction.notes);
-		setSubcategoryId(transaction.subcategoryId);
-		setTransactionType(transaction.type);
-	}, [isModalOpen, transaction]);
+	const {
+		accountId,
+		amount,
+		buildTransaction,
+		canSave,
+		date,
+		happiness,
+		merchantName,
+		notes,
+		resetForNextTransaction,
+		setAccountId,
+		setAmount,
+		setDate,
+		setHappiness,
+		setMerchantName,
+		setNotes,
+		setSubcategoryId,
+		setTransactionType,
+		subcategoryId,
+		transactionType,
+	} = useTransactionForm(transaction, isModalOpen);
 
 	const transactionAmountText = transaction
 		? formatCurrency(Dollars.fromCents(transaction.amountCents), {
@@ -165,28 +137,10 @@ export const TransactionEditModal: React.FC<Props> = ({
 							isSaveDisabled={!canSave}
 							onClose={onClose}
 							onSave={async (createMore) => {
-								invariant(
-									transaction,
-									"Transaction must be defined.",
-								);
-
-								await onSaveAsync({
-									...transaction,
-									accountId,
-									amountCents: Dollars.toCents(amount),
-									date: date
-										? `${date.toString()}T12:00:00Z`
-										: transaction.date,
-									merchant: merchantName,
-									notes,
-									subcategoryId,
-									type: transactionType,
-								});
+								await onSaveAsync(buildTransaction());
 
 								if (createMore) {
-									setAmount(0);
-									setHappiness(HappinessLevelDefault);
-									setNotes("");
+									resetForNextTransaction();
 
 									addToast({
 										color: "success",

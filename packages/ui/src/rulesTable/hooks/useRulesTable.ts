@@ -1,6 +1,7 @@
 import { type Selection, useDisclosure } from "@heroui/react";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { useCallback, useMemo, useState } from "react";
+import { ModalDefaultTransactionRule } from "../../common/modalDefault";
 import { filterMatches } from "../../filter";
 import { useDeleteTransactionRule } from "../../hooks/api/useDeleteTransactionRule";
 import { usePatchTransactionRulesReorder } from "../../hooks/api/usePatchTransactionRulesReorder";
@@ -89,17 +90,7 @@ export const useRulesTable = () => {
 	);
 
 	const handleNewRule = useCallback(() => {
-		handleEdit({
-			active: true,
-			id: -1,
-			matcher: {
-				flags: "i",
-				pattern: "",
-			},
-			merchantName: "",
-			priority: 0,
-			subcategoryId: -1,
-		});
+		handleEdit(ModalDefaultTransactionRule);
 	}, [handleEdit]);
 
 	const handleReorderAsync = useCallback(
@@ -124,9 +115,10 @@ export const useRulesTable = () => {
 		async (rule: TransactionRule) => {
 			await postTransactionRuleAsync(rule);
 			void refetchTransactionRules();
+			editModalState.onClose();
 			setActiveRule(null);
 		},
-		[postTransactionRuleAsync, refetchTransactionRules],
+		[editModalState, postTransactionRuleAsync, refetchTransactionRules],
 	);
 
 	const openBulkDeleteModal = useCallback(

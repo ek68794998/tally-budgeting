@@ -241,4 +241,22 @@ describe("parseRequestAsync", () => {
 			expect(result.ip).toBe("(UNKNOWN)");
 		});
 	});
+
+	describe("failure: parser throws", () => {
+		it("returns an invalid-shape failure when the custom parser throws synchronously", async () => {
+			const result = await parseRequestAsync(
+				makeRequest("http://localhost/api/test"),
+				() => {
+					throw new Error("bad form data");
+				},
+				{},
+				emptySchemata,
+			);
+
+			invariant(!result.success);
+
+			expect(result.statusCode).toBe(BadRequest);
+			expect(result.error.code).toBe("invalidRequestShape");
+		});
+	});
 });

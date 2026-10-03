@@ -21,6 +21,7 @@ import {
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { ModalDefaultAsset } from "../common/modalDefault";
 import { SelectProvider } from "../common/selectProvider";
 import { EditModalFooter } from "../modal/editModalFooter";
 
@@ -58,7 +59,7 @@ export const AssetEditModal: React.FC<Props> = ({
 	}, [asset]);
 
 	const title =
-		asset?.id === -1
+		asset?.id === ModalDefaultAsset.id
 			? t("assets.listControls.addOne")
 			: t("assets.edit", { assetName: String(asset?.name) });
 

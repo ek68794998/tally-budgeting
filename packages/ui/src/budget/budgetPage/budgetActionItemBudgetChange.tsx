@@ -24,9 +24,8 @@ export const BudgetActionItemBudgetChange: React.FC<Props> = ({
 	const t = useTranslations("budget");
 
 	const isImprovement = data.currentSpent < data.previousSpent;
-	const changePct = isImprovement
-		? (data.currentSpent - data.previousSpent) / data.previousSpent
-		: data.currentSpent / data.previousSpent;
+	const changePct =
+		(data.currentSpent - data.previousSpent) / data.previousSpent;
 
 	const changeText = percentageFormatter.format(changePct);
 

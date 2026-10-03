@@ -1,12 +1,6 @@
-import {
-	Button,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-} from "@heroui/react";
+import { Button, Dropdown, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { IconDots } from "@tabler/icons-react";
-import NextLink from "next/link";
+import { renderDropdownEntry } from "../common/renderDropdownEntry";
 import { type DropdownEntry } from "../types";
 
 interface Props {
@@ -20,29 +14,6 @@ export const MoreDropdown: React.FC<Props> = ({ entries }) => (
 				<IconDots />
 			</Button>
 		</DropdownTrigger>
-		<DropdownMenu items={entries}>
-			{(item) => {
-				const { action, IconComponent, key, label, ...entry } = {
-					action: undefined,
-					...item,
-				};
-
-				if (action) {
-					entry.onPress = action;
-				} else {
-					entry.as = NextLink;
-				}
-
-				return (
-					<DropdownItem
-						key={key}
-						startContent={<IconComponent />}
-						{...entry}
-					>
-						{label}
-					</DropdownItem>
-				);
-			}}
-		</DropdownMenu>
+		<DropdownMenu items={entries}>{renderDropdownEntry}</DropdownMenu>
 	</Dropdown>
 );

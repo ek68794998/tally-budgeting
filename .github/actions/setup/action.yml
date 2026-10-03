@@ -4,13 +4,14 @@ description: "Installs required build tools and prepares environment for build"
 runs:
   using: "composite"
   steps:
-    - name: Install Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: "22.x"
-
     - name: Install PNPM
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
+
+    - name: Install Node.js
+      uses: actions/setup-node@v7
+      with:
+        cache: pnpm
+        node-version: "22.x"
 
     - name: Install modules
       run: pnpm i

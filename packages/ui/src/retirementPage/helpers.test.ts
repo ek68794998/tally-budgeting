@@ -1,6 +1,9 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { describe, expect, it } from "vitest";
-import { calculateRetirementData } from "./helpers";
+import {
+	calculateRetirementData,
+	getDefaultRetirementCalculatorInputs,
+} from "./helpers";
 import type { RetirementCalculatorInputs } from "./types";
 
 describe("retirementPage helpers", () => {
@@ -518,6 +521,18 @@ describe("retirementPage helpers", () => {
 
 				expect(firstYear.retirementAmount).toBeCloseTo(99000, 2);
 			});
+		});
+	});
+
+	describe("getDefaultRetirementCalculatorInputs", () => {
+		it("produces inputs that calculate one row per year to life expectancy", () => {
+			const inputs = getDefaultRetirementCalculatorInputs();
+
+			const { dataByYear } = calculateRetirementData(inputs, 2025, 12);
+
+			expect(dataByYear).toHaveLength(
+				inputs.lifeExpectancy - inputs.currentAge + 1,
+			);
 		});
 	});
 });

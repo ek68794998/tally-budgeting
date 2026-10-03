@@ -117,12 +117,24 @@ importers:
         specifier: ^5.0.8
         version: 5.0.10(@types/react@19.1.0)(immer@10.1.3)(react@19.1.0)(use-sync-external-store@1.6.0(react@19.1.0))
     devDependencies:
+      '@electric-sql/pglite':
+        specifier: ^0.5.8
+        version: 0.5.8
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@tally/testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.3.1
+        version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
@@ -582,6 +594,9 @@ packages:
 
   '@ekumlin/typescript-toolkit@1.0.1':
     resolution: {integrity: sha512-0DPxlAFUHPKbTmfunC8q8kU8+Sd0s4n1GkHFdYc5A1lNtTIorLrPNhUy1z9Wen7SFWdUkjHLVqBX0+xPQtMc5Q==}
+
+  '@electric-sql/pglite@0.5.8':
+    resolution: {integrity: sha512-n9tsbUOhwx2epK1V0ZG9Ar4SHWUju04dhmzZXiSBXwBoleOvIfals33NAaWgagQVAL4Rbvx/Ptsu3P+pA09f6Q==}
 
   '@eloqnt/config@0.1.1':
     resolution: {integrity: sha512-YRDigSaiJEzKDfzTth5kG+L/PKfB3mo8h7yNzpXExPfvQmcD05WoZT57PdhJE0jI+Vva6eb0OCU8hnHHgdME3g==}
@@ -5547,6 +5562,8 @@ snapshots:
     dependencies:
       zod: 4.3.5
 
+  '@electric-sql/pglite@0.5.8': {}
+
   '@eloqnt/config@0.1.1': {}
 
   '@eloqnt/format-json@0.1.0':
@@ -8380,7 +8397,7 @@ snapshots:
 
   '@testing-library/react@16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.7
       '@testing-library/dom': 10.4.1
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -10752,7 +10769,7 @@ snapshots:
 
   react-textarea-autosize@8.5.9(@types/react@19.1.0)(react@19.1.0):
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.7
       react: 19.1.0
       use-composed-ref: 1.4.0(@types/react@19.1.0)(react@19.1.0)
       use-latest: 1.3.0(@types/react@19.1.0)(react@19.1.0)

@@ -19,24 +19,25 @@ import {
 	IconEditOff,
 } from "@tabler/icons-react";
 import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import z from "zod";
 import { ModalDefaultTransactionRule } from "../common/modalDefault";
 import { usePostTransactionRule } from "../hooks/api/usePostTransactionRule";
 import { RuleEditModal } from "../rulesTable/ruleEditModal";
+import {
+	countTransactionsByMerchant,
+	getUnprocessedItemHeaders,
+	groupUploadResults,
+	type UnprocessedItem,
+} from "./helpers";
 import { TransactionsUploadResultTransactionRow } from "./transactionsUploadResultTransactionRow";
 
 interface Props {
 	response: PostTransactionsUploadResponse;
 }
 
-type UnprocessedItem = z.Infer<typeof unprocessedItemSchema>;
-
 const chipIconSize = 16;
-const unprocessedItemSchema = z.record(z.string(), z.string());
 
 const IconCategorized = IconCheck;
 const IconUncategorized = IconAlertTriangle;
@@ -55,51 +56,19 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 	>(null);
 
 	const {
-		inputCsvHeaders,
 		rowsFailed,
 		rowsIgnored,
 		transactionsCategorized,
 		transactionsUncategorized,
-	} = useMemo(() => {
-		const itemHeaders: string[] = [];
-		const itemsCategorized: Transaction[] = [];
-		const itemsUncategorized: Transaction[] = [];
-		const itemsFailed: unknown[] = [...response.rowsFailed];
-		const itemsIgnored: unknown[] = [...response.rowsIgnored];
+	} = useMemo(
+		() => groupUploadResults(response, t("upload.resultCard.errorColumn")),
+		[response, t],
+	);
 
-		const firstUnprocessedRow = itemsFailed[0] ?? itemsIgnored[0];
-
-		if (firstUnprocessedRow) {
-			itemHeaders.push(...Object.keys(firstUnprocessedRow));
-		}
-
-		for (const transaction of response.rowsProcessed) {
-			if (transaction.subcategoryId === DefaultSubcategoryId) {
-				itemsUncategorized.push(transaction);
-				continue;
-			}
-
-			itemsCategorized.push(transaction);
-		}
-
-		return {
-			inputCsvHeaders: itemHeaders,
-			rowsFailed: itemsFailed,
-			rowsIgnored: itemsIgnored,
-			transactionsCategorized: itemsCategorized,
-			transactionsUncategorized: itemsUncategorized,
-		};
-	}, [response]);
-
-	const unprocessedItemHeaders = inputCsvHeaders.map((header) => ({
-		header,
-	}));
-
-	const renderUnprocessedItemTable = (rows: unknown[]) => {
-		const items: UnprocessedItem[] = rows.map((row) => {
-			const parsedRow = unprocessedItemSchema.safeParse(row);
-			return parsedRow.success ? parsedRow.data : {};
-		});
+	const renderUnprocessedItemTable = (items: UnprocessedItem[]) => {
+		const unprocessedItemHeaders = getUnprocessedItemHeaders(items).map(
+			(header) => ({ header }),
+		);
 
 		return (
 			<Table
@@ -131,34 +100,21 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 		);
 	};
 
-	const renderTransactions = (transactions: Transaction[]) => {
-		const items: Record<string, Transaction & { count: number }> = {};
-
-		for (const transaction of transactions) {
-			const count = items[transaction.merchant]?.count || 0;
-
-			items[transaction.merchant] = {
-				...transaction,
-				count: count + 1,
-			};
-		}
-
-		return (
-			<div className="mb-2 flex flex-col gap-2">
-				{Object.values(items).map((item) => (
-					<TransactionsUploadResultTransactionRow
-						count={item.count}
-						key={`${item.id}-${item.merchant}-${item.date}`}
-						onCreateRule={() => {
-							setMerchantToCategorize(item.merchant);
-							ruleEditModalState.onOpen();
-						}}
-						transaction={item}
-					/>
-				))}
-			</div>
-		);
-	};
+	const renderTransactions = (transactions: Transaction[]) => (
+		<div className="mb-2 flex flex-col gap-2">
+			{countTransactionsByMerchant(transactions).map((item) => (
+				<TransactionsUploadResultTransactionRow
+					count={item.count}
+					key={`${item.id}-${item.merchant}-${item.date}`}
+					onCreateRule={() => {
+						setMerchantToCategorize(item.merchant);
+						ruleEditModalState.onOpen();
+					}}
+					transaction={item}
+				/>
+			))}
+		</div>
+	);
 
 	return (
 		<>

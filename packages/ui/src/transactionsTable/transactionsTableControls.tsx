@@ -2,7 +2,6 @@ import {
 	Button,
 	ButtonGroup,
 	Dropdown,
-	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
 	Input,
@@ -16,21 +15,23 @@ import {
 	IconSearch,
 	IconUpload,
 } from "@tabler/icons-react";
-import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
-import { buildODataLiteFilter } from "@tally/utilities/oData/build";
-import { type ODataLiteFilterExpression } from "@tally/utilities/oData/types";
 import { web } from "@tally/utilities/routing/routeBuilder";
 import { useDebounceEffect } from "ahooks";
 import { Duration } from "luxon";
-import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { renderDropdownEntry } from "../common/renderDropdownEntry";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
 import { getTableFilterProps } from "../table/helpers";
 import { TransactionsMenuDropdown } from "../transactionsPage/transactionsMenuDropdown";
 import { type DropdownEntry } from "../types";
+import {
+	buildTransactionsFilter,
+	isSelectionFilterActive,
+	sortSubcategoriesForSelect,
+} from "./helpers";
 
 interface Props {
 	onFilterChange: (value: string) => void;
@@ -40,9 +41,6 @@ interface Props {
 const debounceMilliseconds = Duration.fromObject({
 	milliseconds: 500,
 }).toMillis();
-
-const getIsFilterActive = (filter: SharedSelection) =>
-	filter !== "all" && filter.size > 0;
 
 export const TransactionsTableControls: React.FC<Props> = ({
 	onFilterChange,
@@ -59,51 +57,22 @@ export const TransactionsTableControls: React.FC<Props> = ({
 	const [searchValue, setSearchValue] = useState("");
 	const [showFilters, setShowFilters] = useState(false);
 
-	const isAccountFilterActive = getIsFilterActive(accountIds);
-	const isSubcategoryFilterActive = getIsFilterActive(subcategoryIds);
+	const isAccountFilterActive = isSelectionFilterActive(accountIds);
+	const isSubcategoryFilterActive = isSelectionFilterActive(subcategoryIds);
 
 	const accounts = assets.filter(isAccount);
 
 	useDebounceEffect(
 		() => {
-			const filterExpressions: ODataLiteFilterExpression[] = [];
-			const searchString = searchValue.trim();
-
-			if (searchString) {
-				filterExpressions.push({
-					field: "merchant",
-					operator: "like",
-					value: searchString,
-				});
-			}
-
-			if (isAccountFilterActive) {
-				filterExpressions.push({
-					field: "account",
-					operator: "in",
-					value: Array.from(accountIds).join(","),
-				});
-			}
-
-			if (isSubcategoryFilterActive) {
-				filterExpressions.push({
-					field: "subcategory",
-					operator: "in",
-					value: Array.from(subcategoryIds).join(","),
-				});
-			}
-
-			const filterString = buildODataLiteFilter(filterExpressions);
-			onFilterChange(filterString);
+			onFilterChange(
+				buildTransactionsFilter({
+					accountIds,
+					searchValue,
+					subcategoryIds,
+				}),
+			);
 		},
-		[
-			accountIds,
-			isAccountFilterActive,
-			isSubcategoryFilterActive,
-			onFilterChange,
-			searchValue,
-			subcategoryIds,
-		],
+		[accountIds, onFilterChange, searchValue, subcategoryIds],
 		{ wait: debounceMilliseconds },
 	);
 
@@ -134,18 +103,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 	// It appears that (at least on my machine), having more than 17 subcategories causes huge performance issues.
 	// Removing the <SelectSection> code and just using a raw list of <SelectItem> works around the issue.
 	const sortedSubcategories = useMemo(
-		() =>
-			subcategories.slice(0).sort((a, b) => {
-				if (a.id === DefaultSubcategoryId) {
-					return -1;
-				}
-
-				if (b.id === DefaultSubcategoryId) {
-					return 1;
-				}
-
-				return a.label.localeCompare(b.label);
-			}),
+		() => sortSubcategoriesForSelect(subcategories),
 		[subcategories],
 	);
 
@@ -179,34 +137,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu items={dropdownEntries}>
-							{(item) => {
-								const {
-									action,
-									IconComponent,
-									key,
-									label,
-									...entry
-								} = {
-									action: undefined,
-									...item,
-								};
-
-								if (action) {
-									entry.onPress = action;
-								} else {
-									entry.as = NextLink;
-								}
-
-								return (
-									<DropdownItem
-										key={key}
-										startContent={<IconComponent />}
-										{...entry}
-									>
-										{label}
-									</DropdownItem>
-								);
-							}}
+							{renderDropdownEntry}
 						</DropdownMenu>
 					</Dropdown>
 				</ButtonGroup>

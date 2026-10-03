@@ -9,11 +9,17 @@ export default defineConfig({
 			exclude: [
 				...(configDefaults.coverage.exclude ?? []),
 				"**/_*/**",
+				"**/app/layout.tsx",
+				"**/app/styles/hero.ts",
 				"**/build/**",
 				"**/coverage/**",
 				"**/dist/**",
 				"**/eslint-config/**",
+				"**/loading.tsx",
+				"**/next.config.ts",
 				"**/node_modules/**",
+				"**/postcss.config.mjs",
+				"**/route.ts",
 				"**/testing/**",
 				"**/typescript-config/**",
 				"**/vitest-config/**",
@@ -21,11 +27,10 @@ export default defineConfig({
 			provider: "v8",
 			reporter: ["text", "text-summary", "html"],
 			thresholds: {
-				// TODO (#13) Bring these up as we add tests.
-				branches: 73,
-				functions: 53,
-				lines: 23,
-				statements: 23,
+				branches: 96,
+				functions: 95,
+				lines: 98,
+				statements: 98,
 			},
 		},
 		exclude: [...configDefaults.exclude, "**/build/**"],
@@ -33,6 +38,8 @@ export default defineConfig({
 		include: ["**/(src|app)/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
 		projects: [
 			{
+				// The web app's tsconfig preserves JSX for Next.js, which would otherwise compile to the classic runtime.
+				esbuild: { jsx: "automatic" },
 				test: {
 					environment: "happy-dom",
 					include: ["**/*.{test,spec}.{tsx,jsx}"],
@@ -46,8 +53,25 @@ export default defineConfig({
 			{
 				test: {
 					environment: "node",
+					exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
 					include: ["**/*.{test,spec}.{ts,js}"],
 					name: "unit-ts",
+				},
+			},
+			{
+				test: {
+					environment: "node",
+					globalSetup: [
+						"apps/web/app/storage/testing/pgliteGlobalSetup.ts",
+					],
+					include: ["**/*.db.test.ts"],
+					name: "integration-db",
+					pool: "forks",
+					poolOptions: {
+						// PGlite memory is only returned to the OS when its process exits,
+						// so every database test file shares one fork and one instance.
+						forks: { singleFork: true },
+					},
 				},
 			},
 		],

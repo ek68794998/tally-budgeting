@@ -1,48 +1,44 @@
 import en from "@tally/i18n/strings/en";
+import { type AbstractIntlMessages } from "next-intl";
 import { vi } from "vitest";
-import z from "zod";
 
-const messagesSchema = z.record(z.string(), z.unknown());
+vi.mock("next-intl", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("next-intl")>();
 
-type Messages = z.infer<typeof messagesSchema>;
+	const messages: AbstractIntlMessages = en;
 
-const flattenMessages = (
-	obj: Messages,
-	prefix = "",
-): Record<string, string> => {
-	const record: Record<string, string> = {};
+	const createTranslator = (namespace?: string) =>
+		actual.createTranslator({
+			locale: "en",
+			messages,
+			namespace,
+			onError: (error) => {
+				throw error;
+			},
+			timeZone: "UTC",
+		});
 
-	return Object.keys(obj).reduce((acc, key) => {
-		const value: unknown = obj[key];
-		const parsedValue = messagesSchema.safeParse(value);
-		const newKey = prefix ? `${prefix}.${key}` : key;
+	const translators = new Map<
+		string | undefined,
+		ReturnType<typeof createTranslator>
+	>();
 
-		if (parsedValue.success) {
-			Object.assign(acc, flattenMessages(parsedValue.data, newKey));
-		} else if (typeof value === "string") {
-			acc[newKey] = value;
-		} else {
-			throw new Error(`Invalid value: ${JSON.stringify(value)}`);
+	const getTranslator = (namespace?: string) => {
+		const cached = translators.get(namespace);
+
+		if (cached) {
+			return cached;
 		}
 
-		return acc;
-	}, record);
-};
+		const translator = createTranslator(namespace);
+		translators.set(namespace, translator);
 
-const messages = flattenMessages(en);
+		return translator;
+	};
 
-vi.mock("next-intl", () => ({
-	useLocale: () => "en",
-	useTranslations: (namespace?: string) => {
-		const translate = (key: string) => {
-			const fullKey = namespace ? `${namespace}.${key}` : key;
-			return messages[fullKey] || key;
-		};
-
-		const richTranslate = (_key: string, _values?: unknown) => "";
-
-		return Object.assign(translate, {
-			rich: richTranslate,
-		});
-	},
-}));
+	return {
+		...actual,
+		useLocale: () => "en",
+		useTranslations: getTranslator,
+	};
+});
