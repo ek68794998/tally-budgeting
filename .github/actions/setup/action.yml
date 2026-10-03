@@ -19,7 +19,3 @@ runs:
     - name: Print diagnostics
       run: pnpm diagnostic
       shell: bash
-
-    - name: Check code quality
-      run: pnpm lint && pnpm check-types
-      shell: bash

@@ -1,0 +1,9 @@
+name: Lint
+description: Runs Biome and ESLint across the monorepo.
+
+runs:
+  using: composite
+  steps:
+    - name: Run linting
+      shell: bash
+      run: pnpm lint

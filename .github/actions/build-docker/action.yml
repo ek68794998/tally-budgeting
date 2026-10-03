@@ -1,0 +1,8 @@
+name: Build
+description: Builds the Docker image for the app.
+
+runs:
+  using: composite
+  steps:
+    - name: Compile Docker image
+      run: pnpm docker:build
