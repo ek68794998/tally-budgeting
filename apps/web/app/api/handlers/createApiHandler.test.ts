@@ -165,6 +165,18 @@ describe("createApiHandler error mapping", () => {
 			expectedStatus: 500,
 		},
 		{
+			error: new Error("Connection terminated due to connection timeout"),
+			expectedBody: {
+				error: {
+					code: "databaseUnavailable",
+					params: {},
+					type: "DatabaseUnavailableError",
+				},
+				success: false,
+			},
+			expectedStatus: 503,
+		},
+		{
 			error: "a thrown string",
 			expectedBody: {
 				error: { code: "http500", params: {}, type: "string" },

@@ -8,9 +8,12 @@ import { type TxnRow } from "@tally/data-models/database/txnRow";
 import { type TxnRuleRow } from "@tally/data-models/database/txnRuleRow";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
+import { telemetry } from "../telemetry/telemetry";
 import { type WithGeneratedId } from "./types";
 
 const defaultPoolMax = 10;
+const defaultConnectTimeoutMs = 5000;
+const defaultQueryTimeoutMs = 15000;
 
 export interface Database {
 	app_setting: AppSettingRow; // eslint-disable-line @typescript-eslint/naming-convention
@@ -30,8 +33,11 @@ export const getDatabase = (): Kysely<Database> => {
 	}
 
 	const {
+		POSTGRES_CONNECT_TIMEOUT_MS:
+			connectTimeoutMs = `${defaultConnectTimeoutMs}`,
 		POSTGRES_CONNECTION_STRING: connectionString,
 		POSTGRES_POOL_MAXIMUM: poolMax = `${defaultPoolMax}`,
+		POSTGRES_QUERY_TIMEOUT_MS: queryTimeoutMs = `${defaultQueryTimeoutMs}`,
 	} = process.env;
 
 	invariant(
@@ -39,12 +45,22 @@ export const getDatabase = (): Kysely<Database> => {
 		"You must have configured the POSTGRES_CONNECTION_STRING setting in your environment's .env file.",
 	);
 
-	const dialect = new PostgresDialect({
-		pool: new Pool({
-			connectionString,
-			max: Number.parseInt(poolMax, 10),
-		}),
+	const pool = new Pool({
+		connectionString,
+		connectionTimeoutMillis: Number.parseInt(connectTimeoutMs, 10),
+		max: Number.parseInt(poolMax, 10),
+		query_timeout: Number.parseInt(queryTimeoutMs, 10), // eslint-disable-line @typescript-eslint/naming-convention
 	});
+
+	// Without a listener, an idle client dropping (e.g., the database container stopping) crashes the process.
+	pool.on("error", (error) => {
+		telemetry().error("DATABASE_POOL_ERROR", {
+			error,
+			errorMessage: error.message,
+		});
+	});
+
+	const dialect = new PostgresDialect({ pool });
 
 	database = new Kysely<Database>({
 		dialect,

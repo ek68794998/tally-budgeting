@@ -1,16 +1,45 @@
+import { ServiceUnavailable } from "@ekumlin/typescript-toolkit/http";
 import { type NextRequest, NextResponse } from "next/server";
 import { getAuthConfig } from "./app/auth/config";
 import { getSessionCookieOptions, SessionCookieName } from "./app/auth/cookie";
-import { createSessionToken } from "./app/auth/session";
+import {
+	createSessionToken,
+	type VerifySessionTokenResult,
+} from "./app/auth/session";
 import { getSessionStatusAsync } from "./app/auth/verifyRequest";
 import { getOrCreateSessionSecretAsync } from "./app/storage/appSettingsClient";
+import { isDatabaseUnavailableError } from "./app/storage/databaseErrors";
 
 const loginPath = "/login";
+const databaseUnavailableMessage =
+	"The database is unavailable. Check that it is running, then reload this page.";
+
+const getSessionStatusOrUnavailableAsync = async (
+	request: NextRequest,
+): Promise<VerifySessionTokenResult | "unavailable"> => {
+	try {
+		return await getSessionStatusAsync(
+			request.cookies.get(SessionCookieName)?.value,
+		);
+	} catch (error) {
+		if (isDatabaseUnavailableError(error)) {
+			return "unavailable";
+		}
+
+		throw error;
+	}
+};
 
 const proxyAsync = async (request: NextRequest): Promise<NextResponse> => {
-	const { shouldRefresh, valid } = await getSessionStatusAsync(
-		request.cookies.get(SessionCookieName)?.value,
-	);
+	const sessionStatus = await getSessionStatusOrUnavailableAsync(request);
+
+	if (sessionStatus === "unavailable") {
+		return new NextResponse(databaseUnavailableMessage, {
+			status: ServiceUnavailable,
+		});
+	}
+
+	const { shouldRefresh, valid } = sessionStatus;
 
 	if (!valid) {
 		const loginUrl = new URL(loginPath, request.url);
