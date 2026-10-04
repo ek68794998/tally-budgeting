@@ -1,3 +1,4 @@
+import { isUndefined } from "@ekumlin/typescript-toolkit/types";
 import { NextRequest } from "next/server";
 import { vi } from "vitest";
 import { type AssetsClient } from "../../storage/assetsClient";
@@ -32,7 +33,7 @@ export const callRouteAsync = async (
 ) => {
 	const request = new NextRequest(url, {
 		body:
-			formData ?? (body === undefined ? undefined : JSON.stringify(body)),
+			formData ?? (isUndefined(body) ? undefined : JSON.stringify(body)),
 		headers: [["host", "localhost"], ...headers],
 		method,
 	});
