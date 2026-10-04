@@ -62,11 +62,8 @@ export const createApiHandler =
 
 		const routeParams = await params;
 
-		const { data, error, statusCode } = await executeHandlerAsync(
-			definition,
-			request,
-			routeParams,
-		);
+		const { data, error, rawResponse, statusCode } =
+			await executeHandlerAsync(definition, request, routeParams);
 
 		const response: ApiResponse = {
 			...data,
@@ -80,6 +77,13 @@ export const createApiHandler =
 			path: request.nextUrl.pathname,
 			statusCode,
 		});
+
+		if (rawResponse) {
+			return new NextResponse(rawResponse.body, {
+				headers: rawResponse.headers,
+				status: statusCode,
+			});
+		}
 
 		if (statusCode === NoContent) {
 			// https://github.com/vercel/next.js/discussions/51118
