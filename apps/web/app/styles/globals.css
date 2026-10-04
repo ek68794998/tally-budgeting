@@ -12,19 +12,12 @@
 	color: var(--foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0c0a09;
-		--foreground: #e7e5e4;
-	}
+:root.dark {
+	--background: #0c0a09;
+	--foreground: #e7e5e4;
+	--heroui-overlay: 0 0% 0%;
 
-	html {
-		color-scheme: dark;
-	}
-
-	.dark {
-		--heroui-overlay: 0 0% 0%;
-	}
+	color-scheme: dark;
 }
 
 html,

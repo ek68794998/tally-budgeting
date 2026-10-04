@@ -40,6 +40,7 @@ export const useSetting = <K extends SettingKey>(
 	const { fetch, isFetching, isHydrated, settings } = useSettingsStore();
 	const [localRaw, setLocalRaw] = useLocalStorageState<unknown>(
 		`${settingStoragePrefix}${key}`,
+		{ listenStorageChange: true },
 	);
 
 	useEffect(() => {
