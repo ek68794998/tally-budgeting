@@ -1,37 +1,38 @@
-import { ContentType, Post } from "@ekumlin/typescript-toolkit/http";
+import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
-	type PostTransactionRuleRequest,
-	postTransactionRuleResponseSchema,
-} from "@tally/data-models/contracts/api/postTransactionRule";
-import { type TransactionRuleFields } from "@tally/data-models/contracts/transactionRule";
+	type PutCategoryRequest,
+	putCategoryResponseSchema,
+} from "@tally/data-models/contracts/api/putCategory";
+import { type Category } from "@tally/data-models/contracts/category";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
-export const usePostTransactionRule = () => {
+export const usePutCategory = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (rule: TransactionRuleFields & { id?: never }) => {
-			const body: PostTransactionRuleRequest = { rule };
+		mutationFn: async (category: Category) => {
+			const body: PutCategoryRequest = { category: withoutId(category) };
 
 			const response = await apiFetch(
-				buildApiRoute(api.transactions.rules.base),
+				buildApiRoute(api.categories.base, { params: [category.id] }),
 				{
 					body: JSON.stringify(body),
 					headers: {
 						[ContentType]: ApplicationJson,
 					},
-					method: Post,
+					method: Put,
 				},
 			);
 
 			const validatedResponse = await validateApiResponseAsync({
 				response,
-				responseSchema: postTransactionRuleResponseSchema,
+				responseSchema: putCategoryResponseSchema,
 			});
 
 			return validatedResponse;
@@ -40,7 +41,7 @@ export const usePostTransactionRule = () => {
 
 	return useMemo(
 		() => ({
-			postTransactionRuleAsync: mutateAsync,
+			putCategoryAsync: mutateAsync,
 		}),
 		[mutateAsync],
 	);

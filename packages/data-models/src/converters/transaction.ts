@@ -1,16 +1,18 @@
-import { type Transaction } from "../contracts/transaction";
+import {
+	type Transaction,
+	type TransactionFields,
+} from "../contracts/transaction";
 import { type SubcategoryRow } from "../database/subcategoryRow";
 import { type TxnRow } from "../database/txnRow";
 
-export const convertTransactionToTxnRow = (
-	transaction: Transaction,
-): TxnRow => {
+export const convertTransactionFieldsToTxnRow = (
+	transaction: TransactionFields,
+): Omit<TxnRow, "id"> => {
 	const {
 		accountId,
 		amountCents,
 		date,
 		happiness,
-		id,
 		merchant,
 		notes,
 		subcategoryId,
@@ -26,12 +28,18 @@ export const convertTransactionToTxnRow = (
 		date: dateValue,
 		direction: type,
 		happiness,
-		id,
 		merchant,
 		notes: notes || null,
 		subcategory: subcategoryId,
 	};
 };
+
+export const convertTransactionToTxnRow = (
+	transaction: Transaction,
+): TxnRow => ({
+	...convertTransactionFieldsToTxnRow(transaction),
+	id: transaction.id,
+});
 
 export const convertTxnRowToTransaction = (
 	row: TxnRow & SubcategoryRow,

@@ -51,9 +51,14 @@ describe("CategoriesClient", () => {
 			buildSubcategory({ categoryId: 2, id: 0, label: "Movies" }),
 		);
 
-		await client.updateCategoryAsync(
-			buildCategory({ id: 1, label: "Groceries" }),
-		);
+		await expect(
+			client.updateCategoryAsync(
+				buildCategory({ id: 1, label: "Groceries" }),
+			),
+		).resolves.toBe(true);
+		await expect(
+			client.updateCategoryAsync(buildCategory({ id: 99 })),
+		).resolves.toBe(false);
 		await client.deleteCategoryAsync(2);
 
 		await expect(client.getCategoriesAsync()).resolves.toEqual([

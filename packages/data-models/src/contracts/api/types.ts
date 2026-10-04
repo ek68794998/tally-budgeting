@@ -39,6 +39,10 @@ export const createPaginationParamsSchema = (maximumPerPage: number) =>
 		page: z.coerce.number().int().min(1).default(1),
 	});
 
+export const idParamsSchema = z.object({
+	id: z.coerce.number().int(),
+});
+
 export const createSortParamsSchema = (fieldNames: string[]) =>
 	z.object({
 		direction: sortDirectionSchema.optional(),

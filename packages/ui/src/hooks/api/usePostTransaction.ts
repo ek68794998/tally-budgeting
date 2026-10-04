@@ -4,7 +4,7 @@ import {
 	type PostTransactionRequest,
 	postTransactionResponseSchema,
 } from "@tally/data-models/contracts/api/postTransaction";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export const usePostTransaction = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (transaction: Transaction) => {
+		mutationFn: async (transaction: TransactionFields & { id?: never }) => {
 			const body: PostTransactionRequest = { transaction };
 
 			const response = await apiFetch(

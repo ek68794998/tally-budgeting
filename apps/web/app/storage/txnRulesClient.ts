@@ -1,12 +1,16 @@
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import {
+	type TransactionRule,
+	type TransactionRuleFields,
+} from "@tally/data-models/contracts/transactionRule";
+import {
+	convertTransactionRuleFieldsToTxnRuleRow,
 	convertTransactionRuleToTxnRuleRow,
 	convertTxnRuleRowToTransactionRule,
 } from "@tally/data-models/converters/transactionRule";
 import { txnRuleRowSchema } from "@tally/data-models/database/txnRuleRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "txn_rule" as const satisfies keyof Database;
 
@@ -36,12 +40,12 @@ export class TxnRulesClient extends DatabaseClient {
 	}
 
 	public async insertTransactionRulesAsync(
-		values: TransactionRule | TransactionRule[],
+		values: TransactionRuleFields | TransactionRuleFields[],
 	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const transactionRules = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertTransactionRuleToTxnRuleRow(r)),
+		const transactionRules = rowOrRowsAsRows(values).map(
+			convertTransactionRuleFieldsToTxnRuleRow,
 		);
 
 		await database.insertInto(TableName).values(transactionRules).execute();
@@ -49,16 +53,18 @@ export class TxnRulesClient extends DatabaseClient {
 
 	public async updateTransactionRuleAsync(
 		value: TransactionRule,
-	): Promise<void> {
+	): Promise<boolean> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
 		const row = convertTransactionRuleToTxnRuleRow(value);
 
-		await database
+		const { numUpdatedRows } = await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
-			.execute();
+			.executeTakeFirstOrThrow();
+
+		return numUpdatedRows > 0n;
 	}
 
 	public async updateTransactionRulesOrderAsync(

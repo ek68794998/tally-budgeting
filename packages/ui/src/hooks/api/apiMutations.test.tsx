@@ -7,6 +7,7 @@ import {
 	buildTransaction,
 	buildTransactionRule,
 } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook } from "@testing-library/react";
 import {
 	afterEach,
@@ -30,6 +31,11 @@ import { usePostNetWorthSnapshot } from "./usePostNetWorthSnapshot";
 import { usePostSubcategory } from "./usePostSubcategory";
 import { usePostTransaction } from "./usePostTransaction";
 import { usePostTransactionRule } from "./usePostTransactionRule";
+import { usePutAsset } from "./usePutAsset";
+import { usePutCategory } from "./usePutCategory";
+import { usePutSubcategory } from "./usePutSubcategory";
+import { usePutTransaction } from "./usePutTransaction";
+import { usePutTransactionRule } from "./usePutTransactionRule";
 
 vi.mock("@heroui/react", () => ({
 	addToast: vi.fn(),
@@ -110,26 +116,6 @@ const bodyCases: MutationCase[] = [
 		},
 	},
 	{
-		expectedBody: { asset: buildAsset() },
-		expectedMethod: "POST",
-		expectedUrl: "/api/assets",
-		name: "usePostAsset",
-		useMutate: () => {
-			const { postAssetAsync } = usePostAsset();
-			return () => postAssetAsync(buildAsset());
-		},
-	},
-	{
-		expectedBody: { category: buildCategory() },
-		expectedMethod: "POST",
-		expectedUrl: "/api/categories",
-		name: "usePostCategory",
-		useMutate: () => {
-			const { postCategoryAsync } = usePostCategory();
-			return () => postCategoryAsync(buildCategory());
-		},
-	},
-	{
 		expectedBody: { snapshot: buildNetWorthSnapshot() },
 		expectedMethod: "POST",
 		expectedUrl: "/api/net-worth/snapshots",
@@ -140,33 +126,105 @@ const bodyCases: MutationCase[] = [
 		},
 	},
 	{
-		expectedBody: { subcategory: buildSubcategory() },
+		expectedBody: { asset: withoutId(buildAsset()) },
+		expectedMethod: "POST",
+		expectedUrl: "/api/assets",
+		name: "usePostAsset",
+		useMutate: () => {
+			const { postAssetAsync } = usePostAsset();
+			return () => postAssetAsync(withoutId(buildAsset()));
+		},
+	},
+	{
+		expectedBody: { category: withoutId(buildCategory()) },
+		expectedMethod: "POST",
+		expectedUrl: "/api/categories",
+		name: "usePostCategory",
+		useMutate: () => {
+			const { postCategoryAsync } = usePostCategory();
+			return () => postCategoryAsync(withoutId(buildCategory()));
+		},
+	},
+	{
+		expectedBody: { subcategory: withoutId(buildSubcategory()) },
 		expectedMethod: "POST",
 		expectedUrl: "/api/categories/sub",
 		name: "usePostSubcategory",
 		useMutate: () => {
 			const { postSubcategoryAsync } = usePostSubcategory();
-			return () => postSubcategoryAsync(buildSubcategory());
+			return () => postSubcategoryAsync(withoutId(buildSubcategory()));
 		},
 	},
 	{
-		expectedBody: { transaction: buildTransaction() },
+		expectedBody: { transaction: withoutId(buildTransaction()) },
 		expectedMethod: "POST",
 		expectedUrl: "/api/transactions",
 		name: "usePostTransaction",
 		useMutate: () => {
 			const { postTransactionAsync } = usePostTransaction();
-			return () => postTransactionAsync(buildTransaction());
+			return () => postTransactionAsync(withoutId(buildTransaction()));
 		},
 	},
 	{
-		expectedBody: { rule: buildTransactionRule() },
+		expectedBody: { rule: withoutId(buildTransactionRule()) },
 		expectedMethod: "POST",
 		expectedUrl: "/api/transactions/rules",
 		name: "usePostTransactionRule",
 		useMutate: () => {
 			const { postTransactionRuleAsync } = usePostTransactionRule();
-			return () => postTransactionRuleAsync(buildTransactionRule());
+			return () =>
+				postTransactionRuleAsync(withoutId(buildTransactionRule()));
+		},
+	},
+	{
+		expectedBody: { asset: withoutId(buildAsset()) },
+		expectedMethod: "PUT",
+		expectedUrl: "/api/assets/4",
+		name: "usePutAsset",
+		useMutate: () => {
+			const { putAssetAsync } = usePutAsset();
+			return () => putAssetAsync(buildAsset({ id: 4 }));
+		},
+	},
+	{
+		expectedBody: { category: withoutId(buildCategory()) },
+		expectedMethod: "PUT",
+		expectedUrl: "/api/categories/4",
+		name: "usePutCategory",
+		useMutate: () => {
+			const { putCategoryAsync } = usePutCategory();
+			return () => putCategoryAsync(buildCategory({ id: 4 }));
+		},
+	},
+	{
+		expectedBody: { subcategory: withoutId(buildSubcategory()) },
+		expectedMethod: "PUT",
+		expectedUrl: "/api/categories/sub/4",
+		name: "usePutSubcategory",
+		useMutate: () => {
+			const { putSubcategoryAsync } = usePutSubcategory();
+			return () => putSubcategoryAsync(buildSubcategory({ id: 4 }));
+		},
+	},
+	{
+		expectedBody: { transaction: withoutId(buildTransaction()) },
+		expectedMethod: "PUT",
+		expectedUrl: "/api/transactions/4",
+		name: "usePutTransaction",
+		useMutate: () => {
+			const { putTransactionAsync } = usePutTransaction();
+			return () => putTransactionAsync(buildTransaction({ id: 4 }));
+		},
+	},
+	{
+		expectedBody: { rule: withoutId(buildTransactionRule()) },
+		expectedMethod: "PUT",
+		expectedUrl: "/api/transactions/rules/4",
+		name: "usePutTransactionRule",
+		useMutate: () => {
+			const { putTransactionRuleAsync } = usePutTransactionRule();
+			return () =>
+				putTransactionRuleAsync(buildTransactionRule({ id: 4 }));
 		},
 	},
 ];

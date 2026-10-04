@@ -1,12 +1,16 @@
-import { type Asset } from "@tally/data-models/contracts/asset";
 import {
+	type Asset,
+	type AssetFields,
+} from "@tally/data-models/contracts/asset";
+import {
+	convertAssetFieldsToAssetRow,
 	convertAssetRowToAsset,
 	convertAssetToAssetRow,
 } from "@tally/data-models/converters/asset";
 import { assetRowSchema } from "@tally/data-models/database/assetRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "asset" as const satisfies keyof Database;
 
@@ -34,25 +38,29 @@ export class AssetsClient extends DatabaseClient {
 		return assets;
 	}
 
-	public async insertAssetsAsync(values: Asset | Asset[]): Promise<void> {
+	public async insertAssetsAsync(
+		values: AssetFields | AssetFields[],
+	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const assets = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertAssetToAssetRow(r)),
+		const assets = rowOrRowsAsRows(values).map(
+			convertAssetFieldsToAssetRow,
 		);
 
 		await database.insertInto(TableName).values(assets).execute();
 	}
 
-	public async updateAssetAsync(value: Asset): Promise<void> {
+	public async updateAssetAsync(value: Asset): Promise<boolean> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
 		const row = convertAssetToAssetRow(value);
 
-		await database
+		const { numUpdatedRows } = await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
-			.execute();
+			.executeTakeFirstOrThrow();
+
+		return numUpdatedRows > 0n;
 	}
 }

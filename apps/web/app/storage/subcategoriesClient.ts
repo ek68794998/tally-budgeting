@@ -1,12 +1,16 @@
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import {
+	type Subcategory,
+	type SubcategoryFields,
+} from "@tally/data-models/contracts/subcategory";
+import {
+	convertSubcategoryFieldsToSubcategoryRow,
 	convertSubcategoryRowToSubcategory,
 	convertSubcategoryToSubcategoryRow,
 } from "@tally/data-models/converters/subcategory";
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "subcategory" as const satisfies keyof Database;
 
@@ -35,26 +39,28 @@ export class SubcategoriesClient extends DatabaseClient {
 	}
 
 	public async insertSubcategoriesAsync(
-		values: Subcategory | Subcategory[],
+		values: SubcategoryFields | SubcategoryFields[],
 	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const subcategories = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertSubcategoryToSubcategoryRow(r)),
+		const subcategories = rowOrRowsAsRows(values).map(
+			convertSubcategoryFieldsToSubcategoryRow,
 		);
 
 		await database.insertInto(TableName).values(subcategories).execute();
 	}
 
-	public async updateSubcategoryAsync(value: Subcategory): Promise<void> {
+	public async updateSubcategoryAsync(value: Subcategory): Promise<boolean> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
 		const row = convertSubcategoryToSubcategoryRow(value);
 
-		await database
+		const { numUpdatedRows } = await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
-			.execute();
+			.executeTakeFirstOrThrow();
+
+		return numUpdatedRows > 0n;
 	}
 }

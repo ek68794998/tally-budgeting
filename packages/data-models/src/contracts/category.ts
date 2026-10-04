@@ -8,3 +8,9 @@ export const categorySchema = z.object({
 export const DefaultCategoryId = -1;
 
 export type Category = z.infer<typeof categorySchema>;
+
+export const categoryFieldsSchema = z.strictObject(
+	categorySchema.omit({ id: true }).shape,
+);
+
+export type CategoryFields = z.infer<typeof categoryFieldsSchema>;

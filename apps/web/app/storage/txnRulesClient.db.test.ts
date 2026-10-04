@@ -45,11 +45,16 @@ describe("TxnRulesClient", () => {
 			buildRule(0, 1),
 		]);
 
-		await client.updateTransactionRuleAsync({
-			...buildRule(1, 0),
-			active: false,
-			merchantName: "Renamed",
-		});
+		await expect(
+			client.updateTransactionRuleAsync({
+				...buildRule(1, 0),
+				active: false,
+				merchantName: "Renamed",
+			}),
+		).resolves.toBe(true);
+		await expect(
+			client.updateTransactionRuleAsync(buildRule(99, 0)),
+		).resolves.toBe(false);
 		await client.deleteTransactionRuleAsync(2);
 
 		await expect(client.getTransactionRulesAsync()).resolves.toEqual([

@@ -1,9 +1,9 @@
 import z from "zod";
-import { transactionRuleSchema } from "../transactionRule";
+import { transactionRuleFieldsSchema } from "../transactionRule";
 import { createApiResponseSchema } from "./types";
 
 export const postTransactionRuleRequestSchema = z.object({
-	rule: transactionRuleSchema,
+	rule: transactionRuleFieldsSchema,
 });
 
 export type PostTransactionRuleRequest = z.infer<

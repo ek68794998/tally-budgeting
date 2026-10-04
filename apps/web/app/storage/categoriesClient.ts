@@ -1,12 +1,16 @@
-import { type Category } from "@tally/data-models/contracts/category";
 import {
+	type Category,
+	type CategoryFields,
+} from "@tally/data-models/contracts/category";
+import {
+	convertCategoryFieldsToCategoryRow,
 	convertCategoryRowToCategory,
 	convertCategoryToCategoryRow,
 } from "@tally/data-models/converters/category";
 import { categoryRowSchema } from "@tally/data-models/database/categoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "category" as const satisfies keyof Database;
 
@@ -35,26 +39,28 @@ export class CategoriesClient extends DatabaseClient {
 	}
 
 	public async insertCategoriesAsync(
-		values: Category | Category[],
+		values: CategoryFields | CategoryFields[],
 	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const categories = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertCategoryToCategoryRow(r)),
+		const categories = rowOrRowsAsRows(values).map(
+			convertCategoryFieldsToCategoryRow,
 		);
 
 		await database.insertInto(TableName).values(categories).execute();
 	}
 
-	public async updateCategoryAsync(value: Category): Promise<void> {
+	public async updateCategoryAsync(value: Category): Promise<boolean> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
 		const row = convertCategoryToCategoryRow(value);
 
-		await database
+		const { numUpdatedRows } = await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
-			.execute();
+			.executeTakeFirstOrThrow();
+
+		return numUpdatedRows > 0n;
 	}
 }

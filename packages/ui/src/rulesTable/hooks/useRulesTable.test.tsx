@@ -1,11 +1,16 @@
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
+import {
+	type TransactionRule,
+	type TransactionRuleFields,
+} from "@tally/data-models/contracts/transactionRule";
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ModalDefaultTransactionRule } from "../../common/modalDefault";
 import { useDeleteTransactionRule } from "../../hooks/api/useDeleteTransactionRule";
 import { usePatchTransactionRulesReorder } from "../../hooks/api/usePatchTransactionRulesReorder";
 import { usePostTransactionRule } from "../../hooks/api/usePostTransactionRule";
+import { usePutTransactionRule } from "../../hooks/api/usePutTransactionRule";
 import { useTransactionRules } from "../../hooks/store/useTransactionRules";
 import { getRuleRowKey, useRulesTable } from "./useRulesTable";
 
@@ -18,6 +23,9 @@ vi.mock("../../hooks/api/usePatchTransactionRulesReorder", () => ({
 vi.mock("../../hooks/api/usePostTransactionRule", () => ({
 	usePostTransactionRule: vi.fn(),
 }));
+vi.mock("../../hooks/api/usePutTransactionRule", () => ({
+	usePutTransactionRule: vi.fn(),
+}));
 vi.mock("../../hooks/store/useTransactionRules", () => ({
 	useTransactionRules: vi.fn(),
 }));
@@ -28,6 +36,8 @@ const deleteTransactionRuleAsync = vi.fn<(id: number) => MutationResult>();
 const patchTransactionRulesReorderAsync =
 	vi.fn<(ids: number[]) => MutationResult>();
 const postTransactionRuleAsync =
+	vi.fn<(rule: TransactionRuleFields) => MutationResult>();
+const putTransactionRuleAsync =
 	vi.fn<(rule: TransactionRule) => MutationResult>();
 const refetch = vi.fn(() => Promise.resolve());
 
@@ -51,6 +61,7 @@ describe("useRulesTable", () => {
 		deleteTransactionRuleAsync.mockResolvedValue({ success: true });
 		patchTransactionRulesReorderAsync.mockResolvedValue({ success: true });
 		postTransactionRuleAsync.mockResolvedValue({ success: true });
+		putTransactionRuleAsync.mockResolvedValue({ success: true });
 		vi.mocked(useDeleteTransactionRule).mockReturnValue({
 			deleteTransactionRuleAsync,
 		});
@@ -59,6 +70,9 @@ describe("useRulesTable", () => {
 		});
 		vi.mocked(usePostTransactionRule).mockReturnValue({
 			postTransactionRuleAsync,
+		});
+		vi.mocked(usePutTransactionRule).mockReturnValue({
+			putTransactionRuleAsync,
 		});
 		vi.mocked(useTransactionRules).mockReturnValue({
 			error: null,
@@ -109,7 +123,6 @@ describe("useRulesTable", () => {
 			result.current.handleNewRule();
 		});
 
-		// The API treats negative IDs as existing rows, so a new rule must use the default (non-negative) ID.
 		expect(result.current.activeRule).toBe(ModalDefaultTransactionRule);
 	});
 
@@ -125,7 +138,7 @@ describe("useRulesTable", () => {
 			act: (table: ReturnType<typeof useRulesTable>) =>
 				table.handleSaveAsync(coffee),
 			expectCall: () =>
-				expect(postTransactionRuleAsync).toHaveBeenCalledWith(coffee),
+				expect(putTransactionRuleAsync).toHaveBeenCalledWith(coffee),
 			name: "saves",
 		},
 		{
@@ -154,6 +167,22 @@ describe("useRulesTable", () => {
 		expectCall();
 		expect(refetch).toHaveBeenCalledOnce();
 		expect(result.current.activeRule).toBeNull();
+	});
+
+	it("creates a new rule without an id instead of updating one", async () => {
+		const { result } = renderRulesTable();
+
+		act(() => {
+			result.current.handleNewRule();
+		});
+		await act(() =>
+			result.current.handleSaveAsync(ModalDefaultTransactionRule),
+		);
+
+		expect(postTransactionRuleAsync).toHaveBeenCalledExactlyOnceWith(
+			withoutId(ModalDefaultTransactionRule),
+		);
+		expect(putTransactionRuleAsync).not.toHaveBeenCalled();
 	});
 
 	it.each([

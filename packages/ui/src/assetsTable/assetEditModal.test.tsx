@@ -27,12 +27,16 @@ const modalState = mockIncompleteObject<ReturnType<typeof useDisclosure>>({
 
 const lastFooterProps = () => vi.mocked(EditModalFooter).mock.lastCall?.[0];
 
-const renderModal = (asset: Parameters<typeof AssetEditModal>[0]["asset"]) => {
+const renderModal = (
+	asset: Parameters<typeof AssetEditModal>[0]["asset"],
+	isNew = false,
+) => {
 	const onSaveAsync = vi.fn(() => Promise.resolve());
 
 	render(
 		<AssetEditModal
 			asset={asset}
+			isNew={isNew}
 			modalState={modalState}
 			onSaveAsync={onSaveAsync}
 		/>,
@@ -83,7 +87,7 @@ describe("AssetEditModal", () => {
 	});
 
 	it("titles a new asset as such and disables saving without a name", () => {
-		renderModal(ModalDefaultAsset);
+		renderModal(ModalDefaultAsset, true);
 
 		expect(screen.getByText("New Asset")).toBeInTheDocument();
 		expect(lastFooterProps()?.isSaveDisabled).toBe(true);

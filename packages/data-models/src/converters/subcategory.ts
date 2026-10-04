@@ -1,4 +1,7 @@
-import { type Subcategory } from "../contracts/subcategory";
+import {
+	type Subcategory,
+	type SubcategoryFields,
+} from "../contracts/subcategory";
 import { type SubcategoryRow } from "../database/subcategoryRow";
 
 export const convertSubcategoryRowToSubcategory = (
@@ -31,9 +34,9 @@ export const convertSubcategoryRowToSubcategory = (
 	};
 };
 
-export const convertSubcategoryToSubcategoryRow = (
-	row: Subcategory,
-): SubcategoryRow => {
+export const convertSubcategoryFieldsToSubcategoryRow = (
+	row: SubcategoryFields,
+): Omit<SubcategoryRow, "id"> => {
 	const {
 		budget: {
 			amountCents: budgetAmountCents,
@@ -42,7 +45,6 @@ export const convertSubcategoryToSubcategoryRow = (
 		},
 		categoryId: category,
 		description,
-		id,
 		label,
 		percentNeeds,
 		percentSavings,
@@ -55,10 +57,16 @@ export const convertSubcategoryToSubcategoryRow = (
 		budget_type: budgetType,
 		category,
 		description: description || "",
-		id,
 		label,
 		pct_needs: percentNeeds,
 		pct_savings: percentSavings,
 		/* eslint-enable @typescript-eslint/naming-convention */
 	};
 };
+
+export const convertSubcategoryToSubcategoryRow = (
+	subcategory: Subcategory,
+): SubcategoryRow => ({
+	...convertSubcategoryFieldsToSubcategoryRow(subcategory),
+	id: subcategory.id,
+});

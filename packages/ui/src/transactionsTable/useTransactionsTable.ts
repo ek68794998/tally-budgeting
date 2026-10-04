@@ -7,6 +7,7 @@ import {
 import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ import { ZodError } from "zod";
 import { ModalDefaultTransaction } from "../common/modalDefault";
 import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
 import { usePostTransaction } from "../hooks/api/usePostTransaction";
+import { usePutTransaction } from "../hooks/api/usePutTransaction";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
 import { getTransactionsTableData } from "./helpers";
@@ -43,11 +45,13 @@ export const useTransactionsTable = () => {
 	const editModalState = useDisclosure();
 	const locale = useLocale();
 	const { postTransactionAsync } = usePostTransaction();
+	const { putTransactionAsync } = usePutTransaction();
 
 	const [activeTransaction, setActiveTransaction] =
 		useState<Transaction | null>(null);
 	const [editsMade, setEditsMade] = useState(0);
 	const [filterValue, setFilterValue] = useState("");
+	const [isNewTransaction, setIsNewTransaction] = useState(false);
 	const [page, setPage] = useState(1);
 	const [selection, setSelection] = useState<Selection>(new Set());
 	const [transactionToDelete, setTransactionToDelete] =
@@ -117,8 +121,9 @@ export const useTransactionsTable = () => {
 		[accounts, data, locale, subcategories],
 	);
 
-	const editTransaction = (toEdit: Transaction) => {
+	const openEditModal = (toEdit: Transaction, isNew: boolean) => {
 		setActiveTransaction(toEdit);
+		setIsNewTransaction(isNew);
 		editModalState.onOpen();
 	};
 
@@ -143,10 +148,7 @@ export const useTransactionsTable = () => {
 				return;
 			}
 
-			editTransaction({
-				...transactionFromData,
-				id: ModalDefaultTransaction.id,
-			});
+			openEditModal(transactionFromData, true);
 		},
 		editModalState,
 		editTransaction: (id: number) => {
@@ -156,7 +158,7 @@ export const useTransactionsTable = () => {
 				return;
 			}
 
-			editTransaction(transactionFromData);
+			openEditModal(transactionFromData, false);
 		},
 		error,
 		filterValue,
@@ -167,7 +169,9 @@ export const useTransactionsTable = () => {
 			deleteModalState.onOpen();
 		},
 		saveTransactionAsync: async (transaction: Transaction) => {
-			await postTransactionAsync(transaction);
+			await (isNewTransaction
+				? postTransactionAsync(withoutId(transaction))
+				: putTransactionAsync(transaction));
 			incrementEditsMade();
 		},
 		selectedPage: Math.min(page, pageCount),
@@ -178,8 +182,7 @@ export const useTransactionsTable = () => {
 		setSortDescriptor,
 		sortDescriptor,
 		startNewTransaction: () => {
-			setActiveTransaction(ModalDefaultTransaction);
-			editModalState.onOpen();
+			openEditModal(ModalDefaultTransaction, true);
 		},
 		transactionsData,
 		transactionToDelete,

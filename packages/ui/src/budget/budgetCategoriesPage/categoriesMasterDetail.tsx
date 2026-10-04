@@ -6,10 +6,6 @@ import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import {
-	ModalDefaultCategory,
-	ModalDefaultSubcategory,
-} from "../../common/modalDefault";
 import { useCategories } from "../../hooks/store/useCategories";
 import { MasterDetail } from "../../masterDetail/masterDetail";
 import { CategoryDetailContent } from "./categoryDetailContent";
@@ -24,14 +20,18 @@ export const CategoriesMasterDetail: React.FC = () => {
 	const { categories, isLoading, subcategories } = useCategories();
 	const { open: openCategoryDeleteModal, render: renderCategoryDeleteModal } =
 		useCategoryDeleteModal();
-	const { open: openCategoryEditModal, render: renderCategoryEditModal } =
-		useCategoryEditModal();
+	const {
+		openEdit: openCategoryEditModal,
+		openNew: openCategoryNewModal,
+		render: renderCategoryEditModal,
+	} = useCategoryEditModal();
 	const {
 		open: openSubcategoryDeleteModal,
 		render: renderSubcategoryDeleteModal,
 	} = useSubcategoryDeleteModal();
 	const {
-		open: openSubcategoryEditModal,
+		openEdit: openSubcategoryEditModal,
+		openNew: openSubcategoryNewModal,
 		render: renderSubcategoryEditModal,
 	} = useSubcategoryEditModal();
 	const t = useTranslations("budget.categoriesEdit");
@@ -47,14 +47,11 @@ export const CategoriesMasterDetail: React.FC = () => {
 	);
 
 	const handleAddCategory = () => {
-		openCategoryEditModal(ModalDefaultCategory);
+		openCategoryNewModal();
 	};
 
 	const handleAddSubcategory = (category: Category) => {
-		openSubcategoryEditModal({
-			...ModalDefaultSubcategory,
-			categoryId: category.id,
-		});
+		openSubcategoryNewModal(category);
 	};
 
 	const handleDeleteCategory = (category: Category) => {

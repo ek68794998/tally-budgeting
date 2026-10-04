@@ -4,9 +4,10 @@ import {
 	convertNetWorthSnapshotToNetWorthSnapshotRow,
 } from "@tally/data-models/converters/netWorthSnapshot";
 import { netWorthSnapshotRowSchema } from "@tally/data-models/database/netWorthSnapshotRow";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "net_worth_snapshot" as const satisfies keyof Database;
 

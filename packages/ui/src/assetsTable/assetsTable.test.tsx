@@ -1,11 +1,13 @@
 import { buildAsset } from "@tally/data-models/testing/fixtures";
 import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultAsset } from "../common/modalDefault";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
+import { usePutAsset } from "../hooks/api/usePutAsset";
 import { useAssets } from "../hooks/store/useAssets";
 import { AssetCard } from "./assetCard";
 import { AssetEditModal } from "./assetEditModal";
@@ -17,6 +19,7 @@ vi.mock("../common/confirmationModal", () => ({
 }));
 vi.mock("../hooks/api/useDeleteAsset", () => ({ useDeleteAsset: vi.fn() }));
 vi.mock("../hooks/api/usePostAsset", () => ({ usePostAsset: vi.fn() }));
+vi.mock("../hooks/api/usePutAsset", () => ({ usePutAsset: vi.fn() }));
 vi.mock("../hooks/store/useAssets", () => ({ useAssets: vi.fn() }));
 vi.mock("./assetCard", () => ({
 	AssetCard: vi.fn(() => <div data-testid="asset-card" />),
@@ -30,6 +33,7 @@ vi.mock("./assetsTableControls", () => ({
 
 const deleteAssetAsync = vi.fn(() => Promise.resolve({}));
 const postAssetAsync = vi.fn(() => Promise.resolve({ success: true }));
+const putAssetAsync = vi.fn(() => Promise.resolve({ success: true }));
 const refetch = vi.fn(() => Promise.resolve());
 
 const checking = buildAsset({ id: 1, name: "Checking" });
@@ -50,6 +54,7 @@ describe("AssetsTable", () => {
 		);
 		vi.mocked(useDeleteAsset).mockReturnValue({ deleteAssetAsync });
 		vi.mocked(usePostAsset).mockReturnValue({ postAssetAsync });
+		vi.mocked(usePutAsset).mockReturnValue({ putAssetAsync });
 	});
 
 	it("lists active assets first, alphabetically, and filters by name", () => {
@@ -73,29 +78,55 @@ describe("AssetsTable", () => {
 		]);
 	});
 
-	it("opens the editor for new and existing assets and saves them", async () => {
+	it.each([
+		{
+			expectedAsset: ModalDefaultAsset,
+			expectedSave: () =>
+				expect(postAssetAsync).toHaveBeenCalledExactlyOnceWith(
+					withoutId(ModalDefaultAsset),
+				),
+			isNew: true,
+			name: "creates a new",
+			open: () =>
+				vi.mocked(AssetsTableControls).mock.lastCall?.[0].onNewAsset(),
+			unusedMock: putAssetAsync,
+		},
+		{
+			expectedAsset: checking,
+			expectedSave: () =>
+				expect(putAssetAsync).toHaveBeenCalledExactlyOnceWith(checking),
+			isNew: false,
+			name: "updates an existing",
+			open: () => getCardProps()[0]?.onEdit(),
+			unusedMock: postAssetAsync,
+		},
+	])("opens the editor and $name asset", async ({
+		expectedAsset,
+		expectedSave,
+		isNew,
+		open,
+		unusedMock,
+	}) => {
 		render(<AssetsTable assets={[checking]} />);
 
 		act(() => {
-			vi.mocked(AssetsTableControls).mock.lastCall?.[0].onNewAsset();
+			open();
 		});
 
-		expect(lastEditModalProps()?.asset).toBe(ModalDefaultAsset);
-
-		act(() => {
-			getCardProps()[0]?.onEdit();
+		expect(lastEditModalProps()).toMatchObject({
+			asset: expectedAsset,
+			isNew,
+			modalState: { isOpen: true },
 		});
-
-		expect(lastEditModalProps()?.asset).toBe(checking);
-		expect(lastEditModalProps()?.modalState.isOpen).toBe(true);
 
 		await act(
 			() =>
-				lastEditModalProps()?.onSaveAsync(checking) ??
+				lastEditModalProps()?.onSaveAsync(expectedAsset) ??
 				Promise.resolve(),
 		);
 
-		expect(postAssetAsync).toHaveBeenCalledWith(checking);
+		expectedSave();
+		expect(unusedMock).not.toHaveBeenCalled();
 		expect(refetch).toHaveBeenCalledOnce();
 		expect(lastEditModalProps()?.asset).toBeNull();
 		expect(lastEditModalProps()?.modalState.isOpen).toBe(false);
@@ -128,10 +159,11 @@ describe("AssetsTable", () => {
 			await Promise.resolve();
 		});
 
-		expect(postAssetAsync).toHaveBeenCalledWith({
+		expect(putAssetAsync).toHaveBeenCalledExactlyOnceWith({
 			...checking,
 			active: false,
 		});
+		expect(refetch).toHaveBeenCalledOnce();
 	});
 
 	it("confirms deletion of the chosen asset and requires one", async () => {

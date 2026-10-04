@@ -1,7 +1,6 @@
 import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { countRowSchema } from "@tally/data-models/database/countRow";
 import { type ReferenceExpression, type SelectQueryBuilder } from "kysely";
-import z from "zod";
 
 export interface PaginatedResult<T> {
 	data: T[];
@@ -19,10 +18,6 @@ export interface CollectionParams {
 export interface GetRowsOptions {
 	collectionParams?: CollectionParams;
 }
-
-const hasIdSchema = z.object({
-	id: z.number().positive().or(z.number().negative()),
-});
 
 export const applyPagination = <DB, TB extends keyof DB & string, O>(
 	query: SelectQueryBuilder<DB, TB, O>,
@@ -51,9 +46,6 @@ export const getQueryCountAsync = async <DB, TB extends keyof DB & string>(
 	return countRowSchema.parse(result).count;
 };
 
-export const hasId = (value: unknown): value is { id: number } =>
-	hasIdSchema.safeParse(value).success;
-
 export const parseInValues = (
 	value: unknown,
 	converter: (val: string) => string | number | null | undefined = (v) => v,
@@ -65,13 +57,6 @@ export const parseInValues = (
 
 export const rowOrRowsAsRows = <T>(values: T | T[]): T[] =>
 	Array.isArray(values) ? values : [values];
-
-export const withoutId = <T extends { id: unknown }>(
-	item: T,
-): Omit<T, "id"> => {
-	const { id: _, ...rest } = item;
-	return rest;
-};
 
 const calculateOffset = (page: number, limit: number): number =>
 	(page - 1) * limit;

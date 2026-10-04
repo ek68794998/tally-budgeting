@@ -2,13 +2,21 @@ import {
 	buildCategory,
 	buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
+import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, render, renderHook, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../../../common/confirmationModal";
+import {
+	ModalDefaultCategory,
+	ModalDefaultSubcategory,
+} from "../../../common/modalDefault";
 import { useDeleteCategory } from "../../../hooks/api/useDeleteCategory";
 import { useDeleteSubcategory } from "../../../hooks/api/useDeleteSubcategory";
 import { usePostCategory } from "../../../hooks/api/usePostCategory";
 import { usePostSubcategory } from "../../../hooks/api/usePostSubcategory";
+import { usePutCategory } from "../../../hooks/api/usePutCategory";
+import { usePutSubcategory } from "../../../hooks/api/usePutSubcategory";
 import { useCategories } from "../../../hooks/store/useCategories";
 import { CategoryEditModal } from "../categoryEditModal";
 import { SubcategoryEditModal } from "../subcategoryEditModal";
@@ -40,6 +48,12 @@ vi.mock("../../../hooks/api/usePostCategory", () => ({
 vi.mock("../../../hooks/api/usePostSubcategory", () => ({
 	usePostSubcategory: vi.fn(),
 }));
+vi.mock("../../../hooks/api/usePutCategory", () => ({
+	usePutCategory: vi.fn(),
+}));
+vi.mock("../../../hooks/api/usePutSubcategory", () => ({
+	usePutSubcategory: vi.fn(),
+}));
 vi.mock("../../../hooks/store/useCategories", () => ({
 	useCategories: vi.fn(),
 }));
@@ -48,6 +62,8 @@ const deleteCategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
 const deleteSubcategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
 const postCategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
 const postSubcategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
+const putCategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
+const putSubcategoryAsync = vi.fn(() => Promise.resolve({ success: true }));
 const refetch = vi.fn(() => Promise.resolve());
 
 const category = buildCategory({ label: "Food" });
@@ -72,6 +88,8 @@ describe("category page modal hooks", () => {
 		});
 		vi.mocked(usePostCategory).mockReturnValue({ postCategoryAsync });
 		vi.mocked(usePostSubcategory).mockReturnValue({ postSubcategoryAsync });
+		vi.mocked(usePutCategory).mockReturnValue({ putCategoryAsync });
+		vi.mocked(usePutSubcategory).mockReturnValue({ putSubcategoryAsync });
 		vi.mocked(useCategories).mockReturnValue({
 			categories: [],
 			error: null,
@@ -134,41 +152,101 @@ describe("category page modal hooks", () => {
 		).rejects.toThrow(/must be defined/);
 	});
 
-	it("saves a category from the edit modal, then refetches", async () => {
+	const openCategoryModal = (
+		open: (hook: ReturnType<typeof useCategoryEditModal>) => void,
+	) => {
 		const { result } = renderHook(useCategoryEditModal);
-
 		act(() => {
-			result.current.open(category);
+			open(result.current);
 		});
 		render(result.current.render());
 
-		const props = lastProps(CategoryEditModal);
+		const {
+			category: item,
+			modalState,
+			onSaveAsync,
+		} = lastProps(CategoryEditModal);
 
-		expect(props.category).toBe(category);
-		expect(props.modalState.isOpen).toBe(true);
+		return { item, modalState, onSaveAsync };
+	};
 
-		await act(() => props.onSaveAsync(category));
-
-		expect(postCategoryAsync).toHaveBeenCalledWith(category);
-		expect(refetch).toHaveBeenCalledOnce();
-	});
-
-	it("saves a subcategory from the edit modal, then refetches", async () => {
+	const openSubcategoryModal = (
+		open: (hook: ReturnType<typeof useSubcategoryEditModal>) => void,
+	) => {
 		const { result } = renderHook(useSubcategoryEditModal);
-
 		act(() => {
-			result.current.open(subcategory);
+			open(result.current);
 		});
 		render(result.current.render());
 
-		const props = lastProps(SubcategoryEditModal);
+		const {
+			modalState,
+			onSaveAsync,
+			subcategory: item,
+		} = lastProps(SubcategoryEditModal);
 
-		expect(props.subcategory).toBe(subcategory);
-		expect(props.modalState.isOpen).toBe(true);
+		return { item, modalState, onSaveAsync };
+	};
 
-		await act(() => props.onSaveAsync(subcategory));
+	it.each([
+		{
+			expectedCall: [postCategoryAsync, withoutId(ModalDefaultCategory)],
+			expectedItem: ModalDefaultCategory,
+			name: "creates a new category",
+			renderOpened: () => openCategoryModal((hook) => hook.openNew()),
+		},
+		{
+			expectedCall: [putCategoryAsync, category],
+			expectedItem: category,
+			name: "updates an existing category",
+			renderOpened: () =>
+				openCategoryModal((hook) => hook.openEdit(category)),
+		},
+		{
+			expectedCall: [
+				postSubcategoryAsync,
+				withoutId({
+					...ModalDefaultSubcategory,
+					categoryId: category.id,
+				}),
+			],
+			expectedItem: {
+				...ModalDefaultSubcategory,
+				categoryId: category.id,
+			},
+			name: "creates a new subcategory in the given category",
+			renderOpened: () =>
+				openSubcategoryModal((hook) => hook.openNew(category)),
+		},
+		{
+			expectedCall: [putSubcategoryAsync, subcategory],
+			expectedItem: subcategory,
+			name: "updates an existing subcategory",
+			renderOpened: () =>
+				openSubcategoryModal((hook) => hook.openEdit(subcategory)),
+		},
+	] as const)("the edit modal $name, then refetches", async ({
+		expectedCall: [apiCall, expectedArgument],
+		expectedItem,
+		renderOpened,
+	}) => {
+		const { item, modalState, onSaveAsync } = renderOpened();
 
-		expect(postSubcategoryAsync).toHaveBeenCalledWith(subcategory);
+		expect(item).toEqual(expectedItem);
+		expect(modalState.isOpen).toBe(true);
+
+		await act(() => onSaveAsync(dangerouslyCoerceType(item)));
+
+		expect(apiCall).toHaveBeenCalledExactlyOnceWith(expectedArgument);
 		expect(refetch).toHaveBeenCalledOnce();
+
+		for (const otherCall of [
+			postCategoryAsync,
+			postSubcategoryAsync,
+			putCategoryAsync,
+			putSubcategoryAsync,
+		].filter((call) => call !== apiCall)) {
+			expect(otherCall).not.toHaveBeenCalled();
+		}
 	});
 });

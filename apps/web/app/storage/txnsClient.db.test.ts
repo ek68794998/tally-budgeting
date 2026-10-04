@@ -179,11 +179,16 @@ describe("TxnsClient", () => {
 	it("updates and deletes transactions", async () => {
 		const client = createClient();
 
-		await client.updateTransactionAsync({
-			...coffee,
-			amountCents: 999,
-			notes: "",
-		});
+		await expect(
+			client.updateTransactionAsync({
+				...coffee,
+				amountCents: 999,
+				notes: "",
+			}),
+		).resolves.toBe(true);
+		await expect(
+			client.updateTransactionAsync({ ...coffee, id: 99 }),
+		).resolves.toBe(false);
 		await client.deleteTransactionAsync(2);
 
 		const { data } = await client.getTransactionsAsync();

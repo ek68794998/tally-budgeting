@@ -2,44 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
 	buildLikePattern,
 	getOrderDirection,
-	hasId,
 	parseInValues,
 	rowOrRowsAsRows,
-	withoutId,
 } from "./helpers";
 
 describe("storage.helpers", () => {
-	describe("hasId", () => {
-		it.each([
-			{ id: 1 },
-			{ id: 2 },
-			{ id: 100 },
-			{ id: -1 },
-			{ id: -2 },
-			{ id: -100 },
-		])("returns true for %o", (value) => {
-			expect(hasId(value)).toBe(true);
-		});
-
-		it.each([
-			{ id: 0 },
-			{ id: undefined },
-			{ id: null },
-			{ id: "1" },
-			{ id: true },
-			{ id: {} },
-			{},
-			{ name: "test" },
-			null,
-			undefined,
-			123,
-			"string",
-			true,
-		])("returns false for %o", (value) => {
-			expect(hasId(value)).toBe(false);
-		});
-	});
-
 	describe("buildLikePattern", () => {
 		it.each([
 			["coffee", "%coffee%"],
@@ -94,19 +61,6 @@ describe("storage.helpers", () => {
 
 		it("returns an empty array unchanged", () => {
 			expect(rowOrRowsAsRows([])).toEqual([]);
-		});
-	});
-
-	describe("withoutId", () => {
-		it("removes the id field", () => {
-			expect(withoutId({ id: 42, name: "test", value: 100 })).toEqual({
-				name: "test",
-				value: 100,
-			});
-		});
-
-		it("returns an empty object when only id is present", () => {
-			expect(withoutId({ id: 1 })).toEqual({});
 		});
 	});
 });

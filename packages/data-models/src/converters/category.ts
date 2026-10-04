@@ -1,4 +1,4 @@
-import { type Category } from "../contracts/category";
+import { type Category, type CategoryFields } from "../contracts/category";
 import { type CategoryRow } from "../database/categoryRow";
 
 export const convertCategoryRowToCategory = (row: CategoryRow): Category => {
@@ -10,11 +10,19 @@ export const convertCategoryRowToCategory = (row: CategoryRow): Category => {
 	};
 };
 
-export const convertCategoryToCategoryRow = (row: Category): CategoryRow => {
-	const { id, label } = row;
+export const convertCategoryFieldsToCategoryRow = (
+	row: CategoryFields,
+): Omit<CategoryRow, "id"> => {
+	const { label } = row;
 
 	return {
-		id,
 		label,
 	};
 };
+
+export const convertCategoryToCategoryRow = (
+	category: Category,
+): CategoryRow => ({
+	...convertCategoryFieldsToCategoryRow(category),
+	id: category.id,
+});
