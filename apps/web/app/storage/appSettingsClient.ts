@@ -1,5 +1,7 @@
 import { randomBytes } from "node:crypto";
+import z from "zod";
 import { type Database, getDatabase } from "./database";
+import { toJsonb } from "./helpers";
 
 export const TableName = "app_setting" as const satisfies keyof Database;
 
@@ -7,6 +9,11 @@ const sessionSecretKey = "session_secret";
 const sessionSecretBytes = 32;
 
 let cachedSessionSecret: string | undefined;
+
+// Restoring or wiping the database replaces the secret, which signs everyone out.
+export const resetSessionSecretCache = (): void => {
+	cachedSessionSecret = undefined;
+};
 
 // Intentionally bypasses `DatabaseClient`, whose auth check depends on this.
 export const getOrCreateSessionSecretAsync = async (): Promise<string> => {
@@ -20,7 +27,7 @@ export const getOrCreateSessionSecretAsync = async (): Promise<string> => {
 		.insertInto(TableName)
 		.values({
 			key: sessionSecretKey,
-			value: randomBytes(sessionSecretBytes).toString("base64"),
+			value: toJsonb(randomBytes(sessionSecretBytes).toString("base64")),
 		})
 		.onConflict((oc) => oc.column("key").doNothing())
 		.execute();
@@ -31,7 +38,7 @@ export const getOrCreateSessionSecretAsync = async (): Promise<string> => {
 		.where("key", "=", sessionSecretKey)
 		.executeTakeFirstOrThrow();
 
-	cachedSessionSecret = row.value;
+	cachedSessionSecret = z.string().parse(row.value);
 
 	return cachedSessionSecret;
 };

@@ -87,4 +87,37 @@ describe("migrations", () => {
 
 		expect(typesAfter.rows).toEqual(typesBefore.rows);
 	});
+
+	it("keeps the session secret through the jsonb round trip", async () => {
+		const { database } = testDatabase;
+		const migrator = new Migrator({
+			db: database,
+			provider: migrationProvider,
+		});
+
+		await migrator.migrateTo("0002_app_setting");
+		await sql`INSERT INTO app_setting (key, value) VALUES ('session_secret', 'abc')`.execute(
+			database,
+		);
+
+		await migrator.migrateToLatest();
+		const jsonb = await sql<{
+			value: unknown;
+		}>`SELECT value FROM app_setting WHERE key = 'session_secret'`.execute(
+			database,
+		);
+
+		expect(jsonb.rows).toEqual([{ value: "abc" }]);
+
+		await migrator.migrateTo("0002_app_setting");
+		const text = await sql<{
+			value: unknown;
+		}>`SELECT value FROM app_setting WHERE key = 'session_secret'`.execute(
+			database,
+		);
+
+		expect(text.rows).toEqual([{ value: "abc" }]);
+
+		await migrator.migrateToLatest();
+	});
 });
