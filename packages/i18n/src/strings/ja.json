@@ -420,10 +420,6 @@
       "level2": "普通",
       "level3": "価値あり"
     },
-    "listControls": {
-      "addOne": "取引を追加",
-      "filterPlaceholder": "検索…"
-    },
     "rules": {
       "edit": "ルールを編集"
     },
