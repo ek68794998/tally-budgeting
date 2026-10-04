@@ -6,7 +6,7 @@ services:
     environment:
       APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in deployment/.env}
       NODE_ENV: production
-      POSTGRES_CONNECTION_STRING: postgresql://tally:${DB_PASSWORD}@db:5432/tally
+      POSTGRES_CONNECTION_STRING: postgresql://tally:${DB_PASSWORD:?Set DB_PASSWORD in deployment/.env}@db:5432/tally
     depends_on:
       db:
         condition: service_healthy
@@ -19,7 +19,7 @@ services:
     environment:
       POSTGRES_DB: tally
       POSTGRES_USER: tally
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deployment/.env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

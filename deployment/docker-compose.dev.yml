@@ -1,6 +1,21 @@
+# Standalone (not an override of docker-compose.yml) so the development database
+# starts without the production-only APP_PASSWORD and DB_PASSWORD being set.
 services:
   db:
+    image: pgvector/pgvector:pg16
     environment:
+      POSTGRES_DB: tally
+      POSTGRES_USER: tally
       POSTGRES_PASSWORD: ${DB_PASSWORD:-tally_dev_password}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tally"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
