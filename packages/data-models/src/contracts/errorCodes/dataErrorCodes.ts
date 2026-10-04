@@ -4,4 +4,5 @@ export const DataErrorCodes = [
   "databaseUnavailable",
   "invalidAccount",
   "invalidPassword",
+  "protectedRecord",
 ] as const satisfies readonly string[];

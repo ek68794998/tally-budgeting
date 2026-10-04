@@ -39,4 +39,10 @@ describe("SubcategoryItem", () => {
     expect(onEdit).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledOnce();
   });
+
+  it("shows no actions without handlers", () => {
+    render(<SubcategoryItem subcategory={buildSubcategory()} />);
+
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+  });
 });

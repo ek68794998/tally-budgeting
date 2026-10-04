@@ -204,6 +204,9 @@
       "tooltipPercentage": "割合：<bold>{value}</bold>",
       "tooltipValue": "金額：<bold>{value}</bold>"
     },
+    "errors": {
+      "protectedRecord": "これは組み込みのレコードのため、編集や削除はできません。"
+    },
     "masterDetail": {
       "detailEmptyState": "項目を選択すると詳細が表示されます。",
       "masterEmptyState": "表示できる項目がありません。"

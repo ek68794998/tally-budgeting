@@ -1,3 +1,4 @@
+import { isUndefined } from "@ekumlin/typescript-toolkit/types";
 import {
   buildCategory,
   buildSubcategory,
@@ -168,5 +169,54 @@ describe("categories routes", () => {
     expect(status).toBe(400);
     expect(json).toMatchObject({ error: { code: "invalidRouteParameters" } });
     expect(method).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      build: buildCategory,
+      key: "category",
+      method: "PUT",
+      route: PutCategoriesIdRouteAsync,
+      update: categories.updateCategoryAsync,
+    },
+    {
+      build: buildSubcategory,
+      key: "subcategory",
+      method: "PUT",
+      route: PutCategoriesSubIdRouteAsync,
+      update: subcategories.updateSubcategoryAsync,
+    },
+    {
+      build: undefined,
+      key: "",
+      method: "DELETE",
+      route: DeleteCategoriesIdRouteAsync,
+      update: categories.deleteCategoryAsync,
+    },
+    {
+      build: undefined,
+      key: "",
+      method: "DELETE",
+      route: DeleteCategoriesSubIdRouteAsync,
+      update: subcategories.deleteSubcategoryAsync,
+    },
+  ])("$method rejects the default record with 409 ($route.name)", async ({
+    build,
+    key,
+    method,
+    route,
+    update,
+  }) => {
+    const { json, status } = await callRouteAsync(route, {
+      body: isUndefined(build)
+        ? undefined
+        : Object.fromEntries([[key, withoutId(build())]]),
+      method,
+      params: { id: "-1" },
+    });
+
+    expect(status).toBe(409);
+    expect(json).toMatchObject({ error: { code: "protectedRecord" } });
+    expect(update).not.toHaveBeenCalled();
   });
 });

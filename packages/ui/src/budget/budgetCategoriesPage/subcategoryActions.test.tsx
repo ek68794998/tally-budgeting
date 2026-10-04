@@ -1,3 +1,4 @@
+import { DefaultCategoryId } from "@tally/data-models/contracts/category";
 import { buildCategory } from "@tally/data-models/testing/fixtures";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -29,5 +30,19 @@ describe("SubcategoryActions", () => {
     expect(handlers.onAddSubcategory).toHaveBeenCalledWith(category);
     expect(handlers.onEditCategory).toHaveBeenCalledWith(category);
     expect(handlers.onDeleteCategory).toHaveBeenCalledWith(category);
+  });
+
+  it("only offers adding a subcategory for the default category", () => {
+    render(
+      <SubcategoryActions
+        category={buildCategory({ id: DefaultCategoryId })}
+        onAddSubcategory={vi.fn()}
+        onDeleteCategory={vi.fn()}
+        onEditCategory={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("New Subcategory")).toBeInTheDocument();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 });

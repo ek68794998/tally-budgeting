@@ -31,18 +31,22 @@ export const SubcategoryItem: React.FC<Props> = ({
       <div className="flex gap-2">
         <h3 className="text-lg font-bold">{subcategory.label}</h3>
         <span className="flex-1" />
-        <Button isIconOnly={true} onPress={onEdit} size="sm" variant="light">
-          <IconPencil />
-        </Button>
-        <Button
-          color="danger"
-          isIconOnly={true}
-          onPress={onDelete}
-          size="sm"
-          variant="light"
-        >
-          <IconTrash />
-        </Button>
+        {onEdit && (
+          <Button isIconOnly={true} onPress={onEdit} size="sm" variant="light">
+            <IconPencil />
+          </Button>
+        )}
+        {onDelete && (
+          <Button
+            color="danger"
+            isIconOnly={true}
+            onPress={onDelete}
+            size="sm"
+            variant="light"
+          >
+            <IconTrash />
+          </Button>
+        )}
       </div>
       <div className="flex flex-col items-start justify-between text-sm">
         <span className="flex gap-1">
