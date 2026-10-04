@@ -5,20 +5,20 @@ import { getMessages } from "next-intl/server";
 import { getAuthConfig } from "./auth/config";
 
 type Props = React.PropsWithChildren<{
-	locale: Locale;
+  locale: Locale;
 }>;
 
 export const ServerProviders: React.FC<Props> = async ({
-	children,
-	locale,
+  children,
+  locale,
 }) => {
-	const messages = await getMessages();
+  const messages = await getMessages();
 
-	return (
-		<NextIntlClientProvider locale={locale} messages={messages}>
-			<AuthProvider isAuthEnabled={getAuthConfig().mode === "password"}>
-				{children}
-			</AuthProvider>
-		</NextIntlClientProvider>
-	);
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <AuthProvider isAuthEnabled={getAuthConfig().mode === "password"}>
+        {children}
+      </AuthProvider>
+    </NextIntlClientProvider>
+  );
 };

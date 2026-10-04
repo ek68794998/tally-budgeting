@@ -1,33 +1,33 @@
 {
-	"name": "@tally/utilities",
-	"version": "0.0.0",
-	"private": true,
-	"exports": {
-		"./*": "./src/*.ts"
-	},
-	"scripts": {
-		"lint": "eslint . --max-warnings 0",
-		"check-types": "tsc --noEmit",
-		"test": "vitest --no-watch",
-		"test:coverage": "vitest --coverage --no-watch",
-		"test:ui": "vitest --ui",
-		"test:watch": "vitest"
-	},
-	"dependencies": {
-		"@ekumlin/typescript-toolkit": "1.0.1",
-		"@tally/data-models": "workspace:*",
-		"csv": "^6.4.1",
-		"luxon": "^3.7.2",
-		"zod": "^4.1.11",
-		"zustand": "^5.0.8"
-	},
-	"devDependencies": {
-		"@tally/eslint-config": "workspace:*",
-		"@tally/testing": "workspace:*",
-		"@tally/typescript-config": "workspace:*",
-		"@types/luxon": "^3.7.1",
-		"@types/node": "^22.15.3",
-		"eslint": "^9.34.0",
-		"typescript": "5.9.2"
-	}
+  "name": "@tally/utilities",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit",
+    "test": "vitest --no-watch",
+    "test:coverage": "vitest --coverage --no-watch",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ekumlin/typescript-toolkit": "1.0.1",
+    "@tally/data-models": "workspace:*",
+    "csv": "^6.4.1",
+    "luxon": "^3.7.2",
+    "zod": "^4.1.11",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tally/eslint-config": "workspace:*",
+    "@tally/testing": "workspace:*",
+    "@tally/typescript-config": "workspace:*",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.34.0",
+    "typescript": "5.9.2"
+  }
 }

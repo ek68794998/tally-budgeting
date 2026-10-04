@@ -6,22 +6,22 @@ import { PostLogoutRouteAsync } from "./post";
 const cookieDelete = vi.fn();
 
 vi.mock("next/headers", () => ({
-	cookies: vi.fn(() => Promise.resolve({ delete: cookieDelete })),
+  cookies: vi.fn(() => Promise.resolve({ delete: cookieDelete })),
 }));
 
 vi.mock(
-	"../../../telemetry/telemetry",
-	async () =>
-		(await import("../../testing/routeTesting")).silentTelemetryModule,
+  "../../../telemetry/telemetry",
+  async () =>
+    (await import("../../testing/routeTesting")).silentTelemetryModule,
 );
 
 describe("PostLogoutRouteAsync", () => {
-	it("clears the session cookie without requiring authentication", async () => {
-		const { status } = await callRouteAsync(PostLogoutRouteAsync, {
-			method: "POST",
-		});
+  it("clears the session cookie without requiring authentication", async () => {
+    const { status } = await callRouteAsync(PostLogoutRouteAsync, {
+      method: "POST",
+    });
 
-		expect(status).toBe(204);
-		expect(cookieDelete).toHaveBeenCalledWith(SessionCookieName);
-	});
+    expect(status).toBe(204);
+    expect(cookieDelete).toHaveBeenCalledWith(SessionCookieName);
+  });
 });

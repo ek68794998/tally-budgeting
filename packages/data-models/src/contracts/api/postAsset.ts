@@ -3,7 +3,7 @@ import { assetFieldsSchema } from "../asset";
 import { createApiResponseSchema } from "./types";
 
 export const postAssetRequestSchema = z.object({
-	asset: assetFieldsSchema,
+  asset: assetFieldsSchema,
 });
 
 export type PostAssetRequest = z.infer<typeof postAssetRequestSchema>;

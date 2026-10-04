@@ -1,9 +1,9 @@
 import { Autocomplete, Select } from "@heroui/react";
 import { type AccountProviderType } from "@tally/data-models/contracts/accountProviderType";
 import {
-	buildAsset,
-	buildCategory,
-	buildSubcategory,
+  buildAsset,
+  buildCategory,
+  buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
 import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -17,16 +17,14 @@ import { SelectProvider } from "./selectProvider";
 import { SelectSubcategory } from "./selectSubcategory";
 
 vi.mock("@heroui/react", async () => {
-	const { heroUiCollectionStubs } = await import("../testing/heroUi.js");
-	return heroUiCollectionStubs;
+  const { heroUiCollectionStubs } = await import("../testing/heroUi.js");
+  return heroUiCollectionStubs;
 });
 vi.mock("../dataProviderIcons/dataProviderIcon", () => ({
-	DataProviderIcon: vi.fn(() => <span data-testid="provider-icon" />),
+  DataProviderIcon: vi.fn(() => <span data-testid="provider-icon" />),
 }));
 vi.mock("./hiddenProviderIcon", () => ({
-	HiddenProviderIcon: vi.fn(() => (
-		<span data-testid="hidden-provider-icon" />
-	)),
+  HiddenProviderIcon: vi.fn(() => <span data-testid="hidden-provider-icon" />),
 }));
 vi.mock("../hooks/store/useAssets", () => ({ useAssets: vi.fn() }));
 vi.mock("../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
@@ -43,263 +41,237 @@ const food = buildCategory({ id: 1, label: "Food" });
 const housing = buildCategory({ id: 2, label: "Housing" });
 const coffee = buildSubcategory({ categoryId: 1, id: 10, label: "Coffee" });
 const groceries = buildSubcategory({
-	categoryId: 1,
-	id: 11,
-	label: "Groceries",
+  categoryId: 1,
+  id: 11,
+  label: "Groceries",
 });
 const rent = buildSubcategory({ categoryId: 2, id: 20, label: "Rent" });
 const uncategorized = buildSubcategory({
-	categoryId: -1,
-	id: -1,
-	label: "Uncategorized",
+  categoryId: -1,
+  id: -1,
+  label: "Uncategorized",
 });
 
 describe("select inputs", () => {
-	const mockHiddenProviders = (hidden: AccountProviderType[]) =>
-		vi
-			.mocked(useSetting)
-			.mockReturnValue([
-				hidden,
-				vi.fn(),
-				{ isLoading: false, scope: "database" },
-			]);
+  const mockHiddenProviders = (hidden: AccountProviderType[]) =>
+    vi
+      .mocked(useSetting)
+      .mockReturnValue([
+        hidden,
+        vi.fn(),
+        { isLoading: false, scope: "database" },
+      ]);
 
-	beforeEach(() => {
-		vi.clearAllMocks();
-		mockHiddenProviders([]);
-		vi.mocked(useAssets).mockReturnValue({
-			assets: [checking, closed, brokerage],
-			error: null,
-			isLoading: false,
-			refetch: vi.fn(),
-		});
-		vi.mocked(useCategories).mockReturnValue({
-			categories: [
-				housing,
-				food,
-				buildCategory({ id: -1, label: "Uncategorized" }),
-			],
-			error: null,
-			isLoading: false,
-			refetch: vi.fn(),
-			subcategories: [rent, groceries, coffee, uncategorized],
-		});
-	});
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockHiddenProviders([]);
+    vi.mocked(useAssets).mockReturnValue({
+      assets: [checking, closed, brokerage],
+      error: null,
+      isLoading: false,
+      refetch: vi.fn(),
+    });
+    vi.mocked(useCategories).mockReturnValue({
+      categories: [
+        housing,
+        food,
+        buildCategory({ id: -1, label: "Uncategorized" }),
+      ],
+      error: null,
+      isLoading: false,
+      refetch: vi.fn(),
+      subcategories: [rent, groceries, coffee, uncategorized],
+    });
+  });
 
-	describe("SelectAccount", () => {
-		it.each([
-			{ expected: ["Brokerage", "Checking"], props: {} },
-			{
-				expected: ["Brokerage", "Checking", "Closed"],
-				props: { showInactive: true },
-			},
-			{ expected: ["Checking"], props: { showOnlyWithProvider: true } },
-		])("lists accounts for $props", ({ expected, props }) => {
-			render(
-				<SelectAccount
-					onChange={vi.fn()}
-					value={undefined}
-					{...props}
-				/>,
-			);
+  describe("SelectAccount", () => {
+    it.each([
+      { expected: ["Brokerage", "Checking"], props: {} },
+      {
+        expected: ["Brokerage", "Checking", "Closed"],
+        props: { showInactive: true },
+      },
+      { expected: ["Checking"], props: { showOnlyWithProvider: true } },
+    ])("lists accounts for $props", ({ expected, props }) => {
+      render(<SelectAccount onChange={vi.fn()} value={undefined} {...props} />);
 
-			const items = screen.getByTestId("select").textContent;
+      const items = screen.getByTestId("select").textContent;
 
-			expect(expected.every((name) => items.includes(name))).toBe(true);
-			expect(items.includes("Closed")).toBe(expected.includes("Closed"));
-			expect(items).toContain(
-				expected.includes("Checking") ? "Chase Bank" : "",
-			);
-		});
+      expect(expected.every((name) => items.includes(name))).toBe(true);
+      expect(items.includes("Closed")).toBe(expected.includes("Closed"));
+      expect(items).toContain(
+        expected.includes("Checking") ? "Chase Bank" : "",
+      );
+    });
 
-		it.each([
-			{ key: "2", shouldChange: true, value: 1 },
-			{ key: "1", shouldChange: false, value: checking },
-			{ key: "99", shouldChange: false, value: 1 },
-		])("reports a change to account $key only when it differs", ({
-			key,
-			shouldChange,
-			value,
-		}) => {
-			const onChange = vi.fn();
-			render(
-				<SelectAccount
-					label="Account"
-					onChange={onChange}
-					value={value}
-				/>,
-			);
+    it.each([
+      { key: "2", shouldChange: true, value: 1 },
+      { key: "1", shouldChange: false, value: checking },
+      { key: "99", shouldChange: false, value: 1 },
+    ])("reports a change to account $key only when it differs", ({
+      key,
+      shouldChange,
+      value,
+    }) => {
+      const onChange = vi.fn();
+      render(
+        <SelectAccount label="Account" onChange={onChange} value={value} />,
+      );
 
-			expect(lastSelectProps()?.selectedKeys).toEqual(["1"]);
+      expect(lastSelectProps()?.selectedKeys).toEqual(["1"]);
 
-			lastSelectProps()?.onSelectionChange?.(buildSelection(key));
+      lastSelectProps()?.onSelectionChange?.(buildSelection(key));
 
-			expect(onChange).toHaveBeenCalledTimes(shouldChange ? 1 : 0);
-		});
-	});
+      expect(onChange).toHaveBeenCalledTimes(shouldChange ? 1 : 0);
+    });
+  });
 
-	describe("hidden providers", () => {
-		const sectionTitles = () =>
-			screen
-				.queryAllByTestId("select-section")
-				.map((section) => section.getAttribute("aria-label"))
-				.filter((title) => title === "Hidden");
+  describe("hidden providers", () => {
+    const sectionTitles = () =>
+      screen
+        .queryAllByTestId("select-section")
+        .map((section) => section.getAttribute("aria-label"))
+        .filter((title) => title === "Hidden");
 
-		it("moves accounts of hidden providers to a trailing Hidden section", () => {
-			mockHiddenProviders(["chase"]);
+    it("moves accounts of hidden providers to a trailing Hidden section", () => {
+      mockHiddenProviders(["chase"]);
 
-			render(<SelectAccount onChange={vi.fn()} value={undefined} />);
+      render(<SelectAccount onChange={vi.fn()} value={undefined} />);
 
-			const sections = screen.getAllByTestId("select-section");
-			const hiddenSection = sections.at(-1);
+      const sections = screen.getAllByTestId("select-section");
+      const hiddenSection = sections.at(-1);
 
-			expect(sectionTitles()).toEqual(["Hidden"]);
-			expect(hiddenSection).toHaveTextContent("Checking");
-			expect(sections[0]).not.toHaveTextContent("Checking");
-			expect(sections[0]).toHaveTextContent("Brokerage");
-		});
+      expect(sectionTitles()).toEqual(["Hidden"]);
+      expect(hiddenSection).toHaveTextContent("Checking");
+      expect(sections[0]).not.toHaveTextContent("Checking");
+      expect(sections[0]).toHaveTextContent("Brokerage");
+    });
 
-		it.each([
-			{ expected: [], selected: "fidelity" as const },
-			{ expected: ["Hidden"], selected: "chase" as const },
-		])("shows the Hidden provider section only when the current value is hidden (selected: $selected)", ({
-			expected,
-			selected,
-		}) => {
-			mockHiddenProviders(["chase"]);
+    it.each([
+      { expected: [], selected: "fidelity" as const },
+      { expected: ["Hidden"], selected: "chase" as const },
+    ])("shows the Hidden provider section only when the current value is hidden (selected: $selected)", ({
+      expected,
+      selected,
+    }) => {
+      mockHiddenProviders(["chase"]);
 
-			render(<SelectProvider onChange={vi.fn()} value={selected} />);
+      render(<SelectProvider onChange={vi.fn()} value={selected} />);
 
-			expect(sectionTitles()).toEqual(expected);
-			expect(lastSelectProps()?.selectedKeys).toEqual([selected]);
-		});
-	});
+      expect(sectionTitles()).toEqual(expected);
+      expect(lastSelectProps()?.selectedKeys).toEqual([selected]);
+    });
+  });
 
-	describe("SelectProvider", () => {
-		it("lists every provider and reports a newly selected one", () => {
-			const onChange = vi.fn();
-			render(
-				<SelectProvider
-					label="Provider"
-					onChange={onChange}
-					value="chase"
-				/>,
-			);
+  describe("SelectProvider", () => {
+    it("lists every provider and reports a newly selected one", () => {
+      const onChange = vi.fn();
+      render(
+        <SelectProvider label="Provider" onChange={onChange} value="chase" />,
+      );
 
-			expect(
-				screen.getByText("Fidelity Investments"),
-			).toBeInTheDocument();
-			expect(lastSelectProps()?.selectedKeys).toEqual(["chase"]);
+      expect(screen.getByText("Fidelity Investments")).toBeInTheDocument();
+      expect(lastSelectProps()?.selectedKeys).toEqual(["chase"]);
 
-			lastSelectProps()?.onSelectionChange?.(buildSelection("chase"));
-			lastSelectProps()?.onSelectionChange?.(buildSelection("fidelity"));
+      lastSelectProps()?.onSelectionChange?.(buildSelection("chase"));
+      lastSelectProps()?.onSelectionChange?.(buildSelection("fidelity"));
 
-			expect(onChange).toHaveBeenCalledExactlyOnceWith(
-				expect.objectContaining({ id: "fidelity" }),
-			);
-		});
+      expect(onChange).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ id: "fidelity" }),
+      );
+    });
 
-		it("selects nothing without a provider", () => {
-			render(<SelectProvider onChange={vi.fn()} value={null} />);
+    it("selects nothing without a provider", () => {
+      render(<SelectProvider onChange={vi.fn()} value={null} />);
 
-			expect(lastSelectProps()?.selectedKeys).toEqual([]);
-		});
-	});
+      expect(lastSelectProps()?.selectedKeys).toEqual([]);
+    });
+  });
 
-	describe("SelectCategory", () => {
-		it.each([
-			{ expected: food, key: 1 },
-			{
-				expected: buildCategory({ id: -1, label: "Uncategorized" }),
-				key: null,
-			},
-		])("sorts categories and reports selection of $key", ({
-			expected,
-			key,
-		}) => {
-			const onChange = vi.fn();
-			render(
-				<SelectCategory
-					label="Category"
-					onChange={onChange}
-					value={2}
-				/>,
-			);
+  describe("SelectCategory", () => {
+    it.each([
+      { expected: food, key: 1 },
+      {
+        expected: buildCategory({ id: -1, label: "Uncategorized" }),
+        key: null,
+      },
+    ])("sorts categories and reports selection of $key", ({
+      expected,
+      key,
+    }) => {
+      const onChange = vi.fn();
+      render(<SelectCategory label="Category" onChange={onChange} value={2} />);
 
-			const props = lastAutocompleteProps();
+      const props = lastAutocompleteProps();
 
-			expect(props?.placeholder).toBe("Housing");
-			expect(props?.items).toEqual([
-				food,
-				housing,
-				buildCategory({ id: -1, label: "Uncategorized" }),
-			]);
+      expect(props?.placeholder).toBe("Housing");
+      expect(props?.items).toEqual([
+        food,
+        housing,
+        buildCategory({ id: -1, label: "Uncategorized" }),
+      ]);
 
-			props?.onSelectionChange?.(key);
+      props?.onSelectionChange?.(key);
 
-			expect(onChange).toHaveBeenCalledWith(expected);
-		});
+      expect(onChange).toHaveBeenCalledWith(expected);
+    });
 
-		it("accepts a category object as the value and rejects unknown ids", () => {
-			render(<SelectCategory onChange={vi.fn()} value={food} />);
+    it("accepts a category object as the value and rejects unknown ids", () => {
+      render(<SelectCategory onChange={vi.fn()} value={food} />);
 
-			const props = lastAutocompleteProps();
+      const props = lastAutocompleteProps();
 
-			expect(props?.selectedKey).toBe(1);
-			expect(() => props?.onSelectionChange?.(99)).toThrow(
-				"Category must be present within the data set",
-			);
-		});
-	});
+      expect(props?.selectedKey).toBe(1);
+      expect(() => props?.onSelectionChange?.(99)).toThrow(
+        "Category must be present within the data set",
+      );
+    });
+  });
 
-	describe("SelectSubcategory", () => {
-		it("groups subcategories by category and filters by the typed text", () => {
-			render(
-				<SelectSubcategory
-					label="Category"
-					onChange={vi.fn()}
-					value={10}
-				/>,
-			);
+  describe("SelectSubcategory", () => {
+    it("groups subcategories by category and filters by the typed text", () => {
+      render(
+        <SelectSubcategory label="Category" onChange={vi.fn()} value={10} />,
+      );
 
-			expect(lastAutocompleteProps()?.placeholder).toBe("Coffee");
-			expect(lastAutocompleteProps()?.items).toEqual([
-				{ id: 1, label: "Food", subcategories: [coffee, groceries] },
-				{ id: 2, label: "Housing", subcategories: [rent] },
-				{
-					id: -1,
-					label: "Uncategorized",
-					subcategories: [uncategorized],
-				},
-			]);
+      expect(lastAutocompleteProps()?.placeholder).toBe("Coffee");
+      expect(lastAutocompleteProps()?.items).toEqual([
+        { id: 1, label: "Food", subcategories: [coffee, groceries] },
+        { id: 2, label: "Housing", subcategories: [rent] },
+        {
+          id: -1,
+          label: "Uncategorized",
+          subcategories: [uncategorized],
+        },
+      ]);
 
-			act(() => {
-				lastAutocompleteProps()?.onInputChange?.("gro");
-			});
+      act(() => {
+        lastAutocompleteProps()?.onInputChange?.("gro");
+      });
 
-			expect(lastAutocompleteProps()?.items).toEqual([
-				{ id: 1, label: "Food", subcategories: [groceries] },
-			]);
-		});
+      expect(lastAutocompleteProps()?.items).toEqual([
+        { id: 1, label: "Food", subcategories: [groceries] },
+      ]);
+    });
 
-		it.each([
-			{ expected: rent, key: 20 },
-			{ expected: uncategorized, key: null },
-		])("reports selection of $key", ({ expected, key }) => {
-			const onChange = vi.fn();
-			render(<SelectSubcategory onChange={onChange} value={coffee} />);
+    it.each([
+      { expected: rent, key: 20 },
+      { expected: uncategorized, key: null },
+    ])("reports selection of $key", ({ expected, key }) => {
+      const onChange = vi.fn();
+      render(<SelectSubcategory onChange={onChange} value={coffee} />);
 
-			lastAutocompleteProps()?.onSelectionChange?.(key);
+      lastAutocompleteProps()?.onSelectionChange?.(key);
 
-			expect(onChange).toHaveBeenCalledWith(expected);
-		});
+      expect(onChange).toHaveBeenCalledWith(expected);
+    });
 
-		it("rejects an unknown subcategory", () => {
-			render(<SelectSubcategory onChange={vi.fn()} value={10} />);
+    it("rejects an unknown subcategory", () => {
+      render(<SelectSubcategory onChange={vi.fn()} value={10} />);
 
-			expect(() => {
-				lastAutocompleteProps()?.onSelectionChange?.(99);
-			}).toThrow("Subcategory must be present within the data set");
-		});
-	});
+      expect(() => {
+        lastAutocompleteProps()?.onSelectionChange?.(99);
+      }).toThrow("Subcategory must be present within the data set");
+    });
+  });
 });

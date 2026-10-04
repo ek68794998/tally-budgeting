@@ -1,15 +1,15 @@
 import z from "zod";
 
 export const deleteTransactionParamsSchema = z.object({
-	id: z.string(),
+  id: z.string(),
 });
 
 export type DeleteTransactionParams = z.infer<
-	typeof deleteTransactionParamsSchema
+  typeof deleteTransactionParamsSchema
 >;
 
 export const deleteTransactionResponseSchema = z.unknown();
 
 export type DeleteTransactionResponse = z.infer<
-	typeof deleteTransactionResponseSchema
+  typeof deleteTransactionResponseSchema
 >;

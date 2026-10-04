@@ -1,32 +1,31 @@
 import { useEffect, useState } from "react";
 
 interface UseLatestDataProps<T> {
-	initial: T;
-	isLoading: boolean;
-	latest: T;
+  initial: T;
+  isLoading: boolean;
+  latest: T;
 }
 
 export const useLatestData = <T>({
-	initial,
-	isLoading,
-	latest,
+  initial,
+  isLoading,
+  latest,
 }: UseLatestDataProps<T>) => {
-	const [data, setData] = useState(initial);
+  const [data, setData] = useState(initial);
 
-	useEffect(() => {
-		if (isLoading) {
-			return;
-		}
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
 
-		const hasNewData =
-			latest && (!Array.isArray(latest) || latest.length > 0);
+    const hasNewData = latest && (!Array.isArray(latest) || latest.length > 0);
 
-		if (!hasNewData) {
-			return;
-		}
+    if (!hasNewData) {
+      return;
+    }
 
-		setData(latest);
-	}, [isLoading, latest]);
+    setData(latest);
+  }, [isLoading, latest]);
 
-	return data;
+  return data;
 };

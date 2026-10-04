@@ -5,8 +5,8 @@ export const HappinessLevelMax = 3;
 export const HappinessLevelMin = 1;
 
 export const happinessLevelSchema = z
-	.int()
-	.min(HappinessLevelMin)
-	.max(HappinessLevelMax);
+  .int()
+  .min(HappinessLevelMin)
+  .max(HappinessLevelMax);
 
 export type HappinessLevel = z.infer<typeof happinessLevelSchema>;

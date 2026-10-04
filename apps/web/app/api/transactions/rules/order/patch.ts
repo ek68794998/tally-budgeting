@@ -9,18 +9,18 @@ import { type NextResponseFn } from "../../../types";
 const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const PatchTransactionsRulesOrderRouteAsync: NextResponseFn =
-	createApiHandler({
-		eventName: "PATCH:TRANSACTIONS/RULES/ORDER",
-		handler: async ({ body }) => {
-			const txnRulesClient = txnRulesClientLazy.get();
+  createApiHandler({
+    eventName: "PATCH:TRANSACTIONS/RULES/ORDER",
+    handler: async ({ body }) => {
+      const txnRulesClient = txnRulesClientLazy.get();
 
-			await txnRulesClient.updateTransactionRulesOrderAsync(body.ruleIds);
+      await txnRulesClient.updateTransactionRulesOrderAsync(body.ruleIds);
 
-			return { statusCode: Ok };
-		},
-		schemata: {
-			body: patchTransactionRulesReorderRequestSchema,
-			params: z.unknown(),
-			query: z.unknown(),
-		},
-	});
+      return { statusCode: Ok };
+    },
+    schemata: {
+      body: patchTransactionRulesReorderRequestSchema,
+      params: z.unknown(),
+      query: z.unknown(),
+    },
+  });

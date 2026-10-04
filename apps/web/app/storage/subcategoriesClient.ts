@@ -1,11 +1,11 @@
 import {
-	type Subcategory,
-	type SubcategoryFields,
+  type Subcategory,
+  type SubcategoryFields,
 } from "@tally/data-models/contracts/subcategory";
 import {
-	convertSubcategoryFieldsToSubcategoryRow,
-	convertSubcategoryRowToSubcategory,
-	convertSubcategoryToSubcategoryRow,
+  convertSubcategoryFieldsToSubcategoryRow,
+  convertSubcategoryRowToSubcategory,
+  convertSubcategoryToSubcategoryRow,
 } from "@tally/data-models/converters/subcategory";
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { type Database } from "./database";
@@ -15,52 +15,52 @@ import { rowOrRowsAsRows } from "./helpers";
 export const TableName = "subcategory" as const satisfies keyof Database;
 
 export class SubcategoriesClient extends DatabaseClient {
-	public async deleteSubcategoryAsync(id: number): Promise<void> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async deleteSubcategoryAsync(id: number): Promise<void> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		await database.deleteFrom(TableName).where("id", "=", id).execute();
-	}
+    await database.deleteFrom(TableName).where("id", "=", id).execute();
+  }
 
-	public async getSubcategoriesAsync(): Promise<Subcategory[]> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async getSubcategoriesAsync(): Promise<Subcategory[]> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const rows = await database
-			.selectFrom(TableName)
-			.selectAll()
-			.orderBy("id", "asc")
-			.execute();
+    const rows = await database
+      .selectFrom(TableName)
+      .selectAll()
+      .orderBy("id", "asc")
+      .execute();
 
-		const subcategories = rows.map((row) => {
-			const subcategoryRow = subcategoryRowSchema.parse(row);
-			return convertSubcategoryRowToSubcategory(subcategoryRow);
-		});
+    const subcategories = rows.map((row) => {
+      const subcategoryRow = subcategoryRowSchema.parse(row);
+      return convertSubcategoryRowToSubcategory(subcategoryRow);
+    });
 
-		return subcategories;
-	}
+    return subcategories;
+  }
 
-	public async insertSubcategoriesAsync(
-		values: SubcategoryFields | SubcategoryFields[],
-	): Promise<void> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async insertSubcategoriesAsync(
+    values: SubcategoryFields | SubcategoryFields[],
+  ): Promise<void> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const subcategories = rowOrRowsAsRows(values).map(
-			convertSubcategoryFieldsToSubcategoryRow,
-		);
+    const subcategories = rowOrRowsAsRows(values).map(
+      convertSubcategoryFieldsToSubcategoryRow,
+    );
 
-		await database.insertInto(TableName).values(subcategories).execute();
-	}
+    await database.insertInto(TableName).values(subcategories).execute();
+  }
 
-	public async updateSubcategoryAsync(value: Subcategory): Promise<boolean> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async updateSubcategoryAsync(value: Subcategory): Promise<boolean> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const row = convertSubcategoryToSubcategoryRow(value);
+    const row = convertSubcategoryToSubcategoryRow(value);
 
-		const { numUpdatedRows } = await database
-			.updateTable(TableName)
-			.where("id", "=", row.id)
-			.set(row)
-			.executeTakeFirstOrThrow();
+    const { numUpdatedRows } = await database
+      .updateTable(TableName)
+      .where("id", "=", row.id)
+      .set(row)
+      .executeTakeFirstOrThrow();
 
-		return numUpdatedRows > 0n;
-	}
+    return numUpdatedRows > 0n;
+  }
 }

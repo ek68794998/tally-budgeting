@@ -11,43 +11,43 @@ import { useCategories } from "../../../hooks/store/useCategories";
 import { CategoryEditModal } from "../categoryEditModal";
 
 export const useCategoryEditModal = () => {
-	const { refetch } = useCategories();
-	const categoryEditModalState = useDisclosure();
-	const { postCategoryAsync } = usePostCategory();
-	const { putCategoryAsync } = usePutCategory();
+  const { refetch } = useCategories();
+  const categoryEditModalState = useDisclosure();
+  const { postCategoryAsync } = usePostCategory();
+  const { putCategoryAsync } = usePutCategory();
 
-	const [activeCategory, setActiveCategory] = useState<Category | null>(null);
-	const [isNewCategory, setIsNewCategory] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const [isNewCategory, setIsNewCategory] = useState(false);
 
-	return useMemo(() => {
-		const open = (category: Category, isNew: boolean) => {
-			setActiveCategory(category);
-			setIsNewCategory(isNew);
-			categoryEditModalState.onOpen();
-		};
+  return useMemo(() => {
+    const open = (category: Category, isNew: boolean) => {
+      setActiveCategory(category);
+      setIsNewCategory(isNew);
+      categoryEditModalState.onOpen();
+    };
 
-		return {
-			openEdit: (category: Category) => open(category, false),
-			openNew: () => open(ModalDefaultCategory, true),
-			render: () => (
-				<CategoryEditModal
-					category={activeCategory}
-					modalState={categoryEditModalState}
-					onSaveAsync={async (category) => {
-						await (isNewCategory
-							? postCategoryAsync(withoutId(category))
-							: putCategoryAsync(category));
-						await refetch();
-					}}
-				/>
-			),
-		};
-	}, [
-		activeCategory,
-		categoryEditModalState,
-		isNewCategory,
-		postCategoryAsync,
-		putCategoryAsync,
-		refetch,
-	]);
+    return {
+      openEdit: (category: Category) => open(category, false),
+      openNew: () => open(ModalDefaultCategory, true),
+      render: () => (
+        <CategoryEditModal
+          category={activeCategory}
+          modalState={categoryEditModalState}
+          onSaveAsync={async (category) => {
+            await (isNewCategory
+              ? postCategoryAsync(withoutId(category))
+              : putCategoryAsync(category));
+            await refetch();
+          }}
+        />
+      ),
+    };
+  }, [
+    activeCategory,
+    categoryEditModalState,
+    isNewCategory,
+    postCategoryAsync,
+    putCategoryAsync,
+    refetch,
+  ]);
 };

@@ -1,72 +1,72 @@
 import {
-	type Subcategory,
-	type SubcategoryFields,
+  type Subcategory,
+  type SubcategoryFields,
 } from "../contracts/subcategory";
 import { type SubcategoryRow } from "../database/subcategoryRow";
 
 export const convertSubcategoryRowToSubcategory = (
-	row: SubcategoryRow,
+  row: SubcategoryRow,
 ): Subcategory => {
-	const {
-		budget_amount_cents: budgetAmountCents,
-		budget_frequency_months: budgetFrequencyMonths,
-		budget_type: budgetType,
-		category,
-		description,
-		id,
-		label,
-		pct_needs: percentNeeds,
-		pct_savings: percentSavings,
-	} = row;
+  const {
+    budget_amount_cents: budgetAmountCents,
+    budget_frequency_months: budgetFrequencyMonths,
+    budget_type: budgetType,
+    category,
+    description,
+    id,
+    label,
+    pct_needs: percentNeeds,
+    pct_savings: percentSavings,
+  } = row;
 
-	return {
-		budget: {
-			amountCents: Number(budgetAmountCents),
-			frequency: budgetFrequencyMonths,
-			type: budgetType,
-		},
-		categoryId: category,
-		description: description || "",
-		id,
-		label,
-		percentNeeds,
-		percentSavings,
-	};
+  return {
+    budget: {
+      amountCents: Number(budgetAmountCents),
+      frequency: budgetFrequencyMonths,
+      type: budgetType,
+    },
+    categoryId: category,
+    description: description || "",
+    id,
+    label,
+    percentNeeds,
+    percentSavings,
+  };
 };
 
 export const convertSubcategoryFieldsToSubcategoryRow = (
-	row: SubcategoryFields,
+  row: SubcategoryFields,
 ): Omit<SubcategoryRow, "id"> => {
-	const {
-		budget: {
-			amountCents: budgetAmountCents,
-			frequency: budgetFrequencyMonths,
-			type: budgetType,
-		},
-		categoryId: category,
-		description,
-		label,
-		percentNeeds,
-		percentSavings,
-	} = row;
+  const {
+    budget: {
+      amountCents: budgetAmountCents,
+      frequency: budgetFrequencyMonths,
+      type: budgetType,
+    },
+    categoryId: category,
+    description,
+    label,
+    percentNeeds,
+    percentSavings,
+  } = row;
 
-	return {
-		/* eslint-disable @typescript-eslint/naming-convention */
-		budget_amount_cents: String(budgetAmountCents),
-		budget_frequency_months: budgetFrequencyMonths,
-		budget_type: budgetType,
-		category,
-		description: description || "",
-		label,
-		pct_needs: percentNeeds,
-		pct_savings: percentSavings,
-		/* eslint-enable @typescript-eslint/naming-convention */
-	};
+  return {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    budget_amount_cents: String(budgetAmountCents),
+    budget_frequency_months: budgetFrequencyMonths,
+    budget_type: budgetType,
+    category,
+    description: description || "",
+    label,
+    pct_needs: percentNeeds,
+    pct_savings: percentSavings,
+    /* eslint-enable @typescript-eslint/naming-convention */
+  };
 };
 
 export const convertSubcategoryToSubcategoryRow = (
-	subcategory: Subcategory,
+  subcategory: Subcategory,
 ): SubcategoryRow => ({
-	...convertSubcategoryFieldsToSubcategoryRow(subcategory),
-	id: subcategory.id,
+  ...convertSubcategoryFieldsToSubcategoryRow(subcategory),
+  id: subcategory.id,
 });

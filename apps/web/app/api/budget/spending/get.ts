@@ -1,8 +1,8 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
-	type GetBudgetSpendingResponse,
-	getBudgetSpendingQuerySchema,
+  type GetBudgetSpendingResponse,
+  getBudgetSpendingQuerySchema,
 } from "@tally/data-models/contracts/api/getBudgetSpending";
 import { DateTime } from "luxon";
 import z from "zod";
@@ -19,59 +19,59 @@ const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const GetBudgetSpendingRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:BUDGET/SPENDING",
-	handler: async ({
-		query: searchParams,
-	}): Promise<ApiResult<GetBudgetSpendingResponse>> => {
-		const subcategoriesClient = subcategoriesClientLazy.get();
-		const txnsClient = txnsClientLazy.get();
+  eventName: "GET:BUDGET/SPENDING",
+  handler: async ({
+    query: searchParams,
+  }): Promise<ApiResult<GetBudgetSpendingResponse>> => {
+    const subcategoriesClient = subcategoriesClientLazy.get();
+    const txnsClient = txnsClientLazy.get();
 
-		const endDate = DateTime.fromISO(searchParams.endDate);
-		const startDate = DateTime.fromISO(searchParams.startDate);
+    const endDate = DateTime.fromISO(searchParams.endDate);
+    const startDate = DateTime.fromISO(searchParams.startDate);
 
-		if (!endDate.isValid || !startDate.isValid) {
-			throw new HttpError(
-				"Invalid date.",
-				BadRequest,
-				"invalidQueryParameters",
-			);
-		}
+    if (!endDate.isValid || !startDate.isValid) {
+      throw new HttpError(
+        "Invalid date.",
+        BadRequest,
+        "invalidQueryParameters",
+      );
+    }
 
-		const { end: endProfiling } = telemetry().profile(
-			"GET_BUDGET_SPENDING_DATA",
-		);
+    const { end: endProfiling } = telemetry().profile(
+      "GET_BUDGET_SPENDING_DATA",
+    );
 
-		const subcategories = await subcategoriesClient.getSubcategoriesAsync();
-		const transactions = await txnsClient.getTransactionsInPeriodAsync(
-			startDate.startOf("day"),
-			endDate.endOf("day"),
-		);
+    const subcategories = await subcategoriesClient.getSubcategoriesAsync();
+    const transactions = await txnsClient.getTransactionsInPeriodAsync(
+      startDate.startOf("day"),
+      endDate.endOf("day"),
+    );
 
-		endProfiling();
+    endProfiling();
 
-		const {
-			spending,
-			spentOnNeedsCents,
-			spentOnSavingsCents,
-			spentOnWantsCents,
-		} = calculateBudgetSpending({ subcategories, transactions });
+    const {
+      spending,
+      spentOnNeedsCents,
+      spentOnSavingsCents,
+      spentOnWantsCents,
+    } = calculateBudgetSpending({ subcategories, transactions });
 
-		const responseData: GetBudgetSpendingResponse = {
-			spending,
-			spentOnNeedsCents,
-			spentOnSavingsCents,
-			spentOnWantsCents,
-			success: true,
-		};
+    const responseData: GetBudgetSpendingResponse = {
+      spending,
+      spentOnNeedsCents,
+      spentOnSavingsCents,
+      spentOnWantsCents,
+      success: true,
+    };
 
-		return {
-			data: responseData,
-			statusCode: Ok,
-		};
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: getBudgetSpendingQuerySchema,
-	},
+    return {
+      data: responseData,
+      statusCode: Ok,
+    };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: getBudgetSpendingQuerySchema,
+  },
 });

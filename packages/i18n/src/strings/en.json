@@ -1,467 +1,467 @@
 {
-	"assets": {
-		"activeNo": "Inactive",
-		"activeYes": "Active",
-		"columns": {
-			"name": "Name",
-			"provider": "Institution",
-			"type": "Type",
-			"value": "Value"
-		},
-		"edit": "Edit {assetName}",
-		"listControls": {
-			"addOne": "New Asset",
-			"deleteAction": "Yes, Delete",
-			"deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
-			"deleteTitle": "Delete Asset",
-			"filterPlaceholder": "Search",
-			"setActiveNo": "Deactivate",
-			"setActiveYes": "Activate"
-		},
-		"listTitle": "Your Assets",
-		"netWorth": {
-			"addSnapshot": "New Snapshot",
-			"addSnapshotFailure": "Snapshot Not Saved",
-			"addSnapshotSuccess": "Snapshot Saved",
-			"assetDistribution": "Asset Distribution",
-			"delta": "{delta} since {date}",
-			"liabilityDistribution": "Liability Distribution",
-			"title": "Net Worth"
-		},
-		"title": "Net Worth & Assets",
-		"types": {
-			"fixed_asset": "Fixed {plural, select, no {Asset} other {Assets}}",
-			"liquid_asset": "Liquid {plural, select, no {Asset} other {Assets}}",
-			"long_term_liability": "Long-term {plural, select, no {Liability} other {Liabilities}}",
-			"personal_asset": "Personal {plural, select, no {Item} other {Items}}",
-			"short_term_liability": "Short-term {plural, select, no {Liability} other {Liabilities}}"
-		}
-	},
-	"auth": {
-		"login": {
-			"error": {
-				"invalidPassword": "Incorrect password.",
-				"serverError": "The server couldn't process your login. Check the server logs for details.",
-				"tooManyAttempts": "Too many attempts. Please try again later.",
-				"unknown": "Something went wrong. Please try again."
-			},
-			"passwordLabel": "Password",
-			"submit": "Log In",
-			"title": "Log In"
-		},
-		"logout": "Log Out",
-		"sessionExpired": {
-			"message": "Your session has expired. Refresh the page or click here to <link>continue</link>.",
-			"title": "Session Expired"
-		}
-	},
-	"budget": {
-		"categoriesEdit": {
-			"categoryColumns": {
-				"label": "Label"
-			},
-			"deleteCategoryAction": "Yes, Delete All",
-			"deleteCategoryDescription": "This will delete the <bold>\"{label}\"</bold> category and <bold>all subcategories</bold>. Any transactions using those subcategories will be marked as uncategorized. <bold>This cannot be undone.</bold>",
-			"deleteCategoryTitle": "Delete category?",
-			"deleteSubcategoryAction": "Yes, Delete",
-			"deleteSubcategoryDescription": "This will delete the <bold>\"{label}\"</bold> subcategory, and any transactions using this subcategory will be marked as uncategorized. <bold>This cannot be undone.</bold>",
-			"deleteSubcategoryTitle": "Delete subcategory?",
-			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
-			"editCategory": "Edit {label}",
-			"editSubcategory": "Edit {label}",
-			"newCategory": "New Category",
-			"newSubcategory": "New Subcategory",
-			"noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
-			"noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
-			"subcategoryColumns": {
-				"budgetAmount": "Budgeted Amount",
-				"budgetFrequency": "Budget Frequency",
-				"budgetType": "Budget Type",
-				"categoryId": "Category",
-				"description": "Description",
-				"isPreTaxSavings": "Used for Pre-Tax Savings?",
-				"label": "Label",
-				"percentNeeds": "Needs",
-				"percentSavings": "Savings",
-				"percentWants": "Wants"
-			},
-			"subcategoryCount": "{count} subcategories",
-			"title": "Categories"
-		},
-		"categoriesView": {
-			"description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
-			"title": "Breakdown by Category"
-		},
-		"columns": {
-			"budget": "Budget",
-			"label": "Label"
-		},
-		"durations": {
-			"multipleMonths": "since {month}",
-			"oneMonth": "in {month}",
-			"periodMonths": "{months, plural, =1 {month} other {{months} months}}",
-			"perPeriod": "<bold>{amount}</bold> every {period}"
-		},
-		"editCategories": "Categories",
-		"overBudget": "{amount} over budget",
-		"overBudgetCount": "{count} over budget",
-		"overview": {
-			"aboveAverage": "<bold>{amount}</bold>",
-			"aboveAverageSubtitle": "{amountOver} over monthly average of {averageBudget} ({months, plural, =1 {{totalBudget} / month} other {{totalBudget} / {months} months}}); {remaining} from cap",
-			"budgetChange": "<bold>{lastSpend}</bold> → <spentFmt>{currentSpend}</spentFmt>",
-			"budgetChangeOverSubtitle": "{amountOver} over budget; {change} since previous {months, plural, =1 {month} other {{months}-month period}}",
-			"budgetChangeUnderSubtitle": "{change} since previous {months, plural, =1 {month} other {{months}-month period}}",
-			"overBudget": "<bold>{spent}</bold> of <bold>{budget}</bold>",
-			"overBudgetSubtitle": "{months, plural, =1 {In {endMonth}} other {From {startMonth} to {endMonth}}}",
-			"sectionAboveAverageSubtitle": "{count} items exceeded their monthly average but remain within total budget",
-			"sectionAboveAverageTitle": "Above Average Spend",
-			"sectionImprovedSubtitle": "{count} budgets returned to target since last period",
-			"sectionImprovedTitle": "Back on Track",
-			"sectionOverBudgetSubtitle": "{count} budgets exceeded their cap this period",
-			"sectionOverBudgetTitle": "Over Budget",
-			"sectionWorsenedSubtitle": "{count} budgets went over cap since last period",
-			"sectionWorsenedTitle": "New Overages",
-			"title": "Overview"
-		},
-		"quickPulse": {
-			"income": "Against <bold>{amount}</bold> net income",
-			"month": "Last Month",
-			"spending": "View Spending",
-			"spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
-			"title": "Quick Pulse",
-			"year": "Last 12 Months"
-		},
-		"spending": {
-			"areaChartTitle": "Spending by Area",
-			"areas": {
-				"needs": "Needs",
-				"savings": "Savings",
-				"wants": "Wants"
-			},
-			"categoryChartTitle": "Spending by Category",
-			"controls": {
-				"endDate": "End Date",
-				"startDate": "Start Date"
-			},
-			"errors": {
-				"noData": "There is no spending data for the given period.",
-				"noDates": "At least one of start and end date must be provided as a valid ISO-8601 value."
-			},
-			"otherLabel": "Other",
-			"title": "Spending"
-		},
-		"spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
-		"spentOverall": "<bold>{spent}</bold> {period}",
-		"summary": {
-			"cardTitle": "Budget Score",
-			"description": "Here is an overview of your budget. These summarized numbers show <bold>the last {months} months</bold> as of <bold>{endDate}</bold>. The overall score is based on how well you stayed in your budget, and left wiggle room between your budget and income.",
-			"explanations": {
-				"score0": "This period had no financial foundation. Whether you're just starting out or hit a rough patch, there's always room to rebuild.",
-				"score1": "This was a very challenging period financially. Even experienced budgeters have tough months—what matters is moving forward.",
-				"score2": "Significant struggles this period. Life happens, and sometimes expenses pile up. Focus on small wins as you recover.",
-				"score3": "Below average stability this time around. Whether it's unexpected costs or a learning curve, improvement is within reach.",
-				"score4": "Getting by this period, but things felt tight. You're keeping your head above water—now let's build some cushion.",
-				"score5": "Average financial health for this period. You're managing the basics and moving in a positive direction.",
-				"score6": "A solid period overall. You handled most things well, with just a few areas that could use fine-tuning.",
-				"score7": "Strong performance this period. You're managing money confidently, with only minor opportunities for optimization.",
-				"score8": "Excellent work this period. You're well ahead of typical budgeting challenges and making smart decisions.",
-				"score9": "Outstanding financial management this period. You navigated expenses skillfully with very few missteps.",
-				"score10": "Exceptional period. You demonstrated mastery over your finances and made consistently smart choices throughout."
-			},
-			"overview": "Cash Flow",
-			"subtitleBudget": "Total Budget",
-			"subtitleIncome": "{income} Income",
-			"subtitleRemaining": "Total Saved",
-			"subtitleSpending": "Total Spending",
-			"title": "Budget Overview"
-		},
-		"title": "Budget",
-		"types": {
-			"expense": "Expense",
-			"income": "Income",
-			"neutral": "Reallocation"
-		},
-		"underBudget": "On target"
-	},
-	"common": {
-		"actions": {
-			"cancel": "Cancel",
-			"createMore": "Create More",
-			"delete": "Delete",
-			"duplicate": "Duplicate",
-			"edit": "Edit",
-			"more": "More actions",
-			"move": {
-				"bottom": "Move to Bottom",
-				"down": "Move Down",
-				"top": "Move to Top",
-				"up": "Move Up"
-			},
-			"ok": "OK",
-			"save": "Save"
-		},
-		"charts": {
-			"tooltipPercentage": "Percentage: <bold>{value}</bold>",
-			"tooltipValue": "Value: <bold>{value}</bold>"
-		},
-		"masterDetail": {
-			"detailEmptyState": "Select an item to view its details.",
-			"masterEmptyState": "No items available."
-		},
-		"table": {
-			"error": "Unable to load table data.",
-			"errorBody": "We ran into a problem while loading the data for this table."
-		}
-	},
-	"error": {
-		"api": {
-			"errorBody": "The request failed. Please check your connection and try again.",
-			"errorTitle": "Request Failed",
-			"validationErrorBody": "The server returned data in an unexpected format. Please try again.",
-			"validationErrorTitle": "Validation Error"
-		},
-		"databaseUnavailable": {
-			"body": "Tally can't reach its database. Make sure it's running; this page will recover automatically once it's back.",
-			"title": "Database Unavailable"
-		},
-		"fullPage": {
-			"ctaReload": "Reload Page",
-			"ctaReset": "Try Again",
-			"description": "The server encountered the following error:",
-			"title": "We couldn't load this page."
-		}
-	},
-	"help": {
-		"aiDisclaimer": "Some of this help content was generated with AI and may contain mistakes.",
-		"title": "About {subject}"
-	},
-	"retirement": {
-		"chart": {
-			"title": "Cumulative Savings",
-			"tooltipTitle": "Age {age}"
-		},
-		"inputs": {
-			"assumedAnnualRaise": "Annual Raise",
-			"assumedInflationRatePercent": "Inflation Rate (% Annual)",
-			"assumedInvestmentReturnPercent": "Investment Return (% Annual)",
-			"assumedPostRetirementIncomeNeeded": "Post-Retirement Expenses",
-			"contributionPercent": "Contribution (% of Income)",
-			"currentAge": "Current Age",
-			"currentPreTaxIncome": "Current Pre-Tax Income",
-			"currentRetirementInvestments": "Current Retirement",
-			"lifeExpectancy": "Life Expectancy",
-			"retirementAge": "Retirement Age",
-			"title": "Calculator Inputs"
-		},
-		"summary": {
-			"retirementLeftAt": "Estimated Savings at {age}"
-		},
-		"table": {
-			"columns": {
-				"addedToRetirement": "Contributed",
-				"age": "Age",
-				"assumedIncome": "Assumed Income",
-				"compoundInflation": "Inflation (× Today's)",
-				"distributedFromRetirement": "Distributed",
-				"retirementAmount": "Retirement Amount",
-				"retirementAmountToday": "Retirement Amount (Today's Money)",
-				"year": "Year"
-			},
-			"title": "Retirement by Year"
-		},
-		"title": "Retirement"
-	},
-	"rules": {
-		"columns": {
-			"category": "Category",
-			"merchant": "Merchant Name",
-			"regex": "Expression to Match"
-		},
-		"edit": {
-			"basedOnTitle": "Based on merchant description:",
-			"failureBody": "An error occurred while saving your rule. Please try again later.",
-			"failureTitle": "Saving Rule Failed",
-			"regexCaseSensitive": "Case-sensitive?",
-			"regexMismatch": "The expression you've provided does not match this description.",
-			"title": "Edit {ruleName}"
-		},
-		"listControls": {
-			"addOne": "New Rule",
-			"deleteAction": "Yes, Delete",
-			"deleteAllBody": "Are you sure you want to delete all {count} rules shown?",
-			"deleteAllTitle": "Delete All ({count})",
-			"deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
-			"deleteSelectedBody": "Are you sure you want to delete the {count} selected rules?",
-			"deleteSelectedTitle": "Delete Selected ({count})",
-			"deleteTitle": "Delete Rule",
-			"filterPlaceholder": "Search…"
-		},
-		"title": "Transaction Rules"
-	},
-	"settings": {
-		"dangerModal": {
-			"backupFirst": "We recommend downloading a backup first. (<downloadLink>Click here to create one.</downloadLink>)",
-			"cancel": "Cancel",
-			"confirm": "Confirm",
-			"downloadBackup": "Download backup",
-			"dropConsequence": "All assets, transactions, categories, rules, snapshots and server-saved settings will be permanently deleted. The database will be reset to an empty state.",
-			"dropSuccess": "All data deleted.",
-			"dropTitle": "Delete all data",
-			"failed": "The operation failed.",
-			"file": "Backup file",
-			"restoreConsequence": "All current data will be replaced with the contents of the backup file. Anything not in the backup will be permanently lost.",
-			"restoreSuccess": "Database restored.",
-			"restoreTitle": "Restore from backup",
-			"signedOut": "You will be signed out.",
-			"understand": "I understand this cannot be undone."
-		},
-		"data": {
-			"backup": {
-				"button": "Download backup",
-				"description": "Download a full backup of your database.",
-				"failed": "Backup failed",
-				"title": "Backup"
-			},
-			"dangerZone": {
-				"title": "Danger zone"
-			},
-			"drop": {
-				"button": "Delete all data…",
-				"description": "Permanently delete everything and reset the database to an empty state.",
-				"title": "Delete all data"
-			},
-			"restore": {
-				"button": "Restore…",
-				"description": "Replace all current data with the contents of a backup file.",
-				"title": "Restore from backup"
-			}
-		},
-		"general": {
-			"theme": {
-				"dark": "Dark",
-				"description": "Choose how Tally looks.",
-				"label": "Theme",
-				"light": "Light",
-				"system": "System"
-			}
-		},
-		"hiddenProviders": {
-			"title": "Hidden",
-			"tooltip": "Hidden in Settings → Providers."
-		},
-		"providers": {
-			"description": "Choose which providers appear when you pick one.",
-			"help": "Hidden providers are removed from pickers. Existing accounts and transactions are unaffected.",
-			"label": "Data providers"
-		},
-		"saveFailed": "Couldn't save the setting.",
-		"scope": {
-			"database": "Saved to server",
-			"databaseTooltip": "Saved to your Tally database, so it applies on every device.",
-			"local": "This browser",
-			"localSectionNote": "Settings marked “This browser” aren't shared with other devices.",
-			"localTooltip": "Saved only in this browser. It isn't shared with your other devices."
-		},
-		"sections": {
-			"data": "Data",
-			"general": "General",
-			"groups": {
-				"preferences": "Preferences",
-				"system": "System"
-			},
-			"providers": "Providers",
-			"title": "Settings"
-		},
-		"title": "Settings"
-	},
-	"summary": {
-		"spendCard": {
-			"earnedMonthly": "Income in {period}",
-			"earnedYearly": "Income in {period}",
-			"spendMonthly": "Spending in {period}",
-			"spendYearly": "Spending in {period}"
-		},
-		"spendChart": {
-			"earned": "Income",
-			"spending": "Expenses",
-			"titleMonthly": "Monthly Spending",
-			"titleYearly": "Annual Spending"
-		},
-		"title": "Summary"
-	},
-	"transactions": {
-		"columns": {
-			"account": "Account",
-			"amount": "Amount",
-			"category": "Category",
-			"date": "Date",
-			"happiness": "Satisfaction",
-			"merchant": "Merchant",
-			"notes": "Notes",
-			"type": "Type"
-		},
-		"delete": {
-			"action": "Yes, Delete",
-			"body": "Are you sure you want to delete the {amount} transaction with {merchantName}? This cannot be undone.",
-			"title": "Delete Transaction"
-		},
-		"edit": {
-			"failureBody": "An error occurred while saving your transaction. Please try again later.",
-			"failureTitle": "Saving Transaction Failed",
-			"successBody": "Your transaction at {merchantName} for {amount} was saved.",
-			"successTitle": "Saved Successfully",
-			"title": "Edit {amount} transaction with {merchantName}"
-		},
-		"happiness": {
-			"level1": "Not Worth It",
-			"level2": "Neutral",
-			"level3": "Worth It"
-		},
-		"rules": {
-			"edit": "Known Merchants"
-		},
-		"table": {
-			"accountsAll": "All Accounts",
-			"accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
-			"addMany": "Add Transactions",
-			"addOne": "New Transaction",
-			"categoriesAll": "All Categories",
-			"categoriesSome": "{count} {count, plural, =1 {category} other {categories}}",
-			"filterPlaceholder": "Search merchants…",
-			"noneFound": "No transactions found.",
-			"noneMatched": "No transactions matched your search."
-		},
-		"title": "Transactions",
-		"types": {
-			"credit": "Income",
-			"debit": "Expense"
-		},
-		"upload": {
-			"action": "Import File",
-			"confirmUpload": "Confirm & Save",
-			"createRule": "Auto-categorize",
-			"dropFile": "Drag and drop a file here, or click to browse",
-			"dropFileRules": "You must select a <bold>CSV file</bold> which matches the format for the chosen account.",
-			"dropFileSelected": "You've selected <bold>{fileName}</bold>.",
-			"failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
-			"failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
-			"failureTitle": "File Upload Failed",
-			"progressLabel": "Upload progress",
-			"resultCard": {
-				"countCategorized": "{count} categorized",
-				"countFailed": "{count} failed",
-				"countIgnored": "{count} ignored",
-				"countUncategorized": "{count} uncategorized",
-				"descriptionUnprocessed": "The items below are shown as they appeared in the file you uploaded.",
-				"errorColumn": "Error",
-				"titleFailed": "Failed Transactions",
-				"titleIgnored": "Ignored Transactions",
-				"titleUncategorized": "Uncategorized Transactions"
-			},
-			"selectAccount": "Please select an account associated with a known financial provider.",
-			"selectedProvider": "This account is associated with <bold>{provider}</bold>.",
-			"validateAgain": "Re-run Categorization",
-			"waitingForFile": "Waiting for transactions to upload…"
-		}
-	}
+  "assets": {
+    "activeNo": "Inactive",
+    "activeYes": "Active",
+    "columns": {
+      "name": "Name",
+      "provider": "Institution",
+      "type": "Type",
+      "value": "Value"
+    },
+    "edit": "Edit {assetName}",
+    "listControls": {
+      "addOne": "New Asset",
+      "deleteAction": "Yes, Delete",
+      "deleteBody": "Are you sure you want to delete {merchant} from your assets? If you want to hide it without deleting it, consider deactivating it instead.",
+      "deleteTitle": "Delete Asset",
+      "filterPlaceholder": "Search",
+      "setActiveNo": "Deactivate",
+      "setActiveYes": "Activate"
+    },
+    "listTitle": "Your Assets",
+    "netWorth": {
+      "addSnapshot": "New Snapshot",
+      "addSnapshotFailure": "Snapshot Not Saved",
+      "addSnapshotSuccess": "Snapshot Saved",
+      "assetDistribution": "Asset Distribution",
+      "delta": "{delta} since {date}",
+      "liabilityDistribution": "Liability Distribution",
+      "title": "Net Worth"
+    },
+    "title": "Net Worth & Assets",
+    "types": {
+      "fixed_asset": "Fixed {plural, select, no {Asset} other {Assets}}",
+      "liquid_asset": "Liquid {plural, select, no {Asset} other {Assets}}",
+      "long_term_liability": "Long-term {plural, select, no {Liability} other {Liabilities}}",
+      "personal_asset": "Personal {plural, select, no {Item} other {Items}}",
+      "short_term_liability": "Short-term {plural, select, no {Liability} other {Liabilities}}"
+    }
+  },
+  "auth": {
+    "login": {
+      "error": {
+        "invalidPassword": "Incorrect password.",
+        "serverError": "The server couldn't process your login. Check the server logs for details.",
+        "tooManyAttempts": "Too many attempts. Please try again later.",
+        "unknown": "Something went wrong. Please try again."
+      },
+      "passwordLabel": "Password",
+      "submit": "Log In",
+      "title": "Log In"
+    },
+    "logout": "Log Out",
+    "sessionExpired": {
+      "message": "Your session has expired. Refresh the page or click here to <link>continue</link>.",
+      "title": "Session Expired"
+    }
+  },
+  "budget": {
+    "categoriesEdit": {
+      "categoryColumns": {
+        "label": "Label"
+      },
+      "deleteCategoryAction": "Yes, Delete All",
+      "deleteCategoryDescription": "This will delete the <bold>\"{label}\"</bold> category and <bold>all subcategories</bold>. Any transactions using those subcategories will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+      "deleteCategoryTitle": "Delete category?",
+      "deleteSubcategoryAction": "Yes, Delete",
+      "deleteSubcategoryDescription": "This will delete the <bold>\"{label}\"</bold> subcategory, and any transactions using this subcategory will be marked as uncategorized. <bold>This cannot be undone.</bold>",
+      "deleteSubcategoryTitle": "Delete subcategory?",
+      "description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+      "editCategory": "Edit {label}",
+      "editSubcategory": "Edit {label}",
+      "newCategory": "New Category",
+      "newSubcategory": "New Subcategory",
+      "noCategories": "You have no categories yet. Click \"{newCategory}\" to create one.",
+      "noSubcategories": "There are no subcategories here yet. Click \"{newSubcategory}\" to create one.",
+      "subcategoryColumns": {
+        "budgetAmount": "Budgeted Amount",
+        "budgetFrequency": "Budget Frequency",
+        "budgetType": "Budget Type",
+        "categoryId": "Category",
+        "description": "Description",
+        "isPreTaxSavings": "Used for Pre-Tax Savings?",
+        "label": "Label",
+        "percentNeeds": "Needs",
+        "percentSavings": "Savings",
+        "percentWants": "Wants"
+      },
+      "subcategoryCount": "{count} subcategories",
+      "title": "Categories"
+    },
+    "categoriesView": {
+      "description": "Here is a list of your budgeted categories. These numbers show the amount spent versus budgeted for the most recent period as of <bold>{endDate}</bold>, for each corresponding category.",
+      "title": "Breakdown by Category"
+    },
+    "columns": {
+      "budget": "Budget",
+      "label": "Label"
+    },
+    "durations": {
+      "multipleMonths": "since {month}",
+      "oneMonth": "in {month}",
+      "periodMonths": "{months, plural, =1 {month} other {{months} months}}",
+      "perPeriod": "<bold>{amount}</bold> every {period}"
+    },
+    "editCategories": "Categories",
+    "overBudget": "{amount} over budget",
+    "overBudgetCount": "{count} over budget",
+    "overview": {
+      "aboveAverage": "<bold>{amount}</bold>",
+      "aboveAverageSubtitle": "{amountOver} over monthly average of {averageBudget} ({months, plural, =1 {{totalBudget} / month} other {{totalBudget} / {months} months}}); {remaining} from cap",
+      "budgetChange": "<bold>{lastSpend}</bold> → <spentFmt>{currentSpend}</spentFmt>",
+      "budgetChangeOverSubtitle": "{amountOver} over budget; {change} since previous {months, plural, =1 {month} other {{months}-month period}}",
+      "budgetChangeUnderSubtitle": "{change} since previous {months, plural, =1 {month} other {{months}-month period}}",
+      "overBudget": "<bold>{spent}</bold> of <bold>{budget}</bold>",
+      "overBudgetSubtitle": "{months, plural, =1 {In {endMonth}} other {From {startMonth} to {endMonth}}}",
+      "sectionAboveAverageSubtitle": "{count} items exceeded their monthly average but remain within total budget",
+      "sectionAboveAverageTitle": "Above Average Spend",
+      "sectionImprovedSubtitle": "{count} budgets returned to target since last period",
+      "sectionImprovedTitle": "Back on Track",
+      "sectionOverBudgetSubtitle": "{count} budgets exceeded their cap this period",
+      "sectionOverBudgetTitle": "Over Budget",
+      "sectionWorsenedSubtitle": "{count} budgets went over cap since last period",
+      "sectionWorsenedTitle": "New Overages",
+      "title": "Overview"
+    },
+    "quickPulse": {
+      "income": "Against <bold>{amount}</bold> net income",
+      "month": "Last Month",
+      "spending": "View Spending",
+      "spent": "<spentFmt>{spent}</spentFmt> / <budgetFmt>{budget}</budgetFmt>",
+      "title": "Quick Pulse",
+      "year": "Last 12 Months"
+    },
+    "spending": {
+      "areaChartTitle": "Spending by Area",
+      "areas": {
+        "needs": "Needs",
+        "savings": "Savings",
+        "wants": "Wants"
+      },
+      "categoryChartTitle": "Spending by Category",
+      "controls": {
+        "endDate": "End Date",
+        "startDate": "Start Date"
+      },
+      "errors": {
+        "noData": "There is no spending data for the given period.",
+        "noDates": "At least one of start and end date must be provided as a valid ISO-8601 value."
+      },
+      "otherLabel": "Other",
+      "title": "Spending"
+    },
+    "spentInBudget": "<bold>{spent}</bold> of <bold>{budget}</bold> {period}",
+    "spentOverall": "<bold>{spent}</bold> {period}",
+    "summary": {
+      "cardTitle": "Budget Score",
+      "description": "Here is an overview of your budget. These summarized numbers show <bold>the last {months} months</bold> as of <bold>{endDate}</bold>. The overall score is based on how well you stayed in your budget, and left wiggle room between your budget and income.",
+      "explanations": {
+        "score0": "This period had no financial foundation. Whether you're just starting out or hit a rough patch, there's always room to rebuild.",
+        "score1": "This was a very challenging period financially. Even experienced budgeters have tough months—what matters is moving forward.",
+        "score2": "Significant struggles this period. Life happens, and sometimes expenses pile up. Focus on small wins as you recover.",
+        "score3": "Below average stability this time around. Whether it's unexpected costs or a learning curve, improvement is within reach.",
+        "score4": "Getting by this period, but things felt tight. You're keeping your head above water—now let's build some cushion.",
+        "score5": "Average financial health for this period. You're managing the basics and moving in a positive direction.",
+        "score6": "A solid period overall. You handled most things well, with just a few areas that could use fine-tuning.",
+        "score7": "Strong performance this period. You're managing money confidently, with only minor opportunities for optimization.",
+        "score8": "Excellent work this period. You're well ahead of typical budgeting challenges and making smart decisions.",
+        "score9": "Outstanding financial management this period. You navigated expenses skillfully with very few missteps.",
+        "score10": "Exceptional period. You demonstrated mastery over your finances and made consistently smart choices throughout."
+      },
+      "overview": "Cash Flow",
+      "subtitleBudget": "Total Budget",
+      "subtitleIncome": "{income} Income",
+      "subtitleRemaining": "Total Saved",
+      "subtitleSpending": "Total Spending",
+      "title": "Budget Overview"
+    },
+    "title": "Budget",
+    "types": {
+      "expense": "Expense",
+      "income": "Income",
+      "neutral": "Reallocation"
+    },
+    "underBudget": "On target"
+  },
+  "common": {
+    "actions": {
+      "cancel": "Cancel",
+      "createMore": "Create More",
+      "delete": "Delete",
+      "duplicate": "Duplicate",
+      "edit": "Edit",
+      "more": "More actions",
+      "move": {
+        "bottom": "Move to Bottom",
+        "down": "Move Down",
+        "top": "Move to Top",
+        "up": "Move Up"
+      },
+      "ok": "OK",
+      "save": "Save"
+    },
+    "charts": {
+      "tooltipPercentage": "Percentage: <bold>{value}</bold>",
+      "tooltipValue": "Value: <bold>{value}</bold>"
+    },
+    "masterDetail": {
+      "detailEmptyState": "Select an item to view its details.",
+      "masterEmptyState": "No items available."
+    },
+    "table": {
+      "error": "Unable to load table data.",
+      "errorBody": "We ran into a problem while loading the data for this table."
+    }
+  },
+  "error": {
+    "api": {
+      "errorBody": "The request failed. Please check your connection and try again.",
+      "errorTitle": "Request Failed",
+      "validationErrorBody": "The server returned data in an unexpected format. Please try again.",
+      "validationErrorTitle": "Validation Error"
+    },
+    "databaseUnavailable": {
+      "body": "Tally can't reach its database. Make sure it's running; this page will recover automatically once it's back.",
+      "title": "Database Unavailable"
+    },
+    "fullPage": {
+      "ctaReload": "Reload Page",
+      "ctaReset": "Try Again",
+      "description": "The server encountered the following error:",
+      "title": "We couldn't load this page."
+    }
+  },
+  "help": {
+    "aiDisclaimer": "Some of this help content was generated with AI and may contain mistakes.",
+    "title": "About {subject}"
+  },
+  "retirement": {
+    "chart": {
+      "title": "Cumulative Savings",
+      "tooltipTitle": "Age {age}"
+    },
+    "inputs": {
+      "assumedAnnualRaise": "Annual Raise",
+      "assumedInflationRatePercent": "Inflation Rate (% Annual)",
+      "assumedInvestmentReturnPercent": "Investment Return (% Annual)",
+      "assumedPostRetirementIncomeNeeded": "Post-Retirement Expenses",
+      "contributionPercent": "Contribution (% of Income)",
+      "currentAge": "Current Age",
+      "currentPreTaxIncome": "Current Pre-Tax Income",
+      "currentRetirementInvestments": "Current Retirement",
+      "lifeExpectancy": "Life Expectancy",
+      "retirementAge": "Retirement Age",
+      "title": "Calculator Inputs"
+    },
+    "summary": {
+      "retirementLeftAt": "Estimated Savings at {age}"
+    },
+    "table": {
+      "columns": {
+        "addedToRetirement": "Contributed",
+        "age": "Age",
+        "assumedIncome": "Assumed Income",
+        "compoundInflation": "Inflation (× Today's)",
+        "distributedFromRetirement": "Distributed",
+        "retirementAmount": "Retirement Amount",
+        "retirementAmountToday": "Retirement Amount (Today's Money)",
+        "year": "Year"
+      },
+      "title": "Retirement by Year"
+    },
+    "title": "Retirement"
+  },
+  "rules": {
+    "columns": {
+      "category": "Category",
+      "merchant": "Merchant Name",
+      "regex": "Expression to Match"
+    },
+    "edit": {
+      "basedOnTitle": "Based on merchant description:",
+      "failureBody": "An error occurred while saving your rule. Please try again later.",
+      "failureTitle": "Saving Rule Failed",
+      "regexCaseSensitive": "Case-sensitive?",
+      "regexMismatch": "The expression you've provided does not match this description.",
+      "title": "Edit {ruleName}"
+    },
+    "listControls": {
+      "addOne": "New Rule",
+      "deleteAction": "Yes, Delete",
+      "deleteAllBody": "Are you sure you want to delete all {count} rules shown?",
+      "deleteAllTitle": "Delete All ({count})",
+      "deleteBody": "Are you sure you want to delete the rule for merchant {merchant}?",
+      "deleteSelectedBody": "Are you sure you want to delete the {count} selected rules?",
+      "deleteSelectedTitle": "Delete Selected ({count})",
+      "deleteTitle": "Delete Rule",
+      "filterPlaceholder": "Search…"
+    },
+    "title": "Transaction Rules"
+  },
+  "settings": {
+    "dangerModal": {
+      "backupFirst": "We recommend downloading a backup first. (<downloadLink>Click here to create one.</downloadLink>)",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "downloadBackup": "Download backup",
+      "dropConsequence": "All assets, transactions, categories, rules, snapshots and server-saved settings will be permanently deleted. The database will be reset to an empty state.",
+      "dropSuccess": "All data deleted.",
+      "dropTitle": "Delete all data",
+      "failed": "The operation failed.",
+      "file": "Backup file",
+      "restoreConsequence": "All current data will be replaced with the contents of the backup file. Anything not in the backup will be permanently lost.",
+      "restoreSuccess": "Database restored.",
+      "restoreTitle": "Restore from backup",
+      "signedOut": "You will be signed out.",
+      "understand": "I understand this cannot be undone."
+    },
+    "data": {
+      "backup": {
+        "button": "Download backup",
+        "description": "Download a full backup of your database.",
+        "failed": "Backup failed",
+        "title": "Backup"
+      },
+      "dangerZone": {
+        "title": "Danger zone"
+      },
+      "drop": {
+        "button": "Delete all data…",
+        "description": "Permanently delete everything and reset the database to an empty state.",
+        "title": "Delete all data"
+      },
+      "restore": {
+        "button": "Restore…",
+        "description": "Replace all current data with the contents of a backup file.",
+        "title": "Restore from backup"
+      }
+    },
+    "general": {
+      "theme": {
+        "dark": "Dark",
+        "description": "Choose how Tally looks.",
+        "label": "Theme",
+        "light": "Light",
+        "system": "System"
+      }
+    },
+    "hiddenProviders": {
+      "title": "Hidden",
+      "tooltip": "Hidden in Settings → Providers."
+    },
+    "providers": {
+      "description": "Choose which providers appear when you pick one.",
+      "help": "Hidden providers are removed from pickers. Existing accounts and transactions are unaffected.",
+      "label": "Data providers"
+    },
+    "saveFailed": "Couldn't save the setting.",
+    "scope": {
+      "database": "Saved to server",
+      "databaseTooltip": "Saved to your Tally database, so it applies on every device.",
+      "local": "This browser",
+      "localSectionNote": "Settings marked “This browser” aren't shared with other devices.",
+      "localTooltip": "Saved only in this browser. It isn't shared with your other devices."
+    },
+    "sections": {
+      "data": "Data",
+      "general": "General",
+      "groups": {
+        "preferences": "Preferences",
+        "system": "System"
+      },
+      "providers": "Providers",
+      "title": "Settings"
+    },
+    "title": "Settings"
+  },
+  "summary": {
+    "spendCard": {
+      "earnedMonthly": "Income in {period}",
+      "earnedYearly": "Income in {period}",
+      "spendMonthly": "Spending in {period}",
+      "spendYearly": "Spending in {period}"
+    },
+    "spendChart": {
+      "earned": "Income",
+      "spending": "Expenses",
+      "titleMonthly": "Monthly Spending",
+      "titleYearly": "Annual Spending"
+    },
+    "title": "Summary"
+  },
+  "transactions": {
+    "columns": {
+      "account": "Account",
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "happiness": "Satisfaction",
+      "merchant": "Merchant",
+      "notes": "Notes",
+      "type": "Type"
+    },
+    "delete": {
+      "action": "Yes, Delete",
+      "body": "Are you sure you want to delete the {amount} transaction with {merchantName}? This cannot be undone.",
+      "title": "Delete Transaction"
+    },
+    "edit": {
+      "failureBody": "An error occurred while saving your transaction. Please try again later.",
+      "failureTitle": "Saving Transaction Failed",
+      "successBody": "Your transaction at {merchantName} for {amount} was saved.",
+      "successTitle": "Saved Successfully",
+      "title": "Edit {amount} transaction with {merchantName}"
+    },
+    "happiness": {
+      "level1": "Not Worth It",
+      "level2": "Neutral",
+      "level3": "Worth It"
+    },
+    "rules": {
+      "edit": "Known Merchants"
+    },
+    "table": {
+      "accountsAll": "All Accounts",
+      "accountsSome": "{count} {count, plural, =1 {account} other {accounts}}",
+      "addMany": "Add Transactions",
+      "addOne": "New Transaction",
+      "categoriesAll": "All Categories",
+      "categoriesSome": "{count} {count, plural, =1 {category} other {categories}}",
+      "filterPlaceholder": "Search merchants…",
+      "noneFound": "No transactions found.",
+      "noneMatched": "No transactions matched your search."
+    },
+    "title": "Transactions",
+    "types": {
+      "credit": "Income",
+      "debit": "Expense"
+    },
+    "upload": {
+      "action": "Import File",
+      "confirmUpload": "Confirm & Save",
+      "createRule": "Auto-categorize",
+      "dropFile": "Drag and drop a file here, or click to browse",
+      "dropFileRules": "You must select a <bold>CSV file</bold> which matches the format for the chosen account.",
+      "dropFileSelected": "You've selected <bold>{fileName}</bold>.",
+      "failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
+      "failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
+      "failureTitle": "File Upload Failed",
+      "progressLabel": "Upload progress",
+      "resultCard": {
+        "countCategorized": "{count} categorized",
+        "countFailed": "{count} failed",
+        "countIgnored": "{count} ignored",
+        "countUncategorized": "{count} uncategorized",
+        "descriptionUnprocessed": "The items below are shown as they appeared in the file you uploaded.",
+        "errorColumn": "Error",
+        "titleFailed": "Failed Transactions",
+        "titleIgnored": "Ignored Transactions",
+        "titleUncategorized": "Uncategorized Transactions"
+      },
+      "selectAccount": "Please select an account associated with a known financial provider.",
+      "selectedProvider": "This account is associated with <bold>{provider}</bold>.",
+      "validateAgain": "Re-run Categorization",
+      "waitingForFile": "Waiting for transactions to upload…"
+    }
+  }
 }

@@ -10,16 +10,16 @@ import { type NextResponseFn } from "../types";
 const assetsClientLazy = new Lazy(() => new AssetsClient());
 
 export const GetAssetsRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:ASSETS",
-	handler: async (): Promise<ApiResult<GetAssetsResponse>> => {
-		const assetsClient = assetsClientLazy.get();
-		const assets = await assetsClient.getAssetsAsync();
+  eventName: "GET:ASSETS",
+  handler: async (): Promise<ApiResult<GetAssetsResponse>> => {
+    const assetsClient = assetsClientLazy.get();
+    const assets = await assetsClient.getAssetsAsync();
 
-		return { data: { assets }, statusCode: Ok };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { data: { assets }, statusCode: Ok };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

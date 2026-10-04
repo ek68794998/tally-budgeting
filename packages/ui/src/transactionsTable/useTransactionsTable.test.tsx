@@ -1,18 +1,18 @@
 import {
-	buildAsset,
-	buildSubcategory,
-	buildTransaction,
+  buildAsset,
+  buildSubcategory,
+  buildTransaction,
 } from "@tally/data-models/testing/fixtures";
 import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
-	afterEach,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	type Mock,
-	vi,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  vi,
 } from "vitest";
 import { ModalDefaultTransaction } from "../common/modalDefault";
 import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
@@ -24,13 +24,13 @@ import { createQueryClientWrapper } from "../testing/queryClient";
 import { useTransactionsTable } from "./useTransactionsTable";
 
 vi.mock("../hooks/api/useDeleteTransaction", () => ({
-	useDeleteTransaction: vi.fn(),
+  useDeleteTransaction: vi.fn(),
 }));
 vi.mock("../hooks/api/usePostTransaction", () => ({
-	usePostTransaction: vi.fn(),
+  usePostTransaction: vi.fn(),
 }));
 vi.mock("../hooks/api/usePutTransaction", () => ({
-	usePutTransaction: vi.fn(),
+  usePutTransaction: vi.fn(),
 }));
 vi.mock("../hooks/store/useAssets", () => ({ useAssets: vi.fn() }));
 vi.mock("../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
@@ -41,236 +41,234 @@ const putTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
 
 const coffee = buildTransaction({ accountId: 1, id: 7, subcategoryId: 2 });
 const rent = buildTransaction({
-	amountCents: 1500_00,
-	id: 8,
-	merchant: "Rent",
+  amountCents: 1500_00,
+  id: 8,
+  merchant: "Rent",
 });
 
 let fetchMock: Mock<typeof fetch>;
 
 const respondWith = (body: unknown) =>
-	fetchMock.mockImplementation(() =>
-		Promise.resolve(new Response(JSON.stringify(body))),
-	);
+  fetchMock.mockImplementation(() =>
+    Promise.resolve(new Response(JSON.stringify(body))),
+  );
 
 const getRequestedParams = () => {
-	const input = fetchMock.mock.lastCall?.[0];
+  const input = fetchMock.mock.lastCall?.[0];
 
-	return new URL(typeof input === "string" ? input : "", "http://localhost")
-		.searchParams;
+  return new URL(typeof input === "string" ? input : "", "http://localhost")
+    .searchParams;
 };
 
 const renderTableAsync = async () => {
-	const { wrapper } = createQueryClientWrapper();
-	const rendered = renderHook(useTransactionsTable, { wrapper });
+  const { wrapper } = createQueryClientWrapper();
+  const rendered = renderHook(useTransactionsTable, { wrapper });
 
-	await waitFor(() => {
-		expect(rendered.result.current.transactionsData).toHaveLength(2);
-	});
+  await waitFor(() => {
+    expect(rendered.result.current.transactionsData).toHaveLength(2);
+  });
 
-	return rendered;
+  return rendered;
 };
 
 describe("useTransactionsTable", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-		fetchMock = vi.fn<typeof fetch>();
-		vi.stubGlobal("fetch", fetchMock);
-		respondWith({ count: 31, success: true, transactions: [coffee, rent] });
-		vi.mocked(useAssets).mockReturnValue({
-			assets: [
-				buildAsset({ id: 1, name: "Checking" }),
-				buildAsset({ id: 2, name: "House", type: "fixed_asset" }),
-			],
-			error: null,
-			isLoading: false,
-			refetch: vi.fn(),
-		});
-		vi.mocked(useCategories).mockReturnValue({
-			categories: [],
-			error: null,
-			isLoading: false,
-			refetch: vi.fn(),
-			subcategories: [buildSubcategory({ id: 2, label: "Coffee" })],
-		});
-		vi.mocked(useDeleteTransaction).mockReturnValue({
-			deleteTransactionAsync,
-		});
-		vi.mocked(usePostTransaction).mockReturnValue({ postTransactionAsync });
-		vi.mocked(usePutTransaction).mockReturnValue({ putTransactionAsync });
-	});
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetchMock);
+    respondWith({ count: 31, success: true, transactions: [coffee, rent] });
+    vi.mocked(useAssets).mockReturnValue({
+      assets: [
+        buildAsset({ id: 1, name: "Checking" }),
+        buildAsset({ id: 2, name: "House", type: "fixed_asset" }),
+      ],
+      error: null,
+      isLoading: false,
+      refetch: vi.fn(),
+    });
+    vi.mocked(useCategories).mockReturnValue({
+      categories: [],
+      error: null,
+      isLoading: false,
+      refetch: vi.fn(),
+      subcategories: [buildSubcategory({ id: 2, label: "Coffee" })],
+    });
+    vi.mocked(useDeleteTransaction).mockReturnValue({
+      deleteTransactionAsync,
+    });
+    vi.mocked(usePostTransaction).mockReturnValue({ postTransactionAsync });
+    vi.mocked(usePutTransaction).mockReturnValue({ putTransactionAsync });
+  });
 
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
-	it("loads the first page sorted by date and converts it for display", async () => {
-		const { result } = await renderTableAsync();
+  it("loads the first page sorted by date and converts it for display", async () => {
+    const { result } = await renderTableAsync();
 
-		expect(Object.fromEntries(getRequestedParams())).toEqual({
-			direction: "descending",
-			filter: "",
-			limit: "15",
-			page: "1",
-			sortBy: "date",
-		});
-		expect(result.current.transactionsData[0]).toMatchObject({
-			account: "Checking",
-			id: 7,
-			subcategory: "Coffee",
-		});
-		expect(result.current.pageCount).toBe(3);
-		expect(result.current.selectedPage).toBe(1);
-		expect(result.current.isLoading).toBe(false);
-	});
+    expect(Object.fromEntries(getRequestedParams())).toEqual({
+      direction: "descending",
+      filter: "",
+      limit: "15",
+      page: "1",
+      sortBy: "date",
+    });
+    expect(result.current.transactionsData[0]).toMatchObject({
+      account: "Checking",
+      id: 7,
+      subcategory: "Coffee",
+    });
+    expect(result.current.pageCount).toBe(3);
+    expect(result.current.selectedPage).toBe(1);
+    expect(result.current.isLoading).toBe(false);
+  });
 
-	it.each([
-		{ column: "merchant", expected: "merchant" },
-		{ column: "subcategoryId", expected: "category" },
-		{ column: "amountCents", expected: "amount" },
-		{ column: "type", expected: "date" },
-	])("requests sortBy=$expected when sorting by $column", async ({
-		column,
-		expected,
-	}) => {
-		const { result } = await renderTableAsync();
+  it.each([
+    { column: "merchant", expected: "merchant" },
+    { column: "subcategoryId", expected: "category" },
+    { column: "amountCents", expected: "amount" },
+    { column: "type", expected: "date" },
+  ])("requests sortBy=$expected when sorting by $column", async ({
+    column,
+    expected,
+  }) => {
+    const { result } = await renderTableAsync();
 
-		act(() => {
-			result.current.setSortDescriptor({
-				column,
-				direction: "ascending",
-			});
-			result.current.setFilterValue("  coffee  ");
-			result.current.setPage(2);
-		});
+    act(() => {
+      result.current.setSortDescriptor({
+        column,
+        direction: "ascending",
+      });
+      result.current.setFilterValue("  coffee  ");
+      result.current.setPage(2);
+    });
 
-		await waitFor(() => {
-			expect(getRequestedParams().get("sortBy")).toBe(expected);
-		});
-		expect(getRequestedParams().get("direction")).toBe("ascending");
-		expect(getRequestedParams().get("filter")).toBe("coffee");
-		expect(getRequestedParams().get("page")).toBe("2");
-	});
+    await waitFor(() => {
+      expect(getRequestedParams().get("sortBy")).toBe(expected);
+    });
+    expect(getRequestedParams().get("direction")).toBe("ascending");
+    expect(getRequestedParams().get("filter")).toBe("coffee");
+    expect(getRequestedParams().get("page")).toBe("2");
+  });
 
-	it("opens the editor for a new, existing, or duplicated transaction without changing the original", async () => {
-		const { result } = await renderTableAsync();
+  it("opens the editor for a new, existing, or duplicated transaction without changing the original", async () => {
+    const { result } = await renderTableAsync();
 
-		act(() => {
-			result.current.startNewTransaction();
-		});
-		expect(result.current.activeTransaction).toBe(ModalDefaultTransaction);
-		expect(result.current.editModalState.isOpen).toBe(true);
+    act(() => {
+      result.current.startNewTransaction();
+    });
+    expect(result.current.activeTransaction).toBe(ModalDefaultTransaction);
+    expect(result.current.editModalState.isOpen).toBe(true);
 
-		act(() => {
-			result.current.editTransaction(8);
-		});
-		expect(result.current.activeTransaction).toEqual(rent);
+    act(() => {
+      result.current.editTransaction(8);
+    });
+    expect(result.current.activeTransaction).toEqual(rent);
 
-		act(() => {
-			result.current.duplicateTransaction(7);
-		});
-		expect(result.current.activeTransaction).toEqual(coffee);
+    act(() => {
+      result.current.duplicateTransaction(7);
+    });
+    expect(result.current.activeTransaction).toEqual(coffee);
 
-		act(() => {
-			result.current.editModalState.onClose();
-			result.current.editTransaction(7);
-		});
-		expect(result.current.activeTransaction?.id).toBe(7);
+    act(() => {
+      result.current.editModalState.onClose();
+      result.current.editTransaction(7);
+    });
+    expect(result.current.activeTransaction?.id).toBe(7);
 
-		act(() => {
-			result.current.editTransaction(999);
-			result.current.duplicateTransaction(999);
-		});
-		expect(result.current.activeTransaction?.id).toBe(7);
-	});
+    act(() => {
+      result.current.editTransaction(999);
+      result.current.duplicateTransaction(999);
+    });
+    expect(result.current.activeTransaction?.id).toBe(7);
+  });
 
-	it.each([
-		{
-			expectedCall: () =>
-				expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
-					withoutId(coffee),
-				),
-			name: "creates a duplicated",
-			open: (table: ReturnType<typeof useTransactionsTable>) =>
-				table.duplicateTransaction(7),
-			unusedMock: putTransactionAsync,
-		},
-		{
-			expectedCall: () =>
-				expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
-					withoutId(coffee),
-				),
-			name: "creates a new",
-			open: (table: ReturnType<typeof useTransactionsTable>) =>
-				table.startNewTransaction(),
-			unusedMock: putTransactionAsync,
-		},
-		{
-			expectedCall: () =>
-				expect(putTransactionAsync).toHaveBeenCalledExactlyOnceWith(
-					coffee,
-				),
-			name: "updates an existing",
-			open: (table: ReturnType<typeof useTransactionsTable>) =>
-				table.editTransaction(7),
-			unusedMock: postTransactionAsync,
-		},
-	])("$name transaction and reloads the page", async ({
-		expectedCall,
-		open,
-		unusedMock,
-	}) => {
-		const { result } = await renderTableAsync();
-		const requestsBefore = fetchMock.mock.calls.length;
+  it.each([
+    {
+      expectedCall: () =>
+        expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
+          withoutId(coffee),
+        ),
+      name: "creates a duplicated",
+      open: (table: ReturnType<typeof useTransactionsTable>) =>
+        table.duplicateTransaction(7),
+      unusedMock: putTransactionAsync,
+    },
+    {
+      expectedCall: () =>
+        expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
+          withoutId(coffee),
+        ),
+      name: "creates a new",
+      open: (table: ReturnType<typeof useTransactionsTable>) =>
+        table.startNewTransaction(),
+      unusedMock: putTransactionAsync,
+    },
+    {
+      expectedCall: () =>
+        expect(putTransactionAsync).toHaveBeenCalledExactlyOnceWith(coffee),
+      name: "updates an existing",
+      open: (table: ReturnType<typeof useTransactionsTable>) =>
+        table.editTransaction(7),
+      unusedMock: postTransactionAsync,
+    },
+  ])("$name transaction and reloads the page", async ({
+    expectedCall,
+    open,
+    unusedMock,
+  }) => {
+    const { result } = await renderTableAsync();
+    const requestsBefore = fetchMock.mock.calls.length;
 
-		act(() => {
-			open(result.current);
-		});
-		await act(() => result.current.saveTransactionAsync(coffee));
+    act(() => {
+      open(result.current);
+    });
+    await act(() => result.current.saveTransactionAsync(coffee));
 
-		expectedCall();
-		expect(unusedMock).not.toHaveBeenCalled();
-		await waitFor(() => {
-			expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
-		});
-	});
+    expectedCall();
+    expect(unusedMock).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
+    });
+  });
 
-	it("confirms deletion of the requested row and reloads the page", async () => {
-		const { result } = await renderTableAsync();
-		const [row] = result.current.transactionsData;
+  it("confirms deletion of the requested row and reloads the page", async () => {
+    const { result } = await renderTableAsync();
+    const [row] = result.current.transactionsData;
 
-		await expect(result.current.confirmDeleteAsync()).rejects.toThrow(
-			"Transaction to delete must be defined",
-		);
+    await expect(result.current.confirmDeleteAsync()).rejects.toThrow(
+      "Transaction to delete must be defined",
+    );
 
-		act(() => {
-			if (row) {
-				result.current.requestDelete(row);
-			}
-		});
+    act(() => {
+      if (row) {
+        result.current.requestDelete(row);
+      }
+    });
 
-		expect(result.current.transactionToDelete).toBe(row);
-		expect(result.current.deleteModalState.isOpen).toBe(true);
+    expect(result.current.transactionToDelete).toBe(row);
+    expect(result.current.deleteModalState.isOpen).toBe(true);
 
-		const requestsBefore = fetchMock.mock.calls.length;
-		await act(() => result.current.confirmDeleteAsync());
+    const requestsBefore = fetchMock.mock.calls.length;
+    await act(() => result.current.confirmDeleteAsync());
 
-		expect(deleteTransactionAsync).toHaveBeenCalledWith(7);
-		await waitFor(() => {
-			expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
-		});
-	});
+    expect(deleteTransactionAsync).toHaveBeenCalledWith(7);
+    await waitFor(() => {
+      expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
+    });
+  });
 
-	it("surfaces a malformed response as an error without retrying", async () => {
-		respondWith({ unexpected: true });
-		const { wrapper } = createQueryClientWrapper();
+  it("surfaces a malformed response as an error without retrying", async () => {
+    respondWith({ unexpected: true });
+    const { wrapper } = createQueryClientWrapper();
 
-		const { result } = renderHook(useTransactionsTable, { wrapper });
+    const { result } = renderHook(useTransactionsTable, { wrapper });
 
-		await waitFor(() => {
-			expect(result.current.error).not.toBeNull();
-		});
-		expect(fetchMock).toHaveBeenCalledOnce();
-		expect(result.current.pageCount).toBe(0);
-	});
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(result.current.pageCount).toBe(0);
+  });
 });

@@ -11,47 +11,47 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 export const healthPollIntervalMs = Duration.fromObject({
-	seconds: 5,
+  seconds: 5,
 }).toMillis();
 
 export const DatabaseUnavailableBanner: React.FC = () => {
-	const t = useTranslations("error.databaseUnavailable");
-	const queryClient = useQueryClient();
-	const { clear, isUnavailable } = useDatabaseStatusStore();
+  const t = useTranslations("error.databaseUnavailable");
+  const queryClient = useQueryClient();
+  const { clear, isUnavailable } = useDatabaseStatusStore();
 
-	useEffect(() => {
-		if (!isUnavailable) {
-			return;
-		}
+  useEffect(() => {
+    if (!isUnavailable) {
+      return;
+    }
 
-		const checkHealthAsync = async () => {
-			try {
-				const response = await apiFetch(buildApiRoute(api.health));
+    const checkHealthAsync = async () => {
+      try {
+        const response = await apiFetch(buildApiRoute(api.health));
 
-				if (response.ok) {
-					clear();
-					await queryClient.invalidateQueries();
-				}
-			} catch (error) {
-				telemetry().error("DATABASE_HEALTH_CHECK_FAILED", { error });
-			}
-		};
+        if (response.ok) {
+          clear();
+          await queryClient.invalidateQueries();
+        }
+      } catch (error) {
+        telemetry().error("DATABASE_HEALTH_CHECK_FAILED", { error });
+      }
+    };
 
-		const intervalId = setInterval(
-			() => void checkHealthAsync(),
-			healthPollIntervalMs,
-		);
+    const intervalId = setInterval(
+      () => void checkHealthAsync(),
+      healthPollIntervalMs,
+    );
 
-		return () => clearInterval(intervalId);
-	}, [clear, isUnavailable, queryClient]);
+    return () => clearInterval(intervalId);
+  }, [clear, isUnavailable, queryClient]);
 
-	if (!isUnavailable) {
-		return null;
-	}
+  if (!isUnavailable) {
+    return null;
+  }
 
-	return (
-		<div className="pb-2">
-			<Alert color="danger" description={t("body")} title={t("title")} />
-		</div>
-	);
+  return (
+    <div className="pb-2">
+      <Alert color="danger" description={t("body")} title={t("title")} />
+    </div>
+  );
 };

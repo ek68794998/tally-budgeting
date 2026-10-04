@@ -6,10 +6,10 @@ import vitestPlugin from "eslint-plugin-vitest";
  * @type {import("eslint").Linter.Config[]}
  */
 export const eslintConfigVite = [
-	{
-		plugins: { vitest: vitestPlugin },
-		rules: {
-			"vitest/require-top-level-describe": "error",
-		},
-	},
+  {
+    plugins: { vitest: vitestPlugin },
+    rules: {
+      "vitest/require-top-level-describe": "error",
+    },
+  },
 ];

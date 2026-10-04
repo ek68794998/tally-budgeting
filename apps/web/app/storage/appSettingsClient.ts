@@ -12,33 +12,33 @@ let cachedSessionSecret: string | undefined;
 
 // Restoring or wiping the database replaces the secret, which signs everyone out.
 export const resetSessionSecretCache = (): void => {
-	cachedSessionSecret = undefined;
+  cachedSessionSecret = undefined;
 };
 
 // Intentionally bypasses `DatabaseClient`, whose auth check depends on this.
 export const getOrCreateSessionSecretAsync = async (): Promise<string> => {
-	if (cachedSessionSecret) {
-		return cachedSessionSecret;
-	}
+  if (cachedSessionSecret) {
+    return cachedSessionSecret;
+  }
 
-	const database = getDatabase();
+  const database = getDatabase();
 
-	await database
-		.insertInto(TableName)
-		.values({
-			key: sessionSecretKey,
-			value: toJsonb(randomBytes(sessionSecretBytes).toString("base64")),
-		})
-		.onConflict((oc) => oc.column("key").doNothing())
-		.execute();
+  await database
+    .insertInto(TableName)
+    .values({
+      key: sessionSecretKey,
+      value: toJsonb(randomBytes(sessionSecretBytes).toString("base64")),
+    })
+    .onConflict((oc) => oc.column("key").doNothing())
+    .execute();
 
-	const row = await database
-		.selectFrom(TableName)
-		.select("value")
-		.where("key", "=", sessionSecretKey)
-		.executeTakeFirstOrThrow();
+  const row = await database
+    .selectFrom(TableName)
+    .select("value")
+    .where("key", "=", sessionSecretKey)
+    .executeTakeFirstOrThrow();
 
-	cachedSessionSecret = z.string().parse(row.value);
+  cachedSessionSecret = z.string().parse(row.value);
 
-	return cachedSessionSecret;
+  return cachedSessionSecret;
 };

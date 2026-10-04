@@ -10,97 +10,94 @@ import { type BudgetActionItemCommonProps } from "./budgetActionItemCell";
 import { BudgetActionItemOverBudget } from "./budgetActionItemOverBudget";
 
 interface Props {
-	data: ActionItem[];
-	periodEnd: BudgetDate;
+  data: ActionItem[];
+  periodEnd: BudgetDate;
 }
 
 export const BudgetActionItemsSection: React.FC<Props> = ({
-	data,
-	periodEnd,
+  data,
+  periodEnd,
 }) => {
-	const { categories, isLoading, subcategories } = useCategories();
+  const { categories, isLoading, subcategories } = useCategories();
 
-	const firstItem = data[0];
+  const firstItem = data[0];
 
-	if (!firstItem) {
-		return null;
-	}
+  if (!firstItem) {
+    return null;
+  }
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-	const getCategory = (categoryId: number) =>
-		categories.find((category) => category.id === categoryId);
+  const getCategory = (categoryId: number) =>
+    categories.find((category) => category.id === categoryId);
 
-	const getSubcategory = (subcategoryId: number) =>
-		subcategories.find((subcategory) => subcategory.id === subcategoryId);
+  const getSubcategory = (subcategoryId: number) =>
+    subcategories.find((subcategory) => subcategory.id === subcategoryId);
 
-	const sortedData = data
-		.map((d) => ({ ...d, subcategory: getSubcategory(d.subcategoryId) }))
-		.sort((a, b) =>
-			(a.subcategory?.label ?? "").localeCompare(
-				b.subcategory?.label ?? "",
-			),
-		);
+  const sortedData = data
+    .map((d) => ({ ...d, subcategory: getSubcategory(d.subcategoryId) }))
+    .sort((a, b) =>
+      (a.subcategory?.label ?? "").localeCompare(b.subcategory?.label ?? ""),
+    );
 
-	return (
-		<div className="flex flex-col gap-4">
-			{sortedData.map((datum) => {
-				const key = `${datum.subcategoryId}-${datum.type}`;
-				let content: React.ReactNode;
+  return (
+    <div className="flex flex-col gap-4">
+      {sortedData.map((datum) => {
+        const key = `${datum.subcategoryId}-${datum.type}`;
+        let content: React.ReactNode;
 
-				const subcategory = getSubcategory(datum.subcategoryId);
-				const category =
-					subcategory && getCategory(subcategory.categoryId);
+        const subcategory = getSubcategory(datum.subcategoryId);
+        const category = subcategory && getCategory(subcategory.categoryId);
 
-				if (!category) {
-					telemetry().warn("INVALID_CATEGORY", {
-						id: datum.subcategoryId,
-					});
-					return null;
-				}
+        if (!category) {
+          telemetry().warn("INVALID_CATEGORY", {
+            id: datum.subcategoryId,
+          });
+          return null;
+        }
 
-				const additionalProps: BudgetActionItemCommonProps = {
-					category,
-					periodEnd,
-					subcategory,
-				};
+        const additionalProps: BudgetActionItemCommonProps = {
+          category,
+          periodEnd,
+          subcategory,
+        };
 
-				switch (datum.type) {
-					case "aboveAverage":
-						content = (
-							<BudgetActionItemAboveAverage
-								data={datum}
-								key={key}
-								{...additionalProps}
-							/>
-						);
-						break;
-					case "budgetChange":
-						content = (
-							<BudgetActionItemBudgetChange
-								data={datum}
-								key={key}
-								{...additionalProps}
-							/>
-						);
-						break;
-					case "overBudget":
-						content = (
-							<BudgetActionItemOverBudget
-								data={datum}
-								key={key}
-								{...additionalProps}
-							/>
-						);
-						break;
-					default:
-						unreachable(datum);
-				}
+        switch (datum.type) {
+          case "aboveAverage":
+            content = (
+              <BudgetActionItemAboveAverage
+                data={datum}
+                key={key}
+                {...additionalProps}
+              />
+            );
+            break;
+          case "budgetChange":
+            content = (
+              <BudgetActionItemBudgetChange
+                data={datum}
+                key={key}
+                {...additionalProps}
+              />
+            );
+            break;
+          case "overBudget":
+            content = (
+              <BudgetActionItemOverBudget
+                data={datum}
+                key={key}
+                {...additionalProps}
+              />
+            );
+            break;
+          default:
+            unreachable(datum);
+        }
 
-				return content;
-			})}
-		</div>
-	);
+        return content;
+      })}
+    </div>
+  );
 };

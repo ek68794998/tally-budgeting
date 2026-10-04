@@ -6,79 +6,76 @@ import { parseDescription } from "../dataHandlers/parseDescription";
 import { Dollars } from "../financial/dollars";
 import { validateIsStatementRow } from "./helpers";
 import {
-	type CsvRowToTransactionFn,
-	type DataProvider,
-	type ValidationErrorFn,
+  type CsvRowToTransactionFn,
+  type DataProvider,
+  type ValidationErrorFn,
 } from "./types";
 
 const statementRowSchema = z.object({
-	/* eslint-disable @typescript-eslint/naming-convention */
-	Amount: z.string(),
-	Category: z.string(),
-	Description: z.string().min(1),
-	Memo: z.string(),
-	"Post Date": z.string(),
-	"Transaction Date": z.string(),
-	Type: z.string(),
-	/* eslint-enable @typescript-eslint/naming-convention */
+  /* eslint-disable @typescript-eslint/naming-convention */
+  Amount: z.string(),
+  Category: z.string(),
+  Description: z.string().min(1),
+  Memo: z.string(),
+  "Post Date": z.string(),
+  "Transaction Date": z.string(),
+  Type: z.string(),
+  /* eslint-enable @typescript-eslint/naming-convention */
 });
 
 type StatementRow = z.infer<typeof statementRowSchema>;
 
 export class ChaseDataProvider implements DataProvider<StatementRow> {
-	public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
-		(inputRow, accountName, customizations) => {
-			const { accounts, subcategories } = customizations;
+  public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
+    (inputRow, accountName, customizations) => {
+      const { accounts, subcategories } = customizations;
 
-			const description = trimBoilerplateFromDescription(
-				inputRow.Description,
-			);
-			const { merchant, subcategoryId } = parseDescription(
-				description,
-				customizations,
-			);
+      const description = trimBoilerplateFromDescription(inputRow.Description);
+      const { merchant, subcategoryId } = parseDescription(
+        description,
+        customizations,
+      );
 
-			const account = accounts.find(
-				(a) => a.name === accountName && a.provider === "chase",
-			);
-			invariant(
-				account,
-				`Account with name '${accountName}' not found or does not match provider.`,
-			);
+      const account = accounts.find(
+        (a) => a.name === accountName && a.provider === "chase",
+      );
+      invariant(
+        account,
+        `Account with name '${accountName}' not found or does not match provider.`,
+      );
 
-			const subcategory =
-				subcategories.find((s) => s.id === subcategoryId) ??
-				DefaultSubcategory;
+      const subcategory =
+        subcategories.find((s) => s.id === subcategoryId) ?? DefaultSubcategory;
 
-			const rowTransactionType = inputRow.Type.toLowerCase();
-			const transactionType: TransactionDirection =
-				rowTransactionType === "sale" || rowTransactionType === "debit"
-					? "debit"
-					: "credit";
+      const rowTransactionType = inputRow.Type.toLowerCase();
+      const transactionType: TransactionDirection =
+        rowTransactionType === "sale" || rowTransactionType === "debit"
+          ? "debit"
+          : "credit";
 
-			return {
-				accountId: account.id,
-				amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
-				categoryId: subcategory.categoryId,
-				date: new Date(inputRow["Transaction Date"]).toISOString(),
-				merchant,
-				subcategoryId: subcategory.id,
-				type: transactionType,
-			};
-		};
+      return {
+        accountId: account.id,
+        amountCents: Math.abs(Dollars.toCents(inputRow.Amount)),
+        categoryId: subcategory.categoryId,
+        date: new Date(inputRow["Transaction Date"]).toISOString(),
+        merchant,
+        subcategoryId: subcategory.id,
+        type: transactionType,
+      };
+    };
 
-	public isStatementRowIgnored = (inputRow: StatementRow) => {
-		const { Description: description } = inputRow;
+  public isStatementRowIgnored = (inputRow: StatementRow) => {
+    const { Description: description } = inputRow;
 
-		return !!/AUTOMATIC\s*PAYMENT/.exec(description);
-	};
+    return !!/AUTOMATIC\s*PAYMENT/.exec(description);
+  };
 
-	public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
-		obj,
-		validationErrors,
-	): obj is StatementRow =>
-		validateIsStatementRow(obj, statementRowSchema, validationErrors);
+  public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
+    obj,
+    validationErrors,
+  ): obj is StatementRow =>
+    validateIsStatementRow(obj, statementRowSchema, validationErrors);
 }
 
 const trimBoilerplateFromDescription = (originalDescription: string) =>
-	originalDescription.trim();
+  originalDescription.trim();

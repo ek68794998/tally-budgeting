@@ -3,18 +3,18 @@ import { accountProviderTypeSchema } from "./accountProviderType";
 import { assetTypeSchema } from "./assetType";
 
 export const assetSchema = z.object({
-	active: z.boolean(),
-	id: z.int(),
-	name: z.string().min(1).max(100),
-	provider: accountProviderTypeSchema.nullable(),
-	type: assetTypeSchema,
-	valueCents: z.int(),
+  active: z.boolean(),
+  id: z.int(),
+  name: z.string().min(1).max(100),
+  provider: accountProviderTypeSchema.nullable(),
+  type: assetTypeSchema,
+  valueCents: z.int(),
 });
 
 export type Asset = z.infer<typeof assetSchema>;
 
 export const assetFieldsSchema = z.strictObject(
-	assetSchema.omit({ id: true }).shape,
+  assetSchema.omit({ id: true }).shape,
 );
 
 export type AssetFields = z.infer<typeof assetFieldsSchema>;

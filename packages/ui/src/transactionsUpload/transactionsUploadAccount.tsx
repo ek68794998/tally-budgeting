@@ -6,30 +6,30 @@ import { SelectAccount } from "../common/selectAccount";
 import { useTransactionsUploadContext } from "./transactionsUploadProvider";
 
 export const TransactionsUploadAccount: React.FC = () => {
-	const { account, setAccount } = useTransactionsUploadContext();
-	const t = useTranslations("transactions");
+  const { account, setAccount } = useTransactionsUploadContext();
+  const t = useTranslations("transactions");
 
-	const accountProvider =
-		account?.provider && AccountProviders[account.provider];
+  const accountProvider =
+    account?.provider && AccountProviders[account.provider];
 
-	const descriptionText = accountProvider
-		? t.rich("upload.selectedProvider", {
-				bold: (chunks) => <b>{chunks}</b>,
-				provider: accountProvider.name,
-			})
-		: t("upload.selectAccount");
+  const descriptionText = accountProvider
+    ? t.rich("upload.selectedProvider", {
+        bold: (chunks) => <b>{chunks}</b>,
+        provider: accountProvider.name,
+      })
+    : t("upload.selectAccount");
 
-	return (
-		<div>
-			<SelectAccount
-				onChange={setAccount}
-				selectProps={{
-					description: descriptionText,
-					size: "lg",
-				}}
-				showOnlyWithProvider={true}
-				value={account?.id}
-			/>
-		</div>
-	);
+  return (
+    <div>
+      <SelectAccount
+        onChange={setAccount}
+        selectProps={{
+          description: descriptionText,
+          size: "lg",
+        }}
+        showOnlyWithProvider={true}
+        value={account?.id}
+      />
+    </div>
+  );
 };

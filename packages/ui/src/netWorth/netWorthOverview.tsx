@@ -11,49 +11,49 @@ import { LiabilityDistribution } from "./liabilityDistribution";
 import { NetWorthCard } from "./netWorthCard";
 
 interface Props {
-	initialData: {
-		assets: Asset[];
-		netWorthSnapshots: NetWorthSnapshot[];
-	};
+  initialData: {
+    assets: Asset[];
+    netWorthSnapshots: NetWorthSnapshot[];
+  };
 }
 
 const isAsset = (asset: Asset) =>
-	asset.type === "fixed_asset" ||
-	asset.type === "liquid_asset" ||
-	asset.type === "personal_asset";
+  asset.type === "fixed_asset" ||
+  asset.type === "liquid_asset" ||
+  asset.type === "personal_asset";
 
 export const NetWorthOverview: React.FC<Props> = ({ initialData }) => {
-	const { assets: loadedAssets, isLoading: isLoadingAssets } = useAssets();
-	const { isLoading: isLoadingSnapshots, snapshots: loadedSnapshots } =
-		useNetWorthSnapshots();
+  const { assets: loadedAssets, isLoading: isLoadingAssets } = useAssets();
+  const { isLoading: isLoadingSnapshots, snapshots: loadedSnapshots } =
+    useNetWorthSnapshots();
 
-	const assets = useLatestData({
-		initial: initialData.assets,
-		isLoading: isLoadingAssets,
-		latest: loadedAssets,
-	});
+  const assets = useLatestData({
+    initial: initialData.assets,
+    isLoading: isLoadingAssets,
+    latest: loadedAssets,
+  });
 
-	const snapshots = useLatestData({
-		initial: initialData.netWorthSnapshots,
-		isLoading: isLoadingSnapshots,
-		latest: loadedSnapshots,
-	});
+  const snapshots = useLatestData({
+    initial: initialData.netWorthSnapshots,
+    isLoading: isLoadingSnapshots,
+    latest: loadedSnapshots,
+  });
 
-	const netWorthCents = assets.reduce(
-		(acc, asset) => acc + (isAsset(asset) ? 1 : -1) * asset.valueCents,
-		0,
-	);
-	const netWorth = Dollars.fromCents(netWorthCents);
+  const netWorthCents = assets.reduce(
+    (acc, asset) => acc + (isAsset(asset) ? 1 : -1) * asset.valueCents,
+    0,
+  );
+  const netWorth = Dollars.fromCents(netWorthCents);
 
-	return (
-		<div className="grid grid-cols-2 gap-4">
-			<NetWorthCard
-				className="col-span-2"
-				netWorth={netWorth}
-				snapshots={snapshots}
-			/>
-			<AssetDistribution assets={assets} />
-			<LiabilityDistribution assets={assets} />
-		</div>
-	);
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <NetWorthCard
+        className="col-span-2"
+        netWorth={netWorth}
+        snapshots={snapshots}
+      />
+      <AssetDistribution assets={assets} />
+      <LiabilityDistribution assets={assets} />
+    </div>
+  );
 };

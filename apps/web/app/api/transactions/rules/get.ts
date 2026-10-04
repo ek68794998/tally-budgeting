@@ -10,20 +10,19 @@ import { type NextResponseFn } from "../../types";
 const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const GetTransactionsRulesRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:TRANSACTIONS/RULES",
-	handler: async (): Promise<ApiResult<GetTransactionRulesResponse>> => {
-		const txnRulesClient = txnRulesClientLazy.get();
-		const transactionRules =
-			await txnRulesClient.getTransactionRulesAsync();
+  eventName: "GET:TRANSACTIONS/RULES",
+  handler: async (): Promise<ApiResult<GetTransactionRulesResponse>> => {
+    const txnRulesClient = txnRulesClientLazy.get();
+    const transactionRules = await txnRulesClient.getTransactionRulesAsync();
 
-		return {
-			data: { transactionRules },
-			statusCode: Ok,
-		};
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return {
+      data: { transactionRules },
+      statusCode: Ok,
+    };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

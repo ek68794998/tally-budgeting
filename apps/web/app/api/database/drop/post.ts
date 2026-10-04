@@ -9,15 +9,15 @@ import { type NextResponseFn } from "../../types";
 const databaseAdminClientLazy = new Lazy(() => new DatabaseAdminClient());
 
 export const PostDatabaseDropRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "POST:DATABASE/DROP",
-	handler: async () => {
-		await databaseAdminClientLazy.get().dropAllDataAsync();
+  eventName: "POST:DATABASE/DROP",
+  handler: async () => {
+    await databaseAdminClientLazy.get().dropAllDataAsync();
 
-		return { statusCode: Ok };
-	},
-	schemata: {
-		body: postDatabaseDropRequestSchema,
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: Ok };
+  },
+  schemata: {
+    body: postDatabaseDropRequestSchema,
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

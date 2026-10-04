@@ -7,7 +7,7 @@ export const putSubcategoryParamsSchema = idParamsSchema;
 export type PutSubcategoryParams = z.infer<typeof putSubcategoryParamsSchema>;
 
 export const putSubcategoryRequestSchema = z.object({
-	subcategory: subcategoryFieldsSchema,
+  subcategory: subcategoryFieldsSchema,
 });
 
 export type PutSubcategoryRequest = z.infer<typeof putSubcategoryRequestSchema>;
@@ -15,5 +15,5 @@ export type PutSubcategoryRequest = z.infer<typeof putSubcategoryRequestSchema>;
 export const putSubcategoryResponseSchema = createApiResponseSchema({});
 
 export type PutSubcategoryResponse = z.infer<
-	typeof putSubcategoryResponseSchema
+  typeof putSubcategoryResponseSchema
 >;

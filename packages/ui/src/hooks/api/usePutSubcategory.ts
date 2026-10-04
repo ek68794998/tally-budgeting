@@ -1,8 +1,8 @@
 import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
-	type PutSubcategoryRequest,
-	putSubcategoryResponseSchema,
+  type PutSubcategoryRequest,
+  putSubcategoryResponseSchema,
 } from "@tally/data-models/contracts/api/putSubcategory";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { withoutId } from "@tally/utilities/object/withoutId";
@@ -13,38 +13,38 @@ import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePutSubcategory = () => {
-	const { validateApiResponseAsync } = useApiResponseValidator();
+  const { validateApiResponseAsync } = useApiResponseValidator();
 
-	const { mutateAsync } = useMutation({
-		mutationFn: async (subcategory: Subcategory) => {
-			const body: PutSubcategoryRequest = {
-				subcategory: withoutId(subcategory),
-			};
+  const { mutateAsync } = useMutation({
+    mutationFn: async (subcategory: Subcategory) => {
+      const body: PutSubcategoryRequest = {
+        subcategory: withoutId(subcategory),
+      };
 
-			const response = await apiFetch(
-				buildApiRoute(api.categories.sub, { params: [subcategory.id] }),
-				{
-					body: JSON.stringify(body),
-					headers: {
-						[ContentType]: ApplicationJson,
-					},
-					method: Put,
-				},
-			);
+      const response = await apiFetch(
+        buildApiRoute(api.categories.sub, { params: [subcategory.id] }),
+        {
+          body: JSON.stringify(body),
+          headers: {
+            [ContentType]: ApplicationJson,
+          },
+          method: Put,
+        },
+      );
 
-			const validatedResponse = await validateApiResponseAsync({
-				response,
-				responseSchema: putSubcategoryResponseSchema,
-			});
+      const validatedResponse = await validateApiResponseAsync({
+        response,
+        responseSchema: putSubcategoryResponseSchema,
+      });
 
-			return validatedResponse;
-		},
-	});
+      return validatedResponse;
+    },
+  });
 
-	return useMemo(
-		() => ({
-			putSubcategoryAsync: mutateAsync,
-		}),
-		[mutateAsync],
-	);
+  return useMemo(
+    () => ({
+      putSubcategoryAsync: mutateAsync,
+    }),
+    [mutateAsync],
+  );
 };

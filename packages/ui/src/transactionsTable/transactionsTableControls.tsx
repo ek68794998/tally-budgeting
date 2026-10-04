@@ -1,19 +1,19 @@
 import {
-	Button,
-	ButtonGroup,
-	Dropdown,
-	DropdownMenu,
-	DropdownTrigger,
-	Input,
-	Select,
-	SelectItem,
-	type SharedSelection,
+  Button,
+  ButtonGroup,
+  Dropdown,
+  DropdownMenu,
+  DropdownTrigger,
+  Input,
+  Select,
+  SelectItem,
+  type SharedSelection,
 } from "@heroui/react";
 import {
-	IconFilter,
-	IconPlus,
-	IconSearch,
-	IconUpload,
+  IconFilter,
+  IconPlus,
+  IconSearch,
+  IconUpload,
 } from "@tabler/icons-react";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { web } from "@tally/utilities/routing/routeBuilder";
@@ -28,172 +28,165 @@ import { getTableFilterProps } from "../table/helpers";
 import { TransactionsMenuDropdown } from "../transactionsPage/transactionsMenuDropdown";
 import { type DropdownEntry } from "../types";
 import {
-	buildTransactionsFilter,
-	isSelectionFilterActive,
-	sortSubcategoriesForSelect,
+  buildTransactionsFilter,
+  isSelectionFilterActive,
+  sortSubcategoriesForSelect,
 } from "./helpers";
 
 interface Props {
-	onFilterChange: (value: string) => void;
-	onNewTransaction: () => void;
+  onFilterChange: (value: string) => void;
+  onNewTransaction: () => void;
 }
 
 const debounceMilliseconds = Duration.fromObject({
-	milliseconds: 500,
+  milliseconds: 500,
 }).toMillis();
 
 export const TransactionsTableControls: React.FC<Props> = ({
-	onFilterChange,
-	onNewTransaction,
+  onFilterChange,
+  onNewTransaction,
 }) => {
-	const { assets } = useAssets();
-	const { subcategories } = useCategories();
-	const t = useTranslations("transactions");
-	const tCommon = useTranslations("common");
+  const { assets } = useAssets();
+  const { subcategories } = useCategories();
+  const t = useTranslations("transactions");
+  const tCommon = useTranslations("common");
 
-	const [accountIds, setAccountIds] = useState<SharedSelection>(new Set());
-	const [subcategoryIds, setSubcategoryIds] = useState<SharedSelection>(
-		new Set(),
-	);
-	const [searchValue, setSearchValue] = useState("");
-	const [showFilters, setShowFilters] = useState(false);
+  const [accountIds, setAccountIds] = useState<SharedSelection>(new Set());
+  const [subcategoryIds, setSubcategoryIds] = useState<SharedSelection>(
+    new Set(),
+  );
+  const [searchValue, setSearchValue] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
-	const isAccountFilterActive = isSelectionFilterActive(accountIds);
-	const isSubcategoryFilterActive = isSelectionFilterActive(subcategoryIds);
+  const isAccountFilterActive = isSelectionFilterActive(accountIds);
+  const isSubcategoryFilterActive = isSelectionFilterActive(subcategoryIds);
 
-	const accounts = assets.filter(isAccount);
+  const accounts = assets.filter(isAccount);
 
-	useDebounceEffect(
-		() => {
-			onFilterChange(
-				buildTransactionsFilter({
-					accountIds,
-					searchValue,
-					subcategoryIds,
-				}),
-			);
-		},
-		[accountIds, onFilterChange, searchValue, subcategoryIds],
-		{ wait: debounceMilliseconds },
-	);
+  useDebounceEffect(
+    () => {
+      onFilterChange(
+        buildTransactionsFilter({
+          accountIds,
+          searchValue,
+          subcategoryIds,
+        }),
+      );
+    },
+    [accountIds, onFilterChange, searchValue, subcategoryIds],
+    { wait: debounceMilliseconds },
+  );
 
-	const dropdownEntries: DropdownEntry[] = useMemo(
-		() => [
-			{
-				action: onNewTransaction,
-				IconComponent: IconPlus,
-				key: "edit",
-				label: t("table.addOne"),
-			},
-			{
-				href: web.transactions.upload,
-				IconComponent: IconUpload,
-				key: "upload",
-				label: t("upload.action"),
-			},
-		],
-		[onNewTransaction, t],
-	);
+  const dropdownEntries: DropdownEntry[] = useMemo(
+    () => [
+      {
+        action: onNewTransaction,
+        IconComponent: IconPlus,
+        key: "edit",
+        label: t("table.addOne"),
+      },
+      {
+        href: web.transactions.upload,
+        IconComponent: IconUpload,
+        key: "upload",
+        label: t("upload.action"),
+      },
+    ],
+    [onNewTransaction, t],
+  );
 
-	const sortedAccounts = useMemo(
-		() => accounts.slice(0).sort((a, b) => a.name.localeCompare(b.name)),
-		[accounts],
-	);
+  const sortedAccounts = useMemo(
+    () => accounts.slice(0).sort((a, b) => a.name.localeCompare(b.name)),
+    [accounts],
+  );
 
-	// We use a sorted subcategories list because splitting it into sections makes HeroUI completely unresponsive.
-	// It appears that (at least on my machine), having more than 17 subcategories causes huge performance issues.
-	// Removing the <SelectSection> code and just using a raw list of <SelectItem> works around the issue.
-	const sortedSubcategories = useMemo(
-		() => sortSubcategoriesForSelect(subcategories),
-		[subcategories],
-	);
+  // We use a sorted subcategories list because splitting it into sections makes HeroUI completely unresponsive.
+  // It appears that (at least on my machine), having more than 17 subcategories causes huge performance issues.
+  // Removing the <SelectSection> code and just using a raw list of <SelectItem> works around the issue.
+  const sortedSubcategories = useMemo(
+    () => sortSubcategoriesForSelect(subcategories),
+    [subcategories],
+  );
 
-	return (
-		<div className="flex flex-col gap-4">
-			<div className="flex justify-between gap-2">
-				<Input
-					isClearable={true}
-					onClear={() => setSearchValue("")}
-					onValueChange={setSearchValue}
-					placeholder={t("table.filterPlaceholder")}
-					startContent={<IconSearch />}
-					value={searchValue}
-				/>
-				<Button
-					isIconOnly={true}
-					onPress={() => setShowFilters((v) => !v)}
-					variant={showFilters ? "solid" : "light"}
-				>
-					<IconFilter />
-				</Button>
-				<div className="bg-divider my-2 w-px" />
-				<ButtonGroup>
-					<Dropdown backdrop="opaque" placement="bottom-end">
-						<DropdownTrigger>
-							<Button
-								startContent={<IconPlus size={16} />}
-								variant="light"
-							>
-								{t("table.addMany")}
-							</Button>
-						</DropdownTrigger>
-						<DropdownMenu
-							aria-label={tCommon("actions.more")}
-							items={dropdownEntries}
-						>
-							{renderDropdownEntry}
-						</DropdownMenu>
-					</Dropdown>
-				</ButtonGroup>
-				<div className="bg-divider my-2 w-px" />
-				<TransactionsMenuDropdown />
-			</div>
-			{showFilters ? (
-				<div className="flex flex-row justify-end gap-4">
-					<Select
-						{...getTableFilterProps(
-							t("columns.account"),
-							isAccountFilterActive,
-						)}
-						items={sortedAccounts}
-						onSelectionChange={setAccountIds}
-						renderValue={(items) =>
-							t(
-								isAccountFilterActive
-									? "table.accountsSome"
-									: "table.accountsAll",
-								{ count: items.length },
-							)
-						}
-						selectedKeys={accountIds}
-					>
-						{({ id, name }) => (
-							<SelectItem key={id}>{name}</SelectItem>
-						)}
-					</Select>
-					<Select
-						{...getTableFilterProps(
-							t("columns.category"),
-							isSubcategoryFilterActive,
-						)}
-						items={sortedSubcategories}
-						onSelectionChange={setSubcategoryIds}
-						renderValue={(items) =>
-							t(
-								isSubcategoryFilterActive
-									? "table.categoriesSome"
-									: "table.categoriesAll",
-								{ count: items.length },
-							)
-						}
-						selectedKeys={subcategoryIds}
-					>
-						{({ id, label }) => (
-							<SelectItem key={id}>{label}</SelectItem>
-						)}
-					</Select>
-				</div>
-			) : null}
-		</div>
-	);
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between gap-2">
+        <Input
+          isClearable={true}
+          onClear={() => setSearchValue("")}
+          onValueChange={setSearchValue}
+          placeholder={t("table.filterPlaceholder")}
+          startContent={<IconSearch />}
+          value={searchValue}
+        />
+        <Button
+          isIconOnly={true}
+          onPress={() => setShowFilters((v) => !v)}
+          variant={showFilters ? "solid" : "light"}
+        >
+          <IconFilter />
+        </Button>
+        <div className="bg-divider my-2 w-px" />
+        <ButtonGroup>
+          <Dropdown backdrop="opaque" placement="bottom-end">
+            <DropdownTrigger>
+              <Button startContent={<IconPlus size={16} />} variant="light">
+                {t("table.addMany")}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label={tCommon("actions.more")}
+              items={dropdownEntries}
+            >
+              {renderDropdownEntry}
+            </DropdownMenu>
+          </Dropdown>
+        </ButtonGroup>
+        <div className="bg-divider my-2 w-px" />
+        <TransactionsMenuDropdown />
+      </div>
+      {showFilters ? (
+        <div className="flex flex-row justify-end gap-4">
+          <Select
+            {...getTableFilterProps(
+              t("columns.account"),
+              isAccountFilterActive,
+            )}
+            items={sortedAccounts}
+            onSelectionChange={setAccountIds}
+            renderValue={(items) =>
+              t(
+                isAccountFilterActive
+                  ? "table.accountsSome"
+                  : "table.accountsAll",
+                { count: items.length },
+              )
+            }
+            selectedKeys={accountIds}
+          >
+            {({ id, name }) => <SelectItem key={id}>{name}</SelectItem>}
+          </Select>
+          <Select
+            {...getTableFilterProps(
+              t("columns.category"),
+              isSubcategoryFilterActive,
+            )}
+            items={sortedSubcategories}
+            onSelectionChange={setSubcategoryIds}
+            renderValue={(items) =>
+              t(
+                isSubcategoryFilterActive
+                  ? "table.categoriesSome"
+                  : "table.categoriesAll",
+                { count: items.length },
+              )
+            }
+            selectedKeys={subcategoryIds}
+          >
+            {({ id, label }) => <SelectItem key={id}>{label}</SelectItem>}
+          </Select>
+        </div>
+      ) : null}
+    </div>
+  );
 };

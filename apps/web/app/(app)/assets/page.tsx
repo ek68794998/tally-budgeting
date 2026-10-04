@@ -6,23 +6,23 @@ import { NetWorthSnapshotsClient } from "../../storage/netWorthSnapshotsClient";
 
 const assetsClientLazy = new Lazy(() => new AssetsClient());
 const netWorthSnapshotsClientLazy = new Lazy(
-	() => new NetWorthSnapshotsClient(),
+  () => new NetWorthSnapshotsClient(),
 );
 
 const AssetsPage: React.FC = async () => {
-	const assetsClient = assetsClientLazy.get();
-	const assets = await assetsClient.getAssetsAsync();
+  const assetsClient = assetsClientLazy.get();
+  const assets = await assetsClient.getAssetsAsync();
 
-	const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
-	const netWorthSnapshots =
-		await netWorthSnapshotsClient.getNetWorthSnapshotsAsync();
+  const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
+  const netWorthSnapshots =
+    await netWorthSnapshotsClient.getNetWorthSnapshotsAsync();
 
-	return (
-		<div className="flex flex-col gap-8">
-			<NetWorthOverview initialData={{ assets, netWorthSnapshots }} />
-			<AssetsList initialData={{ assets }} />
-		</div>
-	);
+  return (
+    <div className="flex flex-col gap-8">
+      <NetWorthOverview initialData={{ assets, netWorthSnapshots }} />
+      <AssetsList initialData={{ assets }} />
+    </div>
+  );
 };
 
 export default AssetsPage;

@@ -3,9 +3,9 @@ import { transactionRuleSchema } from "../transactionRule";
 import { createApiResponseSchema } from "./types";
 
 export const getTransactionRulesResponseSchema = createApiResponseSchema({
-	transactionRules: z.array(transactionRuleSchema),
+  transactionRules: z.array(transactionRuleSchema),
 });
 
 export type GetTransactionRulesResponse = z.infer<
-	typeof getTransactionRulesResponseSchema
+  typeof getTransactionRulesResponseSchema
 >;

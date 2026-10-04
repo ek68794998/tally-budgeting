@@ -2,32 +2,32 @@ import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
 import { isBoolean } from "@ekumlin/typescript-toolkit/types";
 import { MaxTransactionsPerPage } from "@tally/data-models/contracts/api/getTransactions";
 import {
-	type Transaction,
-	type TransactionFields,
+  type Transaction,
+  type TransactionFields,
 } from "@tally/data-models/contracts/transaction";
 import {
-	convertTransactionFieldsToTxnRow,
-	convertTransactionToTxnRow,
-	convertTxnRowToTransaction,
+  convertTransactionFieldsToTxnRow,
+  convertTransactionToTxnRow,
+  convertTxnRowToTransaction,
 } from "@tally/data-models/converters/transaction";
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { txnRowSchema } from "@tally/data-models/database/txnRow";
 import { parseODataLiteFilter } from "@tally/utilities/oData/parse";
 import {
-	type ODataLiteFilterExpression,
-	type ODataLiteFilterOperator,
+  type ODataLiteFilterExpression,
+  type ODataLiteFilterOperator,
 } from "@tally/utilities/oData/types";
 import { type ExpressionBuilder, type StringReference } from "kysely";
 import { type DateTime } from "luxon";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
 import {
-	applyPagination,
-	buildLikePattern,
-	getOrderDirection,
-	getQueryCountAsync,
-	parseInValues,
-	rowOrRowsAsRows,
+  applyPagination,
+  buildLikePattern,
+  getOrderDirection,
+  getQueryCountAsync,
+  parseInValues,
+  rowOrRowsAsRows,
 } from "./helpers";
 import { TableName as SubcategoryTableName } from "./subcategoriesClient";
 import { type GetAllQueryResult, type GetRowsOptions } from "./types";
@@ -35,216 +35,216 @@ import { type GetAllQueryResult, type GetRowsOptions } from "./types";
 export const TableName = "txn" as const satisfies keyof Database;
 
 export class TxnsClient extends DatabaseClient {
-	public async deleteTransactionAsync(id: number): Promise<void> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async deleteTransactionAsync(id: number): Promise<void> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		await database.deleteFrom(TableName).where("id", "=", id).execute();
-	}
+    await database.deleteFrom(TableName).where("id", "=", id).execute();
+  }
 
-	public async getTransactionsAsync(
-		options?: GetRowsOptions,
-	): Promise<GetAllQueryResult<Transaction>> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async getTransactionsAsync(
+    options?: GetRowsOptions,
+  ): Promise<GetAllQueryResult<Transaction>> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const {
-			collectionParams: {
-				direction = "ascending",
-				filter = "",
-				limit = MaxTransactionsPerPage,
-				page = 1,
-				sortBy = "id",
-			} = {},
-		} = options || {};
+    const {
+      collectionParams: {
+        direction = "ascending",
+        filter = "",
+        limit = MaxTransactionsPerPage,
+        page = 1,
+        sortBy = "id",
+      } = {},
+    } = options || {};
 
-		const filterExpressions = parseODataLiteFilter(filter);
+    const filterExpressions = parseODataLiteFilter(filter);
 
-		const query = database
-			.selectFrom(TableName)
-			.leftJoin(
-				SubcategoryTableName,
-				`${TableName}.subcategory`,
-				`${SubcategoryTableName}.id`,
-			)
-			.where((qb) => applyFilters(qb, filterExpressions));
+    const query = database
+      .selectFrom(TableName)
+      .leftJoin(
+        SubcategoryTableName,
+        `${TableName}.subcategory`,
+        `${SubcategoryTableName}.id`,
+      )
+      .where((qb) => applyFilters(qb, filterExpressions));
 
-		const countResult = await getQueryCountAsync(query, `${TableName}.id`);
+    const countResult = await getQueryCountAsync(query, `${TableName}.id`);
 
-		const orderColumn = mapSortFieldToColumn(sortBy);
-		const orderDirection = getOrderDirection(direction);
+    const orderColumn = mapSortFieldToColumn(sortBy);
+    const orderDirection = getOrderDirection(direction);
 
-		let fetchQuery = query
-			.selectAll(["subcategory", "txn"])
-			.orderBy(orderColumn, orderDirection)
-			.orderBy("date", "desc")
-			.orderBy("merchant", "asc");
+    let fetchQuery = query
+      .selectAll(["subcategory", "txn"])
+      .orderBy(orderColumn, orderDirection)
+      .orderBy("date", "desc")
+      .orderBy("merchant", "asc");
 
-		fetchQuery = applyPagination(fetchQuery, page, limit);
+    fetchQuery = applyPagination(fetchQuery, page, limit);
 
-		const rows = await fetchQuery.execute();
+    const rows = await fetchQuery.execute();
 
-		const transactions = rows.map((row) => {
-			const subcategoryRow = subcategoryRowSchema.parse(row);
-			const txnRow = txnRowSchema.parse(row);
-			return convertTxnRowToTransaction({
-				...subcategoryRow,
-				...txnRow,
-			});
-		});
+    const transactions = rows.map((row) => {
+      const subcategoryRow = subcategoryRowSchema.parse(row);
+      const txnRow = txnRowSchema.parse(row);
+      return convertTxnRowToTransaction({
+        ...subcategoryRow,
+        ...txnRow,
+      });
+    });
 
-		return {
-			data: transactions,
-			totalCount: countResult,
-		};
-	}
+    return {
+      data: transactions,
+      totalCount: countResult,
+    };
+  }
 
-	public async getTransactionsInPeriodAsync(
-		startDate: DateTime,
-		endDate: DateTime,
-	): Promise<Transaction[]> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async getTransactionsInPeriodAsync(
+    startDate: DateTime,
+    endDate: DateTime,
+  ): Promise<Transaction[]> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		if (!startDate.isValid || !endDate.isValid) {
-			throw new Error("Invalid date range provided.");
-		}
+    if (!startDate.isValid || !endDate.isValid) {
+      throw new Error("Invalid date range provided.");
+    }
 
-		const rows = await database
-			.selectFrom(TableName)
-			.leftJoin(
-				SubcategoryTableName,
-				`${TableName}.subcategory`,
-				`${SubcategoryTableName}.id`,
-			)
-			.selectAll("subcategory")
-			.selectAll("txn")
-			.where("date", ">=", startDate.toJSDate())
-			.where("date", "<=", endDate.toJSDate())
-			.orderBy("date", "desc")
-			.orderBy("merchant", "asc")
-			.execute();
+    const rows = await database
+      .selectFrom(TableName)
+      .leftJoin(
+        SubcategoryTableName,
+        `${TableName}.subcategory`,
+        `${SubcategoryTableName}.id`,
+      )
+      .selectAll("subcategory")
+      .selectAll("txn")
+      .where("date", ">=", startDate.toJSDate())
+      .where("date", "<=", endDate.toJSDate())
+      .orderBy("date", "desc")
+      .orderBy("merchant", "asc")
+      .execute();
 
-		const transactionRules = rows.map((row) => {
-			const subcategoryRow = subcategoryRowSchema.parse(row);
-			const txnRow = txnRowSchema.parse(row);
-			return convertTxnRowToTransaction({
-				...subcategoryRow,
-				...txnRow,
-			});
-		});
+    const transactionRules = rows.map((row) => {
+      const subcategoryRow = subcategoryRowSchema.parse(row);
+      const txnRow = txnRowSchema.parse(row);
+      return convertTxnRowToTransaction({
+        ...subcategoryRow,
+        ...txnRow,
+      });
+    });
 
-		return transactionRules;
-	}
+    return transactionRules;
+  }
 
-	public async insertTransactionsAsync(
-		values: TransactionFields | TransactionFields[],
-	): Promise<void> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async insertTransactionsAsync(
+    values: TransactionFields | TransactionFields[],
+  ): Promise<void> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const transactions = rowOrRowsAsRows(values).map(
-			convertTransactionFieldsToTxnRow,
-		);
+    const transactions = rowOrRowsAsRows(values).map(
+      convertTransactionFieldsToTxnRow,
+    );
 
-		if (transactions.length <= 0) {
-			return;
-		}
+    if (transactions.length <= 0) {
+      return;
+    }
 
-		await database.insertInto(TableName).values(transactions).execute();
-	}
+    await database.insertInto(TableName).values(transactions).execute();
+  }
 
-	public async updateTransactionAsync(value: Transaction): Promise<boolean> {
-		const database = await this.getAuthorizedDatabaseAsync();
+  public async updateTransactionAsync(value: Transaction): Promise<boolean> {
+    const database = await this.getAuthorizedDatabaseAsync();
 
-		const row = convertTransactionToTxnRow(value);
+    const row = convertTransactionToTxnRow(value);
 
-		const { numUpdatedRows } = await database
-			.updateTable(TableName)
-			.where("id", "=", row.id)
-			.set(row)
-			.executeTakeFirstOrThrow();
+    const { numUpdatedRows } = await database
+      .updateTable(TableName)
+      .where("id", "=", row.id)
+      .set(row)
+      .executeTakeFirstOrThrow();
 
-		return numUpdatedRows > 0n;
-	}
+    return numUpdatedRows > 0n;
+  }
 }
 
 const comparisonOperators = {
-	eq: "=",
-	ge: ">=",
-	gt: ">",
-	le: "<=",
-	lt: "<",
-	ne: "<>",
+  eq: "=",
+  ge: ">=",
+  gt: ">",
+  le: "<=",
+  lt: "<",
+  ne: "<>",
 } as const satisfies Record<
-	Exclude<ODataLiteFilterOperator, "like" | "in">,
-	string
+  Exclude<ODataLiteFilterOperator, "like" | "in">,
+  string
 >;
 
 const applyFilters = (
-	queryBuilder: ExpressionBuilder<Database, typeof TableName>,
-	filterExpressions: ODataLiteFilterExpression[],
+  queryBuilder: ExpressionBuilder<Database, typeof TableName>,
+  filterExpressions: ODataLiteFilterExpression[],
 ) => {
-	const conditions = filterExpressions.map((fe) => {
-		const column = mapFilterFieldToColumn(fe.field);
+  const conditions = filterExpressions.map((fe) => {
+    const column = mapFilterFieldToColumn(fe.field);
 
-		if (fe.operator === "like") {
-			return queryBuilder.eb(column, "like", buildLikePattern(fe.value));
-		}
+    if (fe.operator === "like") {
+      return queryBuilder.eb(column, "like", buildLikePattern(fe.value));
+    }
 
-		if (fe.operator === "in") {
-			const values = parseInValues(fe.value, possibleNumberToNumber);
-			return queryBuilder.eb(column, "in", values);
-		}
+    if (fe.operator === "in") {
+      const values = parseInValues(fe.value, possibleNumberToNumber);
+      return queryBuilder.eb(column, "in", values);
+    }
 
-		// Kysely doesn't permit us to send Boolean values for comparison
-		// if the database has no Boolean columns.
-		const value = isBoolean(fe.value) ? `${fe.value}` : fe.value;
+    // Kysely doesn't permit us to send Boolean values for comparison
+    // if the database has no Boolean columns.
+    const value = isBoolean(fe.value) ? `${fe.value}` : fe.value;
 
-		return queryBuilder.eb(column, comparisonOperators[fe.operator], value);
-	});
+    return queryBuilder.eb(column, comparisonOperators[fe.operator], value);
+  });
 
-	if (conditions.length === 0) {
-		// All transaction IDs should be greater than zero.
-		// This is done because an empty `or` clause would match no rows.
-		conditions.push(queryBuilder.eb("txn.id", ">", 0));
-	}
+  if (conditions.length === 0) {
+    // All transaction IDs should be greater than zero.
+    // This is done because an empty `or` clause would match no rows.
+    conditions.push(queryBuilder.eb("txn.id", ">", 0));
+  }
 
-	return queryBuilder.or(conditions);
+  return queryBuilder.or(conditions);
 };
 
 const mapFilterFieldToColumn = (
-	field: string,
+  field: string,
 ): StringReference<Database, typeof TableName> => {
-	switch (field) {
-		case "account":
-			return `${TableName}.account`;
-		case "subcategory":
-			return `${TableName}.subcategory`;
-		case "amount":
-			return `${TableName}.amount_cents`;
-		case "date":
-			return `${TableName}.date`;
-		case "merchant":
-			return `${TableName}.merchant`;
-		default:
-			return `${TableName}.id`;
-	}
+  switch (field) {
+    case "account":
+      return `${TableName}.account`;
+    case "subcategory":
+      return `${TableName}.subcategory`;
+    case "amount":
+      return `${TableName}.amount_cents`;
+    case "date":
+      return `${TableName}.date`;
+    case "merchant":
+      return `${TableName}.merchant`;
+    default:
+      return `${TableName}.id`;
+  }
 };
 
 const mapSortFieldToColumn = (
-	field: string,
+  field: string,
 ): StringReference<
-	Database,
-	typeof TableName | typeof SubcategoryTableName
+  Database,
+  typeof TableName | typeof SubcategoryTableName
 > => {
-	switch (field) {
-		case "amount":
-			return `${TableName}.amount_cents`;
-		case "date":
-			return `${TableName}.date`;
-		case "merchant":
-			return `${TableName}.merchant`;
-		case "category":
-		case "subcategory":
-			return `${SubcategoryTableName}.label`;
-		default:
-			return `${TableName}.id`;
-	}
+  switch (field) {
+    case "amount":
+      return `${TableName}.amount_cents`;
+    case "date":
+      return `${TableName}.date`;
+    case "merchant":
+      return `${TableName}.merchant`;
+    case "category":
+    case "subcategory":
+      return `${SubcategoryTableName}.label`;
+    default:
+      return `${TableName}.id`;
+  }
 };

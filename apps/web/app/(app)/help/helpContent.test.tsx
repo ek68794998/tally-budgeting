@@ -6,12 +6,12 @@ import { describe, expect, it, vi } from "vitest";
 import { HelpContent, type HelpTopic } from "./helpContent";
 
 vi.mock("next-intl", () => ({
-	hasLocale: (locales: readonly string[], locale: string) =>
-		locales.includes(locale),
+  hasLocale: (locales: readonly string[], locale: string) =>
+    locales.includes(locale),
 }));
 vi.mock("next-intl/server", () => ({
-	getLocale: vi.fn(),
-	getTranslations: () => Promise.resolve((key: string) => key),
+  getLocale: vi.fn(),
+  getTranslations: () => Promise.resolve((key: string) => key),
 }));
 
 const createMdxModule = (text: string) => ({ default: () => <p>{text}</p> });
@@ -28,27 +28,25 @@ vi.mock("./ja/transactions.mdx", () => createMdxModule("ja transactions"));
 const topics: HelpTopic[] = ["assets", "budget", "retirement", "transactions"];
 
 describe("HelpContent", () => {
-	it.each(
-		Locales.flatMap((locale) => topics.map((topic) => ({ locale, topic }))),
-	)("renders the $locale help for $topic with the AI disclaimer", async ({
-		locale,
-		topic,
-	}) => {
-		vi.mocked(getLocale).mockResolvedValue(locale);
+  it.each(
+    Locales.flatMap((locale) => topics.map((topic) => ({ locale, topic }))),
+  )("renders the $locale help for $topic with the AI disclaimer", async ({
+    locale,
+    topic,
+  }) => {
+    vi.mocked(getLocale).mockResolvedValue(locale);
 
-		render(await HelpContent({ topic }));
+    render(await HelpContent({ topic }));
 
-		expect(screen.getByText(`${locale} ${topic}`)).toBeInTheDocument();
-		expect(screen.getByText("aiDisclaimer")).toBeInTheDocument();
-	});
+    expect(screen.getByText(`${locale} ${topic}`)).toBeInTheDocument();
+    expect(screen.getByText("aiDisclaimer")).toBeInTheDocument();
+  });
 
-	it("falls back to the default locale", async () => {
-		vi.mocked(getLocale).mockResolvedValue(
-			dangerouslyCoerceType<Locale>("fr"),
-		);
+  it("falls back to the default locale", async () => {
+    vi.mocked(getLocale).mockResolvedValue(dangerouslyCoerceType<Locale>("fr"));
 
-		render(await HelpContent({ topic: "budget" }));
+    render(await HelpContent({ topic: "budget" }));
 
-		expect(screen.getByText("en budget")).toBeInTheDocument();
-	});
+    expect(screen.getByText("en budget")).toBeInTheDocument();
+  });
 });

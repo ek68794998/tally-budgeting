@@ -9,20 +9,20 @@ import { type NextResponseFn } from "../../types";
 const assetsClientLazy = new Lazy(() => new AssetsClient());
 
 export const DeleteAssetsIdRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "DELETE:ASSETS/[ID]",
-	handler: async ({ params }) => {
-		const { id } = params;
+  eventName: "DELETE:ASSETS/[ID]",
+  handler: async ({ params }) => {
+    const { id } = params;
 
-		const assetsClient = assetsClientLazy.get();
+    const assetsClient = assetsClientLazy.get();
 
-		const idNumber = parseInt(id, 10);
-		await assetsClient.deleteAssetAsync(idNumber);
+    const idNumber = parseInt(id, 10);
+    await assetsClient.deleteAssetAsync(idNumber);
 
-		return { statusCode: NoContent };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: deleteAssetParamsSchema,
-		query: z.unknown(),
-	},
+    return { statusCode: NoContent };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: deleteAssetParamsSchema,
+    query: z.unknown(),
+  },
 });

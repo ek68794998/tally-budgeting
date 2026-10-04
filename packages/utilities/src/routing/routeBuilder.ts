@@ -1,67 +1,67 @@
 import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 
 const apiRoutes = {
-	assets: "/api/assets",
-	auth: {
-		login: "/api/auth/login",
-		logout: "/api/auth/logout",
-	},
-	budget: {
-		spending: "/api/budget/spending",
-		summary: "/api/budget/summary",
-	},
-	categories: {
-		base: "/api/categories",
-		sub: "/api/categories/sub",
-	},
-	database: {
-		backup: "/api/database/backup",
-		drop: "/api/database/drop",
-		restore: "/api/database/restore",
-	},
-	events: "/api/events",
-	health: "/api/health",
-	netWorth: {
-		snapshots: "/api/net-worth/snapshots",
-	},
-	settings: {
-		base: "/api/settings",
-	},
-	transactions: {
-		base: "/api/transactions",
-		rules: {
-			base: "/api/transactions/rules",
-			order: "/api/transactions/rules/order",
-		},
-		upload: "/api/transactions/upload",
-	},
+  assets: "/api/assets",
+  auth: {
+    login: "/api/auth/login",
+    logout: "/api/auth/logout",
+  },
+  budget: {
+    spending: "/api/budget/spending",
+    summary: "/api/budget/summary",
+  },
+  categories: {
+    base: "/api/categories",
+    sub: "/api/categories/sub",
+  },
+  database: {
+    backup: "/api/database/backup",
+    drop: "/api/database/drop",
+    restore: "/api/database/restore",
+  },
+  events: "/api/events",
+  health: "/api/health",
+  netWorth: {
+    snapshots: "/api/net-worth/snapshots",
+  },
+  settings: {
+    base: "/api/settings",
+  },
+  transactions: {
+    base: "/api/transactions",
+    rules: {
+      base: "/api/transactions/rules",
+      order: "/api/transactions/rules/order",
+    },
+    upload: "/api/transactions/upload",
+  },
 } as const;
 
 const webRoutes = {
-	assets: "/assets",
-	budget: {
-		base: "/budget",
-		categories: "/budget/categories",
-		spending: "/budget/spending",
-	},
-	home: "/",
-	login: "/login",
-	retirement: "/retirement",
-	settings: "/settings",
-	transactions: {
-		base: "/transactions",
-		rules: "/transactions/rules",
-		upload: "/transactions/upload",
-	},
+  assets: "/assets",
+  budget: {
+    base: "/budget",
+    categories: "/budget/categories",
+    spending: "/budget/spending",
+  },
+  home: "/",
+  login: "/login",
+  retirement: "/retirement",
+  settings: "/settings",
+  transactions: {
+    base: "/transactions",
+    rules: "/transactions/rules",
+    upload: "/transactions/upload",
+  },
 } as const;
 
 type ExtractRoutes<T> = T extends string
-	? T
-	: T extends Record<string, unknown>
-		? {
-				[K in keyof T]: ExtractRoutes<T[K]>;
-			}[keyof T]
-		: never;
+  ? T
+  : T extends Record<string, unknown>
+    ? {
+        [K in keyof T]: ExtractRoutes<T[K]>;
+      }[keyof T]
+    : never;
 
 export type ApiRoute = ExtractRoutes<typeof apiRoutes>;
 
@@ -72,86 +72,86 @@ export const api = apiRoutes;
 export const web = webRoutes;
 
 interface RouteOptions {
-	params?: (string | number)[];
-	query?:
-		| Record<string, string | number | boolean | undefined>
-		| URLSearchParams;
+  params?: (string | number)[];
+  query?:
+    | Record<string, string | number | boolean | undefined>
+    | URLSearchParams;
 }
 
 export const buildApiRoute = (
-	base: ApiRoute,
-	options?: RouteOptions,
+  base: ApiRoute,
+  options?: RouteOptions,
 ): string => {
-	let route: string = base;
+  let route: string = base;
 
-	route = buildParams(route, options);
-	route = buildQuery(route, options);
+  route = buildParams(route, options);
+  route = buildQuery(route, options);
 
-	return route;
+  return route;
 };
 
 export const buildWebRoute = (
-	base: WebRoute,
-	options?: RouteOptions,
+  base: WebRoute,
+  options?: RouteOptions,
 ): string => {
-	let route: string = base;
+  let route: string = base;
 
-	route = buildParams(route, options);
-	route = buildQuery(route, options);
+  route = buildParams(route, options);
+  route = buildQuery(route, options);
 
-	return route;
+  return route;
 };
 
 const buildParams = (
-	base: string,
-	options: RouteOptions | undefined,
+  base: string,
+  options: RouteOptions | undefined,
 ): string => {
-	let route: string = base;
+  let route: string = base;
 
-	if (options?.params && options.params.length > 0) {
-		const paramSegments = options.params
-			.map((value) => String(value))
-			.join("/");
-		route = `${route}/${paramSegments}`;
-	}
+  if (options?.params && options.params.length > 0) {
+    const paramSegments = options.params
+      .map((value) => String(value))
+      .join("/");
+    route = `${route}/${paramSegments}`;
+  }
 
-	return route;
+  return route;
 };
 
 const buildQuery = (
-	base: string,
-	options: RouteOptions | undefined,
+  base: string,
+  options: RouteOptions | undefined,
 ): string => {
-	let route: string = base;
+  let route: string = base;
 
-	if (options?.query) {
-		const queryParams = convertRouteQueryToSearchParams(options.query);
-		const queryString = queryParams.toString();
+  if (options?.query) {
+    const queryParams = convertRouteQueryToSearchParams(options.query);
+    const queryString = queryParams.toString();
 
-		if (queryString) {
-			route = `${route}?${queryString}`;
-		}
-	}
+    if (queryString) {
+      route = `${route}?${queryString}`;
+    }
+  }
 
-	return route;
+  return route;
 };
 
 const convertRouteQueryToSearchParams = (
-	query: NonNullable<RouteOptions["query"]>,
+  query: NonNullable<RouteOptions["query"]>,
 ): URLSearchParams => {
-	if (query instanceof URLSearchParams) {
-		return query;
-	}
+  if (query instanceof URLSearchParams) {
+    return query;
+  }
 
-	const searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams();
 
-	for (const [key, value] of Object.entries(query)) {
-		if (isNullOrUndefined(value)) {
-			continue;
-		}
+  for (const [key, value] of Object.entries(query)) {
+    if (isNullOrUndefined(value)) {
+      continue;
+    }
 
-		searchParams.append(key, String(value));
-	}
+    searchParams.append(key, String(value));
+  }
 
-	return searchParams;
+  return searchParams;
 };

@@ -2,42 +2,40 @@ import { type AboveAverageItem } from "@tally/data-models/contracts/api/getBudge
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../../format";
 import {
-	BudgetActionItemCell,
-	type BudgetActionItemCommonProps,
+  BudgetActionItemCell,
+  type BudgetActionItemCommonProps,
 } from "./budgetActionItemCell";
 
 interface Props extends BudgetActionItemCommonProps {
-	data: AboveAverageItem;
+  data: AboveAverageItem;
 }
 
 export const BudgetActionItemAboveAverage: React.FC<Props> = ({
-	data,
-	...restProps
+  data,
+  ...restProps
 }) => {
-	const t = useTranslations("budget");
+  const t = useTranslations("budget");
 
-	const periodMonths = Math.round(data.budgetTotal / data.monthlyAverage);
+  const periodMonths = Math.round(data.budgetTotal / data.monthlyAverage);
 
-	//  › Gifts: $800 this month ($1,200 annual = $100/mo avg)
-	//    Still $400 remaining for the year
-	//
-	// <bold>{amount}</bold> most recent month ({totalBudget} per {period} = {averageBudget})
-	return (
-		<BudgetActionItemCell
-			{...restProps}
-			content={t.rich("overview.aboveAverage", {
-				amount: formatCurrency(data.spentThisMonth),
-				bold: (chunks) => <b>{chunks}</b>,
-			})}
-			subcontent={t("overview.aboveAverageSubtitle", {
-				amountOver: formatCurrency(
-					data.spentThisMonth - data.monthlyAverage,
-				),
-				averageBudget: formatCurrency(data.monthlyAverage),
-				months: periodMonths,
-				remaining: formatCurrency(data.remaining),
-				totalBudget: formatCurrency(data.budgetTotal),
-			})}
-		/>
-	);
+  //  › Gifts: $800 this month ($1,200 annual = $100/mo avg)
+  //    Still $400 remaining for the year
+  //
+  // <bold>{amount}</bold> most recent month ({totalBudget} per {period} = {averageBudget})
+  return (
+    <BudgetActionItemCell
+      {...restProps}
+      content={t.rich("overview.aboveAverage", {
+        amount: formatCurrency(data.spentThisMonth),
+        bold: (chunks) => <b>{chunks}</b>,
+      })}
+      subcontent={t("overview.aboveAverageSubtitle", {
+        amountOver: formatCurrency(data.spentThisMonth - data.monthlyAverage),
+        averageBudget: formatCurrency(data.monthlyAverage),
+        months: periodMonths,
+        remaining: formatCurrency(data.remaining),
+        totalBudget: formatCurrency(data.budgetTotal),
+      })}
+    />
+  );
 };

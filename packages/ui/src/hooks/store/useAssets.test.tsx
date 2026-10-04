@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { useAssets } from "./useAssets";
 
 vi.mock("@tally/utilities/state/asset", () => ({
-	useAssetStore: vi.fn(),
+  useAssetStore: vi.fn(),
 }));
 
 const mockUseAssetStore = vi.mocked(useAssetStore);
@@ -14,81 +14,75 @@ const mockUseAssetStore = vi.mocked(useAssetStore);
 const mockFetchAssets = vi.fn();
 
 const buildStore = (
-	overrides: Partial<ReturnType<typeof useAssetStore>> = {},
+  overrides: Partial<ReturnType<typeof useAssetStore>> = {},
 ) => ({
-	assets: [],
-	error: null,
-	fetch: mockFetchAssets,
-	isFetching: false,
-	isHydrated: false,
-	setAssets: vi.fn(),
-	...overrides,
+  assets: [],
+  error: null,
+  fetch: mockFetchAssets,
+  isFetching: false,
+  isHydrated: false,
+  setAssets: vi.fn(),
+  ...overrides,
 });
 
 describe("useAssets", () => {
-	it("calls fetchAssets on mount when not hydrated and not fetching", () => {
-		mockUseAssetStore.mockReturnValue(buildStore());
+  it("calls fetchAssets on mount when not hydrated and not fetching", () => {
+    mockUseAssetStore.mockReturnValue(buildStore());
 
-		renderHook(() => useAssets());
+    renderHook(() => useAssets());
 
-		expect(mockFetchAssets).toHaveBeenCalledOnce();
-	});
+    expect(mockFetchAssets).toHaveBeenCalledOnce();
+  });
 
-	it.each([
-		{ isFetching: false, isHydrated: true },
-		{ isFetching: true, isHydrated: false },
-		{ isFetching: true, isHydrated: true },
-	])("does not call fetchAssets when isHydrated=$isHydrated, isFetching=$isFetching", ({
-		isFetching,
-		isHydrated,
-	}) => {
-		mockFetchAssets.mockClear();
-		mockUseAssetStore.mockReturnValue(
-			buildStore({ isFetching, isHydrated }),
-		);
+  it.each([
+    { isFetching: false, isHydrated: true },
+    { isFetching: true, isHydrated: false },
+    { isFetching: true, isHydrated: true },
+  ])("does not call fetchAssets when isHydrated=$isHydrated, isFetching=$isFetching", ({
+    isFetching,
+    isHydrated,
+  }) => {
+    mockFetchAssets.mockClear();
+    mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
 
-		renderHook(() => useAssets());
+    renderHook(() => useAssets());
 
-		expect(mockFetchAssets).not.toHaveBeenCalled();
-	});
+    expect(mockFetchAssets).not.toHaveBeenCalled();
+  });
 
-	it.each([
-		{ expected: true, isFetching: false, isHydrated: false },
-		{ expected: true, isFetching: true, isHydrated: true },
-		{ expected: false, isFetching: false, isHydrated: true },
-	])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
-		expected,
-		isFetching,
-		isHydrated,
-	}) => {
-		mockUseAssetStore.mockReturnValue(
-			buildStore({ isFetching, isHydrated }),
-		);
+  it.each([
+    { expected: true, isFetching: false, isHydrated: false },
+    { expected: true, isFetching: true, isHydrated: true },
+    { expected: false, isFetching: false, isHydrated: true },
+  ])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
+    expected,
+    isFetching,
+    isHydrated,
+  }) => {
+    mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
 
-		const { result } = renderHook(() => useAssets());
+    const { result } = renderHook(() => useAssets());
 
-		expect(result.current.isLoading).toBe(expected);
-	});
+    expect(result.current.isLoading).toBe(expected);
+  });
 
-	it("returns assets and error from store", () => {
-		const assets = [
-			mockIncompleteObject<Asset>({ id: 1, name: "Checking" }),
-		];
-		mockUseAssetStore.mockReturnValue(
-			buildStore({ assets, error: "oops", isHydrated: true }),
-		);
+  it("returns assets and error from store", () => {
+    const assets = [mockIncompleteObject<Asset>({ id: 1, name: "Checking" })];
+    mockUseAssetStore.mockReturnValue(
+      buildStore({ assets, error: "oops", isHydrated: true }),
+    );
 
-		const { result } = renderHook(() => useAssets());
+    const { result } = renderHook(() => useAssets());
 
-		expect(result.current.assets).toBe(assets);
-		expect(result.current.error).toBe("oops");
-	});
+    expect(result.current.assets).toBe(assets);
+    expect(result.current.error).toBe("oops");
+  });
 
-	it("returns refetch as fetchAssets from store", () => {
-		mockUseAssetStore.mockReturnValue(buildStore({ isHydrated: true }));
+  it("returns refetch as fetchAssets from store", () => {
+    mockUseAssetStore.mockReturnValue(buildStore({ isHydrated: true }));
 
-		const { result } = renderHook(() => useAssets());
+    const { result } = renderHook(() => useAssets());
 
-		expect(result.current.refetch).toBe(mockFetchAssets);
-	});
+    expect(result.current.refetch).toBe(mockFetchAssets);
+  });
 });

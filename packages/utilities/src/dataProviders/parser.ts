@@ -13,206 +13,206 @@ import { type CsvTransaction, type TransactionCustomizations } from "./types";
 import { VestwellDataProvider } from "./vestwell";
 
 interface TransactionParseResultFailure {
-	errors: string[];
-	result: "failure";
+  errors: string[];
+  result: "failure";
 }
 
 interface TransactionParseResultIgnore {
-	result: "ignore";
+  result: "ignore";
 }
 
 interface TransactionParseResultSuccess {
-	result: "success";
-	transaction: TransactionFields;
+  result: "success";
+  transaction: TransactionFields;
 }
 
 type TransactionParseResult =
-	| TransactionParseResultFailure
-	| TransactionParseResultIgnore
-	| TransactionParseResultSuccess;
+  | TransactionParseResultFailure
+  | TransactionParseResultIgnore
+  | TransactionParseResultSuccess;
 
 export const parseRowAsTransaction = (
-	inputRow: unknown,
-	account: Asset,
-	customizations: TransactionCustomizations,
+  inputRow: unknown,
+  account: Asset,
+  customizations: TransactionCustomizations,
 ): TransactionParseResult => {
-	const validationErrors: string[] = [];
-	let transaction: TransactionFields | undefined;
+  const validationErrors: string[] = [];
+  let transaction: TransactionFields | undefined;
 
-	invariant(account.provider, "Account provider must be defined");
+  invariant(account.provider, "Account provider must be defined");
 
-	const setTransaction = (t: CsvTransaction) => {
-		transaction = {
-			...t,
-			happiness: HappinessLevelDefault,
-			notes: "",
-		};
-	};
+  const setTransaction = (t: CsvTransaction) => {
+    transaction = {
+      ...t,
+      happiness: HappinessLevelDefault,
+      notes: "",
+    };
+  };
 
-	switch (account.provider) {
-		case "apple": {
-			const provider = new AppleDataProvider();
+  switch (account.provider) {
+    case "apple": {
+      const provider = new AppleDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "chase": {
-			const provider = new ChaseDataProvider();
+    case "chase": {
+      const provider = new ChaseDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "fidelity": {
-			const provider = new FidelityDataProvider();
+    case "fidelity": {
+      const provider = new FidelityDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "firstTechFederal": {
-			const provider = new FirstTechFederalDataProvider();
+    case "firstTechFederal": {
+      const provider = new FirstTechFederalDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "guideline": {
-			const provider = new GuidelineDataProvider();
+    case "guideline": {
+      const provider = new GuidelineDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "rippling": {
-			const provider = new RipplingDataProvider();
+    case "rippling": {
+      const provider = new RipplingDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "robinhood": {
-			const provider = new RobinhoodDataProvider();
+    case "robinhood": {
+      const provider = new RobinhoodDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		case "vestwell": {
-			const provider = new VestwellDataProvider();
+    case "vestwell": {
+      const provider = new VestwellDataProvider();
 
-			if (
-				provider.validateIsStatementRow(inputRow, validationErrors) &&
-				!provider.isStatementRowIgnored(inputRow)
-			) {
-				setTransaction(
-					provider.convertStatementRowToTransaction(
-						inputRow,
-						account.name,
-						customizations,
-					),
-				);
-			}
+      if (
+        provider.validateIsStatementRow(inputRow, validationErrors) &&
+        !provider.isStatementRowIgnored(inputRow)
+      ) {
+        setTransaction(
+          provider.convertStatementRowToTransaction(
+            inputRow,
+            account.name,
+            customizations,
+          ),
+        );
+      }
 
-			break;
-		}
+      break;
+    }
 
-		default:
-			unreachable(account.provider);
-	}
+    default:
+      unreachable(account.provider);
+  }
 
-	if (transaction) {
-		return { result: "success", transaction };
-	}
+  if (transaction) {
+    return { result: "success", transaction };
+  }
 
-	if (validationErrors.length > 0) {
-		return { errors: validationErrors, result: "failure" };
-	}
+  if (validationErrors.length > 0) {
+    return { errors: validationErrors, result: "failure" };
+  }
 
-	return { result: "ignore" };
+  return { result: "ignore" };
 };

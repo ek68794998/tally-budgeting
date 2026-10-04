@@ -10,50 +10,48 @@ import { telemetry } from "../telemetry/telemetry";
 import { type StoreState } from "./storeState";
 
 export type CategoryStore = StoreState<{
-	categories: Category[];
-	setCategories: (categories: Category[]) => void;
-	subcategories: Subcategory[];
+  categories: Category[];
+  setCategories: (categories: Category[]) => void;
+  subcategories: Subcategory[];
 }>;
 
 export const useCategoryStore = create<CategoryStore>()(
-	subscribeWithSelector((set, _get) => ({
-		categories: [],
-		error: null,
-		fetch: async () => {
-			set({
-				isFetching: true,
-			});
+  subscribeWithSelector((set, _get) => ({
+    categories: [],
+    error: null,
+    fetch: async () => {
+      set({
+        isFetching: true,
+      });
 
-			try {
-				const response = await apiFetch(
-					buildApiRoute(api.categories.base),
-				);
-				const responseJson: unknown = await response.json();
-				const { categories, subcategories } =
-					getCategoriesResponseSchema.parse(responseJson);
+      try {
+        const response = await apiFetch(buildApiRoute(api.categories.base));
+        const responseJson: unknown = await response.json();
+        const { categories, subcategories } =
+          getCategoriesResponseSchema.parse(responseJson);
 
-				set({
-					categories,
-					error: null,
-					isFetching: false,
-					isHydrated: true,
-					subcategories,
-				});
-			} catch (error) {
-				telemetry().error("STORE_FETCH_FAILED", {
-					errorMessage: toError(error).message,
-					store: "category",
-				});
-				set({
-					error: "Failed to fetch categories",
-					isFetching: false,
-					isHydrated: true,
-				});
-			}
-		},
-		isFetching: false,
-		isHydrated: false,
-		setCategories: (categories) => set({ categories }),
-		subcategories: [],
-	})),
+        set({
+          categories,
+          error: null,
+          isFetching: false,
+          isHydrated: true,
+          subcategories,
+        });
+      } catch (error) {
+        telemetry().error("STORE_FETCH_FAILED", {
+          errorMessage: toError(error).message,
+          store: "category",
+        });
+        set({
+          error: "Failed to fetch categories",
+          isFetching: false,
+          isHydrated: true,
+        });
+      }
+    },
+    isFetching: false,
+    isHydrated: false,
+    setCategories: (categories) => set({ categories }),
+    subcategories: [],
+  })),
 );

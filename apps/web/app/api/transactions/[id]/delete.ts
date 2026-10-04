@@ -9,20 +9,20 @@ import { type NextResponseFn } from "../../types";
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const DeleteTransactionsIdRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "DELETE:TRANSACTIONS/[ID]",
-	handler: async ({ params }) => {
-		const { id } = params;
+  eventName: "DELETE:TRANSACTIONS/[ID]",
+  handler: async ({ params }) => {
+    const { id } = params;
 
-		const txnsClient = txnsClientLazy.get();
+    const txnsClient = txnsClientLazy.get();
 
-		const idNumber = parseInt(id, 10);
-		await txnsClient.deleteTransactionAsync(idNumber);
+    const idNumber = parseInt(id, 10);
+    await txnsClient.deleteTransactionAsync(idNumber);
 
-		return { statusCode: NoContent };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: deleteTransactionRuleParamsSchema,
-		query: z.unknown(),
-	},
+    return { statusCode: NoContent };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: deleteTransactionRuleParamsSchema,
+    query: z.unknown(),
+  },
 });

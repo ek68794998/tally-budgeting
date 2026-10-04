@@ -4,35 +4,35 @@ import { callRouteAsync } from "../testing/routeTesting";
 import { GetHealthRouteAsync } from "./get";
 
 vi.mock("../../storage/healthClient", () => ({
-	pingDatabaseAsync: vi.fn(),
+  pingDatabaseAsync: vi.fn(),
 }));
 
 vi.mock(
-	"../../telemetry/telemetry",
-	async () => (await import("../testing/routeTesting")).silentTelemetryModule,
+  "../../telemetry/telemetry",
+  async () => (await import("../testing/routeTesting")).silentTelemetryModule,
 );
 
 describe("GetHealthRouteAsync", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-	it("responds 204 without requiring authentication when the database is reachable", async () => {
-		vi.mocked(pingDatabaseAsync).mockResolvedValue();
+  it("responds 204 without requiring authentication when the database is reachable", async () => {
+    vi.mocked(pingDatabaseAsync).mockResolvedValue();
 
-		const { status } = await callRouteAsync(GetHealthRouteAsync);
+    const { status } = await callRouteAsync(GetHealthRouteAsync);
 
-		expect(status).toBe(204);
-	});
+    expect(status).toBe(204);
+  });
 
-	it("responds 503 when the database times out", async () => {
-		vi.mocked(pingDatabaseAsync).mockRejectedValue(
-			new Error("Connection terminated due to connection timeout"),
-		);
+  it("responds 503 when the database times out", async () => {
+    vi.mocked(pingDatabaseAsync).mockRejectedValue(
+      new Error("Connection terminated due to connection timeout"),
+    );
 
-		const { json, status } = await callRouteAsync(GetHealthRouteAsync);
+    const { json, status } = await callRouteAsync(GetHealthRouteAsync);
 
-		expect(status).toBe(503);
-		expect(json).toMatchObject({ error: { code: "databaseUnavailable" } });
-	});
+    expect(status).toBe(503);
+    expect(json).toMatchObject({ error: { code: "databaseUnavailable" } });
+  });
 });

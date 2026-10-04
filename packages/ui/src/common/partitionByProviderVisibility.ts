@@ -3,25 +3,22 @@ import { type AccountProviderType } from "@tally/data-models/contracts/accountPr
 
 /** Items without a provider always count as visible. */
 export const partitionByProviderVisibility = <T>(
-	items: T[],
-	getProvider: (item: T) => AccountProviderType | null,
-	hiddenProviders: AccountProviderType[],
+  items: T[],
+  getProvider: (item: T) => AccountProviderType | null,
+  hiddenProviders: AccountProviderType[],
 ): { hidden: T[]; visible: T[] } => {
-	const hidden: T[] = [];
-	const visible: T[] = [];
+  const hidden: T[] = [];
+  const visible: T[] = [];
 
-	for (const item of items) {
-		const provider = getProvider(item);
+  for (const item of items) {
+    const provider = getProvider(item);
 
-		if (
-			!isNullOrUndefined(provider) &&
-			hiddenProviders.includes(provider)
-		) {
-			hidden.push(item);
-		} else {
-			visible.push(item);
-		}
-	}
+    if (!isNullOrUndefined(provider) && hiddenProviders.includes(provider)) {
+      hidden.push(item);
+    } else {
+      visible.push(item);
+    }
+  }
 
-	return { hidden, visible };
+  return { hidden, visible };
 };

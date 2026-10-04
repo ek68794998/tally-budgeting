@@ -5,22 +5,22 @@ import { renderDropdownEntry } from "../common/renderDropdownEntry";
 import { type DropdownEntry } from "../types";
 
 interface Props {
-	entries: DropdownEntry[];
+  entries: DropdownEntry[];
 }
 
 export const MoreDropdown: React.FC<Props> = ({ entries }) => {
-	const t = useTranslations();
+  const t = useTranslations();
 
-	return (
-		<Dropdown backdrop="opaque">
-			<DropdownTrigger>
-				<Button isIconOnly={true} size="sm" variant="light">
-					<IconDots />
-				</Button>
-			</DropdownTrigger>
-			<DropdownMenu aria-label={t("common.actions.more")} items={entries}>
-				{renderDropdownEntry}
-			</DropdownMenu>
-		</Dropdown>
-	);
+  return (
+    <Dropdown backdrop="opaque">
+      <DropdownTrigger>
+        <Button isIconOnly={true} size="sm" variant="light">
+          <IconDots />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label={t("common.actions.more")} items={entries}>
+        {renderDropdownEntry}
+      </DropdownMenu>
+    </Dropdown>
+  );
 };

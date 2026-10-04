@@ -9,15 +9,15 @@ import { type NextResponseFn } from "../types";
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const PostTransactionsRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "POST:TRANSACTIONS",
-	handler: async ({ body }) => {
-		await txnsClientLazy.get().insertTransactionsAsync([body.transaction]);
+  eventName: "POST:TRANSACTIONS",
+  handler: async ({ body }) => {
+    await txnsClientLazy.get().insertTransactionsAsync([body.transaction]);
 
-		return { statusCode: Created };
-	},
-	schemata: {
-		body: postTransactionRequestSchema,
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: Created };
+  },
+  schemata: {
+    body: postTransactionRequestSchema,
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });
