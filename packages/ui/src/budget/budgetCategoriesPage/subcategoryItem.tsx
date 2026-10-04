@@ -20,6 +20,7 @@ export const SubcategoryItem: React.FC<Props> = ({
 
 	const amount = Dollars.fromCents(subcategory.budget.amountCents);
 
+	// TODO Localize
 	const frequencyText =
 		subcategory.budget.frequency === 1
 			? "month"
