@@ -66,13 +66,17 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 		[response, t],
 	);
 
-	const renderUnprocessedItemTable = (items: UnprocessedItem[]) => {
+	const renderUnprocessedItemTable = (
+		items: UnprocessedItem[],
+		ariaLabel: string,
+	) => {
 		const unprocessedItemHeaders = getUnprocessedItemHeaders(items).map(
 			(header) => ({ header }),
 		);
 
 		return (
 			<Table
+				aria-label={ariaLabel}
 				classNames={{
 					wrapper:
 						"bg-background/80 dark:bg-background/20 backdrop-blur-md backdrop-saturate-150",
@@ -175,7 +179,10 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 					<div className="mb-4 text-xs text-stone-500">
 						{t("upload.resultCard.descriptionUnprocessed")}
 					</div>
-					{renderUnprocessedItemTable(rowsIgnored)}
+					{renderUnprocessedItemTable(
+						rowsIgnored,
+						t("upload.resultCard.titleIgnored"),
+					)}
 				</AccordionItem>
 				<AccordionItem
 					isDisabled={rowsFailed.length === 0}
@@ -186,7 +193,10 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 					<div className="mb-4 text-xs text-stone-500">
 						{t("upload.resultCard.descriptionUnprocessed")}
 					</div>
-					{renderUnprocessedItemTable(rowsFailed)}
+					{renderUnprocessedItemTable(
+						rowsFailed,
+						t("upload.resultCard.titleFailed"),
+					)}
 				</AccordionItem>
 			</Accordion>
 			<RuleEditModal

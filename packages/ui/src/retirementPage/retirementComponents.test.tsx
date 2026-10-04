@@ -17,7 +17,7 @@ const { recharts } = vi.hoisted(() => ({
 	recharts: {
 		Area: vi.fn(() => null),
 		AreaChart: vi.fn(({ children }: React.PropsWithChildren) => (
-			<div>{children}</div>
+			<svg aria-hidden="true">{children}</svg>
 		)),
 		CartesianGrid: vi.fn(() => null),
 		ResponsiveContainer: vi.fn(({ children }: React.PropsWithChildren) => (

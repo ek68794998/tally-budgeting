@@ -219,6 +219,10 @@
 			"validationErrorBody": "The server returned data in an unexpected format. Please try again.",
 			"validationErrorTitle": "Validation Error"
 		},
+		"databaseUnavailable": {
+			"body": "Tally can't reach its database. Make sure it's running; this page will recover automatically once it's back.",
+			"title": "Database Unavailable"
+		},
 		"fullPage": {
 			"ctaReload": "Reload Page",
 			"ctaReset": "Try Again",
@@ -368,6 +372,7 @@
 			"failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
 			"failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
 			"failureTitle": "File Upload Failed",
+			"progressLabel": "Upload progress",
 			"resultCard": {
 				"countCategorized": "{count} categorized",
 				"countFailed": "{count} failed",

@@ -15,6 +15,7 @@ const apiRoutes = {
 		sub: "/api/categories/sub",
 	},
 	events: "/api/events",
+	health: "/api/health",
 	netWorth: {
 		snapshots: "/api/net-worth/snapshots",
 	},

@@ -5,6 +5,7 @@ import {
 	InternalServerError,
 	isSuccessHttpStatusCode,
 	NoContent,
+	ServiceUnavailable,
 	TooManyRequests,
 	Unauthorized,
 } from "@ekumlin/typescript-toolkit/http";
@@ -17,6 +18,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { SessionCookieName } from "../../auth/cookie";
 import { isAuthenticatedAsync } from "../../auth/verifyRequest";
+import { isDatabaseUnavailableError } from "../../storage/databaseErrors";
 import { telemetry } from "../../telemetry/telemetry";
 import { enforceRateLimitAsync, getIpAddress } from "../helpers";
 import { type NextResponseFn } from "../types";
@@ -135,7 +137,14 @@ const executeHandlerAsync = async <
 			errorMessage: toError(error).message,
 		});
 
-		if (error instanceof HttpError) {
+		if (isDatabaseUnavailableError(error)) {
+			apiError = {
+				code: "databaseUnavailable",
+				params: {},
+				type: "DatabaseUnavailableError",
+			};
+			statusCode = ServiceUnavailable;
+		} else if (error instanceof HttpError) {
 			apiError = {
 				code: error.code,
 				params: error.params,

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resetAuthConfigForTesting } from "./app/auth/config";
 import { SessionCookieName } from "./app/auth/cookie";
 import { createSessionToken, SessionTtlSeconds } from "./app/auth/session";
+import { getOrCreateSessionSecretAsync } from "./app/storage/appSettingsClient";
 import { proxy } from "./proxy";
 
 const secret = "test-secret";
@@ -19,6 +20,9 @@ const buildRequest = (token?: string) =>
 	new NextRequest("http://localhost/assets?tab=1", {
 		headers: token ? { cookie: `${SessionCookieName}=${token}` } : {},
 	});
+
+const validToken = () =>
+	createSessionToken({ now: new Date(), password: "pw", secret });
 
 describe("proxy", () => {
 	beforeEach(() => {
@@ -67,6 +71,23 @@ describe("proxy", () => {
 		const refreshed = response.cookies.get(SessionCookieName);
 		expect(refreshed?.value).toBeTruthy();
 		expect(refreshed?.value).not.toBe(token);
+	});
+
+	it("responds 503 when the database is unavailable", async () => {
+		vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(
+			new Error("Connection terminated due to connection timeout"),
+		);
+
+		const response = await proxy(buildRequest(validToken()));
+
+		expect(response.status).toBe(503);
+	});
+
+	it("rethrows other session secret failures", async () => {
+		const error = new Error("boom");
+		vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(error);
+
+		await expect(proxy(buildRequest(validToken()))).rejects.toBe(error);
 	});
 
 	it("passes everything through when auth is disabled", async () => {

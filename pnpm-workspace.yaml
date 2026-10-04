@@ -8,4 +8,6 @@ allowBuilds:
 packages:
   - apps/*
   - packages/*
+patchedDependencies:
+  vitest-fail-on-console@0.10.1: patches/vitest-fail-on-console@0.10.1.patch
 pmOnFail: warn

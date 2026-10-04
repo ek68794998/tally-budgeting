@@ -6,9 +6,14 @@ import {
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { NextRequest } from "next/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import z from "zod";
 import { parseRequestAsync } from "./parseRequest";
+
+vi.mock(
+	"../../telemetry/telemetry",
+	async () => (await import("../testing/routeTesting")).silentTelemetryModule,
+);
 
 const emptySchemata = {
 	body: z.object({}),
