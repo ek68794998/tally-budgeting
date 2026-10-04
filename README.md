@@ -18,9 +18,10 @@ _Coming soon_
 
 ## Prerequisites
 
-- Node.js 20 or higher
-- PNPM 10 or higher
+- Node.js 22 or higher
+- PNPM 11 (the exact version is pinned in `packageManager` in `package.json`; run `corepack enable` to use it automatically)
 - Docker (for database and deployment)
+- PostgreSQL 16 client tools (`pg_dump` and `pg_restore`), only for using database backup and restore during local development (see [Backup and Restore Tools](#backup-and-restore-tools))
 
 ## Installation
 
@@ -35,7 +36,7 @@ cd tally-budgeting
 pnpm install
 ```
 
-3. Create your local environment file from the template, and set `POSTGRES_CONNECTION_STRING` (see [Environment Variables](#environment-variables)):
+3. Create your local environment file from the template, and set `APP_PASSWORD` and `POSTGRES_CONNECTION_STRING` (see [Environment Variables](#environment-variables)):
 ```bash
 cp apps/web/.env.default apps/web/.env.development.local
 ```
@@ -58,7 +59,19 @@ The development database runs in Docker. Use these commands to manage it:
 
 - `pnpm dev:db:up` - Start the database in detached mode
 - `pnpm dev:db` - Start the database with logs
-- `pnpm dev:db:down` - Stop and remove the database container
+- `pnpm dev:db:down` - Stop and remove the database container (your data is kept in the `postgres_data` volume)
+
+The development database uses `deployment/docker-compose.dev.yml`, which is separate from the production compose file and needs no `deployment/.env`. Its password is `tally_dev_password`, unless `DB_PASSWORD` is set in your shell or in `deployment/.env`. The password only applies when the database is first created, so changing it later has no effect on an existing volume.
+
+### Backup and Restore Tools
+
+The **Data** section of the Settings page downloads backups with `pg_dump` and restores them with `pg_restore`. The Docker image includes these, but in local development the app runs them from your `PATH`, so you need to install them yourself. Use the PostgreSQL 16 client tools to match the development database: an older `pg_dump` refuses to back up a newer server.
+
+- **macOS (Homebrew):** `brew install libpq`, then add it to your `PATH` (`brew info libpq` shows the path), since it isn't linked automatically
+- **Debian/Ubuntu:** `sudo apt install postgresql-client-16` (you may need to add the [PostgreSQL apt repository](https://www.postgresql.org/download/linux/ubuntu/) first)
+- **Windows:** install the command line tools from the [PostgreSQL installer](https://www.postgresql.org/download/windows/) and add its `bin` folder to your `PATH`
+
+Check your installation with `pg_dump --version` and `pg_restore --version`. The tools connect using `POSTGRES_CONNECTION_STRING`, so they need no further setup. Without them, the app works normally, but backup and restore show an error.
 
 ### Testing
 
@@ -75,28 +88,23 @@ The development database runs in Docker. Use these commands to manage it:
 
 ## Deployment
 
-Docker is the recommended deployment method for both the application and PostgreSQL database.
-
-### Building the Docker Image
-
-```bash
-pnpm docker:build
-```
-
-This builds the application image for `linux/amd64` and saves it to `tally-budgeting.tar`.
+Docker Compose is the recommended way to deploy both the application and its PostgreSQL database. `deployment/docker-compose.yml` defines the deployment.
 
 ### Running with Docker Compose
 
-Before starting, create `deployment/.env` and set a database password:
+Before starting, create `deployment/.env` with a database password and an app password. Compose refuses to start if either is missing.
 
 ```bash
-echo "DB_PASSWORD=<choose-a-strong-password>" > deployment/.env
+cat > deployment/.env <<'EOF'
+DB_PASSWORD=<choose-a-strong-database-password>
+APP_PASSWORD=<choose-a-strong-app-password>
+EOF
 ```
 
 Then:
 
 ```bash
-# Start all services
+# Build the image (on first run) and start all services
 pnpm docker:up
 
 # View logs
@@ -106,13 +114,23 @@ pnpm docker:logs
 pnpm docker:down
 ```
 
-The Docker Compose configuration includes both the application and PostgreSQL database. The app is served on port `7856`.
+The Docker Compose configuration includes both the application and PostgreSQL database. The app is served on port `7856`. Compose builds the image from source the first time; after pulling new code, run `docker compose -f deployment/docker-compose.yml up -d --build` to rebuild it.
+
+### Building a Standalone Image
+
+```bash
+pnpm docker:build
+```
+
+This builds the application image for `linux/amd64`, tags it `tally-budgeting`, and saves it to `tally-budgeting.tar`. It is mainly used to check that the image builds, and is not needed to deploy with Docker Compose. You can also use it to build on one machine and run on another: copy the archive over and load it with `docker load -i tally-budgeting.tar`.
 
 ## Configuration
 
 ### Environment Variables
 
-The web app reads the following variables. For local development, set them in `apps/web/.env.development.local` (copied from `apps/web/.env.default`). With Docker Compose, the app's variables are set for you in `deployment/docker-compose.yml`.
+The web app reads the following variables. For local development, set them in `apps/web/.env.development.local` (copied from `apps/web/.env.default`).
+
+With Docker Compose, `deployment/docker-compose.yml` sets the app's variables. It builds `POSTGRES_CONNECTION_STRING` from `DB_PASSWORD` and passes `APP_PASSWORD` through; every other variable uses its default. To change one, such as `LOG_LEVEL`, add it to the `web` service's `environment` in the compose file.
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
@@ -123,18 +141,18 @@ The web app reads the following variables. For local development, set them in `a
 | `APP_PASSWORD_FILE` | No | — | Path to a file containing the password (whitespace is trimmed). Set this instead of `APP_PASSWORD`, not both. |
 | `DANGEROUSLY_DISABLE_AUTH` | No | — | Set to `1` to disable authentication entirely. |
 
-Docker Compose itself reads one variable from `deployment/.env`:
+Docker Compose itself reads these variables from `deployment/.env`:
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. |
-| `APP_PASSWORD` | Yes (production) | — | Shared app password, passed through to the web container. `docker compose up` fails if it is unset. |
+| `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. `pnpm docker:up` fails if it is unset. |
+| `APP_PASSWORD` | Yes (production) | — | Shared app password, passed through to the web container. `pnpm docker:up` fails if it is unset. |
 
 ### Authentication
 
 Tally is protected by a single shared password, and the app refuses to start without one.
 
-- **Set the password:** put `APP_PASSWORD=...` in `deployment/.env` (or `apps/web/.env.development.local` for development). To keep it out of the environment, set `APP_PASSWORD_FILE` to a file (for example a Docker secret) containing the password. Set only one of the two.
+- **Set the password:** put `APP_PASSWORD=...` in `deployment/.env` (or `apps/web/.env.development.local` for development). To keep it out of the environment, set `APP_PASSWORD_FILE` to a file (for example a Docker secret) containing the password. Set only one of the two. The bundled compose file requires `APP_PASSWORD`, so to use `APP_PASSWORD_FILE` (or `DANGEROUSLY_DISABLE_AUTH`) with Docker Compose, replace the `APP_PASSWORD` line in the `web` service's `environment`.
 - **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
 - **It is a single shared credential:** there are no per-user accounts and no per-user audit trail.
 - **Changing the password logs out all sessions.**
