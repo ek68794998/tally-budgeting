@@ -20,12 +20,6 @@ export const SubcategoryItem: React.FC<Props> = ({
 
   const amount = Dollars.fromCents(subcategory.budget.amountCents);
 
-  // TODO Localize
-  const frequencyText =
-    subcategory.budget.frequency === 1
-      ? "month"
-      : `${subcategory.budget.frequency} months`;
-
   return (
     <div className="flex flex-col gap-1 border-t border-neutral-200 pt-3">
       <div className="flex gap-2">
@@ -54,7 +48,9 @@ export const SubcategoryItem: React.FC<Props> = ({
             {t.rich("durations.perPeriod", {
               amount: formatCurrency(amount),
               bold: (chunks) => <b>{chunks}</b>,
-              period: frequencyText,
+              period: t("durations.periodMonths", {
+                months: subcategory.budget.frequency,
+              }),
             })}
           </span>
           <span>{"·"}</span>
