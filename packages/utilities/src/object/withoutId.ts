@@ -1,6 +1,6 @@
 export const withoutId = <T extends { id: unknown }>(
-	item: T,
+  item: T,
 ): Omit<T, "id"> => {
-	const { id: _, ...rest } = item;
-	return rest;
+  const { id: _, ...rest } = item;
+  return rest;
 };

@@ -5,39 +5,39 @@ import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
 
 interface Props {
-	currentDollars: number;
-	previousDateIso: string;
-	previousDollars: number;
+  currentDollars: number;
+  previousDateIso: string;
+  previousDollars: number;
 }
 
 export const NetWorthCardDelta: React.FC<Props> = ({
-	currentDollars,
-	previousDateIso,
-	previousDollars,
+  currentDollars,
+  previousDateIso,
+  previousDollars,
 }) => {
-	const locale = useLocale();
-	const t = useTranslations("assets.netWorth");
+  const locale = useLocale();
+  const t = useTranslations("assets.netWorth");
 
-	const netWorthDelta = currentDollars - previousDollars;
-	const netWorthDeltaColor =
-		netWorthDelta > 0
-			? "text-success-600"
-			: netWorthDelta < 0
-				? "text-danger-600"
-				: "opacity-70";
-	const netWorthDeltaText = formatCurrency(netWorthDelta, {
-		showPlusSymbol: true,
-	});
+  const netWorthDelta = currentDollars - previousDollars;
+  const netWorthDeltaColor =
+    netWorthDelta > 0
+      ? "text-success-600"
+      : netWorthDelta < 0
+        ? "text-danger-600"
+        : "opacity-70";
+  const netWorthDeltaText = formatCurrency(netWorthDelta, {
+    showPlusSymbol: true,
+  });
 
-	return (
-		<div className={netWorthDeltaColor}>
-			{t("delta", {
-				date: DateTime.fromISO(previousDateIso).toLocaleString(
-					{ day: "numeric", month: "long" },
-					{ locale },
-				),
-				delta: netWorthDeltaText,
-			})}
-		</div>
-	);
+  return (
+    <div className={netWorthDeltaColor}>
+      {t("delta", {
+        date: DateTime.fromISO(previousDateIso).toLocaleString(
+          { day: "numeric", month: "long" },
+          { locale },
+        ),
+        delta: netWorthDeltaText,
+      })}
+    </div>
+  );
 };

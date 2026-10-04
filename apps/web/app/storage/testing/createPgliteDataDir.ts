@@ -4,7 +4,7 @@ import { PGlite } from "@electric-sql/pglite";
 const [outputPath] = process.argv.slice(2);
 
 if (!outputPath) {
-	throw new Error("Usage: node createPgliteDataDir.ts <output path>");
+  throw new Error("Usage: node createPgliteDataDir.ts <output path>");
 }
 
 const pglite = await PGlite.create();

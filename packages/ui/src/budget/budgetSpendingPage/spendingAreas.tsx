@@ -10,70 +10,70 @@ import { ChartColors } from "../../colors";
 import { formatCurrency } from "../../format";
 
 interface Props {
-	error: unknown;
-	isLoading: boolean;
-	spendingData: GetBudgetSpendingResponse | undefined;
+  error: unknown;
+  isLoading: boolean;
+  spendingData: GetBudgetSpendingResponse | undefined;
 }
 
 export const SpendingAreas: React.FC<Props> = ({
-	error,
-	isLoading,
-	spendingData,
+  error,
+  isLoading,
+  spendingData,
 }) => {
-	const t = useTranslations("budget.spending");
+  const t = useTranslations("budget.spending");
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-	const errorDetails = error
-		? error
-		: !spendingData?.spending.length
-			? t("errors.noData")
-			: undefined;
+  const errorDetails = error
+    ? error
+    : !spendingData?.spending.length
+      ? t("errors.noData")
+      : undefined;
 
-	if (errorDetails) {
-		const errorObject = toError(errorDetails);
-		return (
-			<div className="flex flex-col items-center justify-center gap-4">
-				<IconAlertTriangle size={64} />
-				<div>{errorObject.message}</div>
-			</div>
-		);
-	}
+  if (errorDetails) {
+    const errorObject = toError(errorDetails);
+    return (
+      <div className="flex flex-col items-center justify-center gap-4">
+        <IconAlertTriangle size={64} />
+        <div>{errorObject.message}</div>
+      </div>
+    );
+  }
 
-	invariant(spendingData);
+  invariant(spendingData);
 
-	const { spentOnNeedsCents, spentOnSavingsCents, spentOnWantsCents } =
-		spendingData;
+  const { spentOnNeedsCents, spentOnSavingsCents, spentOnWantsCents } =
+    spendingData;
 
-	const spentOnNeeds = Dollars.fromCents(spentOnNeedsCents);
-	const spentOnSavings = Dollars.fromCents(spentOnSavingsCents);
-	const spentOnWants = Dollars.fromCents(spentOnWantsCents);
+  const spentOnNeeds = Dollars.fromCents(spentOnNeedsCents);
+  const spentOnSavings = Dollars.fromCents(spentOnSavingsCents);
+  const spentOnWants = Dollars.fromCents(spentOnWantsCents);
 
-	return (
-		<DonutChart
-			data={[
-				{
-					color: ChartColors[0],
-					name: t("areas.needs"),
-					value: spentOnNeeds,
-				},
-				{
-					color: ChartColors[1],
-					name: t("areas.wants"),
-					value: spentOnWants,
-				},
-				{
-					color: ChartColors[2],
-					name: t("areas.savings"),
-					value: spentOnSavings,
-				},
-			]}
-			formatValue={formatCurrency}
-			legend={{ enabled: true }}
-			size={340}
-			title={t("areaChartTitle")}
-		/>
-	);
+  return (
+    <DonutChart
+      data={[
+        {
+          color: ChartColors[0],
+          name: t("areas.needs"),
+          value: spentOnNeeds,
+        },
+        {
+          color: ChartColors[1],
+          name: t("areas.wants"),
+          value: spentOnWants,
+        },
+        {
+          color: ChartColors[2],
+          name: t("areas.savings"),
+          value: spentOnSavings,
+        },
+      ]}
+      formatValue={formatCurrency}
+      legend={{ enabled: true }}
+      size={340}
+      title={t("areaChartTitle")}
+    />
+  );
 };

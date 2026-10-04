@@ -13,80 +13,49 @@ import { type DataProviderIconSize } from "./types";
 import { VestwellIcon } from "./vestwellIcon";
 
 interface Props {
-	provider: AccountProviderType | null;
-	size?: DataProviderIconSize;
+  provider: AccountProviderType | null;
+  size?: DataProviderIconSize;
 }
 
 export const DataProviderIcon: React.FC<Props> = ({
-	provider,
-	size = "md",
+  provider,
+  size = "md",
 }) => {
-	const paddingRatio = getDataProviderPaddingRatio();
-	const sizePx = getDataProviderSizePx(size);
+  const paddingRatio = getDataProviderPaddingRatio();
+  const sizePx = getDataProviderSizePx(size);
 
-	const containerSizePx = sizePx * paddingRatio;
+  const containerSizePx = sizePx * paddingRatio;
 
-	if (!provider) {
-		return (
-			<NoDataProviderIcon
-				containerSizePx={containerSizePx}
-				sizePx={sizePx}
-			/>
-		);
-	}
+  if (!provider) {
+    return (
+      <NoDataProviderIcon containerSizePx={containerSizePx} sizePx={sizePx} />
+    );
+  }
 
-	switch (provider) {
-		case "apple":
-			return (
-				<AppleIcon containerSizePx={containerSizePx} sizePx={sizePx} />
-			);
-		case "chase":
-			return (
-				<ChaseIcon containerSizePx={containerSizePx} sizePx={sizePx} />
-			);
-		case "fidelity":
-			return (
-				<FidelityIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		case "firstTechFederal":
-			return (
-				<FirstTechIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		case "guideline":
-			return (
-				<GuidelineIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		case "rippling":
-			return (
-				<RipplingIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		case "robinhood":
-			return (
-				<RobinhoodIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		case "vestwell":
-			return (
-				<VestwellIcon
-					containerSizePx={containerSizePx}
-					sizePx={sizePx}
-				/>
-			);
-		default:
-			return unreachable(provider);
-	}
+  switch (provider) {
+    case "apple":
+      return <AppleIcon containerSizePx={containerSizePx} sizePx={sizePx} />;
+    case "chase":
+      return <ChaseIcon containerSizePx={containerSizePx} sizePx={sizePx} />;
+    case "fidelity":
+      return <FidelityIcon containerSizePx={containerSizePx} sizePx={sizePx} />;
+    case "firstTechFederal":
+      return (
+        <FirstTechIcon containerSizePx={containerSizePx} sizePx={sizePx} />
+      );
+    case "guideline":
+      return (
+        <GuidelineIcon containerSizePx={containerSizePx} sizePx={sizePx} />
+      );
+    case "rippling":
+      return <RipplingIcon containerSizePx={containerSizePx} sizePx={sizePx} />;
+    case "robinhood":
+      return (
+        <RobinhoodIcon containerSizePx={containerSizePx} sizePx={sizePx} />
+      );
+    case "vestwell":
+      return <VestwellIcon containerSizePx={containerSizePx} sizePx={sizePx} />;
+    default:
+      return unreachable(provider);
+  }
 };

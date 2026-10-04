@@ -1,71 +1,71 @@
 import {
-	IconArrowBarToDown,
-	IconArrowBarToUp,
-	IconArrowNarrowDown,
-	IconArrowNarrowUp,
-	IconEdit,
-	IconTrash,
+  IconArrowBarToDown,
+  IconArrowBarToUp,
+  IconArrowNarrowDown,
+  IconArrowNarrowUp,
+  IconEdit,
+  IconTrash,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { MoreDropdown } from "../moreDropdown/moreDropdown";
 import { type ReorderPosition } from "../table/types";
 
 interface Props {
-	onDelete: () => void;
-	onEdit: () => void;
-	onReorder: (position: ReorderPosition) => void;
+  onDelete: () => void;
+  onEdit: () => void;
+  onReorder: (position: ReorderPosition) => void;
 }
 
 export const RuleRowDropdown: React.FC<Props> = ({
-	onDelete,
-	onEdit,
-	onReorder,
+  onDelete,
+  onEdit,
+  onReorder,
 }) => {
-	const t = useTranslations();
+  const t = useTranslations();
 
-	return (
-		<MoreDropdown
-			entries={[
-				{
-					action: onEdit,
-					IconComponent: IconEdit,
-					key: "edit",
-					label: t("common.actions.edit"),
-					showDivider: true,
-				},
-				{
-					action: () => onReorder("up"),
-					IconComponent: IconArrowNarrowUp,
-					key: "moveUp",
-					label: t("common.actions.move.up"),
-				},
-				{
-					action: () => onReorder("down"),
-					IconComponent: IconArrowNarrowDown,
-					key: "moveDown",
-					label: t("common.actions.move.down"),
-				},
-				{
-					action: () => onReorder("top"),
-					IconComponent: IconArrowBarToUp,
-					key: "moveTop",
-					label: t("common.actions.move.top"),
-				},
-				{
-					action: () => onReorder("bottom"),
-					IconComponent: IconArrowBarToDown,
-					key: "moveBottom",
-					label: t("common.actions.move.bottom"),
-					showDivider: true,
-				},
-				{
-					action: onDelete,
-					color: "danger",
-					IconComponent: IconTrash,
-					key: "delete",
-					label: t("common.actions.delete"),
-				},
-			]}
-		/>
-	);
+  return (
+    <MoreDropdown
+      entries={[
+        {
+          action: onEdit,
+          IconComponent: IconEdit,
+          key: "edit",
+          label: t("common.actions.edit"),
+          showDivider: true,
+        },
+        {
+          action: () => onReorder("up"),
+          IconComponent: IconArrowNarrowUp,
+          key: "moveUp",
+          label: t("common.actions.move.up"),
+        },
+        {
+          action: () => onReorder("down"),
+          IconComponent: IconArrowNarrowDown,
+          key: "moveDown",
+          label: t("common.actions.move.down"),
+        },
+        {
+          action: () => onReorder("top"),
+          IconComponent: IconArrowBarToUp,
+          key: "moveTop",
+          label: t("common.actions.move.top"),
+        },
+        {
+          action: () => onReorder("bottom"),
+          IconComponent: IconArrowBarToDown,
+          key: "moveBottom",
+          label: t("common.actions.move.bottom"),
+          showDivider: true,
+        },
+        {
+          action: onDelete,
+          color: "danger",
+          IconComponent: IconTrash,
+          key: "delete",
+          label: t("common.actions.delete"),
+        },
+      ]}
+    />
+  );
 };

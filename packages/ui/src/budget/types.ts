@@ -1,4 +1,4 @@
 export interface BudgetDate {
-	month: number;
-	year: number;
+  month: number;
+  year: number;
 }

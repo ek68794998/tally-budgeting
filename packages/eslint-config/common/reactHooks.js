@@ -6,14 +6,14 @@ import pluginReactHooks from "eslint-plugin-react-hooks";
  * @type {import("eslint").Linter.Config[]}
  */
 export const eslintConfigReactHooks = [
-	{
-		plugins: {
-			"react-hooks": pluginReactHooks,
-		},
-		rules: {
-			...pluginReactHooks.configs.recommended.rules,
-			"react/react-in-jsx-scope": "off",
-		},
-		settings: { react: { version: "detect" } },
-	},
+  {
+    plugins: {
+      "react-hooks": pluginReactHooks,
+    },
+    rules: {
+      ...pluginReactHooks.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+    },
+    settings: { react: { version: "detect" } },
+  },
 ];

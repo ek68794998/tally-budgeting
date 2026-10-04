@@ -2,8 +2,8 @@ import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
-	type PostTransactionsUploadResponse,
-	postTransactionsUploadRequestSchema,
+  type PostTransactionsUploadResponse,
+  postTransactionsUploadRequestSchema,
 } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
@@ -26,120 +26,114 @@ const txnsClientLazy = new Lazy(() => new TxnsClient());
 const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const PostTransactionsUploadRouteAsync: NextResponseFn =
-	createApiHandler({
-		bodyParser: async (request) => {
-			const formData = await request.formData();
+  createApiHandler({
+    bodyParser: async (request) => {
+      const formData = await request.formData();
 
-			return postTransactionsUploadRequestSchema.parse({
-				accountId: formData.get("accountId"),
-				file: formData.get("file"),
-				isValidationOnly: formData.get("isValidationOnly"),
-			});
-		},
-		eventName: "POST:TRANSACTIONS/UPLOAD",
-		handler: async ({
-			body,
-		}): Promise<ApiResult<PostTransactionsUploadResponse>> => {
-			const accountId = possibleNumberToNumber(body.accountId) ?? 0;
-			const file = body.file;
-			const isValidationOnly = body.isValidationOnly === "true";
+      return postTransactionsUploadRequestSchema.parse({
+        accountId: formData.get("accountId"),
+        file: formData.get("file"),
+        isValidationOnly: formData.get("isValidationOnly"),
+      });
+    },
+    eventName: "POST:TRANSACTIONS/UPLOAD",
+    handler: async ({
+      body,
+    }): Promise<ApiResult<PostTransactionsUploadResponse>> => {
+      const accountId = possibleNumberToNumber(body.accountId) ?? 0;
+      const file = body.file;
+      const isValidationOnly = body.isValidationOnly === "true";
 
-			const assetsClient = assetsClientLazy.get();
-			const subcategoriesClient = subcategoriesClientLazy.get();
-			const txnsClient = txnsClientLazy.get();
-			const txnRulesClient = txnRulesClientLazy.get();
+      const assetsClient = assetsClientLazy.get();
+      const subcategoriesClient = subcategoriesClientLazy.get();
+      const txnsClient = txnsClientLazy.get();
+      const txnRulesClient = txnRulesClientLazy.get();
 
-			const assets = await assetsClient.getAssetsAsync();
-			const accounts = assets.filter(isAccount);
-			const subcategories =
-				await subcategoriesClient.getSubcategoriesAsync();
-			const transactionRules =
-				await txnRulesClient.getTransactionRulesAsync();
+      const assets = await assetsClient.getAssetsAsync();
+      const accounts = assets.filter(isAccount);
+      const subcategories = await subcategoriesClient.getSubcategoriesAsync();
+      const transactionRules = await txnRulesClient.getTransactionRulesAsync();
 
-			const merchants = transactionRules.map(
-				({
-					matcher: { flags, pattern },
-					merchantName,
-					subcategoryId,
-				}): Merchant => ({
-					categoryId: subcategoryId,
-					friendlyName: merchantName,
-					matcherRegex: new RegExp(pattern, flags),
-				}),
-			);
+      const merchants = transactionRules.map(
+        ({
+          matcher: { flags, pattern },
+          merchantName,
+          subcategoryId,
+        }): Merchant => ({
+          categoryId: subcategoryId,
+          friendlyName: merchantName,
+          matcherRegex: new RegExp(pattern, flags),
+        }),
+      );
 
-			const account = accounts.find((a) => a.id === accountId);
+      const account = accounts.find((a) => a.id === accountId);
 
-			if (!account?.provider) {
-				return {
-					error: { code: "invalidAccount" },
-					statusCode: BadRequest,
-				};
-			}
+      if (!account?.provider) {
+        return {
+          error: { code: "invalidAccount" },
+          statusCode: BadRequest,
+        };
+      }
 
-			let csvFileRows: unknown[];
+      let csvFileRows: unknown[];
 
-			try {
-				const fileContent = await file.text();
-				const csvFileContent = processCsvFile(fileContent);
-				csvFileRows = getCsvRows(csvFileContent);
-			} catch (error) {
-				console.error(error);
+      try {
+        const fileContent = await file.text();
+        const csvFileContent = processCsvFile(fileContent);
+        csvFileRows = getCsvRows(csvFileContent);
+      } catch (error) {
+        console.error(error);
 
-				throw new HttpError(
-					"Invalid file upload",
-					BadRequest,
-					"invalidFileUpload",
-				);
-			}
+        throw new HttpError(
+          "Invalid file upload",
+          BadRequest,
+          "invalidFileUpload",
+        );
+      }
 
-			const rowsFailed: [string, unknown][] = [];
-			const rowsIgnored: unknown[] = [];
-			const rowsProcessed: TransactionFields[] = [];
+      const rowsFailed: [string, unknown][] = [];
+      const rowsIgnored: unknown[] = [];
+      const rowsProcessed: TransactionFields[] = [];
 
-			for (const row of csvFileRows) {
-				const transactionParseResult = parseRowAsTransaction(
-					row,
-					account,
-					{
-						accounts,
-						merchants,
-						subcategories,
-					},
-				);
+      for (const row of csvFileRows) {
+        const transactionParseResult = parseRowAsTransaction(row, account, {
+          accounts,
+          merchants,
+          subcategories,
+        });
 
-				if (transactionParseResult.result === "ignore") {
-					rowsIgnored.push(row);
-					continue;
-				}
+        if (transactionParseResult.result === "ignore") {
+          rowsIgnored.push(row);
+          continue;
+        }
 
-				if (transactionParseResult.result === "failure") {
-					for (const validationError of transactionParseResult.errors) {
-						rowsFailed.push([validationError, row]);
-					}
+        if (transactionParseResult.result === "failure") {
+          for (const validationError of transactionParseResult.errors) {
+            rowsFailed.push([validationError, row]);
+          }
 
-					continue;
-				}
+          continue;
+        }
 
-				rowsProcessed.push(transactionParseResult.transaction);
-			}
+        rowsProcessed.push(transactionParseResult.transaction);
+      }
 
-			if (!isValidationOnly) {
-				await txnsClient.insertTransactionsAsync(rowsProcessed);
-			}
+      if (!isValidationOnly) {
+        await txnsClient.insertTransactionsAsync(rowsProcessed);
+      }
 
-			return {
-				data: {
-					rowsFailed,
-					rowsIgnored,
-					rowsProcessed,
-				},
-				statusCode: Ok,
-			};
-		},
-		schemata: {
-			body: postTransactionsUploadRequestSchema,
-			params: z.unknown(),
-			query: z.unknown(),
-		},
-	});
+      return {
+        data: {
+          rowsFailed,
+          rowsIgnored,
+          rowsProcessed,
+        },
+        statusCode: Ok,
+      };
+    },
+    schemata: {
+      body: postTransactionsUploadRequestSchema,
+      params: z.unknown(),
+      query: z.unknown(),
+    },
+  });

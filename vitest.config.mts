@@ -6,80 +6,78 @@ const setupFileDirectory = `${dirname}/../../packages/vitest-config/src`;
 const globalSetupFile = `${setupFileDirectory}/global.setup.ts`;
 
 export default defineConfig({
-	test: {
-		...configDefaults,
-		coverage: {
-			exclude: [
-				...(configDefaults.coverage.exclude ?? []),
-				"**/_*/**",
-				"**/app/layout.tsx",
-				"**/app/styles/hero.ts",
-				"**/build/**",
-				"**/coverage/**",
-				"**/dist/**",
-				"**/eslint-config/**",
-				"**/loading.tsx",
-				"**/next.config.ts",
-				"**/node_modules/**",
-				"**/postcss.config.mjs",
-				"**/route.ts",
-				"**/testing/**",
-				"**/typescript-config/**",
-				"**/vitest-config/**",
-			],
-			provider: "v8",
-			reporter: ["text", "text-summary", "html"],
-			thresholds: {
-				branches: 96,
-				functions: 95,
-				lines: 98,
-				statements: 98,
-			},
-		},
-		exclude: [...configDefaults.exclude, "**/build/**"],
-		globals: true,
-		include: ["**/(src|app)/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
-		projects: [
-			{
-				// The web app's tsconfig preserves JSX for Next.js, which would otherwise compile to the classic runtime.
-				esbuild: { jsx: "automatic" },
-				test: {
-					environment: "happy-dom",
-					include: ["**/*.{test,spec}.{tsx,jsx}"],
-					name: "unit-react",
-					setupFiles: [
-						globalSetupFile,
-						`${setupFileDirectory}/i18n.setup.ts`,
-						`${setupFileDirectory}/react.setup.ts`,
-					],
-				},
-			},
-			{
-				test: {
-					environment: "node",
-					exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
-					include: ["**/*.{test,spec}.{ts,js}"],
-					name: "unit-ts",
-					setupFiles: [globalSetupFile],
-				},
-			},
-			{
-				test: {
-					environment: "node",
-					globalSetup: [
-						"apps/web/app/storage/testing/pgliteGlobalSetup.ts",
-					],
-					include: ["**/*.db.test.ts"],
-					name: "integration-db",
-					pool: "forks",
-					poolOptions: {
-						// PGlite memory is only returned to the OS when its process exits,
-						// so every database test file shares one fork and one instance.
-						forks: { singleFork: true },
-					},
-					setupFiles: [globalSetupFile],
-				},
-			},
-		],
-	},
+  test: {
+    ...configDefaults,
+    coverage: {
+      exclude: [
+        ...(configDefaults.coverage.exclude ?? []),
+        "**/_*/**",
+        "**/app/layout.tsx",
+        "**/app/styles/hero.ts",
+        "**/build/**",
+        "**/coverage/**",
+        "**/dist/**",
+        "**/eslint-config/**",
+        "**/loading.tsx",
+        "**/next.config.ts",
+        "**/node_modules/**",
+        "**/postcss.config.mjs",
+        "**/route.ts",
+        "**/testing/**",
+        "**/typescript-config/**",
+        "**/vitest-config/**",
+      ],
+      provider: "v8",
+      reporter: ["text", "text-summary", "html"],
+      thresholds: {
+        branches: 96,
+        functions: 95,
+        lines: 98,
+        statements: 98,
+      },
+    },
+    exclude: [...configDefaults.exclude, "**/build/**"],
+    globals: true,
+    include: ["**/(src|app)/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+    projects: [
+      {
+        // The web app's tsconfig preserves JSX for Next.js, which would otherwise compile to the classic runtime.
+        esbuild: { jsx: "automatic" },
+        test: {
+          environment: "happy-dom",
+          include: ["**/*.{test,spec}.{tsx,jsx}"],
+          name: "unit-react",
+          setupFiles: [
+            globalSetupFile,
+            `${setupFileDirectory}/i18n.setup.ts`,
+            `${setupFileDirectory}/react.setup.ts`,
+          ],
+        },
+      },
+      {
+        test: {
+          environment: "node",
+          exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
+          include: ["**/*.{test,spec}.{ts,js}"],
+          name: "unit-ts",
+          setupFiles: [globalSetupFile],
+        },
+      },
+      {
+        test: {
+          environment: "node",
+          globalSetup: ["apps/web/app/storage/testing/pgliteGlobalSetup.ts"],
+          include: ["**/*.db.test.ts"],
+          name: "integration-db",
+          pool: "forks",
+          poolOptions: {
+            // PGlite memory is only returned to the OS when its process exits,
+            // so every database test file shares one fork and one instance.
+            forks: { singleFork: true },
+          },
+          setupFiles: [globalSetupFile],
+        },
+      },
+    ],
+  },
 });

@@ -1,73 +1,65 @@
 {
-	"code_actions_on_format": {
-		"source.fixAll.biome": true,
-		"source.fixAll.eslint": true,
-		"source.fixAll.ts": true
-	},
-	"file_scan_exclusions": [
-		".DS_Store",
-		".git",
-		"**/__snapshots__",
-		"**/node_modules"
-	],
-	"format_on_save": "on",
-	"formatter": {
-		"language_server": {
-			"name": "biome"
-		}
-	},
-	"hard_tabs": true,
-	"languages": {
-		"CSS": {
-			"language_servers": ["tailwindcss-language-server"]
-		},
-		"Shell Script": {
-			"hard_tabs": false,
-			"tab_size": 2
-		},
-		"TypeScript": {
-			"language_servers": [
-				"!typescript-language-server",
-				"vtsls",
-				"biome",
-				"eslint",
-				"tailwindcss-language-server"
-			]
-		},
-		"YAML": {
-			"hard_tabs": false,
-			"tab_size": 2
-		}
-	},
-	"lsp": {
-		"biome": {
-			"settings": {
-				"require_config_file": false
-			}
-		},
-		"eslint": {
-			"settings": {
-				"onIgnoredFiles": "off"
-			}
-		},
-		"tailwindcss-language-server": {
-			"settings": {
-				"classAttributes": ["class", "classNames?"]
-			}
-		},
-		"vtsls": {
-			"settings": {
-				"typescript": {
-					"preferences": {
-						"includePackageJsonAutoImports": "on"
-					},
-					"tsserver": {
-						"maxTsServerMemory": 8192
-					}
-				}
-			}
-		}
-	},
-	"tab_size": 4,
-	"use_on_type_format": false
+  "code_actions_on_format": {
+    "source.fixAll.biome": true,
+    "source.fixAll.eslint": true,
+    "source.fixAll.ts": true
+  },
+  "file_scan_exclusions": [
+    ".DS_Store",
+    ".git",
+    "**/__snapshots__",
+    "**/node_modules"
+  ],
+  "format_on_save": "on",
+  "formatter": {
+    "language_server": {
+      "name": "biome"
+    }
+  },
+  "hard_tabs": false,
+  "languages": {
+    "CSS": {
+      "language_servers": ["tailwindcss-language-server"]
+    },
+    "TypeScript": {
+      "language_servers": [
+        "!typescript-language-server",
+        "vtsls",
+        "biome",
+        "eslint",
+        "tailwindcss-language-server"
+      ]
+    }
+  },
+  "lsp": {
+    "biome": {
+      "settings": {
+        "require_config_file": false
+      }
+    },
+    "eslint": {
+      "settings": {
+        "onIgnoredFiles": "off"
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classAttributes": ["class", "classNames?"]
+      }
+    },
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "includePackageJsonAutoImports": "on"
+          },
+          "tsserver": {
+            "maxTsServerMemory": 8192
+          }
+        }
+      }
+    }
+  },
+  "tab_size": 2,
+  "use_on_type_format": false
 }

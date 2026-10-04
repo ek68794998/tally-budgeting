@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const deleteAssetParamsSchema = z.object({
-	id: z.string(),
+  id: z.string(),
 });
 
 export type DeleteAssetParams = z.infer<typeof deleteAssetParamsSchema>;

@@ -7,28 +7,28 @@ import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const useDeleteTransaction = () => {
-	const { validateApiResponseAsync } = useApiResponseValidator();
+  const { validateApiResponseAsync } = useApiResponseValidator();
 
-	const { mutateAsync } = useMutation({
-		mutationFn: async (id: number) => {
-			const response = await apiFetch(
-				buildApiRoute(api.transactions.base, { params: [id] }),
-				{ method: Delete },
-			);
+  const { mutateAsync } = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiFetch(
+        buildApiRoute(api.transactions.base, { params: [id] }),
+        { method: Delete },
+      );
 
-			const validatedResponse = await validateApiResponseAsync({
-				response,
-				responseSchema: deleteTransactionResponseSchema,
-			});
+      const validatedResponse = await validateApiResponseAsync({
+        response,
+        responseSchema: deleteTransactionResponseSchema,
+      });
 
-			return validatedResponse;
-		},
-	});
+      return validatedResponse;
+    },
+  });
 
-	return useMemo(
-		() => ({
-			deleteTransactionAsync: mutateAsync,
-		}),
-		[mutateAsync],
-	);
+  return useMemo(
+    () => ({
+      deleteTransactionAsync: mutateAsync,
+    }),
+    [mutateAsync],
+  );
 };

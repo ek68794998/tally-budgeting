@@ -1,8 +1,8 @@
 import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
-	type PutCategoryRequest,
-	putCategoryResponseSchema,
+  type PutCategoryRequest,
+  putCategoryResponseSchema,
 } from "@tally/data-models/contracts/api/putCategory";
 import { type Category } from "@tally/data-models/contracts/category";
 import { withoutId } from "@tally/utilities/object/withoutId";
@@ -13,36 +13,36 @@ import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePutCategory = () => {
-	const { validateApiResponseAsync } = useApiResponseValidator();
+  const { validateApiResponseAsync } = useApiResponseValidator();
 
-	const { mutateAsync } = useMutation({
-		mutationFn: async (category: Category) => {
-			const body: PutCategoryRequest = { category: withoutId(category) };
+  const { mutateAsync } = useMutation({
+    mutationFn: async (category: Category) => {
+      const body: PutCategoryRequest = { category: withoutId(category) };
 
-			const response = await apiFetch(
-				buildApiRoute(api.categories.base, { params: [category.id] }),
-				{
-					body: JSON.stringify(body),
-					headers: {
-						[ContentType]: ApplicationJson,
-					},
-					method: Put,
-				},
-			);
+      const response = await apiFetch(
+        buildApiRoute(api.categories.base, { params: [category.id] }),
+        {
+          body: JSON.stringify(body),
+          headers: {
+            [ContentType]: ApplicationJson,
+          },
+          method: Put,
+        },
+      );
 
-			const validatedResponse = await validateApiResponseAsync({
-				response,
-				responseSchema: putCategoryResponseSchema,
-			});
+      const validatedResponse = await validateApiResponseAsync({
+        response,
+        responseSchema: putCategoryResponseSchema,
+      });
 
-			return validatedResponse;
-		},
-	});
+      return validatedResponse;
+    },
+  });
 
-	return useMemo(
-		() => ({
-			putCategoryAsync: mutateAsync,
-		}),
-		[mutateAsync],
-	);
+  return useMemo(
+    () => ({
+      putCategoryAsync: mutateAsync,
+    }),
+    [mutateAsync],
+  );
 };

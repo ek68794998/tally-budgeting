@@ -7,17 +7,17 @@ import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 
 export const PostLogoutRouteAsync: NextResponseFn = createApiHandler({
-	access: "public",
-	eventName: "POST:AUTH:LOGOUT",
-	handler: async (): Promise<ApiResult<never>> => {
-		const cookieStore = await cookies();
-		cookieStore.delete(SessionCookieName);
+  access: "public",
+  eventName: "POST:AUTH:LOGOUT",
+  handler: async (): Promise<ApiResult<never>> => {
+    const cookieStore = await cookies();
+    cookieStore.delete(SessionCookieName);
 
-		return { statusCode: NoContent };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: NoContent };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

@@ -9,15 +9,15 @@ import { type NextResponseFn } from "../types";
 const assetsClientLazy = new Lazy(() => new AssetsClient());
 
 export const PostAssetsRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "POST:ASSETS",
-	handler: async ({ body }) => {
-		await assetsClientLazy.get().insertAssetsAsync([body.asset]);
+  eventName: "POST:ASSETS",
+  handler: async ({ body }) => {
+    await assetsClientLazy.get().insertAssetsAsync([body.asset]);
 
-		return { statusCode: Created };
-	},
-	schemata: {
-		body: postAssetRequestSchema,
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: Created };
+  },
+  schemata: {
+    body: postAssetRequestSchema,
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

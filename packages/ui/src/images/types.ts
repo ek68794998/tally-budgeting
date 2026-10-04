@@ -1,4 +1,4 @@
 export interface LogoImageProps {
-	containerHeight?: number;
-	containerWidth?: number;
+  containerHeight?: number;
+  containerWidth?: number;
 }

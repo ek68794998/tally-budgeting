@@ -2,27 +2,27 @@ import { type Category, type CategoryFields } from "../contracts/category";
 import { type CategoryRow } from "../database/categoryRow";
 
 export const convertCategoryRowToCategory = (row: CategoryRow): Category => {
-	const { id, label } = row;
+  const { id, label } = row;
 
-	return {
-		id,
-		label,
-	};
+  return {
+    id,
+    label,
+  };
 };
 
 export const convertCategoryFieldsToCategoryRow = (
-	row: CategoryFields,
+  row: CategoryFields,
 ): Omit<CategoryRow, "id"> => {
-	const { label } = row;
+  const { label } = row;
 
-	return {
-		label,
-	};
+  return {
+    label,
+  };
 };
 
 export const convertCategoryToCategoryRow = (
-	category: Category,
+  category: Category,
 ): CategoryRow => ({
-	...convertCategoryFieldsToCategoryRow(category),
-	id: category.id,
+  ...convertCategoryFieldsToCategoryRow(category),
+  id: category.id,
 });

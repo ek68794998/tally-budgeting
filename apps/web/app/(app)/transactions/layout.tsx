@@ -6,28 +6,28 @@ import { useTranslations } from "next-intl";
 import { HelpContent } from "../help/helpContent";
 
 const TransactionsLayout: React.FC<React.PropsWithChildren> = ({
-	children,
+  children,
 }) => {
-	const t = useTranslations();
+  const t = useTranslations();
 
-	const subpages = buildSubpageMap([
-		[web.transactions.rules, t("transactions.rules.edit")],
-		[web.transactions.upload, t("transactions.upload.action")],
-	]);
+  const subpages = buildSubpageMap([
+    [web.transactions.rules, t("transactions.rules.edit")],
+    [web.transactions.upload, t("transactions.upload.action")],
+  ]);
 
-	return (
-		<PageLayout
-			actions={
-				<HelpLink subject={t("transactions.title")}>
-					<HelpContent topic="transactions" />
-				</HelpLink>
-			}
-			knownSubpages={subpages}
-			title={t("transactions.title")}
-		>
-			{children}
-		</PageLayout>
-	);
+  return (
+    <PageLayout
+      actions={
+        <HelpLink subject={t("transactions.title")}>
+          <HelpContent topic="transactions" />
+        </HelpLink>
+      }
+      knownSubpages={subpages}
+      title={t("transactions.title")}
+    >
+      {children}
+    </PageLayout>
+  );
 };
 
 export default TransactionsLayout;

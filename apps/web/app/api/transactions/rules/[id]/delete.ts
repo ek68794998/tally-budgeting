@@ -9,21 +9,21 @@ import { type NextResponseFn } from "../../../types";
 const txnRulesClientLazy = new Lazy(() => new TxnRulesClient());
 
 export const DeleteTransactionsRulesIdRouteAsync: NextResponseFn =
-	createApiHandler({
-		eventName: "DELETE:TRANSACTIONS/RULES/[ID]",
-		handler: async ({ params }) => {
-			const { id } = params;
+  createApiHandler({
+    eventName: "DELETE:TRANSACTIONS/RULES/[ID]",
+    handler: async ({ params }) => {
+      const { id } = params;
 
-			const txnRulesClient = txnRulesClientLazy.get();
+      const txnRulesClient = txnRulesClientLazy.get();
 
-			const idNumber = parseInt(id, 10);
-			await txnRulesClient.deleteTransactionRuleAsync(idNumber);
+      const idNumber = parseInt(id, 10);
+      await txnRulesClient.deleteTransactionRuleAsync(idNumber);
 
-			return { statusCode: NoContent };
-		},
-		schemata: {
-			body: z.unknown(),
-			params: deleteTransactionRuleParamsSchema,
-			query: z.unknown(),
-		},
-	});
+      return { statusCode: NoContent };
+    },
+    schemata: {
+      body: z.unknown(),
+      params: deleteTransactionRuleParamsSchema,
+      query: z.unknown(),
+    },
+  });

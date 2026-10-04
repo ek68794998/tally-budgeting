@@ -7,7 +7,7 @@ export const putAssetParamsSchema = idParamsSchema;
 export type PutAssetParams = z.infer<typeof putAssetParamsSchema>;
 
 export const putAssetRequestSchema = z.object({
-	asset: assetFieldsSchema,
+  asset: assetFieldsSchema,
 });
 
 export type PutAssetRequest = z.infer<typeof putAssetRequestSchema>;

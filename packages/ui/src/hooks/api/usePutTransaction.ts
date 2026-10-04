@@ -1,8 +1,8 @@
 import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
-	type PutTransactionRequest,
-	putTransactionResponseSchema,
+  type PutTransactionRequest,
+  putTransactionResponseSchema,
 } from "@tally/data-models/contracts/api/putTransaction";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { withoutId } from "@tally/utilities/object/withoutId";
@@ -13,40 +13,40 @@ import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const usePutTransaction = () => {
-	const { validateApiResponseAsync } = useApiResponseValidator();
+  const { validateApiResponseAsync } = useApiResponseValidator();
 
-	const { mutateAsync } = useMutation({
-		mutationFn: async (transaction: Transaction) => {
-			const body: PutTransactionRequest = {
-				transaction: withoutId(transaction),
-			};
+  const { mutateAsync } = useMutation({
+    mutationFn: async (transaction: Transaction) => {
+      const body: PutTransactionRequest = {
+        transaction: withoutId(transaction),
+      };
 
-			const response = await apiFetch(
-				buildApiRoute(api.transactions.base, {
-					params: [transaction.id],
-				}),
-				{
-					body: JSON.stringify(body),
-					headers: {
-						[ContentType]: ApplicationJson,
-					},
-					method: Put,
-				},
-			);
+      const response = await apiFetch(
+        buildApiRoute(api.transactions.base, {
+          params: [transaction.id],
+        }),
+        {
+          body: JSON.stringify(body),
+          headers: {
+            [ContentType]: ApplicationJson,
+          },
+          method: Put,
+        },
+      );
 
-			const validatedResponse = await validateApiResponseAsync({
-				response,
-				responseSchema: putTransactionResponseSchema,
-			});
+      const validatedResponse = await validateApiResponseAsync({
+        response,
+        responseSchema: putTransactionResponseSchema,
+      });
 
-			return validatedResponse;
-		},
-	});
+      return validatedResponse;
+    },
+  });
 
-	return useMemo(
-		() => ({
-			putTransactionAsync: mutateAsync,
-		}),
-		[mutateAsync],
-	);
+  return useMemo(
+    () => ({
+      putTransactionAsync: mutateAsync,
+    }),
+    [mutateAsync],
+  );
 };

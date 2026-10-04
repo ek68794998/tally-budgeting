@@ -7,28 +7,28 @@ import { useMemo } from "react";
 import { useApiResponseValidator } from "../useApiResponseValidator";
 
 export const useDeleteSubcategory = () => {
-	const { validateApiResponseAsync } = useApiResponseValidator();
+  const { validateApiResponseAsync } = useApiResponseValidator();
 
-	const { mutateAsync } = useMutation({
-		mutationFn: async (id: number) => {
-			const response = await apiFetch(
-				buildApiRoute(api.categories.sub, { params: [id] }),
-				{ method: Delete },
-			);
+  const { mutateAsync } = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiFetch(
+        buildApiRoute(api.categories.sub, { params: [id] }),
+        { method: Delete },
+      );
 
-			const validatedResponse = await validateApiResponseAsync({
-				response,
-				responseSchema: deleteSubcategoryResponseSchema,
-			});
+      const validatedResponse = await validateApiResponseAsync({
+        response,
+        responseSchema: deleteSubcategoryResponseSchema,
+      });
 
-			return validatedResponse;
-		},
-	});
+      return validatedResponse;
+    },
+  });
 
-	return useMemo(
-		() => ({
-			deleteSubcategoryAsync: mutateAsync,
-		}),
-		[mutateAsync],
-	);
+  return useMemo(
+    () => ({
+      deleteSubcategoryAsync: mutateAsync,
+    }),
+    [mutateAsync],
+  );
 };

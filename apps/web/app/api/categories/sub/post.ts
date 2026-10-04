@@ -9,17 +9,17 @@ import { type NextResponseFn } from "../../types";
 const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 
 export const PostCategoriesSubRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "POST:CATEGORIES/SUB",
-	handler: async ({ body }) => {
-		await subcategoriesClientLazy
-			.get()
-			.insertSubcategoriesAsync([body.subcategory]);
+  eventName: "POST:CATEGORIES/SUB",
+  handler: async ({ body }) => {
+    await subcategoriesClientLazy
+      .get()
+      .insertSubcategoriesAsync([body.subcategory]);
 
-		return { statusCode: Created };
-	},
-	schemata: {
-		body: postSubcategoryRequestSchema,
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: Created };
+  },
+  schemata: {
+    body: postSubcategoryRequestSchema,
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

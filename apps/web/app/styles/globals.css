@@ -5,39 +5,39 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--background: #fefbf0;
-	--foreground: #4a4a4a;
+  --background: #fefbf0;
+  --foreground: #4a4a4a;
 
-	background: var(--background);
-	color: var(--foreground);
+  background: var(--background);
+  color: var(--foreground);
 }
 
 :root.dark {
-	--background: #0c0a09;
-	--foreground: #e7e5e4;
-	--heroui-overlay: 0 0% 0%;
+  --background: #0c0a09;
+  --foreground: #e7e5e4;
+  --heroui-overlay: 0 0% 0%;
 
-	color-scheme: dark;
+  color-scheme: dark;
 }
 
 html,
 body {
-	font-synthesis: none;
-	min-height: 100dvh;
-	max-width: 100lvw;
+  font-synthesis: none;
+  min-height: 100dvh;
+  max-width: 100lvw;
 }
 
 body {
-	background: var(--background);
-	color: var(--foreground);
+  background: var(--background);
+  color: var(--foreground);
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 a {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 h1,
@@ -46,19 +46,19 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: var(--font-frank-ruhl-libre);
+  font-family: var(--font-frank-ruhl-libre);
 }
 
 [data-nextjs-dev-overlay] {
-	opacity: 0.2;
-	transition: opacity 0.2s ease-in-out;
+  opacity: 0.2;
+  transition: opacity 0.2s ease-in-out;
 }
 
 [data-nextjs-dev-overlay]:hover {
-	opacity: 1;
+  opacity: 1;
 }
 
 :disabled {
-	cursor: not-allowed;
-	pointer-events: all;
+  cursor: not-allowed;
+  pointer-events: all;
 }

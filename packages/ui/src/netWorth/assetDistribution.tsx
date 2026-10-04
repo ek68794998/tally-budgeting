@@ -10,61 +10,60 @@ import { ChartColors } from "../colors";
 import { formatCurrency } from "../format";
 
 interface Props {
-	assets: Asset[];
+  assets: Asset[];
 }
 
 export const AssetDistribution: React.FC<Props> = ({ assets }) => {
-	const t = useTranslations();
+  const t = useTranslations();
 
-	const dataPoints = useMemo(() => {
-		let personalValue = 0;
-		let fixedValue = 0;
-		let liquidValue = 0;
+  const dataPoints = useMemo(() => {
+    let personalValue = 0;
+    let fixedValue = 0;
+    let liquidValue = 0;
 
-		for (const asset of assets) {
-			const assetValue = Dollars.fromCents(asset.valueCents);
+    for (const asset of assets) {
+      const assetValue = Dollars.fromCents(asset.valueCents);
 
-			if (asset.type === "fixed_asset") {
-				fixedValue += assetValue;
-			} else if (asset.type === "liquid_asset") {
-				liquidValue += assetValue;
-			} else if (asset.type === "personal_asset") {
-				personalValue += assetValue;
-			}
-		}
+      if (asset.type === "fixed_asset") {
+        fixedValue += assetValue;
+      } else if (asset.type === "liquid_asset") {
+        liquidValue += assetValue;
+      } else if (asset.type === "personal_asset") {
+        personalValue += assetValue;
+      }
+    }
 
-		return [
-			{
-				name: t("assets.types.fixed_asset", { plural: "yes" }),
-				value: fixedValue,
-			},
-			{
-				name: t("assets.types.liquid_asset", { plural: "yes" }),
-				value: liquidValue,
-			},
-			{
-				name: t("assets.types.personal_asset", { plural: "yes" }),
-				value: personalValue,
-			},
-		];
-	}, [assets, t]);
+    return [
+      {
+        name: t("assets.types.fixed_asset", { plural: "yes" }),
+        value: fixedValue,
+      },
+      {
+        name: t("assets.types.liquid_asset", { plural: "yes" }),
+        value: liquidValue,
+      },
+      {
+        name: t("assets.types.personal_asset", { plural: "yes" }),
+        value: personalValue,
+      },
+    ];
+  }, [assets, t]);
 
-	const getChartColor = (index: number) =>
-		ChartColors[index] || ChartColors[0];
+  const getChartColor = (index: number) => ChartColors[index] || ChartColors[0];
 
-	return (
-		<Card isBlurred={true}>
-			<CardBody className="p-8">
-				<DonutChart
-					data={dataPoints.map((dataPoint, i) => ({
-						...dataPoint,
-						color: getChartColor(i),
-					}))}
-					formatValue={(value) => formatCurrency(value)}
-					size={300}
-					title={t("assets.netWorth.assetDistribution")}
-				/>
-			</CardBody>
-		</Card>
-	);
+  return (
+    <Card isBlurred={true}>
+      <CardBody className="p-8">
+        <DonutChart
+          data={dataPoints.map((dataPoint, i) => ({
+            ...dataPoint,
+            color: getChartColor(i),
+          }))}
+          formatValue={(value) => formatCurrency(value)}
+          size={300}
+          title={t("assets.netWorth.assetDistribution")}
+        />
+      </CardBody>
+    </Card>
+  );
 };

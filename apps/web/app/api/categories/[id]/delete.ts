@@ -9,20 +9,20 @@ import { type NextResponseFn } from "../../types";
 const categoriesClientLazy = new Lazy(() => new CategoriesClient());
 
 export const DeleteCategoriesIdRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "DELETE:CATEGORIES/[ID]",
-	handler: async ({ params }) => {
-		const { id } = params;
+  eventName: "DELETE:CATEGORIES/[ID]",
+  handler: async ({ params }) => {
+    const { id } = params;
 
-		const categoriesClient = categoriesClientLazy.get();
+    const categoriesClient = categoriesClientLazy.get();
 
-		const idNumber = parseInt(id, 10);
-		await categoriesClient.deleteCategoryAsync(idNumber);
+    const idNumber = parseInt(id, 10);
+    await categoriesClient.deleteCategoryAsync(idNumber);
 
-		return { statusCode: NoContent };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: deleteCategoryParamsSchema,
-		query: z.unknown(),
-	},
+    return { statusCode: NoContent };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: deleteCategoryParamsSchema,
+    query: z.unknown(),
+  },
 });

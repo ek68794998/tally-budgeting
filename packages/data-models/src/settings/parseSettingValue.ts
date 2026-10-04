@@ -1,28 +1,28 @@
 import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import {
-	getSettingDefinition,
-	type SettingKey,
-	type SettingValue,
+  getSettingDefinition,
+  type SettingKey,
+  type SettingValue,
 } from "./settingDefinitions";
 
 export const parseSettingValue = <K extends SettingKey>(
-	key: K,
-	raw: unknown,
-	onParseFailed?: (key: K, raw: unknown) => void,
+  key: K,
+  raw: unknown,
+  onParseFailed?: (key: K, raw: unknown) => void,
 ): SettingValue<K> => {
-	const { defaultValue, schema } = getSettingDefinition(key);
+  const { defaultValue, schema } = getSettingDefinition(key);
 
-	if (isNullOrUndefined(raw)) {
-		return defaultValue;
-	}
+  if (isNullOrUndefined(raw)) {
+    return defaultValue;
+  }
 
-	const result = schema.safeParse(raw);
+  const result = schema.safeParse(raw);
 
-	if (result.success) {
-		return result.data;
-	}
+  if (result.success) {
+    return result.data;
+  }
 
-	onParseFailed?.(key, raw);
+  onParseFailed?.(key, raw);
 
-	return defaultValue;
+  return defaultValue;
 };

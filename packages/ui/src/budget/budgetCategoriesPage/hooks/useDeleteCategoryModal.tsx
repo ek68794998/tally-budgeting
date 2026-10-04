@@ -10,46 +10,37 @@ import { useDeleteCategory } from "../../../hooks/api/useDeleteCategory";
 import { useCategories } from "../../../hooks/store/useCategories";
 
 export const useCategoryDeleteModal = () => {
-	const { refetch } = useCategories();
-	const { deleteCategoryAsync } = useDeleteCategory();
-	const categoryDeleteModalState = useDisclosure();
-	const t = useTranslations("budget.categoriesEdit");
+  const { refetch } = useCategories();
+  const { deleteCategoryAsync } = useDeleteCategory();
+  const categoryDeleteModalState = useDisclosure();
+  const t = useTranslations("budget.categoriesEdit");
 
-	const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
 
-	return useMemo(
-		() => ({
-			open: (category: Category) => {
-				setActiveCategory(category);
-				categoryDeleteModalState.onOpen();
-			},
-			render: () => (
-				<ConfirmationModal
-					body={t.rich("deleteCategoryDescription", {
-						bold: (children: React.ReactNode) => <b>{children}</b>,
-						label: activeCategory?.label ?? "",
-					})}
-					confirmText={t("deleteCategoryAction")}
-					isDestructive={true}
-					modalState={categoryDeleteModalState}
-					onConfirmAsync={async () => {
-						invariant(
-							activeCategory,
-							"Active category must be defined",
-						);
-						await deleteCategoryAsync(activeCategory.id);
-						await refetch();
-					}}
-					title={t("deleteCategoryTitle")}
-				/>
-			),
-		}),
-		[
-			activeCategory,
-			categoryDeleteModalState,
-			refetch,
-			deleteCategoryAsync,
-			t,
-		],
-	);
+  return useMemo(
+    () => ({
+      open: (category: Category) => {
+        setActiveCategory(category);
+        categoryDeleteModalState.onOpen();
+      },
+      render: () => (
+        <ConfirmationModal
+          body={t.rich("deleteCategoryDescription", {
+            bold: (children: React.ReactNode) => <b>{children}</b>,
+            label: activeCategory?.label ?? "",
+          })}
+          confirmText={t("deleteCategoryAction")}
+          isDestructive={true}
+          modalState={categoryDeleteModalState}
+          onConfirmAsync={async () => {
+            invariant(activeCategory, "Active category must be defined");
+            await deleteCategoryAsync(activeCategory.id);
+            await refetch();
+          }}
+          title={t("deleteCategoryTitle")}
+        />
+      ),
+    }),
+    [activeCategory, categoryDeleteModalState, refetch, deleteCategoryAsync, t],
+  );
 };

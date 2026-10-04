@@ -1,8 +1,8 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import {
-	type GetBudgetSummaryResponse,
-	getBudgetQuerySchema,
+  type GetBudgetSummaryResponse,
+  getBudgetQuerySchema,
 } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { DateTime } from "luxon";
 import z from "zod";
@@ -19,58 +19,58 @@ const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 const txnsClientLazy = new Lazy(() => new TxnsClient());
 
 export const GetBudgetSummaryRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:BUDGET/SUMMARY",
-	handler: async ({
-		query: searchParams,
-	}): Promise<ApiResult<GetBudgetSummaryResponse>> => {
-		const subcategoriesClient = subcategoriesClientLazy.get();
-		const txnsClient = txnsClientLazy.get();
+  eventName: "GET:BUDGET/SUMMARY",
+  handler: async ({
+    query: searchParams,
+  }): Promise<ApiResult<GetBudgetSummaryResponse>> => {
+    const subcategoriesClient = subcategoriesClientLazy.get();
+    const txnsClient = txnsClientLazy.get();
 
-		const endMonth = Number(searchParams.endMonth);
-		const endYear = Number(searchParams.endYear);
+    const endMonth = Number(searchParams.endMonth);
+    const endYear = Number(searchParams.endYear);
 
-		const endDateMonth = DateTime.fromObject(
-			{ month: endMonth, year: endYear },
-			{ zone: "UTC" },
-		);
+    const endDateMonth = DateTime.fromObject(
+      { month: endMonth, year: endYear },
+      { zone: "UTC" },
+    );
 
-		if (!endDateMonth.isValid) {
-			throw new HttpError(
-				"Invalid end date.",
-				BadRequest,
-				"invalidQueryParameters",
-			);
-		}
+    if (!endDateMonth.isValid) {
+      throw new HttpError(
+        "Invalid end date.",
+        BadRequest,
+        "invalidQueryParameters",
+      );
+    }
 
-		const endDate = endDateMonth.endOf("month");
-		const searchStartDate = endDate.startOf("month").minus({ months: 23 });
+    const endDate = endDateMonth.endOf("month");
+    const searchStartDate = endDate.startOf("month").minus({ months: 23 });
 
-		const { end: endProfiling } = telemetry().profile(
-			"GET_BUDGET_SUMMARY_DATA",
-		);
+    const { end: endProfiling } = telemetry().profile(
+      "GET_BUDGET_SUMMARY_DATA",
+    );
 
-		const subcategories = await subcategoriesClient.getSubcategoriesAsync();
-		const transactions = await txnsClient.getTransactionsInPeriodAsync(
-			searchStartDate,
-			endDate,
-		);
+    const subcategories = await subcategoriesClient.getSubcategoriesAsync();
+    const transactions = await txnsClient.getTransactionsInPeriodAsync(
+      searchStartDate,
+      endDate,
+    );
 
-		endProfiling();
+    endProfiling();
 
-		const summaryData = createBudgetSummaryData({
-			endDate,
-			subcategories,
-			transactions,
-		});
+    const summaryData = createBudgetSummaryData({
+      endDate,
+      subcategories,
+      transactions,
+    });
 
-		return {
-			data: summaryData,
-			statusCode: Ok,
-		};
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: getBudgetQuerySchema,
-	},
+    return {
+      data: summaryData,
+      statusCode: Ok,
+    };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: getBudgetQuerySchema,
+  },
 });

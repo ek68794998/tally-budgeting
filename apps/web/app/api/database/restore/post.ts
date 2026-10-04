@@ -16,49 +16,46 @@ import { type NextResponseFn } from "../../types";
 const databaseAdminClientLazy = new Lazy(() => new DatabaseAdminClient());
 
 export const PostDatabaseRestoreRouteAsync: NextResponseFn = createApiHandler({
-	bodyParser: async (request) => {
-		const formData = await request.formData();
+  bodyParser: async (request) => {
+    const formData = await request.formData();
 
-		return postDatabaseRestoreRequestSchema.parse({
-			confirm: formData.get("confirm"),
-			file: formData.get("file"),
-		});
-	},
-	eventName: "POST:DATABASE/RESTORE",
-	handler: async ({ body }) => {
-		const directory = await mkdtemp(join(tmpdir(), "tally-restore-"));
-		const filePath = join(directory, "backup.dump");
+    return postDatabaseRestoreRequestSchema.parse({
+      confirm: formData.get("confirm"),
+      file: formData.get("file"),
+    });
+  },
+  eventName: "POST:DATABASE/RESTORE",
+  handler: async ({ body }) => {
+    const directory = await mkdtemp(join(tmpdir(), "tally-restore-"));
+    const filePath = join(directory, "backup.dump");
 
-		try {
-			await writeFile(
-				filePath,
-				Buffer.from(await body.file.arrayBuffer()),
-			);
-			await databaseAdminClientLazy.get().restoreAsync(filePath);
-		} catch (error) {
-			telemetry().error("DATABASE_RESTORE_FAILED", {
-				errorMessage: toError(error).message,
-			});
+    try {
+      await writeFile(filePath, Buffer.from(await body.file.arrayBuffer()));
+      await databaseAdminClientLazy.get().restoreAsync(filePath);
+    } catch (error) {
+      telemetry().error("DATABASE_RESTORE_FAILED", {
+        errorMessage: toError(error).message,
+      });
 
-			if (error instanceof DatabaseToolError) {
-				throw new HttpError(
-					"Restore failed",
-					InternalServerError,
-					"databaseRestoreFailed",
-					{ stderr: error.stderr },
-				);
-			}
+      if (error instanceof DatabaseToolError) {
+        throw new HttpError(
+          "Restore failed",
+          InternalServerError,
+          "databaseRestoreFailed",
+          { stderr: error.stderr },
+        );
+      }
 
-			throw error;
-		} finally {
-			await rm(directory, { force: true, recursive: true });
-		}
+      throw error;
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
 
-		return { statusCode: Ok };
-	},
-	schemata: {
-		body: postDatabaseRestoreRequestSchema,
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { statusCode: Ok };
+  },
+  schemata: {
+    body: postDatabaseRestoreRequestSchema,
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

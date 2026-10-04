@@ -3,23 +3,23 @@ import { budgetTypeSchema } from "./budgetType";
 import { DefaultCategoryId } from "./category";
 
 export const subcategorySchema = z.object({
-	budget: z.object({
-		amountCents: z.int().nonnegative(),
-		frequency: z.int().min(1).max(12),
-		type: budgetTypeSchema,
-	}),
-	categoryId: z.int(),
-	description: z.string(),
-	id: z.int(),
-	label: z.string().min(2).max(100),
-	percentNeeds: z.int().min(0).max(100),
-	percentSavings: z.int().min(0).max(100),
+  budget: z.object({
+    amountCents: z.int().nonnegative(),
+    frequency: z.int().min(1).max(12),
+    type: budgetTypeSchema,
+  }),
+  categoryId: z.int(),
+  description: z.string(),
+  id: z.int(),
+  label: z.string().min(2).max(100),
+  percentNeeds: z.int().min(0).max(100),
+  percentSavings: z.int().min(0).max(100),
 });
 
 export type Subcategory = z.infer<typeof subcategorySchema>;
 
 export const subcategoryFieldsSchema = z.strictObject(
-	subcategorySchema.omit({ id: true }).shape,
+  subcategorySchema.omit({ id: true }).shape,
 );
 
 export type SubcategoryFields = z.infer<typeof subcategoryFieldsSchema>;
@@ -27,15 +27,15 @@ export type SubcategoryFields = z.infer<typeof subcategoryFieldsSchema>;
 export const DefaultSubcategoryId = -1;
 
 export const DefaultSubcategory: Subcategory = {
-	budget: {
-		amountCents: 0,
-		frequency: 12,
-		type: "expense",
-	},
-	categoryId: DefaultCategoryId,
-	description: "",
-	id: DefaultSubcategoryId,
-	label: "Uncategorized",
-	percentNeeds: 0,
-	percentSavings: 0,
+  budget: {
+    amountCents: 0,
+    frequency: 12,
+    type: "expense",
+  },
+  categoryId: DefaultCategoryId,
+  description: "",
+  id: DefaultSubcategoryId,
+  label: "Uncategorized",
+  percentNeeds: 0,
+  percentSavings: 0,
 };

@@ -3,16 +3,16 @@ import { BatchingLogger } from "./batching/batchingLogger";
 import { telemetry } from "./telemetry";
 
 describe("telemetry", () => {
-	afterEach(() => {
-		vi.useRealTimers();
-	});
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-	it("lazily creates one batching logger and reuses it", () => {
-		vi.useFakeTimers();
+  it("lazily creates one batching logger and reuses it", () => {
+    vi.useFakeTimers();
 
-		const logger = telemetry();
+    const logger = telemetry();
 
-		expect(logger).toBeInstanceOf(BatchingLogger);
-		expect(telemetry()).toBe(logger);
-	});
+    expect(logger).toBeInstanceOf(BatchingLogger);
+    expect(telemetry()).toBe(logger);
+  });
 });

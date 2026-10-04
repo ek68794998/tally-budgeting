@@ -9,93 +9,93 @@ import { proxy } from "./proxy";
 const secret = "test-secret";
 
 vi.mock("./app/storage/appSettingsClient", () => ({
-	getOrCreateSessionSecretAsync: vi.fn(() => Promise.resolve(secret)),
+  getOrCreateSessionSecretAsync: vi.fn(() => Promise.resolve(secret)),
 }));
 
 vi.mock("next/headers", () => ({
-	cookies: vi.fn(),
+  cookies: vi.fn(),
 }));
 
 const buildRequest = (token?: string) =>
-	new NextRequest("http://localhost/assets?tab=1", {
-		headers: token ? { cookie: `${SessionCookieName}=${token}` } : {},
-	});
+  new NextRequest("http://localhost/assets?tab=1", {
+    headers: token ? { cookie: `${SessionCookieName}=${token}` } : {},
+  });
 
 const validToken = () =>
-	createSessionToken({ now: new Date(), password: "pw", secret });
+  createSessionToken({ now: new Date(), password: "pw", secret });
 
 describe("proxy", () => {
-	beforeEach(() => {
-		vi.stubEnv("APP_PASSWORD", "pw");
-		vi.stubEnv("DANGEROUSLY_DISABLE_AUTH", "");
-		resetAuthConfigForTesting();
-	});
+  beforeEach(() => {
+    vi.stubEnv("APP_PASSWORD", "pw");
+    vi.stubEnv("DANGEROUSLY_DISABLE_AUTH", "");
+    resetAuthConfigForTesting();
+  });
 
-	afterEach(() => {
-		vi.unstubAllEnvs();
-		resetAuthConfigForTesting();
-	});
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    resetAuthConfigForTesting();
+  });
 
-	it("redirects to login with the original path as next", async () => {
-		const response = await proxy(buildRequest());
+  it("redirects to login with the original path as next", async () => {
+    const response = await proxy(buildRequest());
 
-		expect(response.status).toBe(307);
-		expect(response.headers.get("location")).toBe(
-			"http://localhost/login?next=%2Fassets%3Ftab%3D1",
-		);
-	});
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      "http://localhost/login?next=%2Fassets%3Ftab%3D1",
+    );
+  });
 
-	it("passes a valid, fresh cookie through without re-issuing it", async () => {
-		const token = createSessionToken({
-			now: new Date(),
-			password: "pw",
-			secret,
-		});
+  it("passes a valid, fresh cookie through without re-issuing it", async () => {
+    const token = createSessionToken({
+      now: new Date(),
+      password: "pw",
+      secret,
+    });
 
-		const response = await proxy(buildRequest(token));
+    const response = await proxy(buildRequest(token));
 
-		expect(response.headers.get("location")).toBeNull();
-		expect(response.cookies.get(SessionCookieName)).toBeUndefined();
-	});
+    expect(response.headers.get("location")).toBeNull();
+    expect(response.cookies.get(SessionCookieName)).toBeUndefined();
+  });
 
-	it("re-issues the cookie once less than half the lifetime remains", async () => {
-		const issuedAt = new Date(Date.now() - SessionTtlSeconds * 1000 * 0.75);
-		const token = createSessionToken({
-			now: issuedAt,
-			password: "pw",
-			secret,
-		});
+  it("re-issues the cookie once less than half the lifetime remains", async () => {
+    const issuedAt = new Date(Date.now() - SessionTtlSeconds * 1000 * 0.75);
+    const token = createSessionToken({
+      now: issuedAt,
+      password: "pw",
+      secret,
+    });
 
-		const response = await proxy(buildRequest(token));
+    const response = await proxy(buildRequest(token));
 
-		const refreshed = response.cookies.get(SessionCookieName);
-		expect(refreshed?.value).toBeTruthy();
-		expect(refreshed?.value).not.toBe(token);
-	});
+    const refreshed = response.cookies.get(SessionCookieName);
+    expect(refreshed?.value).toBeTruthy();
+    expect(refreshed?.value).not.toBe(token);
+  });
 
-	it("responds 503 when the database is unavailable", async () => {
-		vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(
-			new Error("Connection terminated due to connection timeout"),
-		);
+  it("responds 503 when the database is unavailable", async () => {
+    vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(
+      new Error("Connection terminated due to connection timeout"),
+    );
 
-		const response = await proxy(buildRequest(validToken()));
+    const response = await proxy(buildRequest(validToken()));
 
-		expect(response.status).toBe(503);
-	});
+    expect(response.status).toBe(503);
+  });
 
-	it("rethrows other session secret failures", async () => {
-		const error = new Error("boom");
-		vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(error);
+  it("rethrows other session secret failures", async () => {
+    const error = new Error("boom");
+    vi.mocked(getOrCreateSessionSecretAsync).mockRejectedValueOnce(error);
 
-		await expect(proxy(buildRequest(validToken()))).rejects.toBe(error);
-	});
+    await expect(proxy(buildRequest(validToken()))).rejects.toBe(error);
+  });
 
-	it("passes everything through when auth is disabled", async () => {
-		vi.stubEnv("DANGEROUSLY_DISABLE_AUTH", "1");
-		resetAuthConfigForTesting();
+  it("passes everything through when auth is disabled", async () => {
+    vi.stubEnv("DANGEROUSLY_DISABLE_AUTH", "1");
+    resetAuthConfigForTesting();
 
-		const response = await proxy(buildRequest());
+    const response = await proxy(buildRequest());
 
-		expect(response.headers.get("location")).toBeNull();
-	});
+    expect(response.headers.get("location")).toBeNull();
+  });
 });

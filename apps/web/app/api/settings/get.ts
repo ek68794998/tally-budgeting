@@ -10,15 +10,15 @@ import { type NextResponseFn } from "../types";
 const settingsClientLazy = new Lazy(() => new SettingsClient());
 
 export const GetSettingsRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:SETTINGS",
-	handler: async (): Promise<ApiResult<GetSettingsResponse>> => {
-		const settings = await settingsClientLazy.get().getSettingsAsync();
+  eventName: "GET:SETTINGS",
+  handler: async (): Promise<ApiResult<GetSettingsResponse>> => {
+    const settings = await settingsClientLazy.get().getSettingsAsync();
 
-		return { data: { settings }, statusCode: Ok };
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return { data: { settings }, statusCode: Ok };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

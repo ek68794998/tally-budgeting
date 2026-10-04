@@ -7,5 +7,5 @@ import { afterEach, expect } from "vitest";
 expect.extend(matchers);
 
 afterEach(() => {
-	cleanUpReact();
+  cleanUpReact();
 });

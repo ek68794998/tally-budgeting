@@ -2,11 +2,11 @@ import { SettingsMasterDetail } from "@tally/ui/settingsPage/settingsMasterDetai
 import { Suspense } from "react";
 
 const SettingsPage: React.FC = () => (
-	<div className="flex flex-col gap-4">
-		<Suspense>
-			<SettingsMasterDetail />
-		</Suspense>
-	</div>
+  <div className="flex flex-col gap-4">
+    <Suspense>
+      <SettingsMasterDetail />
+    </Suspense>
+  </div>
 );
 
 export default SettingsPage;

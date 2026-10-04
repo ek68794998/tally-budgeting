@@ -17,124 +17,123 @@ import { useSubcategoryEditModal } from "./hooks/useSubcategoryEditModal";
 import { SubcategoryActions } from "./subcategoryActions";
 
 export const CategoriesMasterDetail: React.FC = () => {
-	const { categories, isLoading, subcategories } = useCategories();
-	const { open: openCategoryDeleteModal, render: renderCategoryDeleteModal } =
-		useCategoryDeleteModal();
-	const {
-		openEdit: openCategoryEditModal,
-		openNew: openCategoryNewModal,
-		render: renderCategoryEditModal,
-	} = useCategoryEditModal();
-	const {
-		open: openSubcategoryDeleteModal,
-		render: renderSubcategoryDeleteModal,
-	} = useSubcategoryDeleteModal();
-	const {
-		openEdit: openSubcategoryEditModal,
-		openNew: openSubcategoryNewModal,
-		render: renderSubcategoryEditModal,
-	} = useSubcategoryEditModal();
-	const t = useTranslations("budget.categoriesEdit");
+  const { categories, isLoading, subcategories } = useCategories();
+  const { open: openCategoryDeleteModal, render: renderCategoryDeleteModal } =
+    useCategoryDeleteModal();
+  const {
+    openEdit: openCategoryEditModal,
+    openNew: openCategoryNewModal,
+    render: renderCategoryEditModal,
+  } = useCategoryEditModal();
+  const {
+    open: openSubcategoryDeleteModal,
+    render: renderSubcategoryDeleteModal,
+  } = useSubcategoryDeleteModal();
+  const {
+    openEdit: openSubcategoryEditModal,
+    openNew: openSubcategoryNewModal,
+    render: renderSubcategoryEditModal,
+  } = useSubcategoryEditModal();
+  const t = useTranslations("budget.categoriesEdit");
 
-	const sortedCategories = useMemo(
-		() => categories.sort((a, b) => a.label.localeCompare(b.label)),
-		[categories],
-	);
+  const sortedCategories = useMemo(
+    () => categories.sort((a, b) => a.label.localeCompare(b.label)),
+    [categories],
+  );
 
-	const sortedSubcategories = useMemo(
-		() => subcategories.sort((a, b) => a.label.localeCompare(b.label)),
-		[subcategories],
-	);
+  const sortedSubcategories = useMemo(
+    () => subcategories.sort((a, b) => a.label.localeCompare(b.label)),
+    [subcategories],
+  );
 
-	const handleAddCategory = () => {
-		openCategoryNewModal();
-	};
+  const handleAddCategory = () => {
+    openCategoryNewModal();
+  };
 
-	const handleAddSubcategory = (category: Category) => {
-		openSubcategoryNewModal(category);
-	};
+  const handleAddSubcategory = (category: Category) => {
+    openSubcategoryNewModal(category);
+  };
 
-	const handleDeleteCategory = (category: Category) => {
-		openCategoryDeleteModal(category);
-	};
+  const handleDeleteCategory = (category: Category) => {
+    openCategoryDeleteModal(category);
+  };
 
-	const handleDeleteSubcategory = (subcategory: Subcategory) => {
-		openSubcategoryDeleteModal(subcategory);
-	};
+  const handleDeleteSubcategory = (subcategory: Subcategory) => {
+    openSubcategoryDeleteModal(subcategory);
+  };
 
-	const handleEditCategory = (category: Category) => {
-		openCategoryEditModal(category);
-	};
+  const handleEditCategory = (category: Category) => {
+    openCategoryEditModal(category);
+  };
 
-	const handleEditSubcategory = (subcategory: Subcategory) => {
-		openSubcategoryEditModal(subcategory);
-	};
+  const handleEditSubcategory = (subcategory: Subcategory) => {
+    openSubcategoryEditModal(subcategory);
+  };
 
-	return (
-		<>
-			<MasterDetail
-				detail={{
-					actions: (category) => (
-						<SubcategoryActions
-							category={category}
-							onAddSubcategory={handleAddSubcategory}
-							onDeleteCategory={handleDeleteCategory}
-							onEditCategory={handleEditCategory}
-						/>
-					),
-					content: (category) => {
-						if (!category) {
-							return null;
-						}
+  return (
+    <>
+      <MasterDetail
+        detail={{
+          actions: (category) => (
+            <SubcategoryActions
+              category={category}
+              onAddSubcategory={handleAddSubcategory}
+              onDeleteCategory={handleDeleteCategory}
+              onEditCategory={handleEditCategory}
+            />
+          ),
+          content: (category) => {
+            if (!category) {
+              return null;
+            }
 
-						return (
-							<CategoryDetailContent
-								category={category}
-								onDeleteSubcategory={handleDeleteSubcategory}
-								onEditSubcategory={handleEditSubcategory}
-								subcategories={sortedSubcategories}
-							/>
-						);
-					},
-					title: (category) => category?.label ?? "",
-				}}
-				getItemKey={(category) => category.id}
-				master={{
-					actions: (
-						<Button color="primary" onPress={handleAddCategory}>
-							<IconPlus />
-							{t("newCategory")}
-						</Button>
-					),
-					emptyState: isLoading ? (
-						<Spinner />
-					) : (
-						<p>
-							{t("noCategories", {
-								newCategory: t("newCategory"),
-							})}
-						</p>
-					),
-					items: sortedCategories,
-					renderItem: (category, isSelected, onClick) => (
-						<CategoryListItem
-							category={category}
-							isSelected={isSelected}
-							onClick={onClick}
-							subcategoryCount={
-								sortedSubcategories.filter(
-									(s) => s.categoryId === category.id,
-								).length
-							}
-						/>
-					),
-					title: t("title"),
-				}}
-			/>
-			{renderCategoryDeleteModal()}
-			{renderCategoryEditModal()}
-			{renderSubcategoryDeleteModal()}
-			{renderSubcategoryEditModal()}
-		</>
-	);
+            return (
+              <CategoryDetailContent
+                category={category}
+                onDeleteSubcategory={handleDeleteSubcategory}
+                onEditSubcategory={handleEditSubcategory}
+                subcategories={sortedSubcategories}
+              />
+            );
+          },
+          title: (category) => category?.label ?? "",
+        }}
+        getItemKey={(category) => category.id}
+        master={{
+          actions: (
+            <Button color="primary" onPress={handleAddCategory}>
+              <IconPlus />
+              {t("newCategory")}
+            </Button>
+          ),
+          emptyState: isLoading ? (
+            <Spinner />
+          ) : (
+            <p>
+              {t("noCategories", {
+                newCategory: t("newCategory"),
+              })}
+            </p>
+          ),
+          items: sortedCategories,
+          renderItem: (category, isSelected, onClick) => (
+            <CategoryListItem
+              category={category}
+              isSelected={isSelected}
+              onClick={onClick}
+              subcategoryCount={
+                sortedSubcategories.filter((s) => s.categoryId === category.id)
+                  .length
+              }
+            />
+          ),
+          title: t("title"),
+        }}
+      />
+      {renderCategoryDeleteModal()}
+      {renderCategoryEditModal()}
+      {renderSubcategoryDeleteModal()}
+      {renderSubcategoryEditModal()}
+    </>
+  );
 };

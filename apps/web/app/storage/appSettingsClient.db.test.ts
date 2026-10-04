@@ -4,31 +4,29 @@ import { createTestDatabaseHandle } from "./testing/testDatabase";
 const testDatabase = createTestDatabaseHandle();
 
 vi.mock("./database", () => ({
-	getDatabase: () => testDatabase.database,
+  getDatabase: () => testDatabase.database,
 }));
 
 const importFreshClient = () => {
-	vi.resetModules();
-	return import("./appSettingsClient");
+  vi.resetModules();
+  return import("./appSettingsClient");
 };
 
 describe("getOrCreateSessionSecretAsync", () => {
-	beforeAll(testDatabase.setUpAsync);
-	beforeEach(testDatabase.resetAsync);
+  beforeAll(testDatabase.setUpAsync);
+  beforeEach(testDatabase.resetAsync);
 
-	it("creates a secret once, then reuses it from cache and from the database", async () => {
-		const first = await importFreshClient();
-		const secret = await first.getOrCreateSessionSecretAsync();
+  it("creates a secret once, then reuses it from cache and from the database", async () => {
+    const first = await importFreshClient();
+    const secret = await first.getOrCreateSessionSecretAsync();
 
-		expect(Buffer.from(secret, "base64")).toHaveLength(32);
-		await expect(first.getOrCreateSessionSecretAsync()).resolves.toBe(
-			secret,
-		);
+    expect(Buffer.from(secret, "base64")).toHaveLength(32);
+    await expect(first.getOrCreateSessionSecretAsync()).resolves.toBe(secret);
 
-		const freshModule = await importFreshClient();
+    const freshModule = await importFreshClient();
 
-		await expect(freshModule.getOrCreateSessionSecretAsync()).resolves.toBe(
-			secret,
-		);
-	});
+    await expect(freshModule.getOrCreateSessionSecretAsync()).resolves.toBe(
+      secret,
+    );
+  });
 });

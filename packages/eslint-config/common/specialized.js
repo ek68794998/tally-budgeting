@@ -10,33 +10,33 @@ import unicornPlugin from "eslint-plugin-unicorn";
  * @type {import("eslint").Linter.Config[]}
  */
 export const eslintConfigSpecialized = [
-	{
-		plugins: {
-			jsdoc: jsdocPlugin,
-			"prefer-arrow": preferArrowPlugin,
-			"sort-destructure-keys": sortDestructureKeysPlugin,
-			"typescript-sort-keys": typescriptSortKeysPlugin,
-			unicorn: unicornPlugin,
-		},
-		rules: {
-			"jsdoc/check-alignment": "error",
-			"jsdoc/check-indentation": "error",
-			"prefer-arrow/prefer-arrow-functions": "error",
-			"sort-destructure-keys/sort-destructure-keys": [
-				"error",
-				{
-					caseSensitive: false,
-				},
-			],
-			"typescript-sort-keys/interface": [
-				"error",
-				"asc",
-				{
-					caseSensitive: false,
-					natural: true,
-				},
-			],
-			"unicorn/prefer-ternary": ["error", "only-single-line"],
-		},
-	},
+  {
+    plugins: {
+      jsdoc: jsdocPlugin,
+      "prefer-arrow": preferArrowPlugin,
+      "sort-destructure-keys": sortDestructureKeysPlugin,
+      "typescript-sort-keys": typescriptSortKeysPlugin,
+      unicorn: unicornPlugin,
+    },
+    rules: {
+      "jsdoc/check-alignment": "error",
+      "jsdoc/check-indentation": "error",
+      "prefer-arrow/prefer-arrow-functions": "error",
+      "sort-destructure-keys/sort-destructure-keys": [
+        "error",
+        {
+          caseSensitive: false,
+        },
+      ],
+      "typescript-sort-keys/interface": [
+        "error",
+        "asc",
+        {
+          caseSensitive: false,
+          natural: true,
+        },
+      ],
+      "unicorn/prefer-ternary": ["error", "only-single-line"],
+    },
+  },
 ];

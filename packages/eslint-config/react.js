@@ -10,9 +10,9 @@ import { eslintConfigTypeScript } from "./common/typeScript.js";
  * @type {import("eslint").Linter.Config[]}
  */
 export const config = [
-	...eslintConfigBase,
-	...eslintConfigTypeScript,
-	...eslintConfigTailwind,
-	...getEslintConfigReact({ includeBrowserOptions: true }),
-	...eslintConfigReactHooks,
+  ...eslintConfigBase,
+  ...eslintConfigTypeScript,
+  ...eslintConfigTailwind,
+  ...getEslintConfigReact({ includeBrowserOptions: true }),
+  ...eslintConfigReactHooks,
 ];

@@ -8,24 +8,23 @@ import { type ApiResult } from "../../handlers/types";
 import { type NextResponseFn } from "../../types";
 
 const netWorthSnapshotsClientLazy = new Lazy(
-	() => new NetWorthSnapshotsClient(),
+  () => new NetWorthSnapshotsClient(),
 );
 
 export const GetNetWorthSnapshotsRouteAsync: NextResponseFn = createApiHandler({
-	eventName: "GET:NETWORTH/SNAPSHOTS",
-	handler: async (): Promise<ApiResult<GetNetWorthSnapshotsResponse>> => {
-		const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
-		const snapshots =
-			await netWorthSnapshotsClient.getNetWorthSnapshotsAsync();
+  eventName: "GET:NETWORTH/SNAPSHOTS",
+  handler: async (): Promise<ApiResult<GetNetWorthSnapshotsResponse>> => {
+    const netWorthSnapshotsClient = netWorthSnapshotsClientLazy.get();
+    const snapshots = await netWorthSnapshotsClient.getNetWorthSnapshotsAsync();
 
-		return {
-			data: { snapshots },
-			statusCode: Ok,
-		};
-	},
-	schemata: {
-		body: z.unknown(),
-		params: z.unknown(),
-		query: z.unknown(),
-	},
+    return {
+      data: { snapshots },
+      statusCode: Ok,
+    };
+  },
+  schemata: {
+    body: z.unknown(),
+    params: z.unknown(),
+    query: z.unknown(),
+  },
 });

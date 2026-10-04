@@ -12,9 +12,9 @@ import { useCategories } from "../../hooks/store/useCategories";
 import { buildChartData } from "./helpers";
 
 interface Props {
-	error: unknown;
-	isLoading: boolean;
-	spendingData: GetBudgetSpendingResponse | undefined;
+  error: unknown;
+  isLoading: boolean;
+  spendingData: GetBudgetSpendingResponse | undefined;
 }
 
 const maximumChartItems = 16;
@@ -22,62 +22,60 @@ const maximumChartItems = 16;
 const getChartColor = (index: number) => ChartColors[index] || ChartColors[0];
 
 export const SpendingChart: React.FC<Props> = ({
-	error,
-	isLoading,
-	spendingData,
+  error,
+  isLoading,
+  spendingData,
 }) => {
-	const { subcategories } = useCategories();
-	const t = useTranslations("budget.spending");
+  const { subcategories } = useCategories();
+  const t = useTranslations("budget.spending");
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-	const errorDetails = error
-		? error
-		: !spendingData?.spending.length
-			? t("errors.noData")
-			: undefined;
+  const errorDetails = error
+    ? error
+    : !spendingData?.spending.length
+      ? t("errors.noData")
+      : undefined;
 
-	if (errorDetails) {
-		const errorObject = toError(errorDetails);
-		return (
-			<div className="flex flex-col items-center justify-center gap-4">
-				<IconAlertTriangle size={64} />
-				<div>{errorObject.message}</div>
-			</div>
-		);
-	}
+  if (errorDetails) {
+    const errorObject = toError(errorDetails);
+    return (
+      <div className="flex flex-col items-center justify-center gap-4">
+        <IconAlertTriangle size={64} />
+        <div>{errorObject.message}</div>
+      </div>
+    );
+  }
 
-	invariant(spendingData);
+  invariant(spendingData);
 
-	const { spending } = spendingData;
+  const { spending } = spendingData;
 
-	const chartData = spending.map((item, i) => ({
-		color: getChartColor(i % ChartColors.length),
-		name:
-			subcategories.find((sc) => sc.id === item.subcategoryId)?.label ??
-			"",
-		value: Dollars.fromCents(item.spentCents),
-	}));
+  const chartData = spending.map((item, i) => ({
+    color: getChartColor(i % ChartColors.length),
+    name: subcategories.find((sc) => sc.id === item.subcategoryId)?.label ?? "",
+    value: Dollars.fromCents(item.spentCents),
+  }));
 
-	const reducedChartData = buildChartData(
-		chartData,
-		maximumChartItems,
-		t("otherLabel"),
-	);
+  const reducedChartData = buildChartData(
+    chartData,
+    maximumChartItems,
+    t("otherLabel"),
+  );
 
-	return (
-		<DonutChart
-			data={reducedChartData}
-			formatValue={formatCurrency}
-			legend={{
-				enabled: true,
-				maxItems: maximumChartItems / 2,
-				sortBy: "value",
-			}}
-			size={340}
-			title={t("categoryChartTitle")}
-		/>
-	);
+  return (
+    <DonutChart
+      data={reducedChartData}
+      formatValue={formatCurrency}
+      legend={{
+        enabled: true,
+        maxItems: maximumChartItems / 2,
+        sortBy: "value",
+      }}
+      size={340}
+      title={t("categoryChartTitle")}
+    />
+  );
 };

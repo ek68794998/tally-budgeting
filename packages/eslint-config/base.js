@@ -13,26 +13,26 @@ import { eslintConfigVite } from "./common/vite.js";
  * @type {import("eslint").Linter.Config[]}
  */
 export const eslintConfigBase = [
-	js.configs.recommended,
-	eslintConfigPrettier,
-	...eslintConfigJavaScript,
-	...eslintConfigTypeScript,
-	...eslintConfigVite,
-	...eslintConfigSpecialized,
-	{
-		plugins: {
-			turbo: turboPlugin,
-		},
-		rules: {
-			"turbo/no-undeclared-env-vars": "warn",
-		},
-	},
-	{
-		plugins: {
-			onlyWarn,
-		},
-	},
-	{
-		ignores: ["coverage/**", "dist/**", "*.config.mjs", "*.config.js"],
-	},
+  js.configs.recommended,
+  eslintConfigPrettier,
+  ...eslintConfigJavaScript,
+  ...eslintConfigTypeScript,
+  ...eslintConfigVite,
+  ...eslintConfigSpecialized,
+  {
+    plugins: {
+      turbo: turboPlugin,
+    },
+    rules: {
+      "turbo/no-undeclared-env-vars": "warn",
+    },
+  },
+  {
+    plugins: {
+      onlyWarn,
+    },
+  },
+  {
+    ignores: ["coverage/**", "dist/**", "*.config.mjs", "*.config.js"],
+  },
 ];

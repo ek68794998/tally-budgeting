@@ -4,20 +4,20 @@ import { useTranslations } from "next-intl";
 import { HelpContent } from "../help/helpContent";
 
 const AssetsLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
-	const t = useTranslations();
+  const t = useTranslations();
 
-	return (
-		<PageLayout
-			actions={
-				<HelpLink subject={t("assets.title")}>
-					<HelpContent topic="assets" />
-				</HelpLink>
-			}
-			title={t("assets.title")}
-		>
-			{children}
-		</PageLayout>
-	);
+  return (
+    <PageLayout
+      actions={
+        <HelpLink subject={t("assets.title")}>
+          <HelpContent topic="assets" />
+        </HelpLink>
+      }
+      title={t("assets.title")}
+    >
+      {children}
+    </PageLayout>
+  );
 };
 
 export default AssetsLayout;

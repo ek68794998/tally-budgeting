@@ -3,8 +3,8 @@
 import { Spinner } from "@heroui/react";
 import { IconX } from "@tabler/icons-react";
 import {
-	type GetBudgetQuery,
-	getBudgetSummaryResponseSchema,
+  type GetBudgetQuery,
+  getBudgetSummaryResponseSchema,
 } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
@@ -19,77 +19,74 @@ import { BudgetCategoriesList } from "./budgetCategoriesList";
 import { BudgetQuickPulseCharts } from "./budgetQuickPulseCharts";
 
 interface Props {
-	periodEnd: BudgetDate;
+  periodEnd: BudgetDate;
 }
 
 export const BudgetDetails: React.FC<Props> = ({ periodEnd }) => {
-	const t = useTranslations("budget");
+  const t = useTranslations("budget");
 
-	const searchParams: GetBudgetQuery = {
-		endMonth: String(periodEnd.month),
-		endYear: String(periodEnd.year),
-	};
+  const searchParams: GetBudgetQuery = {
+    endMonth: String(periodEnd.month),
+    endYear: String(periodEnd.year),
+  };
 
-	const { data, error, isFetching } = useQuery({
-		placeholderData: keepPreviousData,
-		queryFn: async ({ signal }) => {
-			const urlSearchParams = new URLSearchParams(searchParams);
+  const { data, error, isFetching } = useQuery({
+    placeholderData: keepPreviousData,
+    queryFn: async ({ signal }) => {
+      const urlSearchParams = new URLSearchParams(searchParams);
 
-			const response = await apiFetch(
-				buildApiRoute(api.budget.summary, { query: urlSearchParams }),
-				{ signal },
-			);
+      const response = await apiFetch(
+        buildApiRoute(api.budget.summary, { query: urlSearchParams }),
+        { signal },
+      );
 
-			const json: unknown = await response.json();
-			const result = getBudgetSummaryResponseSchema.parse(json);
+      const json: unknown = await response.json();
+      const result = getBudgetSummaryResponseSchema.parse(json);
 
-			return result;
-		},
-		queryKey: ["budgetSummary", searchParams],
-		retry: (failureCount, attemptError) => {
-			if (failureCount >= 3) {
-				return false;
-			}
+      return result;
+    },
+    queryKey: ["budgetSummary", searchParams],
+    retry: (failureCount, attemptError) => {
+      if (failureCount >= 3) {
+        return false;
+      }
 
-			if (attemptError instanceof ZodError) {
-				return false;
-			}
+      if (attemptError instanceof ZodError) {
+        return false;
+      }
 
-			return true;
-		},
-	});
+      return true;
+    },
+  });
 
-	if (isFetching) {
-		return <Spinner />;
-	}
+  if (isFetching) {
+    return <Spinner />;
+  }
 
-	if (error || !data) {
-		telemetry().error("BUDGET_API_ERROR", {
-			error: error?.message,
-		});
-		return <IconX />;
-	}
+  if (error || !data) {
+    telemetry().error("BUDGET_API_ERROR", {
+      error: error?.message,
+    });
+    return <IconX />;
+  }
 
-	const headerClassName = "mb-2 mt-6 text-2xl font-black";
+  const headerClassName = "mb-2 mt-6 text-2xl font-black";
 
-	return (
-		<div className="flex flex-col gap-4">
-			<div>
-				<h2 className={twMerge(headerClassName, "mt-0")}>
-					{t("quickPulse.title")}
-				</h2>
-				<BudgetQuickPulseCharts data={data.quickPulse} />
-				<h2 className={headerClassName}>{t("overview.title")}</h2>
-				<BudgetActionItems
-					data={data.actionItems}
-					periodEnd={periodEnd}
-				/>
-				<h2 className={headerClassName}>{t("categoriesView.title")}</h2>
-				<BudgetCategoriesList
-					data={data.budgetBreakdown}
-					periodEnd={periodEnd}
-				/>
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h2 className={twMerge(headerClassName, "mt-0")}>
+          {t("quickPulse.title")}
+        </h2>
+        <BudgetQuickPulseCharts data={data.quickPulse} />
+        <h2 className={headerClassName}>{t("overview.title")}</h2>
+        <BudgetActionItems data={data.actionItems} periodEnd={periodEnd} />
+        <h2 className={headerClassName}>{t("categoriesView.title")}</h2>
+        <BudgetCategoriesList
+          data={data.budgetBreakdown}
+          periodEnd={periodEnd}
+        />
+      </div>
+    </div>
+  );
 };
