@@ -78,7 +78,6 @@ describe("DatabaseUnavailableBanner", () => {
 		await advancePollAsync();
 
 		expect(screen.getByTestId("alert")).toBeInTheDocument();
-		console.error("foo");
 		expect(vi.mocked(Alert)).toHaveBeenCalledWith(
 			expect.objectContaining({
 				color: "danger",

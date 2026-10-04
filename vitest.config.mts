@@ -2,6 +2,9 @@ import { configDefaults, defineConfig } from "vitest/config";
 
 const { dirname } = import.meta;
 
+const setupFileDirectory = `${dirname}/../../packages/vitest-config/src`;
+const globalSetupFile = `${setupFileDirectory}/global.setup.ts`;
+
 export default defineConfig({
 	test: {
 		...configDefaults,
@@ -45,8 +48,9 @@ export default defineConfig({
 					include: ["**/*.{test,spec}.{tsx,jsx}"],
 					name: "unit-react",
 					setupFiles: [
-						`${dirname}/../../packages/vitest-config/src/i18n.setup.ts`,
-						`${dirname}/../../packages/vitest-config/src/react.setup.ts`,
+						globalSetupFile,
+						`${setupFileDirectory}/i18n.setup.ts`,
+						`${setupFileDirectory}/react.setup.ts`,
 					],
 				},
 			},
@@ -56,6 +60,7 @@ export default defineConfig({
 					exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
 					include: ["**/*.{test,spec}.{ts,js}"],
 					name: "unit-ts",
+					setupFiles: [globalSetupFile],
 				},
 			},
 			{
@@ -72,6 +77,7 @@ export default defineConfig({
 						// so every database test file shares one fork and one instance.
 						forks: { singleFork: true },
 					},
+					setupFiles: [globalSetupFile],
 				},
 			},
 		],

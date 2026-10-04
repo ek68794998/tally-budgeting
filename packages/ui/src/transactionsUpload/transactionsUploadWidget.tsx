@@ -136,6 +136,7 @@ export const TransactionsUploadWidget: React.FC = () => {
 							<p>{t("dropFile")}</p>
 							<p className="text-xs">{hintText}</p>
 							<Progress
+								aria-label={t("progressLabel")}
 								className="max-w-56"
 								color={progressBarColor}
 								value={uploadPercentage}

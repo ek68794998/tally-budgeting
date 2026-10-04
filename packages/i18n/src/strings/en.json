@@ -372,6 +372,7 @@
 			"failureBody4XX": "An error occurred while validating the file ({statusCode} {statusText}). Please make sure you are uploading a CSV file with the correct format, and try again.",
 			"failureBody5XX": "An error occurred while processing the file ({statusCode} {statusText}). Please try again later.",
 			"failureTitle": "File Upload Failed",
+			"progressLabel": "Upload progress",
 			"resultCard": {
 				"countCategorized": "{count} categorized",
 				"countFailed": "{count} failed",

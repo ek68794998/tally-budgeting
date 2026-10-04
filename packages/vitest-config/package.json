@@ -21,6 +21,7 @@
 		"@testing-library/react": "^16.3.1",
 		"@types/node": "^22.15.3",
 		"eslint": "^9.34.0",
-		"typescript": "5.9.2"
+		"typescript": "5.9.2",
+		"vitest-fail-on-console": "^0.10.1"
 	}
 }

@@ -72,6 +72,7 @@ export const RetirementTable: React.FC<Props> = ({ className }) => {
 
 	return (
 		<Table
+			aria-label={t("title")}
 			className={className}
 			classNames={{
 				wrapper:
