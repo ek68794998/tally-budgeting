@@ -219,6 +219,10 @@
 			"validationErrorBody": "サーバーが予期しない形式のデータを返しました。もう一度お試しください。",
 			"validationErrorTitle": "検証エラー"
 		},
+		"databaseUnavailable": {
+			"body": "Tally がデータベースに接続できません。データベースが起動していることを確認してください。復旧すると自動的に再接続します。",
+			"title": "データベースに接続できません"
+		},
 		"fullPage": {
 			"ctaReload": "ページを再読み込み",
 			"ctaReset": "もう一度試す",

@@ -1,12 +1,13 @@
 import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { AuthProvider } from "@tally/ui/auth/authContext";
+import { useDatabaseStatusStore } from "@tally/utilities/state/databaseStatus";
 import { render, screen } from "@testing-library/react";
 import { useTheme } from "ahooks";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getAuthConfig } from "./auth/config";
-import { ClientProviders } from "./clientProviders";
+import { ClientProviders, shouldRetryQuery } from "./clientProviders";
 import { ServerProviders } from "./serverProviders";
 import { StyleProvider } from "./styles/styleProvider";
 import { ThemeProvider } from "./styles/themeProvider";
@@ -91,6 +92,21 @@ describe("providers", () => {
 
 		expect(screen.getByTestId("child")).toBeInTheDocument();
 		expect(screen.getByTestId("session-expired")).toBeInTheDocument();
+	});
+
+	it.each([
+		{ databaseUnavailable: false, expected: true, failureCount: 0 },
+		{ databaseUnavailable: false, expected: true, failureCount: 2 },
+		{ databaseUnavailable: false, expected: false, failureCount: 3 },
+		{ databaseUnavailable: true, expected: false, failureCount: 0 },
+	])("retries a query after $failureCount failures (database unavailable: $databaseUnavailable): $expected", ({
+		databaseUnavailable,
+		expected,
+		failureCount,
+	}) => {
+		useDatabaseStatusStore.setState({ isUnavailable: databaseUnavailable });
+
+		expect(shouldRetryQuery(failureCount)).toBe(expected);
 	});
 
 	it("applies the dark theme class to the body", () => {

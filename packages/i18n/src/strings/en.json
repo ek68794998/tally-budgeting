@@ -219,6 +219,10 @@
 			"validationErrorBody": "The server returned data in an unexpected format. Please try again.",
 			"validationErrorTitle": "Validation Error"
 		},
+		"databaseUnavailable": {
+			"body": "Tally can't reach its database. Make sure it's running; this page will recover automatically once it's back.",
+			"title": "Database Unavailable"
+		},
 		"fullPage": {
 			"ctaReload": "Reload Page",
 			"ctaReset": "Try Again",

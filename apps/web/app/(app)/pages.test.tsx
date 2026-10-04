@@ -27,6 +27,11 @@ vi.mock("@tally/ui/retirementPage/retirementCalculator", () => ({
 vi.mock("@tally/ui/rulesTable/rulesTable", () => ({
 	RulesTable: vi.fn(() => <div data-testid="rules" />),
 }));
+vi.mock("@tally/ui/common/databaseUnavailableBanner", () => ({
+	DatabaseUnavailableBanner: vi.fn(() => (
+		<div data-testid="database-unavailable" />
+	)),
+}));
 vi.mock("@tally/ui/sidebar/sidebar", () => ({
 	Sidebar: vi.fn(() => <div data-testid="sidebar" />),
 }));
@@ -65,7 +70,7 @@ describe("app pages", () => {
 		);
 	});
 
-	it("renders placeholder settings and wraps pages with the sidebar", () => {
+	it("renders placeholder settings and wraps pages with the sidebar and database banner", () => {
 		render(
 			<RootTemplate>
 				<SettingsPage />
@@ -73,6 +78,7 @@ describe("app pages", () => {
 		);
 
 		expect(screen.getByTestId("sidebar")).toBeInTheDocument();
+		expect(screen.getByTestId("database-unavailable")).toBeInTheDocument();
 		expect(screen.getByText("$0")).toBeInTheDocument();
 	});
 });
