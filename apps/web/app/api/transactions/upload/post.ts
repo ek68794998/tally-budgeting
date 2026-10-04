@@ -5,7 +5,7 @@ import {
 	type PostTransactionsUploadResponse,
 	postTransactionsUploadRequestSchema,
 } from "@tally/data-models/contracts/api/postTransactionsUpload";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { getCsvRows, processCsvFile } from "@tally/utilities/dataHandlers/csv";
 import { type Merchant } from "@tally/utilities/dataHandlers/types";
@@ -95,7 +95,7 @@ export const PostTransactionsUploadRouteAsync: NextResponseFn =
 
 			const rowsFailed: [string, unknown][] = [];
 			const rowsIgnored: unknown[] = [];
-			const rowsProcessed: Transaction[] = [];
+			const rowsProcessed: TransactionFields[] = [];
 
 			for (const row of csvFileRows) {
 				const transactionParseResult = parseRowAsTransaction(

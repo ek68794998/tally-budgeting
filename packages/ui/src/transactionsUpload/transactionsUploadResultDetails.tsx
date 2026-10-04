@@ -19,7 +19,7 @@ import {
 	IconEditOff,
 } from "@tabler/icons-react";
 import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { withoutId } from "@tally/utilities/object/withoutId";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -101,12 +101,12 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
 		);
 	};
 
-	const renderTransactions = (transactions: Transaction[]) => (
+	const renderTransactions = (transactions: TransactionFields[]) => (
 		<div className="mb-2 flex flex-col gap-2">
 			{countTransactionsByMerchant(transactions).map((item) => (
 				<TransactionsUploadResultTransactionRow
 					count={item.count}
-					key={`${item.id}-${item.merchant}-${item.date}`}
+					key={item.merchant}
 					onCreateRule={() => {
 						setMerchantToCategorize(item.merchant);
 						ruleEditModalState.onOpen();

@@ -1,9 +1,9 @@
 import z from "zod";
-import { netWorthSnapshotSchema } from "../netWorthSnapshot";
+import { netWorthSnapshotFieldsSchema } from "../netWorthSnapshot";
 import { createApiResponseSchema } from "./types";
 
 export const postNetWorthSnapshotRequestSchema = z.object({
-	snapshot: netWorthSnapshotSchema,
+	snapshot: netWorthSnapshotFieldsSchema,
 });
 
 export type PostNetWorthSnapshotRequest = z.infer<

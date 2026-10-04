@@ -7,3 +7,11 @@ export const netWorthSnapshotSchema = z.object({
 });
 
 export type NetWorthSnapshot = z.infer<typeof netWorthSnapshotSchema>;
+
+export const netWorthSnapshotFieldsSchema = z.strictObject(
+	netWorthSnapshotSchema.omit({ id: true }).shape,
+);
+
+export type NetWorthSnapshotFields = z.infer<
+	typeof netWorthSnapshotFieldsSchema
+>;

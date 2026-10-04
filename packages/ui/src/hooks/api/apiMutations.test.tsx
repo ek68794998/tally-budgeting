@@ -116,13 +116,13 @@ const bodyCases: MutationCase[] = [
 		},
 	},
 	{
-		expectedBody: { snapshot: buildNetWorthSnapshot() },
+		expectedBody: { snapshot: withoutId(buildNetWorthSnapshot()) },
 		expectedMethod: "POST",
 		expectedUrl: "/api/net-worth/snapshots",
 		name: "usePostNetWorthSnapshot",
 		useMutate: () => {
 			const { postSnapshotAsync } = usePostNetWorthSnapshot();
-			return () => postSnapshotAsync(buildNetWorthSnapshot());
+			return () => postSnapshotAsync(withoutId(buildNetWorthSnapshot()));
 		},
 	},
 	{

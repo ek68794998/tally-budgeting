@@ -1,7 +1,9 @@
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../testing/routeTesting";
 import { DeleteTransactionsIdRouteAsync } from "./[id]/delete";
+import { PutTransactionsIdRouteAsync } from "./[id]/put";
 import { GetTransactionsRouteAsync } from "./get";
 import { PostTransactionsRouteAsync } from "./post";
 
@@ -80,25 +82,53 @@ describe("transactions routes", () => {
 		});
 	});
 
-	it.each([
-		{ id: 0, isList: true, method: client.insertTransactionsAsync },
-		{ id: 9, isList: false, method: client.updateTransactionAsync },
-	])("POST saves a transaction with id $id", async ({
-		id,
-		isList,
-		method,
-	}) => {
-		const transaction = buildTransaction({ id });
+	it("POST creates a transaction from its fields", async () => {
+		const transaction = withoutId(buildTransaction());
 
 		const { status } = await callRouteAsync(PostTransactionsRouteAsync, {
 			body: { transaction },
 			method: "POST",
 		});
 
-		expect(status).toBe(200);
-		expect(method).toHaveBeenCalledExactlyOnceWith(
-			isList ? [transaction] : transaction,
-		);
+		expect(status).toBe(201);
+		expect(client.insertTransactionsAsync).toHaveBeenCalledExactlyOnceWith([
+			transaction,
+		]);
+	});
+
+	it.each([
+		{ transaction: buildTransaction() },
+	])("POST rejects %o", async (body) => {
+		const { status } = await callRouteAsync(PostTransactionsRouteAsync, {
+			body,
+			method: "POST",
+		});
+
+		expect(status).toBe(400);
+		expect(client.insertTransactionsAsync).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{ expectedStatus: 200, wasUpdated: true },
+		{ expectedStatus: 404, wasUpdated: false },
+	])("PUT updates a transaction by route id with status $expectedStatus", async ({
+		expectedStatus,
+		wasUpdated,
+	}) => {
+		client.updateTransactionAsync.mockResolvedValue(wasUpdated);
+		const transaction = withoutId(buildTransaction());
+
+		const { status } = await callRouteAsync(PutTransactionsIdRouteAsync, {
+			body: { transaction },
+			method: "PUT",
+			params: { id: "12" },
+		});
+
+		expect(status).toBe(expectedStatus);
+		expect(client.updateTransactionAsync).toHaveBeenCalledExactlyOnceWith({
+			...transaction,
+			id: 12,
+		});
 	});
 
 	it("DELETE removes the transaction with the route id", async () => {

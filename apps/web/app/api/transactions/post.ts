@@ -1,8 +1,7 @@
-import { Ok } from "@ekumlin/typescript-toolkit/http";
+import { Created } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postTransactionRequestSchema } from "@tally/data-models/contracts/api/postTransaction";
 import z from "zod";
-import { hasId } from "../../storage/helpers";
 import { TxnsClient } from "../../storage/txnsClient";
 import { createApiHandler } from "../handlers/createApiHandler";
 import { type NextResponseFn } from "../types";
@@ -12,13 +11,9 @@ const txnsClientLazy = new Lazy(() => new TxnsClient());
 export const PostTransactionsRouteAsync: NextResponseFn = createApiHandler({
 	eventName: "POST:TRANSACTIONS",
 	handler: async ({ body }) => {
-		const txnsClient = txnsClientLazy.get();
+		await txnsClientLazy.get().insertTransactionsAsync([body.transaction]);
 
-		await (hasId(body.transaction)
-			? txnsClient.updateTransactionAsync(body.transaction)
-			: txnsClient.insertTransactionsAsync([body.transaction]));
-
-		return { statusCode: Ok };
+		return { statusCode: Created };
 	},
 	schemata: {
 		body: postTransactionRequestSchema,

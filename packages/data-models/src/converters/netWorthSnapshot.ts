@@ -1,4 +1,7 @@
-import { type NetWorthSnapshot } from "../contracts/netWorthSnapshot";
+import {
+	type NetWorthSnapshot,
+	type NetWorthSnapshotFields,
+} from "../contracts/netWorthSnapshot";
 import { type NetWorthSnapshotRow } from "../database/netWorthSnapshotRow";
 
 export const convertNetWorthSnapshotRowToNetWorthSnapshot = (
@@ -13,14 +16,13 @@ export const convertNetWorthSnapshotRowToNetWorthSnapshot = (
 	};
 };
 
-export const convertNetWorthSnapshotToNetWorthSnapshotRow = (
-	row: NetWorthSnapshot,
-): NetWorthSnapshotRow => {
-	const { date, id, valueCents } = row;
+export const convertNetWorthSnapshotFieldsToNetWorthSnapshotRow = (
+	row: NetWorthSnapshotFields,
+): Omit<NetWorthSnapshotRow, "id"> => {
+	const { date, valueCents } = row;
 
 	return {
 		date: new Date(date),
-		id,
 		value_cents: String(valueCents), // eslint-disable-line @typescript-eslint/naming-convention
 	};
 };
