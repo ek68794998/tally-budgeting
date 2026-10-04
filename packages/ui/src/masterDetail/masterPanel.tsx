@@ -7,7 +7,12 @@ import { type MasterProps } from "./types";
 interface Props<T>
 	extends Pick<
 		MasterProps<T>,
-		"actions" | "emptyState" | "items" | "renderItem" | "title"
+		| "actions"
+		| "emptyState"
+		| "getItemGroup"
+		| "items"
+		| "renderItem"
+		| "title"
 	> {
 	className?: string;
 	getItemKey: (item: T) => string | number;
@@ -19,6 +24,7 @@ export const MasterPanel = <T,>({
 	actions,
 	className,
 	emptyState,
+	getItemGroup,
 	getItemKey,
 	items,
 	onSelect,
@@ -40,6 +46,7 @@ export const MasterPanel = <T,>({
 	const renderBody = () => (
 		<MasterList
 			emptyState={emptyState}
+			getItemGroup={getItemGroup}
 			getItemKey={getItemKey}
 			items={items}
 			onSelect={onSelect}

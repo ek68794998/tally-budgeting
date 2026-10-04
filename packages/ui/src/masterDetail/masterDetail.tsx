@@ -28,6 +28,7 @@ export const MasterDetail = <T,>({
 	const {
 		actions: masterActions,
 		emptyState: masterEmptyState,
+		getItemGroup: masterGetItemGroup,
 		items: masterItems,
 		renderItem: masterRenderItem,
 		title: masterTitle,
@@ -68,6 +69,7 @@ export const MasterDetail = <T,>({
 					actions={masterActions}
 					className={masterClassName}
 					emptyState={masterEmptyState}
+					getItemGroup={masterGetItemGroup}
 					getItemKey={getItemKey}
 					items={masterItems}
 					onSelect={handleSelect}

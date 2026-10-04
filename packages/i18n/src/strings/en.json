@@ -298,6 +298,79 @@
 		"title": "Transaction Rules"
 	},
 	"settings": {
+		"dangerModal": {
+			"backupFirst": "We recommend downloading a backup first. (<downloadLink>Click here to create one.</downloadLink>)",
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"downloadBackup": "Download backup",
+			"dropConsequence": "All assets, transactions, categories, rules, snapshots and server-saved settings will be permanently deleted. The database will be reset to an empty state.",
+			"dropSuccess": "All data deleted.",
+			"dropTitle": "Delete all data",
+			"failed": "The operation failed.",
+			"file": "Backup file",
+			"restoreConsequence": "All current data will be replaced with the contents of the backup file. Anything not in the backup will be permanently lost.",
+			"restoreSuccess": "Database restored.",
+			"restoreTitle": "Restore from backup",
+			"signedOut": "You will be signed out.",
+			"understand": "I understand this cannot be undone."
+		},
+		"data": {
+			"backup": {
+				"button": "Download backup",
+				"description": "Download a full backup of your database.",
+				"failed": "Backup failed",
+				"title": "Backup"
+			},
+			"dangerZone": {
+				"title": "Danger zone"
+			},
+			"drop": {
+				"button": "Delete all data…",
+				"description": "Permanently delete everything and reset the database to an empty state.",
+				"title": "Delete all data"
+			},
+			"restore": {
+				"button": "Restore…",
+				"description": "Replace all current data with the contents of a backup file.",
+				"title": "Restore from backup"
+			}
+		},
+		"general": {
+			"theme": {
+				"dark": "Dark",
+				"description": "Choose how Tally looks.",
+				"label": "Theme",
+				"light": "Light",
+				"system": "System"
+			}
+		},
+		"hiddenProviders": {
+			"title": "Hidden",
+			"tooltip": "Hidden in Settings → Providers."
+		},
+		"providers": {
+			"description": "Choose which providers appear when you pick one.",
+			"help": "Hidden providers are removed from pickers. Existing accounts and transactions are unaffected.",
+			"label": "Data providers"
+		},
+		"saveFailed": "Couldn't save the setting.",
+		"scope": {
+			"database": "Saved to server",
+			"databaseTooltip": "Saved to your Tally database, so it applies on every device.",
+			"local": "This browser",
+			"localSectionNote": "Settings marked “This browser” aren't shared with other devices.",
+			"localTooltip": "Saved only in this browser. It isn't shared with your other devices."
+		},
+		"sections": {
+			"data": "Data",
+			"general": "General",
+			"groups": {
+				"preferences": "Preferences",
+				"system": "System"
+			},
+			"providers": "Providers",
+			"title": "Settings"
+		},
 		"title": "Settings"
 	},
 	"summary": {

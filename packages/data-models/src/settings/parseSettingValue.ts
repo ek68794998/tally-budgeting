@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import {
 	getSettingDefinition,
 	type SettingKey,
@@ -11,7 +12,7 @@ export const parseSettingValue = <K extends SettingKey>(
 ): SettingValue<K> => {
 	const { defaultValue, schema } = getSettingDefinition(key);
 
-	if (raw === undefined) {
+	if (isNullOrUndefined(raw)) {
 		return defaultValue;
 	}
 

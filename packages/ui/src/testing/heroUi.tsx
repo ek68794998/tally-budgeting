@@ -64,6 +64,12 @@ export const heroUiCollectionStubs = {
 		</div>
 	)),
 	SelectItem: vi.fn(({ children }: ItemProps) => <div>{children}</div>),
+	SelectSection: vi.fn((props: CollectionProps & { title?: string }) => (
+		<section aria-label={props.title} data-testid="select-section">
+			{props.title}
+			{renderCollection(props)}
+		</section>
+	)),
 };
 
 /** Use as `vi.mock("@heroui/react", async (importOriginal) => (await import("../testing/heroUi.js")).withHeroUiStubs(importOriginal))`. */

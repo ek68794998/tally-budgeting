@@ -14,6 +14,8 @@ export interface DetailProps<T> {
 export interface MasterProps<T> {
 	actions?: React.ReactNode;
 	emptyState?: React.ReactNode;
+	/** When given, the list shows a heading wherever the group of consecutive items changes. */
+	getItemGroup?: (item: T) => string;
 	items: T[];
 	renderItem: (
 		item: T,

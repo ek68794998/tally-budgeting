@@ -43,4 +43,21 @@ describe("MasterList", () => {
 
 		expect(screen.getByText(expected)).toBeInTheDocument();
 	});
+
+	it("shows a heading only where the group changes", () => {
+		render(
+			<MasterList
+				getItemGroup={(item: string) => (item < "c" ? "Early" : "Late")}
+				getItemKey={(item: string) => item}
+				items={["a", "b", "c"]}
+				onSelect={vi.fn()}
+				renderItem={(item) => <span>{item}</span>}
+				selectedKey={null}
+			/>,
+		);
+
+		expect(
+			screen.getAllByRole("listitem").map((li) => li.textContent),
+		).toEqual(["Early", "a", "b", "Late", "c"]);
+	});
 });

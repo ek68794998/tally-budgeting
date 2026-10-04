@@ -1,5 +1,6 @@
 import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { AuthProvider } from "@tally/ui/auth/authContext";
+import { useSetting } from "@tally/ui/hooks/useSetting";
 import { useDatabaseStatusStore } from "@tally/utilities/state/databaseStatus";
 import { render, screen } from "@testing-library/react";
 import { useTheme } from "ahooks";
@@ -20,6 +21,7 @@ vi.mock("@tally/ui/auth/authContext", () => ({
 vi.mock("@tally/ui/auth/sessionExpiredModal", () => ({
 	SessionExpiredModal: vi.fn(() => <div data-testid="session-expired" />),
 }));
+vi.mock("@tally/ui/hooks/useSetting", () => ({ useSetting: vi.fn() }));
 vi.mock("ahooks", async (importOriginal) => ({
 	...(await importOriginal<typeof import("ahooks")>()),
 	useTheme: vi.fn(),
@@ -39,10 +41,20 @@ const mockTheme = (theme: "dark" | "light") =>
 		themeMode: theme,
 	});
 
+const mockThemeSetting = (value: "dark" | "light" | "system") =>
+	vi
+		.mocked(useSetting)
+		.mockReturnValue([
+			value,
+			vi.fn(),
+			{ isLoading: false, scope: "local" },
+		]);
+
 describe("providers", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockTheme("light");
+		mockThemeSetting("system");
 	});
 
 	it.each([
@@ -119,6 +131,20 @@ describe("providers", () => {
 		rerender(<ThemeProvider />);
 
 		expect(document.body).not.toHaveClass("dark");
+	});
+
+	it("resolves the theme setting through ahooks", () => {
+		const setThemeMode = vi.fn();
+		vi.mocked(useTheme).mockReturnValue({
+			setThemeMode,
+			theme: "light",
+			themeMode: "light",
+		});
+		mockThemeSetting("dark");
+
+		render(<ThemeProvider />);
+
+		expect(setThemeMode).toHaveBeenCalledWith("dark");
 	});
 
 	it("applies a class name to the style provider", () => {
