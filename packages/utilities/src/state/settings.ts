@@ -24,6 +24,9 @@ export type SettingsStore = StoreState<{
 	settings: Record<string, unknown>;
 }>;
 
+const latestSaveIds = new Map<DatabaseSettingKey, number>();
+let nextSaveId = 0;
+
 export const useSettingsStore = create<SettingsStore>()(
 	subscribeWithSelector((set, get) => ({
 		error: null,
@@ -59,9 +62,11 @@ export const useSettingsStore = create<SettingsStore>()(
 		isFetching: false,
 		isHydrated: false,
 		saveSettingAsync: async (key, value) => {
-			const previous = get().settings;
+			const saveId = nextSaveId++;
+			const previousValue = get().settings[key];
 
-			set({ settings: { ...previous, [key]: value } });
+			latestSaveIds.set(key, saveId);
+			set({ settings: { ...get().settings, [key]: value } });
 
 			try {
 				const body = putSettingRequestSchema.parse({ value });
@@ -87,7 +92,13 @@ export const useSettingsStore = create<SettingsStore>()(
 					errorMessage: toError(error).message,
 					key,
 				});
-				set({ settings: previous });
+
+				// A newer save for this key owns the value now; don't clobber it.
+				if (latestSaveIds.get(key) === saveId) {
+					set({
+						settings: { ...get().settings, [key]: previousValue },
+					});
+				}
 
 				return false;
 			}

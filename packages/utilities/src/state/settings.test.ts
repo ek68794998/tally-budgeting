@@ -107,4 +107,26 @@ describe("useSettingsStore", () => {
 			expect.objectContaining({ key: "providersHidden" }),
 		);
 	});
+
+	it("does not roll back over a newer save when an older save fails", async () => {
+		useSettingsStore.setState({ settings: { providersHidden: ["chase"] } });
+		vi.stubGlobal(
+			"fetch",
+			vi
+				.fn<typeof fetch>()
+				.mockRejectedValueOnce(new Error("offline"))
+				.mockResolvedValueOnce(Response.json({ success: true })),
+		);
+
+		const { saveSettingAsync } = useSettingsStore.getState();
+		const first = saveSettingAsync("providersHidden", ["apple"]);
+		const second = saveSettingAsync("providersHidden", ["amex"]);
+
+		await expect(first).resolves.toBe(false);
+		await expect(second).resolves.toBe(true);
+
+		expect(useSettingsStore.getState().settings).toEqual({
+			providersHidden: ["amex"],
+		});
+	});
 });
