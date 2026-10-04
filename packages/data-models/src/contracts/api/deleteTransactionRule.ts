@@ -1,8 +1,7 @@
 import z from "zod";
+import { idParamsSchema } from "./types";
 
-export const deleteTransactionRuleParamsSchema = z.object({
-  id: z.string(),
-});
+export const deleteTransactionRuleParamsSchema = idParamsSchema;
 
 export type DeleteTransactionRuleParams = z.infer<
   typeof deleteTransactionRuleParamsSchema

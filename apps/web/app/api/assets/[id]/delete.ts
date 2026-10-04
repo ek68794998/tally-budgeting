@@ -14,9 +14,7 @@ export const DeleteAssetsIdRouteAsync: NextResponseFn = createApiHandler({
     const { id } = params;
 
     const assetsClient = assetsClientLazy.get();
-
-    const idNumber = parseInt(id, 10);
-    await assetsClient.deleteAssetAsync(idNumber);
+    await assetsClient.deleteAssetAsync(id);
 
     return { statusCode: NoContent };
   },

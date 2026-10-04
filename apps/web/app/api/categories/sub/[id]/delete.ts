@@ -15,9 +15,7 @@ export const DeleteCategoriesSubIdRouteAsync: NextResponseFn = createApiHandler(
       const { id } = params;
 
       const subcategoriesClient = subcategoriesClientLazy.get();
-
-      const idNumber = parseInt(id, 10);
-      await subcategoriesClient.deleteSubcategoryAsync(idNumber);
+      await subcategoriesClient.deleteSubcategoryAsync(id);
 
       return { statusCode: NoContent };
     },

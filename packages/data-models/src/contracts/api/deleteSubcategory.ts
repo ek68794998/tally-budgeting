@@ -1,8 +1,7 @@
 import z from "zod";
+import { idParamsSchema } from "./types";
 
-export const deleteSubcategoryParamsSchema = z.object({
-  id: z.string(),
-});
+export const deleteSubcategoryParamsSchema = idParamsSchema;
 
 export type DeleteSubcategoryParams = z.infer<
   typeof deleteSubcategoryParamsSchema

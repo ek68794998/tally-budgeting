@@ -149,4 +149,24 @@ describe("categories routes", () => {
     expect(status).toBe(204);
     expect(method).toHaveBeenCalledWith(12);
   });
+
+  it.each([
+    {
+      method: categories.deleteCategoryAsync,
+      route: DeleteCategoriesIdRouteAsync,
+    },
+    {
+      method: subcategories.deleteSubcategoryAsync,
+      route: DeleteCategoriesSubIdRouteAsync,
+    },
+  ])("DELETE rejects a non-numeric route id", async ({ method, route }) => {
+    const { json, status } = await callRouteAsync(route, {
+      method: "DELETE",
+      params: { id: "abc" },
+    });
+
+    expect(status).toBe(400);
+    expect(json).toMatchObject({ error: { code: "invalidRouteParameters" } });
+    expect(method).not.toHaveBeenCalled();
+  });
 });
