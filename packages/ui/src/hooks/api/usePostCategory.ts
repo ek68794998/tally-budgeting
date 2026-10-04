@@ -4,7 +4,7 @@ import {
 	type PostCategoryRequest,
 	postCategoryResponseSchema,
 } from "@tally/data-models/contracts/api/postCategory";
-import { type Category } from "@tally/data-models/contracts/category";
+import { type CategoryFields } from "@tally/data-models/contracts/category";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export const usePostCategory = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (category: Category) => {
+		mutationFn: async (category: CategoryFields & { id?: never }) => {
 			const body: PostCategoryRequest = { category };
 
 			const response = await apiFetch(

@@ -4,10 +4,6 @@ import {
 } from "@tally/data-models/testing/fixtures";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	ModalDefaultCategory,
-	ModalDefaultSubcategory,
-} from "../../common/modalDefault";
 import { useCategories } from "../../hooks/store/useCategories";
 import { MasterDetail } from "../../masterDetail/masterDetail";
 import { CategoriesMasterDetail } from "./categoriesMasterDetail";
@@ -50,11 +46,17 @@ const createModalHook = (testId: string) => ({
 	render: vi.fn(() => <div data-testid={testId} />),
 });
 
+const createEditModalHook = (testId: string) => ({
+	openEdit: vi.fn(),
+	openNew: vi.fn(),
+	render: vi.fn(() => <div data-testid={testId} />),
+});
+
 const modals = {
 	categoryDelete: createModalHook("category-delete"),
-	categoryEdit: createModalHook("category-edit"),
+	categoryEdit: createEditModalHook("category-edit"),
 	subcategoryDelete: createModalHook("subcategory-delete"),
-	subcategoryEdit: createModalHook("subcategory-edit"),
+	subcategoryEdit: createEditModalHook("subcategory-edit"),
 };
 
 const food = buildCategory({ id: 2, label: "Food" });
@@ -125,9 +127,8 @@ describe("CategoriesMasterDetail", () => {
 
 		fireEvent.click(screen.getByText("New Category"));
 
-		expect(modals.categoryEdit.open).toHaveBeenCalledWith(
-			ModalDefaultCategory,
-		);
+		expect(modals.categoryEdit.openNew).toHaveBeenCalledOnce();
+		expect(modals.categoryEdit.openEdit).not.toHaveBeenCalled();
 	});
 
 	it.each([
@@ -174,16 +175,16 @@ describe("CategoriesMasterDetail", () => {
 		contentProps?.onDeleteSubcategory(groceries);
 		contentProps?.onEditSubcategory(groceries);
 
-		expect(modals.subcategoryEdit.open).toHaveBeenNthCalledWith(1, {
-			...ModalDefaultSubcategory,
-			categoryId: food.id,
-		});
-		expect(modals.subcategoryEdit.open).toHaveBeenNthCalledWith(
-			2,
+		expect(modals.subcategoryEdit.openNew).toHaveBeenCalledExactlyOnceWith(
+			food,
+		);
+		expect(modals.subcategoryEdit.openEdit).toHaveBeenCalledExactlyOnceWith(
 			groceries,
 		);
 		expect(modals.categoryDelete.open).toHaveBeenCalledWith(food);
-		expect(modals.categoryEdit.open).toHaveBeenCalledWith(food);
+		expect(modals.categoryEdit.openEdit).toHaveBeenCalledExactlyOnceWith(
+			food,
+		);
 		expect(modals.subcategoryDelete.open).toHaveBeenCalledWith(groceries);
 		expect(contentProps?.subcategories).toHaveLength(2);
 	});

@@ -1,7 +1,9 @@
 import { buildAsset } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../testing/routeTesting";
 import { DeleteAssetsIdRouteAsync } from "./[id]/delete";
+import { PutAssetsIdRouteAsync } from "./[id]/put";
 import { GetAssetsRouteAsync } from "./get";
 import { PostAssetsRouteAsync } from "./post";
 
@@ -36,41 +38,65 @@ describe("assets routes", () => {
 		expect(json).toEqual({ assets, success: true });
 	});
 
-	it.each([
-		{
-			action: "inserts",
-			id: 0,
-			isList: true,
-			method: client.insertAssetsAsync,
-		},
-		{
-			action: "updates",
-			id: 4,
-			isList: false,
-			method: client.updateAssetAsync,
-		},
-	])("POST $action an asset with id $id", async ({ id, isList, method }) => {
-		const asset = buildAsset({ id });
+	it("POST creates an asset from its fields", async () => {
+		const asset = withoutId(buildAsset());
 
 		const { status } = await callRouteAsync(PostAssetsRouteAsync, {
 			body: { asset },
 			method: "POST",
 		});
 
-		expect(status).toBe(200);
-		expect(method).toHaveBeenCalledExactlyOnceWith(
-			isList ? [asset] : asset,
-		);
+		expect(status).toBe(201);
+		expect(client.insertAssetsAsync).toHaveBeenCalledExactlyOnceWith([
+			asset,
+		]);
 	});
 
-	it("POST rejects an invalid asset", async () => {
+	it.each([
+		{ asset: { name: "" } },
+		{ asset: buildAsset() },
+	])("POST rejects %o", async (body) => {
 		const { status } = await callRouteAsync(PostAssetsRouteAsync, {
-			body: { asset: { name: "" } },
+			body,
 			method: "POST",
 		});
 
 		expect(status).toBe(400);
 		expect(client.insertAssetsAsync).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{ expectedStatus: 200, wasUpdated: true },
+		{ expectedStatus: 404, wasUpdated: false },
+	])("PUT updates an asset by route id with status $expectedStatus", async ({
+		expectedStatus,
+		wasUpdated,
+	}) => {
+		client.updateAssetAsync.mockResolvedValue(wasUpdated);
+		const asset = withoutId(buildAsset());
+
+		const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
+			body: { asset },
+			method: "PUT",
+			params: { id: "12" },
+		});
+
+		expect(status).toBe(expectedStatus);
+		expect(client.updateAssetAsync).toHaveBeenCalledExactlyOnceWith({
+			...asset,
+			id: 12,
+		});
+	});
+
+	it("PUT rejects a non-numeric route id", async () => {
+		const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
+			body: { asset: withoutId(buildAsset()) },
+			method: "PUT",
+			params: { id: "abc" },
+		});
+
+		expect(status).toBe(400);
+		expect(client.updateAssetAsync).not.toHaveBeenCalled();
 	});
 
 	it("DELETE removes the asset with the route id", async () => {

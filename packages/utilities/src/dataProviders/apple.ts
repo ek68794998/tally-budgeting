@@ -58,7 +58,6 @@ export class AppleDataProvider implements DataProvider<StatementRow> {
 				),
 				categoryId: subcategory.categoryId,
 				date: new Date(inputRow["Transaction Date"]).toISOString(),
-				id: -1,
 				merchant,
 				subcategoryId: subcategory.id,
 				type: transactionType,

@@ -58,9 +58,19 @@ describe("AssetsClient", () => {
 			buildAsset({ id: 0, name: "B" }),
 		]);
 
-		await client.updateAssetAsync(
-			buildAsset({ active: false, id: 1, name: "A2", valueCents: 42 }),
-		);
+		await expect(
+			client.updateAssetAsync(
+				buildAsset({
+					active: false,
+					id: 1,
+					name: "A2",
+					valueCents: 42,
+				}),
+			),
+		).resolves.toBe(true);
+		await expect(
+			client.updateAssetAsync(buildAsset({ id: 99 })),
+		).resolves.toBe(false);
 		await client.deleteAssetAsync(2);
 
 		await expect(client.getAssetsAsync()).resolves.toEqual([

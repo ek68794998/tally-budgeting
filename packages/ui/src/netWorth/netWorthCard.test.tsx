@@ -101,7 +101,6 @@ describe("NetWorthCard", () => {
 		});
 		expect(postSnapshotAsync).toHaveBeenCalledWith({
 			date: now,
-			id: -1,
 			valueCents: 1000_00,
 		});
 	});

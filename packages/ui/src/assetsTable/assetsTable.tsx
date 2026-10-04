@@ -3,6 +3,7 @@
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { useDisclosure } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
@@ -10,6 +11,7 @@ import { ModalDefaultAsset } from "../common/modalDefault";
 import { filterMatches } from "../filter";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
+import { usePutAsset } from "../hooks/api/usePutAsset";
 import { useAssets } from "../hooks/store/useAssets";
 import { AssetCard } from "./assetCard";
 import { AssetEditModal } from "./assetEditModal";
@@ -25,10 +27,12 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 	const editModalState = useDisclosure();
 	const { deleteAssetAsync } = useDeleteAsset();
 	const { postAssetAsync } = usePostAsset();
+	const { putAssetAsync } = usePutAsset();
 	const t = useTranslations("assets");
 
 	const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
 	const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
+	const [isNewAsset, setIsNewAsset] = useState(false);
 	const [filterValue, setFilterValue] = useState("");
 
 	const displayedAssets = assets
@@ -53,7 +57,9 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 	};
 
 	const handleSaveAsync = async (asset: Asset) => {
-		await postAssetAsync(asset);
+		await (isNewAsset
+			? postAssetAsync(withoutId(asset))
+			: putAssetAsync(asset));
 		editModalState.onClose();
 		setAssetToEdit(null);
 
@@ -65,25 +71,23 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 		deleteModalState.onOpen();
 	};
 
-	const handleStartEdit = (asset: Asset) => {
+	const handleStartEdit = (asset: Asset, isNew = false) => {
 		setAssetToEdit(asset);
+		setIsNewAsset(isNew);
 		editModalState.onOpen();
 	};
 
 	const handleSetActiveAsync = async (asset: Asset, value: boolean) => {
-		const assetToSave: Asset = {
-			...asset,
-			active: value,
-		};
+		await putAssetAsync({ ...asset, active: value });
 
-		await handleSaveAsync(assetToSave);
+		void refetch();
 	};
 
 	return (
 		<div className="@container flex flex-col gap-4">
 			<AssetsTableControls
 				onFilterChange={setFilterValue}
-				onNewAsset={() => handleStartEdit(ModalDefaultAsset)}
+				onNewAsset={() => handleStartEdit(ModalDefaultAsset, true)}
 			/>
 			<div
 				className="
@@ -120,6 +124,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 			/>
 			<AssetEditModal
 				asset={assetToEdit}
+				isNew={isNewAsset}
 				modalState={editModalState}
 				onSaveAsync={handleSaveAsync}
 			/>

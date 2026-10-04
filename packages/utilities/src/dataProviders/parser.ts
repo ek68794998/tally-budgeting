@@ -1,7 +1,7 @@
 import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { AppleDataProvider } from "./apple";
 import { ChaseDataProvider } from "./chase";
 import { FidelityDataProvider } from "./fidelity";
@@ -23,7 +23,7 @@ interface TransactionParseResultIgnore {
 
 interface TransactionParseResultSuccess {
 	result: "success";
-	transaction: Transaction;
+	transaction: TransactionFields;
 }
 
 type TransactionParseResult =
@@ -37,7 +37,7 @@ export const parseRowAsTransaction = (
 	customizations: TransactionCustomizations,
 ): TransactionParseResult => {
 	const validationErrors: string[] = [];
-	let transaction: Transaction | undefined;
+	let transaction: TransactionFields | undefined;
 
 	invariant(account.provider, "Account provider must be defined");
 
@@ -45,7 +45,6 @@ export const parseRowAsTransaction = (
 		transaction = {
 			...t,
 			happiness: HappinessLevelDefault,
-			id: -1,
 			notes: "",
 		};
 	};

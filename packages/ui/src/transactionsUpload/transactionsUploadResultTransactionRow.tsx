@@ -1,5 +1,5 @@
 import { Button, Chip } from "@heroui/react";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "../format";
@@ -7,7 +7,7 @@ import { formatCurrency } from "../format";
 interface Props {
 	count: number;
 	onCreateRule: () => void;
-	transaction: Transaction;
+	transaction: TransactionFields;
 }
 
 export const TransactionsUploadResultTransactionRow: React.FC<Props> = ({

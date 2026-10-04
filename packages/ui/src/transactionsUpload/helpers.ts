@@ -1,6 +1,6 @@
 import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
+import { type TransactionFields } from "@tally/data-models/contracts/transaction";
 import z from "zod";
 
 const unprocessedItemSchema = z.record(z.string(), z.string());
@@ -17,8 +17,8 @@ export const groupUploadResults = (
 	response: PostTransactionsUploadResponse,
 	errorColumnLabel: string,
 ) => {
-	const transactionsCategorized: Transaction[] = [];
-	const transactionsUncategorized: Transaction[] = [];
+	const transactionsCategorized: TransactionFields[] = [];
+	const transactionsUncategorized: TransactionFields[] = [];
 
 	for (const transaction of response.rowsProcessed) {
 		if (transaction.subcategoryId === DefaultSubcategoryId) {
@@ -46,9 +46,9 @@ export const getUnprocessedItemHeaders = (
 
 /** Collapses transactions to one entry per merchant, keeping the last one seen. */
 export const countTransactionsByMerchant = (
-	transactions: Transaction[],
-): (Transaction & { count: number })[] => {
-	const items: Record<string, Transaction & { count: number }> = {};
+	transactions: TransactionFields[],
+): (TransactionFields & { count: number })[] => {
+	const items: Record<string, TransactionFields & { count: number }> = {};
 
 	for (const transaction of transactions) {
 		const count = items[transaction.merchant]?.count || 0;

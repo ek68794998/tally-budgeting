@@ -1,11 +1,9 @@
 import { type Asset } from "@tally/data-models/contracts/asset";
 import { DefaultCategoryId } from "@tally/data-models/contracts/category";
-import { HappinessLevelDefault } from "@tally/data-models/contracts/happinessLevel";
 import {
 	DefaultSubcategoryId,
 	type Subcategory,
 } from "@tally/data-models/contracts/subcategory";
-import { transactionSchema } from "@tally/data-models/contracts/transaction";
 import { beforeEach, describe, expect, it } from "vitest";
 import { AppleDataProvider } from "./apple";
 import { type TransactionCustomizations } from "./types";
@@ -81,7 +79,6 @@ describe("AppleDataProvider", () => {
 				amountCents: 550,
 				categoryId: 5,
 				date: new Date("01/15/2024").toISOString(),
-				id: -1,
 				merchant: "Starbucks",
 				subcategoryId: 101,
 				type: "debit",
@@ -257,35 +254,6 @@ describe("AppleDataProvider", () => {
 					customizationsWithWrongProvider,
 				),
 			).toThrow("does not match provider");
-		});
-
-		it("should always set id to -1", () => {
-			const row = {
-				/* eslint-disable @typescript-eslint/naming-convention */
-				"Amount (USD)": "5.00",
-				Category: "Shopping",
-				"Clearing Date": "01/15/2024",
-				Description: "TEST",
-				Merchant: "Test",
-				"Purchased By": "John Doe",
-				"Transaction Date": "01/15/2024",
-				Type: "Purchase",
-				/* eslint-enable @typescript-eslint/naming-convention */
-			};
-
-			const result = provider.convertStatementRowToTransaction(
-				row,
-				"Apple Card",
-				customizations,
-			);
-
-			const resultWithId = transactionSchema.parse({
-				...result,
-				happiness: HappinessLevelDefault,
-				notes: "",
-			});
-
-			expect(resultWithId.id).toBe(-1);
 		});
 	});
 

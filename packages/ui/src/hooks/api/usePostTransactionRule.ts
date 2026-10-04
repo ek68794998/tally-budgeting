@@ -4,7 +4,7 @@ import {
 	type PostTransactionRuleRequest,
 	postTransactionRuleResponseSchema,
 } from "@tally/data-models/contracts/api/postTransactionRule";
-import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
+import { type TransactionRuleFields } from "@tally/data-models/contracts/transactionRule";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export const usePostTransactionRule = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (rule: TransactionRule) => {
+		mutationFn: async (rule: TransactionRuleFields & { id?: never }) => {
 			const body: PostTransactionRuleRequest = { rule };
 
 			const response = await apiFetch(

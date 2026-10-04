@@ -4,7 +4,7 @@ import {
 	type PostSubcategoryRequest,
 	postSubcategoryResponseSchema,
 } from "@tally/data-models/contracts/api/postSubcategory";
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import { type SubcategoryFields } from "@tally/data-models/contracts/subcategory";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export const usePostSubcategory = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (subcategory: Subcategory) => {
+		mutationFn: async (subcategory: SubcategoryFields & { id?: never }) => {
 			const body: PostSubcategoryRequest = { subcategory };
 
 			const response = await apiFetch(buildApiRoute(api.categories.sub), {

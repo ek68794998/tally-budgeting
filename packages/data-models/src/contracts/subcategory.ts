@@ -18,6 +18,12 @@ export const subcategorySchema = z.object({
 
 export type Subcategory = z.infer<typeof subcategorySchema>;
 
+export const subcategoryFieldsSchema = z.strictObject(
+	subcategorySchema.omit({ id: true }).shape,
+);
+
+export type SubcategoryFields = z.infer<typeof subcategoryFieldsSchema>;
+
 export const DefaultSubcategoryId = -1;
 
 export const DefaultSubcategory: Subcategory = {

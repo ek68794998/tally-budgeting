@@ -21,18 +21,19 @@ import {
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { ModalDefaultAsset } from "../common/modalDefault";
 import { SelectProvider } from "../common/selectProvider";
 import { EditModalFooter } from "../modal/editModalFooter";
 
 interface Props {
 	asset: Asset | null;
+	isNew: boolean;
 	modalState: ReturnType<typeof useDisclosure>;
 	onSaveAsync: (asset: Asset) => Promise<void>;
 }
 
 export const AssetEditModal: React.FC<Props> = ({
 	asset,
+	isNew,
 	modalState: { isOpen, onOpenChange },
 	onSaveAsync: onSave,
 }) => {
@@ -58,10 +59,9 @@ export const AssetEditModal: React.FC<Props> = ({
 		setValue(Dollars.fromCents(asset.valueCents));
 	}, [asset]);
 
-	const title =
-		asset?.id === ModalDefaultAsset.id
-			? t("assets.listControls.addOne")
-			: t("assets.edit", { assetName: String(asset?.name) });
+	const title = isNew
+		? t("assets.listControls.addOne")
+		: t("assets.edit", { assetName: String(asset?.name) });
 
 	return (
 		<Modal

@@ -1,4 +1,5 @@
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ModalDefaultTransactionRule } from "../common/modalDefault";
@@ -147,7 +148,7 @@ describe("TransactionsUploadResultDetails", () => {
 		await lastRuleModalProps()?.onSaveAsync(ModalDefaultTransactionRule);
 
 		expect(postTransactionRuleAsync).toHaveBeenCalledWith(
-			ModalDefaultTransactionRule,
+			withoutId(ModalDefaultTransactionRule),
 		);
 	});
 });

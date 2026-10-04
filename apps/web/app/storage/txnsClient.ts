@@ -1,8 +1,12 @@
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
 import { isBoolean } from "@ekumlin/typescript-toolkit/types";
 import { MaxTransactionsPerPage } from "@tally/data-models/contracts/api/getTransactions";
-import { type Transaction } from "@tally/data-models/contracts/transaction";
 import {
+	type Transaction,
+	type TransactionFields,
+} from "@tally/data-models/contracts/transaction";
+import {
+	convertTransactionFieldsToTxnRow,
 	convertTransactionToTxnRow,
 	convertTxnRowToTransaction,
 } from "@tally/data-models/converters/transaction";
@@ -24,7 +28,6 @@ import {
 	getQueryCountAsync,
 	parseInValues,
 	rowOrRowsAsRows,
-	withoutId,
 } from "./helpers";
 import { TableName as SubcategoryTableName } from "./subcategoriesClient";
 import { type GetAllQueryResult, type GetRowsOptions } from "./types";
@@ -132,12 +135,12 @@ export class TxnsClient extends DatabaseClient {
 	}
 
 	public async insertTransactionsAsync(
-		values: Transaction | Transaction[],
+		values: TransactionFields | TransactionFields[],
 	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const transactions = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertTransactionToTxnRow(r)),
+		const transactions = rowOrRowsAsRows(values).map(
+			convertTransactionFieldsToTxnRow,
 		);
 
 		if (transactions.length <= 0) {
@@ -147,16 +150,18 @@ export class TxnsClient extends DatabaseClient {
 		await database.insertInto(TableName).values(transactions).execute();
 	}
 
-	public async updateTransactionAsync(value: Transaction): Promise<void> {
+	public async updateTransactionAsync(value: Transaction): Promise<boolean> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
 		const row = convertTransactionToTxnRow(value);
 
-		await database
+		const { numUpdatedRows } = await database
 			.updateTable(TableName)
 			.where("id", "=", row.id)
 			.set(row)
-			.execute();
+			.executeTakeFirstOrThrow();
+
+		return numUpdatedRows > 0n;
 	}
 }
 

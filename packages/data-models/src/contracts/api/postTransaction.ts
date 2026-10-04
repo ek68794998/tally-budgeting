@@ -1,9 +1,9 @@
 import z from "zod";
-import { transactionSchema } from "../transaction";
+import { transactionFieldsSchema } from "../transaction";
 import { createApiResponseSchema } from "./types";
 
 export const postTransactionRequestSchema = z.object({
-	transaction: transactionSchema,
+	transaction: transactionFieldsSchema,
 });
 
 export type PostTransactionRequest = z.infer<

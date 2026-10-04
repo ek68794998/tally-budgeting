@@ -59,10 +59,7 @@ export const NetWorthCard: React.FC<Props> = ({
 
 	const handleAddSnapshot = async () => {
 		try {
-			await postSnapshotAsync({
-				id: -1,
-				...currentSnapshot,
-			});
+			await postSnapshotAsync(currentSnapshot);
 			await refetch();
 			addToast({
 				color: "success",

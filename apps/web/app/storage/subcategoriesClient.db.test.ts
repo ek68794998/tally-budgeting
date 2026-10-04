@@ -52,9 +52,18 @@ describe("SubcategoriesClient", () => {
 			buildSubcategory({ id: 0, label: "Utilities" }),
 		]);
 
-		await client.updateSubcategoryAsync(
-			buildSubcategory({ id: 1, label: "Mortgage", percentSavings: 20 }),
-		);
+		await expect(
+			client.updateSubcategoryAsync(
+				buildSubcategory({
+					id: 1,
+					label: "Mortgage",
+					percentSavings: 20,
+				}),
+			),
+		).resolves.toBe(true);
+		await expect(
+			client.updateSubcategoryAsync(buildSubcategory({ id: 99 })),
+		).resolves.toBe(false);
 		await client.deleteSubcategoryAsync(2);
 
 		await expect(client.getSubcategoriesAsync()).resolves.toEqual([

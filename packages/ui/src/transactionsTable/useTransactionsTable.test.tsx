@@ -3,6 +3,7 @@ import {
 	buildSubcategory,
 	buildTransaction,
 } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
 	afterEach,
@@ -16,6 +17,7 @@ import {
 import { ModalDefaultTransaction } from "../common/modalDefault";
 import { useDeleteTransaction } from "../hooks/api/useDeleteTransaction";
 import { usePostTransaction } from "../hooks/api/usePostTransaction";
+import { usePutTransaction } from "../hooks/api/usePutTransaction";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
 import { createQueryClientWrapper } from "../testing/queryClient";
@@ -27,11 +29,15 @@ vi.mock("../hooks/api/useDeleteTransaction", () => ({
 vi.mock("../hooks/api/usePostTransaction", () => ({
 	usePostTransaction: vi.fn(),
 }));
+vi.mock("../hooks/api/usePutTransaction", () => ({
+	usePutTransaction: vi.fn(),
+}));
 vi.mock("../hooks/store/useAssets", () => ({ useAssets: vi.fn() }));
 vi.mock("../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
 
 const deleteTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
 const postTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
+const putTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
 
 const coffee = buildTransaction({ accountId: 1, id: 7, subcategoryId: 2 });
 const rent = buildTransaction({
@@ -91,6 +97,7 @@ describe("useTransactionsTable", () => {
 			deleteTransactionAsync,
 		});
 		vi.mocked(usePostTransaction).mockReturnValue({ postTransactionAsync });
+		vi.mocked(usePutTransaction).mockReturnValue({ putTransactionAsync });
 	});
 
 	afterEach(() => {
@@ -162,10 +169,7 @@ describe("useTransactionsTable", () => {
 		act(() => {
 			result.current.duplicateTransaction(7);
 		});
-		expect(result.current.activeTransaction).toEqual({
-			...coffee,
-			id: ModalDefaultTransaction.id,
-		});
+		expect(result.current.activeTransaction).toEqual(coffee);
 
 		act(() => {
 			result.current.editModalState.onClose();
@@ -180,13 +184,52 @@ describe("useTransactionsTable", () => {
 		expect(result.current.activeTransaction?.id).toBe(7);
 	});
 
-	it("saves a transaction and reloads the page", async () => {
+	it.each([
+		{
+			expectedCall: () =>
+				expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
+					withoutId(coffee),
+				),
+			name: "creates a duplicated",
+			open: (table: ReturnType<typeof useTransactionsTable>) =>
+				table.duplicateTransaction(7),
+			unusedMock: putTransactionAsync,
+		},
+		{
+			expectedCall: () =>
+				expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
+					withoutId(coffee),
+				),
+			name: "creates a new",
+			open: (table: ReturnType<typeof useTransactionsTable>) =>
+				table.startNewTransaction(),
+			unusedMock: putTransactionAsync,
+		},
+		{
+			expectedCall: () =>
+				expect(putTransactionAsync).toHaveBeenCalledExactlyOnceWith(
+					coffee,
+				),
+			name: "updates an existing",
+			open: (table: ReturnType<typeof useTransactionsTable>) =>
+				table.editTransaction(7),
+			unusedMock: postTransactionAsync,
+		},
+	])("$name transaction and reloads the page", async ({
+		expectedCall,
+		open,
+		unusedMock,
+	}) => {
 		const { result } = await renderTableAsync();
 		const requestsBefore = fetchMock.mock.calls.length;
 
+		act(() => {
+			open(result.current);
+		});
 		await act(() => result.current.saveTransactionAsync(coffee));
 
-		expect(postTransactionAsync).toHaveBeenCalledWith(coffee);
+		expectedCall();
+		expect(unusedMock).not.toHaveBeenCalled();
 		await waitFor(() => {
 			expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
 		});

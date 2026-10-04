@@ -1,9 +1,9 @@
 import z from "zod";
-import { subcategorySchema } from "../subcategory";
+import { subcategoryFieldsSchema } from "../subcategory";
 import { createApiResponseSchema } from "./types";
 
 export const postSubcategoryRequestSchema = z.object({
-	subcategory: subcategorySchema,
+	subcategory: subcategoryFieldsSchema,
 });
 
 export type PostSubcategoryRequest = z.infer<

@@ -4,7 +4,7 @@ import {
 	type PostNetWorthSnapshotRequest,
 	postNetWorthSnapshotResponseSchema,
 } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
-import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
+import { type NetWorthSnapshotFields } from "@tally/data-models/contracts/netWorthSnapshot";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,9 @@ export const usePostNetWorthSnapshot = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (snapshot: NetWorthSnapshot) => {
+		mutationFn: async (
+			snapshot: NetWorthSnapshotFields & { id?: never },
+		) => {
 			const body: PostNetWorthSnapshotRequest = { snapshot };
 
 			const response = await apiFetch(

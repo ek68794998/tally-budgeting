@@ -1,11 +1,13 @@
 import { type Selection, useDisclosure } from "@heroui/react";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { useCallback, useMemo, useState } from "react";
 import { ModalDefaultTransactionRule } from "../../common/modalDefault";
 import { filterMatches } from "../../filter";
 import { useDeleteTransactionRule } from "../../hooks/api/useDeleteTransactionRule";
 import { usePatchTransactionRulesReorder } from "../../hooks/api/usePatchTransactionRulesReorder";
 import { usePostTransactionRule } from "../../hooks/api/usePostTransactionRule";
+import { usePutTransactionRule } from "../../hooks/api/usePutTransactionRule";
 import { useTransactionRules } from "../../hooks/store/useTransactionRules";
 import { reorderRows } from "../../table/helpers";
 import { type ReorderPosition } from "../../table/types";
@@ -21,6 +23,7 @@ export const useRulesTable = () => {
 	const { patchTransactionRulesReorderAsync } =
 		usePatchTransactionRulesReorder();
 	const { postTransactionRuleAsync } = usePostTransactionRule();
+	const { putTransactionRuleAsync } = usePutTransactionRule();
 	const {
 		isLoading,
 		refetch: refetchTransactionRules,
@@ -32,6 +35,7 @@ export const useRulesTable = () => {
 		[],
 	);
 	const [filterValue, setFilterValue] = useState("");
+	const [isNewRule, setIsNewRule] = useState(false);
 	const [selection, setSelection] = useState<Selection>(new Set());
 
 	const sortedRules = useMemo(
@@ -81,17 +85,24 @@ export const useRulesTable = () => {
 		}
 	}, [bulkDeleteRules, deleteTransactionRuleAsync, refetchTransactionRules]);
 
-	const handleEdit = useCallback(
-		(rule: TransactionRule) => {
+	const openEditModal = useCallback(
+		(rule: TransactionRule, isNew: boolean) => {
 			setActiveRule(rule);
+			setIsNewRule(isNew);
 			editModalState.onOpen();
 		},
 		[editModalState],
 	);
 
-	const handleNewRule = useCallback(() => {
-		handleEdit(ModalDefaultTransactionRule);
-	}, [handleEdit]);
+	const handleEdit = useCallback(
+		(rule: TransactionRule) => openEditModal(rule, false),
+		[openEditModal],
+	);
+
+	const handleNewRule = useCallback(
+		() => openEditModal(ModalDefaultTransactionRule, true),
+		[openEditModal],
+	);
 
 	const handleReorderAsync = useCallback(
 		async (rule: TransactionRule, position: ReorderPosition) => {
@@ -113,12 +124,20 @@ export const useRulesTable = () => {
 
 	const handleSaveAsync = useCallback(
 		async (rule: TransactionRule) => {
-			await postTransactionRuleAsync(rule);
+			await (isNewRule
+				? postTransactionRuleAsync(withoutId(rule))
+				: putTransactionRuleAsync(rule));
 			void refetchTransactionRules();
 			editModalState.onClose();
 			setActiveRule(null);
 		},
-		[editModalState, postTransactionRuleAsync, refetchTransactionRules],
+		[
+			editModalState,
+			isNewRule,
+			postTransactionRuleAsync,
+			putTransactionRuleAsync,
+			refetchTransactionRules,
+		],
 	);
 
 	const openBulkDeleteModal = useCallback(

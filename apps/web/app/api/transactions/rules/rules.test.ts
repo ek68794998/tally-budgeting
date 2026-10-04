@@ -1,7 +1,9 @@
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
+import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../../testing/routeTesting";
 import { DeleteTransactionsRulesIdRouteAsync } from "./[id]/delete";
+import { PutTransactionsRulesIdRouteAsync } from "./[id]/put";
 import { GetTransactionsRulesRouteAsync } from "./get";
 import { PatchTransactionsRulesOrderRouteAsync } from "./order/patch";
 import { PostTransactionsRulesRouteAsync } from "./post";
@@ -45,11 +47,8 @@ describe("transaction rule routes", () => {
 		});
 	});
 
-	it.each([
-		{ id: 0, isList: true, method: client.insertTransactionRulesAsync },
-		{ id: 2, isList: false, method: client.updateTransactionRuleAsync },
-	])("POST saves a rule with id $id", async ({ id, isList, method }) => {
-		const rule = buildTransactionRule({ id });
+	it("POST creates a rule from its fields", async () => {
+		const rule = withoutId(buildTransactionRule());
 
 		const { status } = await callRouteAsync(
 			PostTransactionsRulesRouteAsync,
@@ -59,8 +58,53 @@ describe("transaction rule routes", () => {
 			},
 		);
 
-		expect(status).toBe(200);
-		expect(method).toHaveBeenCalledExactlyOnceWith(isList ? [rule] : rule);
+		expect(status).toBe(201);
+		expect(
+			client.insertTransactionRulesAsync,
+		).toHaveBeenCalledExactlyOnceWith([rule]);
+	});
+
+	it.each([
+		{ rule: buildTransactionRule() },
+	])("POST rejects %o", async (body) => {
+		const { status } = await callRouteAsync(
+			PostTransactionsRulesRouteAsync,
+			{
+				body,
+				method: "POST",
+			},
+		);
+
+		expect(status).toBe(400);
+		expect(client.insertTransactionRulesAsync).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{ expectedStatus: 200, wasUpdated: true },
+		{ expectedStatus: 404, wasUpdated: false },
+	])("PUT updates a rule by route id with status $expectedStatus", async ({
+		expectedStatus,
+		wasUpdated,
+	}) => {
+		client.updateTransactionRuleAsync.mockResolvedValue(wasUpdated);
+		const rule = withoutId(buildTransactionRule());
+
+		const { status } = await callRouteAsync(
+			PutTransactionsRulesIdRouteAsync,
+			{
+				body: { rule },
+				method: "PUT",
+				params: { id: "12" },
+			},
+		);
+
+		expect(status).toBe(expectedStatus);
+		expect(
+			client.updateTransactionRuleAsync,
+		).toHaveBeenCalledExactlyOnceWith({
+			...rule,
+			id: 12,
+		});
 	});
 
 	it("DELETE removes the rule with the route id", async () => {

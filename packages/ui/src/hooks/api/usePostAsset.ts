@@ -4,7 +4,7 @@ import {
 	type PostAssetRequest,
 	postAssetResponseSchema,
 } from "@tally/data-models/contracts/api/postAsset";
-import { type Asset } from "@tally/data-models/contracts/asset";
+import { type AssetFields } from "@tally/data-models/contracts/asset";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export const usePostAsset = () => {
 	const { validateApiResponseAsync } = useApiResponseValidator();
 
 	const { mutateAsync } = useMutation({
-		mutationFn: async (asset: Asset) => {
+		mutationFn: async (asset: AssetFields & { id?: never }) => {
 			const body: PostAssetRequest = { asset };
 
 			const response = await apiFetch(buildApiRoute(api.assets), {

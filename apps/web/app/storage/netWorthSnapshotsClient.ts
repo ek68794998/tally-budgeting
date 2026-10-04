@@ -1,12 +1,15 @@
-import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
 import {
+	type NetWorthSnapshot,
+	type NetWorthSnapshotFields,
+} from "@tally/data-models/contracts/netWorthSnapshot";
+import {
+	convertNetWorthSnapshotFieldsToNetWorthSnapshotRow,
 	convertNetWorthSnapshotRowToNetWorthSnapshot,
-	convertNetWorthSnapshotToNetWorthSnapshotRow,
 } from "@tally/data-models/converters/netWorthSnapshot";
 import { netWorthSnapshotRowSchema } from "@tally/data-models/database/netWorthSnapshotRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows, withoutId } from "./helpers";
+import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "net_worth_snapshot" as const satisfies keyof Database;
 
@@ -31,12 +34,12 @@ export class NetWorthSnapshotsClient extends DatabaseClient {
 	}
 
 	public async upsertNetWorthSnapshotsAsync(
-		values: NetWorthSnapshot | NetWorthSnapshot[],
+		values: NetWorthSnapshotFields | NetWorthSnapshotFields[],
 	): Promise<void> {
 		const database = await this.getAuthorizedDatabaseAsync();
 
-		const netWorthSnapshots = rowOrRowsAsRows(values).map((r) =>
-			withoutId(convertNetWorthSnapshotToNetWorthSnapshotRow(r)),
+		const netWorthSnapshots = rowOrRowsAsRows(values).map(
+			convertNetWorthSnapshotFieldsToNetWorthSnapshotRow,
 		);
 
 		await database

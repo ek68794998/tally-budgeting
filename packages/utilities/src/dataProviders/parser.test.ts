@@ -152,7 +152,7 @@ describe("parseRowAsTransaction", () => {
 
 			if (result.result === "success") {
 				expect(result.transaction).toBeDefined();
-				expect(result.transaction.id).toBe(-1);
+				expect(result.transaction).not.toHaveProperty("id");
 				expect(result.transaction.notes).toBe("");
 			}
 		});

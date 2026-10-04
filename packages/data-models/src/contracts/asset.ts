@@ -12,3 +12,9 @@ export const assetSchema = z.object({
 });
 
 export type Asset = z.infer<typeof assetSchema>;
+
+export const assetFieldsSchema = z.strictObject(
+	assetSchema.omit({ id: true }).shape,
+);
+
+export type AssetFields = z.infer<typeof assetFieldsSchema>;
