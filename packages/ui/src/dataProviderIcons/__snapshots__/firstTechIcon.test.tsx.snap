@@ -4,9 +4,9 @@ exports[`FirstTechIcon > renders correctly 1`] = `
 <div>
   <div
     class="
-			flex items-center justify-center rounded-sm bg-linear-to-br
-			from-[#009ddc] to-[#009900]
-		"
+      flex items-center justify-center rounded-sm bg-linear-to-br from-[#009ddc]
+      to-[#009900]
+    "
     style="height: 30px; width: 30px;"
   >
     (react:FirstTechLogoSvg)

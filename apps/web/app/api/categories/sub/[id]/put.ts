@@ -4,17 +4,21 @@ import {
   putSubcategoryParamsSchema,
   putSubcategoryRequestSchema,
 } from "@tally/data-models/contracts/api/putSubcategory";
+import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import z from "zod";
 import { SubcategoriesClient } from "../../../../storage/subcategoriesClient";
 import { createApiHandler } from "../../../handlers/createApiHandler";
 import { HttpError } from "../../../handlers/httpError";
 import { type NextResponseFn } from "../../../types";
+import { assertNotDefaultRecord } from "../../assertNotDefaultRecord";
 
 const subcategoriesClientLazy = new Lazy(() => new SubcategoriesClient());
 
 export const PutCategoriesSubIdRouteAsync: NextResponseFn = createApiHandler({
   eventName: "PUT:CATEGORIES/SUB/[ID]",
   handler: async ({ body, params }) => {
+    assertNotDefaultRecord(params.id, DefaultSubcategoryId);
+
     const wasUpdated = await subcategoriesClientLazy
       .get()
       .updateSubcategoryAsync({ ...body.subcategory, id: params.id });

@@ -15,9 +15,7 @@ export const DeleteTransactionsRulesIdRouteAsync: NextResponseFn =
       const { id } = params;
 
       const txnRulesClient = txnRulesClientLazy.get();
-
-      const idNumber = parseInt(id, 10);
-      await txnRulesClient.deleteTransactionRuleAsync(idNumber);
+      await txnRulesClient.deleteTransactionRuleAsync(id);
 
       return { statusCode: NoContent };
     },

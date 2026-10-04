@@ -1,12 +1,19 @@
-import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import {
+  DefaultSubcategory,
+  DefaultSubcategoryId,
+} from "@tally/data-models/contracts/subcategory";
+import {
+  buildAsset,
   buildCategory,
   buildSubcategory,
+  buildTransaction,
 } from "@tally/data-models/testing/fixtures";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { AssetsClient } from "./assetsClient";
 import { CategoriesClient } from "./categoriesClient";
 import { SubcategoriesClient } from "./subcategoriesClient";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
+import { TxnsClient } from "./txnsClient";
 
 vi.mock("../auth/verifyRequest", () => ({
   assertAuthenticatedAsync: vi.fn(() => Promise.resolve()),
@@ -70,5 +77,30 @@ describe("SubcategoriesClient", () => {
       DefaultSubcategory,
       buildSubcategory({ id: 1, label: "Mortgage", percentSavings: 20 }),
     ]);
+  });
+
+  it("rejects deleting the default subcategory while transactions use it", async () => {
+    await new TxnsClient(testDatabase.database).insertTransactionsAsync(
+      buildTransaction({ id: 0, subcategoryId: DefaultSubcategoryId }),
+    );
+
+    await expect(
+      createClient().deleteSubcategoryAsync(DefaultSubcategoryId),
+    ).rejects.toThrow();
+  });
+
+  it("breaks later deletes once an unused default subcategory is deleted", async () => {
+    const client = createClient();
+    await new AssetsClient(testDatabase.database).insertAssetsAsync(
+      buildAsset({ id: 0 }),
+    );
+    await client.insertSubcategoriesAsync(buildSubcategory({ id: 0 }));
+    await new TxnsClient(testDatabase.database).insertTransactionsAsync(
+      buildTransaction({ id: 0, subcategoryId: 1 }),
+    );
+
+    await client.deleteSubcategoryAsync(DefaultSubcategoryId);
+
+    await expect(client.deleteSubcategoryAsync(1)).rejects.toThrow();
   });
 });

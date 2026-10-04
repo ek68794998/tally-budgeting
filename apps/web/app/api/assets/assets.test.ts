@@ -106,4 +106,15 @@ describe("assets routes", () => {
     expect(status).toBe(204);
     expect(client.deleteAssetAsync).toHaveBeenCalledWith(7);
   });
+
+  it("DELETE rejects a non-numeric route id", async () => {
+    const { json, status } = await callRouteAsync(DeleteAssetsIdRouteAsync, {
+      method: "DELETE",
+      params: { id: "abc" },
+    });
+
+    expect(status).toBe(400);
+    expect(json).toMatchObject({ error: { code: "invalidRouteParameters" } });
+    expect(client.deleteAssetAsync).not.toHaveBeenCalled();
+  });
 });

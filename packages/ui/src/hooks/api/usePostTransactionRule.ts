@@ -15,7 +15,9 @@ export const usePostTransactionRule = () => {
   const { validateApiResponseAsync } = useApiResponseValidator();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async (rule: TransactionRuleFields & { id?: never }) => {
+    mutationFn: async (
+      rule: TransactionRuleFields & { id?: never; priority?: never },
+    ) => {
       const body: PostTransactionRuleRequest = { rule };
 
       const response = await apiFetch(

@@ -1,6 +1,6 @@
 import { type Selection, useDisclosure } from "@heroui/react";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
-import { withoutId } from "@tally/utilities/object/withoutId";
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { useCallback, useMemo, useState } from "react";
 import { ModalDefaultTransactionRule } from "../../common/modalDefault";
 import { filterMatches } from "../../filter";
@@ -116,7 +116,7 @@ export const useRulesTable = () => {
   const handleSaveAsync = useCallback(
     async (rule: TransactionRule) => {
       await (isNewRule
-        ? postTransactionRuleAsync(withoutId(rule))
+        ? postTransactionRuleAsync(getTransactionRuleFields(rule))
         : putTransactionRuleAsync(rule));
       void refetchTransactionRules();
       editModalState.onClose();

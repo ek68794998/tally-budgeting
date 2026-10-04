@@ -20,7 +20,7 @@ import {
 } from "@tabler/icons-react";
 import { type PostTransactionsUploadResponse } from "@tally/data-models/contracts/api/postTransactionsUpload";
 import { type TransactionFields } from "@tally/data-models/contracts/transaction";
-import { withoutId } from "@tally/utilities/object/withoutId";
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ModalDefaultTransactionRule } from "../common/modalDefault";
@@ -201,7 +201,7 @@ export const TransactionsUploadResultDetails: React.FC<Props> = ({
         merchantToMatch={merchantToCategorize ?? undefined}
         modalState={ruleEditModalState}
         onSaveAsync={async (rule) => {
-          await postTransactionRuleAsync(withoutId(rule));
+          await postTransactionRuleAsync(getTransactionRuleFields(rule));
         }}
         rule={ModalDefaultTransactionRule}
       />

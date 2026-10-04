@@ -1,5 +1,8 @@
 import { type Category } from "@tally/data-models/contracts/category";
-import { type Subcategory } from "@tally/data-models/contracts/subcategory";
+import {
+  DefaultSubcategoryId,
+  type Subcategory,
+} from "@tally/data-models/contracts/subcategory";
 import { useTranslations } from "next-intl";
 import { SubcategoryItem } from "./subcategoryItem";
 
@@ -32,14 +35,20 @@ export const CategoryDetailContent: React.FC<Props> = ({
         </p>
       ) : (
         <div className="flex flex-col gap-4">
-          {categorySubcategories.map((sub) => (
-            <SubcategoryItem
-              key={sub.id}
-              onDelete={() => onDeleteSubcategory(sub)}
-              onEdit={() => onEditSubcategory(sub)}
-              subcategory={sub}
-            />
-          ))}
+          {categorySubcategories.map((sub) => {
+            const isProtected = sub.id === DefaultSubcategoryId;
+
+            return (
+              <SubcategoryItem
+                key={sub.id}
+                onDelete={
+                  isProtected ? undefined : () => onDeleteSubcategory(sub)
+                }
+                onEdit={isProtected ? undefined : () => onEditSubcategory(sub)}
+                subcategory={sub}
+              />
+            );
+          })}
         </div>
       )}
     </div>

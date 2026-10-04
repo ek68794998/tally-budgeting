@@ -14,7 +14,10 @@ import {
   IconPlus,
   IconTrash,
 } from "@tabler/icons-react";
-import { type Category } from "@tally/data-models/contracts/category";
+import {
+  type Category,
+  DefaultCategoryId,
+} from "@tally/data-models/contracts/category";
 import { useTranslations } from "next-intl";
 
 interface Props {
@@ -38,34 +41,38 @@ export const SubcategoryActions: React.FC<Props> = ({
         <IconPlus />
         {t("budget.categoriesEdit.newSubcategory")}
       </Button>
-      <div className="bg-divider my-2 w-px" />
-      <ButtonGroup>
-        <Button
-          isIconOnly={true}
-          onPress={() => onEditCategory(category)}
-          variant="light"
-        >
-          <IconEdit />
-        </Button>
-        <Dropdown backdrop="opaque" placement="bottom-end">
-          <DropdownTrigger>
-            <Button isIconOnly={true} variant="light">
-              <IconChevronDown />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label={t("common.actions.more")}>
-            <DropdownItem
-              color="danger"
-              key="delete"
-              onPress={() => onDeleteCategory(category)}
-              startContent={<IconTrash />}
+      {category.id !== DefaultCategoryId && (
+        <>
+          <div className="bg-divider my-2 w-px" />
+          <ButtonGroup>
+            <Button
+              isIconOnly={true}
+              onPress={() => onEditCategory(category)}
               variant="light"
             >
-              {t("common.actions.delete")}
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </ButtonGroup>
+              <IconEdit />
+            </Button>
+            <Dropdown backdrop="opaque" placement="bottom-end">
+              <DropdownTrigger>
+                <Button isIconOnly={true} variant="light">
+                  <IconChevronDown />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label={t("common.actions.more")}>
+                <DropdownItem
+                  color="danger"
+                  key="delete"
+                  onPress={() => onDeleteCategory(category)}
+                  startContent={<IconTrash />}
+                  variant="light"
+                >
+                  {t("common.actions.delete")}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </ButtonGroup>
+        </>
+      )}
     </div>
   );
 };

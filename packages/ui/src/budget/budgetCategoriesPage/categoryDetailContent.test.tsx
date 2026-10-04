@@ -1,3 +1,4 @@
+import { DefaultSubcategoryId } from "@tally/data-models/contracts/subcategory";
 import {
   buildCategory,
   buildSubcategory,
@@ -46,6 +47,22 @@ describe("CategoryDetailContent", () => {
 
     expect(onEditSubcategory).toHaveBeenCalledWith(utilities);
     expect(onDeleteSubcategory).toHaveBeenCalledWith(utilities);
+  });
+
+  it("passes no actions to the default subcategory", () => {
+    render(
+      <CategoryDetailContent
+        category={category}
+        onDeleteSubcategory={vi.fn()}
+        onEditSubcategory={vi.fn()}
+        subcategories={[buildSubcategory({ id: DefaultSubcategoryId })]}
+      />,
+    );
+
+    const props = vi.mocked(SubcategoryItem).mock.lastCall?.[0];
+
+    expect(props?.onEdit).toBeUndefined();
+    expect(props?.onDelete).toBeUndefined();
   });
 
   it("shows an empty state without subcategories", () => {

@@ -4,7 +4,6 @@ import {
 } from "@tally/data-models/contracts/transactionRule";
 import {
   convertTransactionRuleFieldsToTxnRuleRow,
-  convertTransactionRuleToTxnRuleRow,
   convertTxnRuleRowToTransactionRule,
 } from "@tally/data-models/converters/transactionRule";
 import { txnRuleRowSchema } from "@tally/data-models/database/txnRuleRow";
@@ -48,20 +47,43 @@ export class TxnRulesClient extends DatabaseClient {
       convertTransactionRuleFieldsToTxnRuleRow,
     );
 
-    await database.insertInto(TableName).values(transactionRules).execute();
+    if (transactionRules.length === 0) {
+      return;
+    }
+
+    await database.transaction().execute(async (trx) => {
+      const { maxPriority } = await trx
+        .selectFrom(TableName)
+        .select((eb) =>
+          eb.fn.coalesce(eb.fn.max("priority"), eb.val(-1)).as("maxPriority"),
+        )
+        .executeTakeFirstOrThrow();
+
+      const firstPriority = maxPriority + 1;
+
+      await trx
+        .insertInto(TableName)
+        .values(
+          transactionRules.map((rule, index) => ({
+            ...rule,
+            priority: firstPriority + index,
+          })),
+        )
+        .execute();
+    });
   }
 
   public async updateTransactionRuleAsync(
-    value: TransactionRule,
+    value: TransactionRuleFields & { id: number },
   ): Promise<boolean> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const row = convertTransactionRuleToTxnRuleRow(value);
+    const { id, ...fields } = value;
 
     const { numUpdatedRows } = await database
       .updateTable(TableName)
-      .where("id", "=", row.id)
-      .set(row)
+      .where("id", "=", id)
+      .set(convertTransactionRuleFieldsToTxnRuleRow(fields))
       .executeTakeFirstOrThrow();
 
     return numUpdatedRows > 0n;

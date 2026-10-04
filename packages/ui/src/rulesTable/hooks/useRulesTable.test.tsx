@@ -2,8 +2,8 @@ import {
   type TransactionRule,
   type TransactionRuleFields,
 } from "@tally/data-models/contracts/transactionRule";
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ModalDefaultTransactionRule } from "../../common/modalDefault";
@@ -180,7 +180,7 @@ describe("useRulesTable", () => {
     );
 
     expect(postTransactionRuleAsync).toHaveBeenCalledExactlyOnceWith(
-      withoutId(ModalDefaultTransactionRule),
+      getTransactionRuleFields(ModalDefaultTransactionRule),
     );
     expect(putTransactionRuleAsync).not.toHaveBeenCalled();
   });

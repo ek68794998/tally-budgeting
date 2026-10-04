@@ -1,6 +1,6 @@
 import { NoContent } from "@ekumlin/typescript-toolkit/http";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
-import { deleteTransactionRuleParamsSchema } from "@tally/data-models/contracts/api/deleteTransactionRule";
+import { deleteTransactionParamsSchema } from "@tally/data-models/contracts/api/deleteTransaction";
 import z from "zod";
 import { TxnsClient } from "../../../storage/txnsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";
@@ -14,15 +14,13 @@ export const DeleteTransactionsIdRouteAsync: NextResponseFn = createApiHandler({
     const { id } = params;
 
     const txnsClient = txnsClientLazy.get();
-
-    const idNumber = parseInt(id, 10);
-    await txnsClient.deleteTransactionAsync(idNumber);
+    await txnsClient.deleteTransactionAsync(id);
 
     return { statusCode: NoContent };
   },
   schemata: {
     body: z.unknown(),
-    params: deleteTransactionRuleParamsSchema,
+    params: deleteTransactionParamsSchema,
     query: z.unknown(),
   },
 });

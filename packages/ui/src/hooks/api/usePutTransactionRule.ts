@@ -5,7 +5,7 @@ import {
   putTransactionRuleResponseSchema,
 } from "@tally/data-models/contracts/api/putTransactionRule";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
-import { withoutId } from "@tally/utilities/object/withoutId";
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -17,7 +17,9 @@ export const usePutTransactionRule = () => {
 
   const { mutateAsync } = useMutation({
     mutationFn: async (rule: TransactionRule) => {
-      const body: PutTransactionRuleRequest = { rule: withoutId(rule) };
+      const body: PutTransactionRuleRequest = {
+        rule: getTransactionRuleFields(rule),
+      };
 
       const response = await apiFetch(
         buildApiRoute(api.transactions.rules.base, {

@@ -1,3 +1,4 @@
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDatabaseHandle } from "./testing/testDatabase";
@@ -7,13 +8,16 @@ vi.mock("../auth/verifyRequest", () => ({
   assertAuthenticatedAsync: vi.fn(() => Promise.resolve()),
 }));
 
-const buildRule = (id: number, priority: number) =>
-  buildTransactionRule({
-    id,
-    matcher: { flags: "i", pattern: `rule-${id}` },
-    priority,
-    subcategoryId: -1,
-  });
+const buildRuleFields = (name: string) =>
+  getTransactionRuleFields(
+    buildTransactionRule({
+      matcher: { flags: "i", pattern: name },
+      subcategoryId: -1,
+    }),
+  );
+
+const summarize = (rules: { id: number; priority: number }[]) =>
+  rules.map(({ id, priority }) => ({ id, priority }));
 
 describe("TxnRulesClient", () => {
   const testDatabase = createTestDatabaseHandle();
@@ -22,62 +26,114 @@ describe("TxnRulesClient", () => {
   beforeEach(testDatabase.resetAsync);
   const createClient = () => new TxnRulesClient(testDatabase.database);
 
-  it("reads rules ordered by priority, then id", async () => {
+  it("appends new rules after existing ones in insertion order", async () => {
     const client = createClient();
 
-    await client.insertTransactionRulesAsync(buildRule(0, 5));
+    await client.insertTransactionRulesAsync(buildRuleFields("a"));
     await client.insertTransactionRulesAsync([
-      buildRule(0, 1),
-      buildRule(0, 1),
+      buildRuleFields("b"),
+      buildRuleFields("c"),
     ]);
 
-    await expect(client.getTransactionRulesAsync()).resolves.toEqual([
-      { ...buildRule(2, 1), matcher: { flags: "i", pattern: "rule-0" } },
-      { ...buildRule(3, 1), matcher: { flags: "i", pattern: "rule-0" } },
-      { ...buildRule(1, 5), matcher: { flags: "i", pattern: "rule-0" } },
+    const rules = await client.getTransactionRulesAsync();
+
+    expect(rules.map((rule) => rule.matcher.pattern)).toEqual(["a", "b", "c"]);
+    expect(summarize(rules)).toEqual([
+      { id: 1, priority: 0 },
+      { id: 2, priority: 1 },
+      { id: 3, priority: 2 },
     ]);
   });
 
-  it("updates and deletes rules", async () => {
+  it("inserts nothing for an empty list", async () => {
+    const client = createClient();
+
+    await client.insertTransactionRulesAsync([]);
+
+    await expect(client.getTransactionRulesAsync()).resolves.toEqual([]);
+  });
+
+  it("updates writable fields without changing priority", async () => {
     const client = createClient();
     await client.insertTransactionRulesAsync([
-      buildRule(0, 0),
-      buildRule(0, 1),
+      buildRuleFields("a"),
+      buildRuleFields("b"),
     ]);
 
     await expect(
       client.updateTransactionRuleAsync({
-        ...buildRule(1, 0),
+        ...buildRuleFields("a"),
         active: false,
+        id: 2,
         merchantName: "Renamed",
       }),
     ).resolves.toBe(true);
     await expect(
-      client.updateTransactionRuleAsync(buildRule(99, 0)),
+      client.updateTransactionRuleAsync({ ...buildRuleFields("a"), id: 99 }),
     ).resolves.toBe(false);
+
+    const rules = await client.getTransactionRulesAsync();
+
+    expect(rules[1]).toMatchObject({
+      active: false,
+      id: 2,
+      merchantName: "Renamed",
+      priority: 1,
+    });
+  });
+
+  it("deletes rules", async () => {
+    const client = createClient();
+    await client.insertTransactionRulesAsync([
+      buildRuleFields("a"),
+      buildRuleFields("b"),
+    ]);
+
     await client.deleteTransactionRuleAsync(2);
 
-    await expect(client.getTransactionRulesAsync()).resolves.toEqual([
-      { ...buildRule(1, 0), active: false, merchantName: "Renamed" },
-    ]);
+    const rules = await client.getTransactionRulesAsync();
+
+    expect(summarize(rules)).toEqual([{ id: 1, priority: 0 }]);
   });
 
   it("reorders rules by the given ids, ignoring ids that no longer exist", async () => {
     const client = createClient();
     await client.insertTransactionRulesAsync([
-      buildRule(0, 0),
-      buildRule(0, 1),
-      buildRule(0, 2),
+      buildRuleFields("a"),
+      buildRuleFields("b"),
+      buildRuleFields("c"),
     ]);
 
     await client.updateTransactionRulesOrderAsync([3, 99, 1, 2]);
 
     const rules = await client.getTransactionRulesAsync();
 
-    expect(rules.map(({ id, priority }) => ({ id, priority }))).toEqual([
+    expect(summarize(rules)).toEqual([
       { id: 3, priority: 0 },
       { id: 1, priority: 2 },
       { id: 2, priority: 3 },
+    ]);
+  });
+
+  it("keeps a reordered priority after an update", async () => {
+    const client = createClient();
+    await client.insertTransactionRulesAsync([
+      buildRuleFields("a"),
+      buildRuleFields("b"),
+    ]);
+    await client.updateTransactionRulesOrderAsync([2, 1]);
+
+    await client.updateTransactionRuleAsync({
+      ...buildRuleFields("a"),
+      id: 1,
+      merchantName: "Stale save",
+    });
+
+    const rules = await client.getTransactionRulesAsync();
+
+    expect(summarize(rules)).toEqual([
+      { id: 2, priority: 0 },
+      { id: 1, priority: 1 },
     ]);
   });
 });
