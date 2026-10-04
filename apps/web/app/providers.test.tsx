@@ -121,16 +121,16 @@ describe("providers", () => {
 		expect(shouldRetryQuery(failureCount)).toBe(expected);
 	});
 
-	it("applies the dark theme class to the body", () => {
+	it("applies the dark theme class to the root element", () => {
 		mockTheme("dark");
 		const { rerender } = render(<ThemeProvider />);
 
-		expect(document.body).toHaveClass("dark");
+		expect(document.documentElement).toHaveClass("dark");
 
 		mockTheme("light");
 		rerender(<ThemeProvider />);
 
-		expect(document.body).not.toHaveClass("dark");
+		expect(document.documentElement).not.toHaveClass("dark");
 	});
 
 	it("resolves the theme setting through ahooks", () => {
