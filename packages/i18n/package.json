@@ -23,7 +23,7 @@
     "@tally/typescript-config": "workspace:*",
     "@types/negotiator": "^0.6.4",
     "@types/node": "^22.15.3",
-    "eslint": "^9.34.0",
+    "eslint": "^9.39.5",
     "typescript": "5.9.2"
   }
 }
