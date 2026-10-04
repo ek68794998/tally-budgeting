@@ -69,7 +69,9 @@ describe("DangerousActionModal", () => {
 		expect(screen.getByText(text)).toBeInTheDocument();
 		expect(screen.getByText("You will be signed out.")).toBeInTheDocument();
 
-		fireEvent.click(screen.getByRole("link", { name: "Click here to create one." }));
+		fireEvent.click(
+			screen.getByRole("link", { name: "Click here to create one." }),
+		);
 
 		expect(onDownloadBackup).toHaveBeenCalledOnce();
 	});

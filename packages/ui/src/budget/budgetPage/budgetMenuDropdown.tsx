@@ -10,6 +10,7 @@ import { type DropdownLinkEntry } from "../../types";
 
 export const BudgetMenuDropdown = () => {
 	const t = useTranslations("budget");
+	const tCommon = useTranslations("common");
 
 	const dropdownEntries: DropdownLinkEntry[] = useMemo(
 		() => [
@@ -30,7 +31,10 @@ export const BudgetMenuDropdown = () => {
 					<IconDots />
 				</Button>
 			</DropdownTrigger>
-			<DropdownMenu items={dropdownEntries}>
+			<DropdownMenu
+				aria-label={tCommon("actions.more")}
+				items={dropdownEntries}
+			>
 				{renderDropdownEntry}
 			</DropdownMenu>
 		</Dropdown>

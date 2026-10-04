@@ -53,7 +53,7 @@ export const SubcategoryActions: React.FC<Props> = ({
 							<IconChevronDown />
 						</Button>
 					</DropdownTrigger>
-					<DropdownMenu>
+					<DropdownMenu aria-label={t("common.actions.more")}>
 						<DropdownItem
 							color="danger"
 							key="delete"

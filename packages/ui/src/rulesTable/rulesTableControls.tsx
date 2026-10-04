@@ -35,6 +35,7 @@ export const RulesTableControls: React.FC<Props> = ({
 	selectedRules,
 }) => {
 	const t = useTranslations("rules");
+	const tCommon = useTranslations("common");
 
 	const [filterValue, setFilterValue] = useState("");
 
@@ -100,7 +101,10 @@ export const RulesTableControls: React.FC<Props> = ({
 							<IconDots />
 						</Button>
 					</DropdownTrigger>
-					<DropdownMenu items={dropdownEntries}>
+					<DropdownMenu
+						aria-label={tCommon("actions.more")}
+						items={dropdownEntries}
+					>
 						{renderDropdownEntry}
 					</DropdownMenu>
 				</Dropdown>

@@ -49,6 +49,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
 	const { assets } = useAssets();
 	const { subcategories } = useCategories();
 	const t = useTranslations("transactions");
+	const tCommon = useTranslations("common");
 
 	const [accountIds, setAccountIds] = useState<SharedSelection>(new Set());
 	const [subcategoryIds, setSubcategoryIds] = useState<SharedSelection>(
@@ -136,7 +137,10 @@ export const TransactionsTableControls: React.FC<Props> = ({
 								{t("table.addMany")}
 							</Button>
 						</DropdownTrigger>
-						<DropdownMenu items={dropdownEntries}>
+						<DropdownMenu
+							aria-label={tCommon("actions.more")}
+							items={dropdownEntries}
+						>
 							{renderDropdownEntry}
 						</DropdownMenu>
 					</Dropdown>
