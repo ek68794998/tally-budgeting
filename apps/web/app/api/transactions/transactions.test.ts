@@ -134,4 +134,18 @@ describe("transactions routes", () => {
     expect(status).toBe(204);
     expect(client.deleteTransactionAsync).toHaveBeenCalledWith(3);
   });
+
+  it("DELETE rejects a non-numeric route id", async () => {
+    const { json, status } = await callRouteAsync(
+      DeleteTransactionsIdRouteAsync,
+      {
+        method: "DELETE",
+        params: { id: "abc" },
+      },
+    );
+
+    expect(status).toBe(400);
+    expect(json).toMatchObject({ error: { code: "invalidRouteParameters" } });
+    expect(client.deleteTransactionAsync).not.toHaveBeenCalled();
+  });
 });

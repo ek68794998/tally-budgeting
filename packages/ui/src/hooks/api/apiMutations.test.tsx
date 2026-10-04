@@ -1,4 +1,5 @@
 import { addToast } from "@heroui/react";
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import {
   buildAsset,
   buildCategory,
@@ -166,13 +167,16 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { rule: withoutId(buildTransactionRule()) },
+    expectedBody: { rule: getTransactionRuleFields(buildTransactionRule()) },
     expectedMethod: "POST",
     expectedUrl: "/api/transactions/rules",
     name: "usePostTransactionRule",
     useMutate: () => {
       const { postTransactionRuleAsync } = usePostTransactionRule();
-      return () => postTransactionRuleAsync(withoutId(buildTransactionRule()));
+      return () =>
+        postTransactionRuleAsync(
+          getTransactionRuleFields(buildTransactionRule()),
+        );
     },
   },
   {
@@ -216,7 +220,7 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { rule: withoutId(buildTransactionRule()) },
+    expectedBody: { rule: getTransactionRuleFields(buildTransactionRule()) },
     expectedMethod: "PUT",
     expectedUrl: "/api/transactions/rules/4",
     name: "usePutTransactionRule",

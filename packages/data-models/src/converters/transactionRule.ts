@@ -6,16 +6,14 @@ import { type TxnRuleRow } from "../database/txnRuleRow";
 
 export const convertTransactionRuleFieldsToTxnRuleRow = (
   transactionRule: TransactionRuleFields,
-): Omit<TxnRuleRow, "id"> => {
-  const { active, matcher, merchantName, priority, subcategoryId } =
-    transactionRule;
+): Omit<TxnRuleRow, "id" | "priority"> => {
+  const { active, matcher, merchantName, subcategoryId } = transactionRule;
 
   return {
     active,
     flags: matcher.flags,
     merchant: merchantName,
     pattern: matcher.pattern,
-    priority,
     subcategory: subcategoryId,
   };
 };
@@ -25,7 +23,16 @@ export const convertTransactionRuleToTxnRuleRow = (
 ): TxnRuleRow => ({
   ...convertTransactionRuleFieldsToTxnRuleRow(transactionRule),
   id: transactionRule.id,
+  priority: transactionRule.priority,
 });
+
+export const getTransactionRuleFields = (
+  transactionRule: TransactionRule,
+): TransactionRuleFields => {
+  const { active, matcher, merchantName, subcategoryId } = transactionRule;
+
+  return { active, matcher, merchantName, subcategoryId };
+};
 
 export const convertTxnRuleRowToTransactionRule = (
   row: TxnRuleRow,

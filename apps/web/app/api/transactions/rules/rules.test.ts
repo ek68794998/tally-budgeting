@@ -1,5 +1,5 @@
+import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { buildTransactionRule } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../../testing/routeTesting";
 import { DeleteTransactionsRulesIdRouteAsync } from "./[id]/delete";
@@ -46,7 +46,7 @@ describe("transaction rule routes", () => {
   });
 
   it("POST creates a rule from its fields", async () => {
-    const rule = withoutId(buildTransactionRule());
+    const rule = getTransactionRuleFields(buildTransactionRule());
 
     const { status } = await callRouteAsync(PostTransactionsRulesRouteAsync, {
       body: { rule },
@@ -61,6 +61,12 @@ describe("transaction rule routes", () => {
 
   it.each([
     { rule: buildTransactionRule() },
+    {
+      rule: {
+        ...getTransactionRuleFields(buildTransactionRule()),
+        priority: 3,
+      },
+    },
   ])("POST rejects %o", async (body) => {
     const { status } = await callRouteAsync(PostTransactionsRulesRouteAsync, {
       body,
@@ -72,6 +78,25 @@ describe("transaction rule routes", () => {
   });
 
   it.each([
+    { rule: buildTransactionRule() },
+    {
+      rule: {
+        ...getTransactionRuleFields(buildTransactionRule()),
+        priority: 3,
+      },
+    },
+  ])("PUT rejects %o", async (body) => {
+    const { status } = await callRouteAsync(PutTransactionsRulesIdRouteAsync, {
+      body,
+      method: "PUT",
+      params: { id: "12" },
+    });
+
+    expect(status).toBe(400);
+    expect(client.updateTransactionRuleAsync).not.toHaveBeenCalled();
+  });
+
+  it.each([
     { expectedStatus: 200, wasUpdated: true },
     { expectedStatus: 404, wasUpdated: false },
   ])("PUT updates a rule by route id with status $expectedStatus", async ({
@@ -79,7 +104,7 @@ describe("transaction rule routes", () => {
     wasUpdated,
   }) => {
     client.updateTransactionRuleAsync.mockResolvedValue(wasUpdated);
-    const rule = withoutId(buildTransactionRule());
+    const rule = getTransactionRuleFields(buildTransactionRule());
 
     const { status } = await callRouteAsync(PutTransactionsRulesIdRouteAsync, {
       body: { rule },
@@ -102,6 +127,20 @@ describe("transaction rule routes", () => {
 
     expect(status).toBe(204);
     expect(client.deleteTransactionRuleAsync).toHaveBeenCalledWith(5);
+  });
+
+  it("DELETE rejects a non-numeric route id", async () => {
+    const { json, status } = await callRouteAsync(
+      DeleteTransactionsRulesIdRouteAsync,
+      {
+        method: "DELETE",
+        params: { id: "abc" },
+      },
+    );
+
+    expect(status).toBe(400);
+    expect(json).toMatchObject({ error: { code: "invalidRouteParameters" } });
+    expect(client.deleteTransactionRuleAsync).not.toHaveBeenCalled();
   });
 
   it("PATCH reorders rules", async () => {

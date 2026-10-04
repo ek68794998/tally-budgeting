@@ -15,7 +15,7 @@ export const transactionRuleSchema = z.object({
 export type TransactionRule = z.infer<typeof transactionRuleSchema>;
 
 export const transactionRuleFieldsSchema = z.strictObject(
-  transactionRuleSchema.omit({ id: true }).shape,
+  transactionRuleSchema.omit({ id: true, priority: true }).shape,
 );
 
 export type TransactionRuleFields = z.infer<typeof transactionRuleFieldsSchema>;
