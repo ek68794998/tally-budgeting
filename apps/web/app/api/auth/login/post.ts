@@ -41,7 +41,7 @@ const isExhaustedAsync = async (
 ): Promise<boolean> => {
 	const result = await limiter.get(key);
 
-	return result !== null && result.remainingPoints <= 0;
+	return !!result && result.remainingPoints <= 0;
 };
 
 const recordFailureAsync = async (

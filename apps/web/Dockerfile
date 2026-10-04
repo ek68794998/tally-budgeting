@@ -42,6 +42,9 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
+# pg_dump/pg_restore for the settings page; the major version must match the pgvector/pgvector:pg16 server.
+RUN apk add --no-cache postgresql16-client
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 

@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { Duration } from "luxon";
 
 export const SessionTtlSeconds = Duration.fromObject({ days: 30 }).as(
@@ -71,7 +72,7 @@ const parsePayload = (encodedPayload: string): SessionPayload | undefined => {
 
 		if (
 			typeof parsed === "object" &&
-			parsed !== null &&
+			!isNullOrUndefined(parsed) &&
 			"exp" in parsed &&
 			"iat" in parsed &&
 			"pv" in parsed &&

@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { type ODataLiteFilterExpression } from "./types";
 
 export const buildODataLiteFilter = (
@@ -16,7 +17,7 @@ export const buildODataLiteFilter = (
 };
 
 const formatODataValue = (value: unknown): string => {
-	if (value === null) {
+	if (isNullOrUndefined(value)) {
 		return "null";
 	}
 

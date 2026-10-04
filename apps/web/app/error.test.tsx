@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { useDatabaseStatusStore } from "@tally/utilities/state/databaseStatus";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,9 +9,10 @@ const stubHealthResponse = (status: number, body: unknown = null) =>
 		"fetch",
 		vi.fn(() =>
 			Promise.resolve(
-				new Response(body === null ? null : JSON.stringify(body), {
-					status,
-				}),
+				new Response(
+					isNullOrUndefined(body) ? null : JSON.stringify(body),
+					{ status },
+				),
 			),
 		),
 	);

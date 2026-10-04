@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { countRowSchema } from "@tally/data-models/database/countRow";
-import { type ReferenceExpression, type SelectQueryBuilder } from "kysely";
+import { type ReferenceExpression, type SelectQueryBuilder, sql } from "kysely";
 
 export interface PaginatedResult<T> {
 	data: T[];
@@ -30,6 +30,10 @@ export const applyPagination = <DB, TB extends keyof DB & string, O>(
 
 export const buildLikePattern = (value: unknown): string =>
 	`%${String(value)}%`;
+
+// node-pg serializes JS arrays as Postgres array literals, so every jsonb write must go through here.
+export const toJsonb = (value: unknown) =>
+	sql<never>`${JSON.stringify(value)}::jsonb`;
 
 export const getOrderDirection = (
 	direction: "ascending" | "descending",

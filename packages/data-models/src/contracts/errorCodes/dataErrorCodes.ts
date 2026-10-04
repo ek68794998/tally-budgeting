@@ -1,4 +1,6 @@
 export const DataErrorCodes = [
+	"databaseBackupFailed",
+	"databaseRestoreFailed",
 	"databaseUnavailable",
 	"invalidAccount",
 	"invalidPassword",

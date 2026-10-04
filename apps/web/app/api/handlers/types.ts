@@ -20,6 +20,8 @@ export type ApiHandler<
 export interface ApiResult<T extends ApiResponse> {
 	data?: Omit<T, "success">;
 	error?: ApiError;
+	/** Bypasses JSON serialization, e.g., to stream a file download. */
+	rawResponse?: Response;
 	statusCode: HttpStatusCode;
 }
 

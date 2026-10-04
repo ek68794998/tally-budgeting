@@ -36,7 +36,10 @@ export const TransactionsMenuDropdown = () => {
 					<IconDots />
 				</Button>
 			</DropdownTrigger>
-			<DropdownMenu items={dropdownEntries}>
+			<DropdownMenu
+				aria-label={t("common.actions.more")}
+				items={dropdownEntries}
+			>
 				{renderDropdownEntry}
 			</DropdownMenu>
 		</Dropdown>

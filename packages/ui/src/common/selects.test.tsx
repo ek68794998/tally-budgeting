@@ -1,4 +1,5 @@
 import { Autocomplete, Select } from "@heroui/react";
+import { type AccountProviderType } from "@tally/data-models/contracts/accountProviderType";
 import {
 	buildAsset,
 	buildCategory,
@@ -8,6 +9,7 @@ import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAssets } from "../hooks/store/useAssets";
 import { useCategories } from "../hooks/store/useCategories";
+import { useSetting } from "../hooks/useSetting";
 import { buildSelection } from "../testing/heroUi";
 import { SelectAccount } from "./selectAccount";
 import { SelectCategory } from "./selectCategory";
@@ -21,8 +23,14 @@ vi.mock("@heroui/react", async () => {
 vi.mock("../dataProviderIcons/dataProviderIcon", () => ({
 	DataProviderIcon: vi.fn(() => <span data-testid="provider-icon" />),
 }));
+vi.mock("./hiddenProviderIcon", () => ({
+	HiddenProviderIcon: vi.fn(() => (
+		<span data-testid="hidden-provider-icon" />
+	)),
+}));
 vi.mock("../hooks/store/useAssets", () => ({ useAssets: vi.fn() }));
 vi.mock("../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
+vi.mock("../hooks/useSetting", () => ({ useSetting: vi.fn() }));
 
 const lastSelectProps = () => vi.mocked(Select).mock.lastCall?.[0];
 const lastAutocompleteProps = () => vi.mocked(Autocomplete).mock.lastCall?.[0];
@@ -47,8 +55,18 @@ const uncategorized = buildSubcategory({
 });
 
 describe("select inputs", () => {
+	const mockHiddenProviders = (hidden: AccountProviderType[]) =>
+		vi
+			.mocked(useSetting)
+			.mockReturnValue([
+				hidden,
+				vi.fn(),
+				{ isLoading: false, scope: "database" },
+			]);
+
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockHiddenProviders([]);
 		vi.mocked(useAssets).mockReturnValue({
 			assets: [checking, closed, brokerage],
 			error: null,
@@ -117,6 +135,43 @@ describe("select inputs", () => {
 			lastSelectProps()?.onSelectionChange?.(buildSelection(key));
 
 			expect(onChange).toHaveBeenCalledTimes(shouldChange ? 1 : 0);
+		});
+	});
+
+	describe("hidden providers", () => {
+		const sectionTitles = () =>
+			screen
+				.queryAllByTestId("select-section")
+				.map((section) => section.getAttribute("aria-label"))
+				.filter((title) => title === "Hidden");
+
+		it("moves accounts of hidden providers to a trailing Hidden section", () => {
+			mockHiddenProviders(["chase"]);
+
+			render(<SelectAccount onChange={vi.fn()} value={undefined} />);
+
+			const sections = screen.getAllByTestId("select-section");
+			const hiddenSection = sections.at(-1);
+
+			expect(sectionTitles()).toEqual(["Hidden"]);
+			expect(hiddenSection).toHaveTextContent("Checking");
+			expect(sections[0]).not.toHaveTextContent("Checking");
+			expect(sections[0]).toHaveTextContent("Brokerage");
+		});
+
+		it.each([
+			{ expected: [], selected: "fidelity" as const },
+			{ expected: ["Hidden"], selected: "chase" as const },
+		])("shows the Hidden provider section only when the current value is hidden (selected: $selected)", ({
+			expected,
+			selected,
+		}) => {
+			mockHiddenProviders(["chase"]);
+
+			render(<SelectProvider onChange={vi.fn()} value={selected} />);
+
+			expect(sectionTitles()).toEqual(expected);
+			expect(lastSelectProps()?.selectedKeys).toEqual([selected]);
 		});
 	});
 

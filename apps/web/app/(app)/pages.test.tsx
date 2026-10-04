@@ -21,6 +21,9 @@ vi.mock("@tally/ui/budget/budgetPage/budgetDetails", () => ({
 vi.mock("@tally/ui/budget/budgetSpendingPage/spendingView", () => ({
 	SpendingView: vi.fn(() => <div data-testid="spending" />),
 }));
+vi.mock("@tally/ui/settingsPage/settingsMasterDetail", () => ({
+	SettingsMasterDetail: vi.fn(() => <div data-testid="settings" />),
+}));
 vi.mock("@tally/ui/retirementPage/retirementCalculator", () => ({
 	RetirementCalculator: vi.fn(() => <div data-testid="retirement" />),
 }));
@@ -70,7 +73,7 @@ describe("app pages", () => {
 		);
 	});
 
-	it("renders placeholder settings and wraps pages with the sidebar and database banner", () => {
+	it("renders settings and wraps pages with the sidebar and database banner", () => {
 		render(
 			<RootTemplate>
 				<SettingsPage />
@@ -79,6 +82,6 @@ describe("app pages", () => {
 
 		expect(screen.getByTestId("sidebar")).toBeInTheDocument();
 		expect(screen.getByTestId("database-unavailable")).toBeInTheDocument();
-		expect(screen.getByText("$0")).toBeInTheDocument();
+		expect(screen.getByTestId("settings")).toBeInTheDocument();
 	});
 });

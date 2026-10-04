@@ -1,3 +1,4 @@
+import { toError } from "@ekumlin/typescript-toolkit/error";
 import { BadRequest } from "@ekumlin/typescript-toolkit/http";
 import { searchParamsToObject } from "@tally/utilities/object/searchParamsToObject";
 import { type NextRequest } from "next/server";
@@ -84,7 +85,10 @@ export const parseRequestAsync = async <TBody, TQuery, TParams>(
 			success: true,
 		};
 	} catch (error) {
-		telemetry().error("API_REQUEST_PARSE_FAILED", { error });
+		telemetry().error("API_REQUEST_PARSE_FAILED", {
+			error,
+			errorMessage: toError(error).message,
+		});
 
 		return {
 			error: {

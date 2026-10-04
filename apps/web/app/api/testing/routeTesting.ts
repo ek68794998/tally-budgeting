@@ -1,8 +1,11 @@
+import { isUndefined } from "@ekumlin/typescript-toolkit/types";
 import { NextRequest } from "next/server";
 import { vi } from "vitest";
 import { type AssetsClient } from "../../storage/assetsClient";
 import { type CategoriesClient } from "../../storage/categoriesClient";
+import { type DatabaseAdminClient } from "../../storage/databaseAdminClient";
 import { type NetWorthSnapshotsClient } from "../../storage/netWorthSnapshotsClient";
+import { type SettingsClient } from "../../storage/settingsClient";
 import { type SubcategoriesClient } from "../../storage/subcategoriesClient";
 import { type TxnRulesClient } from "../../storage/txnRulesClient";
 import { type TxnsClient } from "../../storage/txnsClient";
@@ -30,7 +33,7 @@ export const callRouteAsync = async (
 ) => {
 	const request = new NextRequest(url, {
 		body:
-			formData ?? (body === undefined ? undefined : JSON.stringify(body)),
+			formData ?? (isUndefined(body) ? undefined : JSON.stringify(body)),
 		headers: [["host", "localhost"], ...headers],
 		method,
 	});
@@ -63,11 +66,19 @@ export const storageMocks = {
 			vi.fn<CategoriesClient["insertCategoriesAsync"]>(),
 		updateCategoryAsync: vi.fn<CategoriesClient["updateCategoryAsync"]>(),
 	},
+	databaseAdmin: {
+		dropAllDataAsync: vi.fn<DatabaseAdminClient["dropAllDataAsync"]>(),
+		restoreAsync: vi.fn<DatabaseAdminClient["restoreAsync"]>(),
+	},
 	netWorthSnapshots: {
 		getNetWorthSnapshotsAsync:
 			vi.fn<NetWorthSnapshotsClient["getNetWorthSnapshotsAsync"]>(),
 		upsertNetWorthSnapshotsAsync:
 			vi.fn<NetWorthSnapshotsClient["upsertNetWorthSnapshotsAsync"]>(),
+	},
+	settings: {
+		getSettingsAsync: vi.fn<SettingsClient["getSettingsAsync"]>(),
+		putSettingAsync: vi.fn<SettingsClient["putSettingAsync"]>(),
 	},
 	subcategories: {
 		deleteSubcategoryAsync:
@@ -110,10 +121,15 @@ const createMockModule = (exportName: string, mock: object) => ({
 export const storageModules = {
 	assets: createMockModule("AssetsClient", storageMocks.assets),
 	categories: createMockModule("CategoriesClient", storageMocks.categories),
+	databaseAdmin: createMockModule(
+		"DatabaseAdminClient",
+		storageMocks.databaseAdmin,
+	),
 	netWorthSnapshots: createMockModule(
 		"NetWorthSnapshotsClient",
 		storageMocks.netWorthSnapshots,
 	),
+	settings: createMockModule("SettingsClient", storageMocks.settings),
 	subcategories: createMockModule(
 		"SubcategoriesClient",
 		storageMocks.subcategories,
@@ -130,6 +146,7 @@ export const telemetryLogger = {
 	error: vi.fn(),
 	event: vi.fn(),
 	httpIncoming: () => ({ end: vi.fn() }),
+	info: vi.fn(),
 	profile: () => ({ end: vi.fn() }),
 	warn: vi.fn(),
 };

@@ -190,6 +190,7 @@
 			"delete": "削除",
 			"duplicate": "複製",
 			"edit": "編集",
+			"more": "その他の操作",
 			"move": {
 				"bottom": "最下部へ移動",
 				"down": "下へ移動",
@@ -298,6 +299,79 @@
 		"title": "取引ルール"
 	},
 	"settings": {
+		"dangerModal": {
+			"backupFirst": "先にバックアップをダウンロードすることをお勧めします。(<downloadLink>こちらをクリックして作成してください。</downloadLink>)",
+			"cancel": "キャンセル",
+			"confirm": "確認",
+			"downloadBackup": "バックアップをダウンロード",
+			"dropConsequence": "すべての資産、取引、カテゴリ、ルール、スナップショット、サーバーに保存された設定が完全に削除されます。データベースは空の状態にリセットされます。",
+			"dropSuccess": "すべてのデータを削除しました。",
+			"dropTitle": "すべてのデータを削除",
+			"failed": "操作に失敗しました。",
+			"file": "バックアップファイル",
+			"restoreConsequence": "現在のデータはすべてバックアップファイルの内容で置き換えられます。バックアップに含まれないものは完全に失われます。",
+			"restoreSuccess": "データベースを復元しました。",
+			"restoreTitle": "バックアップから復元",
+			"signedOut": "サインアウトされます。",
+			"understand": "この操作は元に戻せないことを理解しました。"
+		},
+		"data": {
+			"backup": {
+				"button": "バックアップをダウンロード",
+				"description": "データベース全体のバックアップをダウンロードします。",
+				"failed": "バックアップに失敗しました",
+				"title": "バックアップ"
+			},
+			"dangerZone": {
+				"title": "危険ゾーン"
+			},
+			"drop": {
+				"button": "すべてのデータを削除…",
+				"description": "すべてを完全に削除し、データベースを空の状態に戻します。",
+				"title": "すべてのデータを削除"
+			},
+			"restore": {
+				"button": "復元…",
+				"description": "現在のデータをすべてバックアップファイルの内容で置き換えます。",
+				"title": "バックアップから復元"
+			}
+		},
+		"general": {
+			"theme": {
+				"dark": "ダーク",
+				"description": "Tallyの外観を選択します。",
+				"label": "テーマ",
+				"light": "ライト",
+				"system": "システム"
+			}
+		},
+		"hiddenProviders": {
+			"title": "非表示",
+			"tooltip": "設定 → プロバイダーで非表示にしています。"
+		},
+		"providers": {
+			"description": "選択肢に表示するプロバイダーを選びます。",
+			"help": "非表示のプロバイダーは選択肢から除外されます。既存の口座と取引には影響しません。",
+			"label": "データプロバイダー"
+		},
+		"saveFailed": "設定を保存できませんでした。",
+		"scope": {
+			"database": "サーバーに保存",
+			"databaseTooltip": "Tallyのデータベースに保存され、すべてのデバイスに適用されます。",
+			"local": "このブラウザ",
+			"localSectionNote": "「このブラウザ」と表示された設定は他のデバイスとは共有されません。",
+			"localTooltip": "このブラウザにのみ保存され、他のデバイスとは共有されません。"
+		},
+		"sections": {
+			"data": "データ",
+			"general": "一般",
+			"groups": {
+				"preferences": "環境設定",
+				"system": "システム"
+			},
+			"providers": "プロバイダー",
+			"title": "設定"
+		},
 		"title": "設定"
 	},
 	"summary": {

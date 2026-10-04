@@ -14,10 +14,18 @@ const apiRoutes = {
 		base: "/api/categories",
 		sub: "/api/categories/sub",
 	},
+	database: {
+		backup: "/api/database/backup",
+		drop: "/api/database/drop",
+		restore: "/api/database/restore",
+	},
 	events: "/api/events",
 	health: "/api/health",
 	netWorth: {
 		snapshots: "/api/net-worth/snapshots",
+	},
+	settings: {
+		base: "/api/settings",
 	},
 	transactions: {
 		base: "/api/transactions",
@@ -39,6 +47,7 @@ const webRoutes = {
 	home: "/",
 	login: "/login",
 	retirement: "/retirement",
+	settings: "/settings",
 	transactions: {
 		base: "/transactions",
 		rules: "/transactions/rules",

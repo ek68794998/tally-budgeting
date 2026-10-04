@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "@ekumlin/typescript-toolkit/types";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { type CircularProgressProps } from "@heroui/react";
 import {
@@ -129,7 +130,7 @@ export const calculateBudgetScore = (
 export const getBudgetScoreColor = (
 	budgetScore: number | null,
 ): CircularProgressProps["color"] => {
-	if (budgetScore === null) {
+	if (isNullOrUndefined(budgetScore)) {
 		return "default";
 	}
 
