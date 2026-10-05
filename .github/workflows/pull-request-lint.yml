@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run commitlint
-        uses: lw-ci/action-conventional-pull-request@v3
+        uses: lw-ci/action-conventional-pull-request@v4
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
           config_file: "./.github/config/commitlint.js"
 
       - name: Add comment if there are errors
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         if: always() && (steps.lint_pr_title.outputs.valid == 'false')
         with:
           header: pr-title-lint-error
@@ -45,7 +45,7 @@ jobs:
             ```
 
       - name: Delete comment if there are no errors
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         if: ${{ steps.lint_pr_title.outputs.valid == 'true' }}
         with:
           header: pr-title-lint-error
