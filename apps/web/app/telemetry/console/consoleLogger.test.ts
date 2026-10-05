@@ -10,7 +10,15 @@ import {
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { type EventLogLevel } from "@tally/data-models/contracts/api/postEvents";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockInstance,
+  vi,
+} from "vitest";
 import { ConsoleLogger } from "./consoleLogger";
 
 describe("ConsoleLogger", () => {
@@ -18,9 +26,9 @@ describe("ConsoleLogger", () => {
     /* Do nothing */
   };
 
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
-  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
-  let consoleInfoSpy: ReturnType<typeof vi.spyOn>;
+  let consoleErrorSpy: MockInstance<typeof console.error>;
+  let consoleWarnSpy: MockInstance<typeof console.warn>;
+  let consoleInfoSpy: MockInstance<typeof console.info>;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -380,7 +388,7 @@ describe("ConsoleLogger", () => {
 
       const call = consoleInfoSpy.mock.calls[0];
       invariant(call);
-      const message = call[0];
+      const message = String(call[0]);
       expect(message).not.toMatch(/\n/);
     });
 
@@ -390,7 +398,7 @@ describe("ConsoleLogger", () => {
 
       const call = consoleInfoSpy.mock.calls[0];
       invariant(call);
-      const message = call[0];
+      const message = String(call[0]);
       expect(message).not.toMatch(/\n\{/);
     });
   });

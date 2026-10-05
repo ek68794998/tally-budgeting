@@ -1,6 +1,6 @@
 import { isUndefined } from "@ekumlin/typescript-toolkit/types";
 import { NextRequest } from "next/server";
-import { vi } from "vitest";
+import { type Mock, vi } from "vitest";
 import { type AssetsClient } from "../../storage/assetsClient";
 import { type CategoriesClient } from "../../storage/categoriesClient";
 import { type DatabaseAdminClient } from "../../storage/databaseAdminClient";
@@ -140,7 +140,16 @@ export const authenticatedRequestModule = {
   isAuthenticatedAsync: () => Promise.resolve(true),
 };
 
-export const telemetryLogger = {
+interface TelemetryLoggerMock {
+  error: Mock;
+  event: Mock;
+  httpIncoming: () => { end: Mock };
+  info: Mock;
+  profile: () => { end: Mock };
+  warn: Mock;
+}
+
+export const telemetryLogger: TelemetryLoggerMock = {
   error: vi.fn(),
   event: vi.fn(),
   httpIncoming: () => ({ end: vi.fn() }),
@@ -149,6 +158,6 @@ export const telemetryLogger = {
   warn: vi.fn(),
 };
 
-export const silentTelemetryModule = {
+export const silentTelemetryModule: { telemetry: () => TelemetryLoggerMock } = {
   telemetry: () => telemetryLogger,
 };
