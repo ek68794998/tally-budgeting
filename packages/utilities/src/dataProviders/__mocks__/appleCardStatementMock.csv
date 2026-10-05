@@ -1,0 +1,13 @@
+Transaction Date,Clearing Date,Description,Merchant,Category,Type,Amount (USD),Purchased By
+09/29/2025,09/30/2025,"DELMARS #0000 QUEENS NYC","Delmars Deli-Grocery #0000","Grocery","Purchase","5.79","Peter Parker"
+09/28/2025,09/28/2025,"APPLE CASH PAYMENT","Apple Cash Payment","Payment","Payment","-50.00","Peter Parker"
+09/20/2025,09/21/2025,"APPLE.COM/US ONE APPLE PARK 800-692-7753 95014 CA USA (RETURN)","Apple.com/us One Apple Park 800-692-7753 95014 Ca Usa (return)","Credit","Credit","-865.00","Peter Parker"
+09/21/2025,09/21/2025,"DAILY CASH ADJUSTMENT","Daily Cash Adjustment","Debit","Debit","25.95","Peter Parker"
+09/19/2025,09/21/2025,"APPLE.COM/US ONE APPLE PARK WAY 800-676-2775 95014 CA USA","Apple Store","Other","Purchase","110.10","Peter Parker"
+09/14/2025,09/20/2025,"APPLE.COM/US ONE APPLE PARK 800-692-7753 95014 CA USA","apple.com/us","Other","Purchase","865.00","Peter Parker"
+09/16/2025,09/17/2025,"CONEYISLAND 1000 SURF AVE BROOKLYN NY USA","Coney Island","Gas","Purchase","8.57","Peter Parker"
+09/15/2025,09/16/2025,"APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA","Apple Services","Other","Purchase","2.99","Peter Parker"
+09/10/2025,09/11/2025,"TARGET 0000000000000 NEW YORK NY USA","Target        00000000","Grocery","Purchase","9.10","Peter Parker"
+09/08/2025,09/09/2025,"PRACHYATHAI #0000 QUEENS NYC","Prachya Thai #0000","Restaurants","Purchase","66.50","Peter Parker"
+09/06/2025,09/07/2025,"DELMARS #0000 QUEENS NYC","Delmars Deli-Grocery #0000","Grocery","Purchase","5.79","Peter Parker"
+09/01/2025,09/02/2025,"SQ *LINCOLN MEMORIAL SHO 2 LINCOLN MEMORIAL CIR NW DC USA","Lincoln Memorial Gift Shop","Other","Purchase","88.99","Peter Parker"

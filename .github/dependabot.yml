@@ -1,0 +1,45 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+    open-pull-requests-limit: 5
+    # Pinned: newer versions implement Web Animations, which makes framer-motion
+    # raise unhandled AbortErrors in tests.
+    ignore:
+      - dependency-name: happy-dom
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Major Node.js upgrades are left to a deliberate manual change.
+  - package-ecosystem: docker
+    directory: /apps/web
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    ignore:
+      - dependency-name: node
+        update-types: [version-update:semver-major]

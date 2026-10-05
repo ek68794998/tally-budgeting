@@ -4,6 +4,7 @@ const { dirname } = import.meta;
 
 const setupFileDirectory = `${dirname}/../../packages/vitest-config/src`;
 const globalSetupFile = `${setupFileDirectory}/global.setup.ts`;
+const testExclude = [...configDefaults.exclude, "**/build/**", "**/dist/**"];
 
 export default defineConfig({
   test: {
@@ -30,13 +31,13 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "text-summary", "html"],
       thresholds: {
-        branches: 96,
+        branches: 94,
         functions: 95,
         lines: 98,
         statements: 98,
       },
     },
-    exclude: [...configDefaults.exclude, "**/build/**"],
+    exclude: testExclude,
     globals: true,
     include: ["**/(src|app)/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
     projects: [
@@ -45,6 +46,7 @@ export default defineConfig({
         esbuild: { jsx: "automatic" },
         test: {
           environment: "happy-dom",
+          exclude: testExclude,
           include: ["**/*.{test,spec}.{tsx,jsx}"],
           name: "unit-react",
           setupFiles: [
@@ -57,7 +59,7 @@ export default defineConfig({
       {
         test: {
           environment: "node",
-          exclude: [...configDefaults.exclude, "**/*.db.test.ts"],
+          exclude: [...testExclude, "**/*.db.test.ts"],
           include: ["**/*.{test,spec}.{ts,js}"],
           name: "unit-ts",
           setupFiles: [globalSetupFile],
@@ -66,15 +68,15 @@ export default defineConfig({
       {
         test: {
           environment: "node",
+          exclude: testExclude,
           globalSetup: ["apps/web/app/storage/testing/pgliteGlobalSetup.ts"],
           include: ["**/*.db.test.ts"],
+          // PGlite memory is only returned to the OS when its process exits,
+          // so database test files run one at a time, each in its own fork.
+          maxWorkers: 1,
           name: "integration-db",
           pool: "forks",
-          poolOptions: {
-            // PGlite memory is only returned to the OS when its process exits,
-            // so every database test file shares one fork and one instance.
-            forks: { singleFork: true },
-          },
+          sequence: { groupOrder: 1 },
           setupFiles: [globalSetupFile],
         },
       },

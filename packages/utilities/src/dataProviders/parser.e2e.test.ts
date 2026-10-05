@@ -35,6 +35,52 @@ const parseFile = (csvContent: string, account: Asset) => {
 };
 
 describe("parser e2e", () => {
+  describe("apple", () => {
+    const account = makeAccount("apple");
+    const results = parseFile(readMock("appleCardStatementMock.csv"), account);
+    const successes = results.flatMap((r) =>
+      r.result === "success" ? [r.transaction] : [],
+    );
+
+    it("produces 10 successes and 2 ignored from 12 rows", () => {
+      expect(results).toHaveLength(12);
+      expect(successes).toHaveLength(10);
+      expect(results.filter((r) => r.result === "ignore")).toHaveLength(2);
+      expect(results.filter((r) => r.result === "failure")).toHaveLength(0);
+    });
+
+    it("ignores the payment and daily cash adjustment rows", () => {
+      expect(results[1]?.result).toBe("ignore");
+      expect(results[3]?.result).toBe("ignore");
+    });
+
+    it.each<[number, number, TransactionDirection]>([
+      // Delmars purchase → debit $5.79
+      [0, 579, "debit"],
+      // Apple.com return → credit $865.00
+      [1, 86500, "credit"],
+      // Apple Store purchase → debit $110.10
+      [2, 11010, "debit"],
+      // Apple.com purchase → debit $865.00
+      [3, 86500, "debit"],
+      // Coney Island purchase → debit $8.57
+      [4, 857, "debit"],
+      // Apple Services purchase → debit $2.99
+      [5, 299, "debit"],
+      // Target purchase → debit $9.10
+      [6, 910, "debit"],
+      // Prachya Thai purchase → debit $66.50
+      [7, 6650, "debit"],
+      // Delmars purchase → debit $5.79
+      [8, 579, "debit"],
+      // Lincoln Memorial Gift Shop purchase → debit $88.99
+      [9, 8899, "debit"],
+    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
+      expect(successes[index]?.amountCents).toBe(amountCents);
+      expect(successes[index]?.type).toBe(type);
+    });
+  });
+
   describe("chase", () => {
     const account = makeAccount("chase");
     const results = parseFile(readMock("chaseStatementMock.csv"), account);
@@ -282,7 +328,7 @@ describe("parser e2e", () => {
   describe("robinhood investments", () => {
     const account = makeAccount("robinhood");
     const results = parseFile(
-      readMock("robinhoodInvestmentsMock.csv"),
+      readMock("robinhoodInvestmentsStatementMock.csv"),
       account,
     );
     const successes = results.flatMap((r) =>

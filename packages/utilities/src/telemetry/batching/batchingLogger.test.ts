@@ -35,6 +35,7 @@ describe("BatchingLogger", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     global.fetch = mockFetch;
+    mockFetch.mockReset();
     mockFetch.mockResolvedValue({ ok: true });
   });
 
