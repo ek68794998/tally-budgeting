@@ -282,7 +282,7 @@ describe("parser e2e", () => {
   describe("robinhood investments", () => {
     const account = makeAccount("robinhood");
     const results = parseFile(
-      readMock("robinhoodInvestmentsMock.csv"),
+      readMock("robinhoodInvestmentsStatementMock.csv"),
       account,
     );
     const successes = results.flatMap((r) =>
