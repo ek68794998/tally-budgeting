@@ -14,8 +14,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@ekumlin/typescript-toolkit": "1.0.1",
-    "zod": "^4.1.11"
+    "@ekumlin/typescript-toolkit": "1.0.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tally/eslint-config": "workspace:*",

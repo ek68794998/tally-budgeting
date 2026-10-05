@@ -11,10 +11,10 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@formatjs/intl-localematcher": "^0.6.1",
+    "@formatjs/intl-localematcher": "^0.9.0",
     "@tally/data-models": "workspace:*",
     "deepmerge": "^4.3.1",
-    "negotiator": "^1.0.0",
+    "negotiator": "^1.1.0",
     "next": "^16.3.8",
     "next-intl": "^4.14.9"
   },
