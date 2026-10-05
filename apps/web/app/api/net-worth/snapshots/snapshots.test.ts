@@ -1,5 +1,5 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { buildNetWorthSnapshot } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../../testing/routeTesting";
 import { GetNetWorthSnapshotsRouteAsync } from "./get";
@@ -46,8 +46,9 @@ describe("net worth snapshot routes", () => {
   });
 
   it("POST normalizes the snapshot date to noon UTC before saving", async () => {
-    const snapshot = withoutId(
+    const snapshot = omitKeys(
       buildNetWorthSnapshot({ date: "2025-03-04T23:59:00-08:00" }),
+      "id",
     );
 
     const { status } = await callRouteAsync(PostNetWorthSnapshotsRouteAsync, {
@@ -67,8 +68,9 @@ describe("net worth snapshot routes", () => {
       PostNetWorthSnapshotsRouteAsync,
       {
         body: {
-          snapshot: withoutId(
+          snapshot: omitKeys(
             buildNetWorthSnapshot({ date: "2025-02-30T00:00:00Z" }),
+            "id",
           ),
         },
         method: "POST",

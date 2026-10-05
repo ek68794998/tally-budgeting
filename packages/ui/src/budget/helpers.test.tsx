@@ -1,3 +1,4 @@
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import {
   IconBabyCarriage,
   IconCar,
@@ -7,7 +8,6 @@ import {
 } from "@tabler/icons-react";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { render, screen } from "@testing-library/react";
 import { type ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";

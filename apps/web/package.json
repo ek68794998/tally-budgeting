@@ -48,7 +48,6 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
     "@tally/eslint-config": "workspace:*",
-    "@tally/testing": "workspace:*",
     "@tally/typescript-config": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",

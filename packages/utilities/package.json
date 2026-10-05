@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@tally/eslint-config": "workspace:*",
-    "@tally/testing": "workspace:*",
     "@tally/typescript-config": "workspace:*",
     "@types/luxon": "^3.7.1",
     "@types/node": "^22.15.3",

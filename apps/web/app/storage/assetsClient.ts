@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import {
   type Asset,
   type AssetFields,
@@ -10,7 +11,6 @@ import {
 import { assetRowSchema } from "@tally/data-models/database/assetRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "asset" as const satisfies keyof Database;
 
@@ -43,7 +43,7 @@ export class AssetsClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const assets = rowOrRowsAsRows(values).map(convertAssetFieldsToAssetRow);
+    const assets = toArray(values).map(convertAssetFieldsToAssetRow);
 
     await database.insertInto(TableName).values(assets).execute();
   }

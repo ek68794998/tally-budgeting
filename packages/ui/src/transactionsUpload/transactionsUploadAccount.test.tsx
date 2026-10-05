@@ -1,5 +1,5 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { buildAsset } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SelectAccount } from "../common/selectAccount";
@@ -19,7 +19,7 @@ const renderWithAccount = (
   account: ReturnType<typeof useTransactionsUploadContext>["account"],
 ) => {
   vi.mocked(useTransactionsUploadContext).mockReturnValue(
-    mockIncompleteObject<ReturnType<typeof useTransactionsUploadContext>>({
+    dangerouslyMockPartial<ReturnType<typeof useTransactionsUploadContext>>({
       account,
       setAccount,
     }),

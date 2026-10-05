@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import {
   type Category,
   type CategoryFields,
@@ -10,7 +11,6 @@ import {
 import { categoryRowSchema } from "@tally/data-models/database/categoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "category" as const satisfies keyof Database;
 
@@ -43,9 +43,7 @@ export class CategoriesClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const categories = rowOrRowsAsRows(values).map(
-      convertCategoryFieldsToCategoryRow,
-    );
+    const categories = toArray(values).map(convertCategoryFieldsToCategoryRow);
 
     await database.insertInto(TableName).values(categories).execute();
   }

@@ -1,3 +1,4 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
@@ -5,7 +6,6 @@ import {
   putTransactionResponseSchema,
 } from "@tally/data-models/contracts/api/putTransaction";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export const usePutTransaction = () => {
   const { mutateAsync } = useMutation({
     mutationFn: async (transaction: Transaction) => {
       const body: PutTransactionRequest = {
-        transaction: withoutId(transaction),
+        transaction: omitKeys(transaction, "id"),
       };
 
       const response = await apiFetch(

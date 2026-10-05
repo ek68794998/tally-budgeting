@@ -1,8 +1,8 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import {
   buildAsset,
   buildNetWorthSnapshot,
 } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { useAssets } from "../hooks/store/useAssets";
@@ -35,13 +35,13 @@ describe("NetWorthOverview", () => {
     ];
     const initialSnapshots = [buildNetWorthSnapshot()];
     vi.mocked(useAssets).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useAssets>>({
+      dangerouslyMockPartial<ReturnType<typeof useAssets>>({
         assets: [],
         isLoading: true,
       }),
     );
     vi.mocked(useNetWorthSnapshots).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useNetWorthSnapshots>>({
+      dangerouslyMockPartial<ReturnType<typeof useNetWorthSnapshots>>({
         isLoading: true,
         snapshots: [],
       }),

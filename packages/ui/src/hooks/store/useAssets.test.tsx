@@ -1,5 +1,5 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type Asset } from "@tally/data-models/contracts/asset";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { useAssetStore } from "@tally/utilities/state/asset";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -67,7 +67,7 @@ describe("useAssets", () => {
   });
 
   it("returns assets and error from store", () => {
-    const assets = [mockIncompleteObject<Asset>({ id: 1, name: "Checking" })];
+    const assets = [dangerouslyMockPartial<Asset>({ id: 1, name: "Checking" })];
     mockUseAssetStore.mockReturnValue(
       buildStore({ assets, error: "oops", isHydrated: true }),
     );

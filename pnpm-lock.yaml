@@ -135,9 +135,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -184,9 +181,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -259,12 +253,12 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@ekumlin/typescript-toolkit':
+        specifier: 1.1.0
+        version: 1.1.0
       '@formatjs/intl-localematcher':
         specifier: ^0.6.1
         version: 0.6.2
-      '@tally/data-models':
-        specifier: workspace:*
-        version: link:../data-models
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -287,24 +281,6 @@ importers:
       '@types/negotiator':
         specifier: ^0.6.4
         version: 0.6.4
-      '@types/node':
-        specifier: ^22.15.3
-        version: 22.19.7
-      eslint:
-        specifier: ^9.39.5
-        version: 9.39.5(jiti@2.7.0)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
-  packages/testing:
-    devDependencies:
-      '@tally/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@tally/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.19.7
@@ -389,9 +365,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -444,9 +417,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

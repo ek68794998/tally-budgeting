@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { render } from "@testing-library/react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -22,7 +22,7 @@ describe("LoginPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(cookies).mockResolvedValue(
-      mockIncompleteObject<Awaited<ReturnType<typeof cookies>>>({
+      dangerouslyMockPartial<Awaited<ReturnType<typeof cookies>>>({
         get: () => ({ name: "tally_session", value: "token" }),
       }),
     );

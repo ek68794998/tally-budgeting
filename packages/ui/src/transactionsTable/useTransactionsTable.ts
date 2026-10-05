@@ -1,3 +1,4 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
   type Selection,
@@ -7,7 +8,6 @@ import {
 import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/getTransactions";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -167,7 +167,7 @@ export const useTransactionsTable = () => {
     },
     saveTransactionAsync: async (transaction: Transaction) => {
       await (isNewTransaction
-        ? postTransactionAsync(withoutId(transaction))
+        ? postTransactionAsync(omitKeys(transaction, "id"))
         : putTransactionAsync(transaction));
       incrementEditsMade();
     },

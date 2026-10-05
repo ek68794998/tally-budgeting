@@ -1,5 +1,5 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../testing/routeTesting";
 import { DeleteTransactionsIdRouteAsync } from "./[id]/delete";
@@ -77,7 +77,7 @@ describe("transactions routes", () => {
   });
 
   it("POST creates a transaction from its fields", async () => {
-    const transaction = withoutId(buildTransaction());
+    const transaction = omitKeys(buildTransaction(), "id");
 
     const { status } = await callRouteAsync(PostTransactionsRouteAsync, {
       body: { transaction },
@@ -110,7 +110,7 @@ describe("transactions routes", () => {
     wasUpdated,
   }) => {
     client.updateTransactionAsync.mockResolvedValue(wasUpdated);
-    const transaction = withoutId(buildTransaction());
+    const transaction = omitKeys(buildTransaction(), "id");
 
     const { status } = await callRouteAsync(PutTransactionsIdRouteAsync, {
       body: { transaction },

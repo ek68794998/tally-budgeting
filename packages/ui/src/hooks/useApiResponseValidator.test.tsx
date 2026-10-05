@@ -1,6 +1,6 @@
 import { NotFound, Ok } from "@ekumlin/typescript-toolkit/http";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast } from "@heroui/react";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
@@ -131,7 +131,7 @@ describe("useApiResponseValidator", () => {
 
   it("rethrows errors other than a JSON syntax error", async () => {
     const { result } = renderHook(() => useApiResponseValidator());
-    const response = mockIncompleteObject<Response>({
+    const response = dangerouslyMockPartial<Response>({
       json: () => Promise.reject(new Error("stream failed")),
       ok: true,
       status: Ok,

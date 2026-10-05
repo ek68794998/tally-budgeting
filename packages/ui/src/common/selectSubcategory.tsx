@@ -1,3 +1,4 @@
+import { includesIgnoreCase } from "@ekumlin/typescript-toolkit/string";
 import { isNullOrUndefined, isNumber } from "@ekumlin/typescript-toolkit/types";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
@@ -12,7 +13,6 @@ import {
   type Subcategory,
 } from "@tally/data-models/contracts/subcategory";
 import { useCallback, useMemo, useState } from "react";
-import { filterMatches } from "../filter";
 import { useCategories } from "../hooks/store/useCategories";
 
 interface Props {
@@ -51,8 +51,8 @@ export const SelectSubcategory: React.FC<Props> = ({
         .filter(
           (s) =>
             s.categoryId === c.id &&
-            (filterMatches(inputValue, s.label) ||
-              filterMatches(inputValue, c.label)),
+            (includesIgnoreCase(s.label, inputValue) ||
+              includesIgnoreCase(c.label, inputValue)),
         )
         .sort((a, b) => a.label.localeCompare(b.label)),
     [inputValue, subcategories],

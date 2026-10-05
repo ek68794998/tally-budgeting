@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import { possibleNumberToNumber } from "@ekumlin/typescript-toolkit/number";
 import { isBoolean } from "@ekumlin/typescript-toolkit/types";
 import { MaxTransactionsPerPage } from "@tally/data-models/contracts/api/getTransactions";
@@ -27,7 +28,6 @@ import {
   getOrderDirection,
   getQueryCountAsync,
   parseInValues,
-  rowOrRowsAsRows,
 } from "./helpers";
 import { TableName as SubcategoryTableName } from "./subcategoriesClient";
 import { type GetAllQueryResult, type GetRowsOptions } from "./types";
@@ -139,9 +139,7 @@ export class TxnsClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const transactions = rowOrRowsAsRows(values).map(
-      convertTransactionFieldsToTxnRow,
-    );
+    const transactions = toArray(values).map(convertTransactionFieldsToTxnRow);
 
     if (transactions.length <= 0) {
       return;

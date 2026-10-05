@@ -1,3 +1,4 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { addToast } from "@heroui/react";
 import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import {
@@ -8,7 +9,6 @@ import {
   buildTransaction,
   buildTransactionRule,
 } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook } from "@testing-library/react";
 import {
   afterEach,
@@ -117,53 +117,53 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { snapshot: withoutId(buildNetWorthSnapshot()) },
+    expectedBody: { snapshot: omitKeys(buildNetWorthSnapshot(), "id") },
     expectedMethod: "POST",
     expectedUrl: "/api/net-worth/snapshots",
     name: "usePostNetWorthSnapshot",
     useMutate: () => {
       const { postSnapshotAsync } = usePostNetWorthSnapshot();
-      return () => postSnapshotAsync(withoutId(buildNetWorthSnapshot()));
+      return () => postSnapshotAsync(omitKeys(buildNetWorthSnapshot(), "id"));
     },
   },
   {
-    expectedBody: { asset: withoutId(buildAsset()) },
+    expectedBody: { asset: omitKeys(buildAsset(), "id") },
     expectedMethod: "POST",
     expectedUrl: "/api/assets",
     name: "usePostAsset",
     useMutate: () => {
       const { postAssetAsync } = usePostAsset();
-      return () => postAssetAsync(withoutId(buildAsset()));
+      return () => postAssetAsync(omitKeys(buildAsset(), "id"));
     },
   },
   {
-    expectedBody: { category: withoutId(buildCategory()) },
+    expectedBody: { category: omitKeys(buildCategory(), "id") },
     expectedMethod: "POST",
     expectedUrl: "/api/categories",
     name: "usePostCategory",
     useMutate: () => {
       const { postCategoryAsync } = usePostCategory();
-      return () => postCategoryAsync(withoutId(buildCategory()));
+      return () => postCategoryAsync(omitKeys(buildCategory(), "id"));
     },
   },
   {
-    expectedBody: { subcategory: withoutId(buildSubcategory()) },
+    expectedBody: { subcategory: omitKeys(buildSubcategory(), "id") },
     expectedMethod: "POST",
     expectedUrl: "/api/categories/sub",
     name: "usePostSubcategory",
     useMutate: () => {
       const { postSubcategoryAsync } = usePostSubcategory();
-      return () => postSubcategoryAsync(withoutId(buildSubcategory()));
+      return () => postSubcategoryAsync(omitKeys(buildSubcategory(), "id"));
     },
   },
   {
-    expectedBody: { transaction: withoutId(buildTransaction()) },
+    expectedBody: { transaction: omitKeys(buildTransaction(), "id") },
     expectedMethod: "POST",
     expectedUrl: "/api/transactions",
     name: "usePostTransaction",
     useMutate: () => {
       const { postTransactionAsync } = usePostTransaction();
-      return () => postTransactionAsync(withoutId(buildTransaction()));
+      return () => postTransactionAsync(omitKeys(buildTransaction(), "id"));
     },
   },
   {
@@ -180,7 +180,7 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { asset: withoutId(buildAsset()) },
+    expectedBody: { asset: omitKeys(buildAsset(), "id") },
     expectedMethod: "PUT",
     expectedUrl: "/api/assets/4",
     name: "usePutAsset",
@@ -190,7 +190,7 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { category: withoutId(buildCategory()) },
+    expectedBody: { category: omitKeys(buildCategory(), "id") },
     expectedMethod: "PUT",
     expectedUrl: "/api/categories/4",
     name: "usePutCategory",
@@ -200,7 +200,7 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { subcategory: withoutId(buildSubcategory()) },
+    expectedBody: { subcategory: omitKeys(buildSubcategory(), "id") },
     expectedMethod: "PUT",
     expectedUrl: "/api/categories/sub/4",
     name: "usePutSubcategory",
@@ -210,7 +210,7 @@ const bodyCases: MutationCase[] = [
     },
   },
   {
-    expectedBody: { transaction: withoutId(buildTransaction()) },
+    expectedBody: { transaction: omitKeys(buildTransaction(), "id") },
     expectedMethod: "PUT",
     expectedUrl: "/api/transactions/4",
     name: "usePutTransaction",

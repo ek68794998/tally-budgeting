@@ -1,6 +1,6 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast } from "@heroui/react";
 import { buildAsset } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import {
   act,
   fireEvent,
@@ -39,7 +39,7 @@ const validResponse = JSON.stringify({
 
 const renderWidget = (overrides: Partial<UploadContext> = {}) => {
   vi.mocked(useTransactionsUploadContext).mockReturnValue(
-    mockIncompleteObject<UploadContext>({
+    dangerouslyMockPartial<UploadContext>({
       account: buildAsset({ provider: "chase" }),
       selectedFile: null,
       ...context,

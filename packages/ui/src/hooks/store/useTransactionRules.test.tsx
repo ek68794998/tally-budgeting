@@ -1,5 +1,5 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { useTransactionRuleStore } from "@tally/utilities/state/transactionRule";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -71,7 +71,7 @@ describe("useTransactionRules", () => {
   });
 
   it("returns transactionRules and error from store", () => {
-    const transactionRules = [mockIncompleteObject<Transaction>({ id: 1 })];
+    const transactionRules = [dangerouslyMockPartial<Transaction>({ id: 1 })];
     mockUseTransactionRuleStore.mockReturnValue(
       buildStore({ error: "oops", isHydrated: true, transactionRules }),
     );

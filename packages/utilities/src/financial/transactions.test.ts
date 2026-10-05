@@ -1,6 +1,6 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { type Transaction } from "@tally/data-models/contracts/transaction";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { describe, expect, it } from "vitest";
 import {
   getTransactionEarnedValue,
@@ -12,13 +12,13 @@ describe("transactions helpers", () => {
     type: "credit" | "debit",
     amountCents: number,
   ): Transaction =>
-    mockIncompleteObject<Transaction>({
+    dangerouslyMockPartial<Transaction>({
       amountCents,
       type,
     });
 
   const createSubcategory = (budgetType: "income" | "expense"): Subcategory =>
-    mockIncompleteObject<Subcategory>({
+    dangerouslyMockPartial<Subcategory>({
       budget: {
         amountCents: 1,
         frequency: 1,

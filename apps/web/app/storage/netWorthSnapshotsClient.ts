@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import {
   type NetWorthSnapshot,
   type NetWorthSnapshotFields,
@@ -9,7 +10,6 @@ import {
 import { netWorthSnapshotRowSchema } from "@tally/data-models/database/netWorthSnapshotRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "net_worth_snapshot" as const satisfies keyof Database;
 
@@ -36,7 +36,7 @@ export class NetWorthSnapshotsClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const netWorthSnapshots = rowOrRowsAsRows(values).map(
+    const netWorthSnapshots = toArray(values).map(
       convertNetWorthSnapshotFieldsToNetWorthSnapshotRow,
     );
 

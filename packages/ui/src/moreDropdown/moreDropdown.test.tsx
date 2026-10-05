@@ -1,6 +1,6 @@
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { DropdownItem } from "@heroui/react";
 import { type Icon } from "@tabler/icons-react";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { fireEvent, render, screen } from "@testing-library/react";
 import NextLink from "next/link";
 import { beforeEach, describe, expect, it, vi } from "vitest";

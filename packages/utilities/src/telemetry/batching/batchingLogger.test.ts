@@ -7,10 +7,10 @@ import {
   Post,
 } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { isString } from "@ekumlin/typescript-toolkit/types";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { postEventsRequestSchema } from "@tally/data-models/contracts/api/postEvents";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BatchingLogger } from "./batchingLogger";
 

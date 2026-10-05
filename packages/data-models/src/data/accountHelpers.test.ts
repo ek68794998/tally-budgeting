@@ -1,4 +1,4 @@
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { describe, expect, it } from "vitest";
 import { type Asset } from "../contracts/asset";
 import { isAccount, isAsset } from "./accountHelpers";

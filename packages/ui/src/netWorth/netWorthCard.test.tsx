@@ -1,5 +1,5 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast } from "@heroui/react";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { usePostNetWorthSnapshot } from "../hooks/api/usePostNetWorthSnapshot";
@@ -41,12 +41,12 @@ describe("NetWorthCard", () => {
     vi.clearAllMocks();
     vi.useFakeTimers({ now: new Date(now), toFake: ["Date"] });
     vi.mocked(useNetWorthSnapshots).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useNetWorthSnapshots>>({
+      dangerouslyMockPartial<ReturnType<typeof useNetWorthSnapshots>>({
         refetch,
       }),
     );
     vi.mocked(usePostNetWorthSnapshot).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof usePostNetWorthSnapshot>>({
+      dangerouslyMockPartial<ReturnType<typeof usePostNetWorthSnapshot>>({
         postSnapshotAsync,
       }),
     );

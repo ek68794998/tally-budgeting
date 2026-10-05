@@ -1,9 +1,9 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type useDisclosure } from "@heroui/react";
 import {
   buildSubcategory,
   buildTransactionRule,
 } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../common/confirmationModal";
@@ -34,7 +34,7 @@ vi.mock("./rulesTableControls", () => ({
 
 type TableState = ReturnType<typeof useRulesTable>;
 
-const modalState = mockIncompleteObject<ReturnType<typeof useDisclosure>>({
+const modalState = dangerouslyMockPartial<ReturnType<typeof useDisclosure>>({
   isOpen: false,
 });
 

@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useTransactionsUploadContext } from "./transactionsUploadProvider";
@@ -24,7 +24,7 @@ const uploadSelectedFile =
 
 const renderResult = (hasFile: boolean) => {
   vi.mocked(useTransactionsUploadContext).mockReturnValue(
-    mockIncompleteObject<ReturnType<typeof useTransactionsUploadContext>>({
+    dangerouslyMockPartial<ReturnType<typeof useTransactionsUploadContext>>({
       selectedFile: hasFile ? new File(["x"], "bank.csv") : null,
       setSelectedFile,
       uploadResponse: response,

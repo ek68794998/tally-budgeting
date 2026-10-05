@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildLikePattern,
-  getOrderDirection,
-  parseInValues,
-  rowOrRowsAsRows,
-} from "./helpers";
+import { buildLikePattern, getOrderDirection, parseInValues } from "./helpers";
 
 describe("storage.helpers", () => {
   describe("buildLikePattern", () => {
@@ -44,23 +39,6 @@ describe("storage.helpers", () => {
 
     it("handles a single value", () => {
       expect(parseInValues("42")).toEqual(["42"]);
-    });
-  });
-
-  describe("rowOrRowsAsRows", () => {
-    it("wraps a single item in an array", () => {
-      expect(rowOrRowsAsRows({ id: 1 })).toEqual([{ id: 1 }]);
-    });
-
-    it("returns an array unchanged", () => {
-      expect(rowOrRowsAsRows([{ id: 1 }, { id: 2 }])).toEqual([
-        { id: 1 },
-        { id: 2 },
-      ]);
-    });
-
-    it("returns an empty array unchanged", () => {
-      expect(rowOrRowsAsRows([])).toEqual([]);
     });
   });
 });

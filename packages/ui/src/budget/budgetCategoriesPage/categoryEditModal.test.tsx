@@ -1,6 +1,6 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast, type useDisclosure } from "@heroui/react";
 import { buildCategory } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { EditModalFooter } from "../../modal/editModalFooter";
@@ -14,7 +14,7 @@ vi.mock("../../modal/editModalFooter", () => ({
   EditModalFooter: vi.fn(() => <div data-testid="edit-modal-footer" />),
 }));
 
-const modalState = mockIncompleteObject<ReturnType<typeof useDisclosure>>({
+const modalState = dangerouslyMockPartial<ReturnType<typeof useDisclosure>>({
   isOpen: true,
   onOpenChange: vi.fn(),
 });

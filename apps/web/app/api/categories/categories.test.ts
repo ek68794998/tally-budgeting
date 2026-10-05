@@ -1,9 +1,9 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { isUndefined } from "@ekumlin/typescript-toolkit/types";
 import {
   buildCategory,
   buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../testing/routeTesting";
 import { DeleteCategoriesIdRouteAsync } from "./[id]/delete";
@@ -80,7 +80,7 @@ describe("categories routes", () => {
     key,
     post,
   }) => {
-    const fields = withoutId(build());
+    const fields = omitKeys(build(), "id");
 
     const { status } = await callRouteAsync(post, {
       body: Object.fromEntries([[key, fields]]),
@@ -120,7 +120,7 @@ describe("categories routes", () => {
     wasUpdated,
   }) => {
     update.mockResolvedValue(wasUpdated);
-    const fields = withoutId(build());
+    const fields = omitKeys(build(), "id");
 
     const { status } = await callRouteAsync(put, {
       body: Object.fromEntries([[key, fields]]),
@@ -210,7 +210,7 @@ describe("categories routes", () => {
     const { json, status } = await callRouteAsync(route, {
       body: isUndefined(build)
         ? undefined
-        : Object.fromEntries([[key, withoutId(build())]]),
+        : Object.fromEntries([[key, omitKeys(build(), "id")]]),
       method,
       params: { id: "-1" },
     });

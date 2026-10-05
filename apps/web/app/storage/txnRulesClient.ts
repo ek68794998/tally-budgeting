@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import {
   type TransactionRule,
   type TransactionRuleFields,
@@ -9,7 +10,6 @@ import {
 import { txnRuleRowSchema } from "@tally/data-models/database/txnRuleRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "txn_rule" as const satisfies keyof Database;
 
@@ -43,7 +43,7 @@ export class TxnRulesClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const transactionRules = rowOrRowsAsRows(values).map(
+    const transactionRules = toArray(values).map(
       convertTransactionRuleFieldsToTxnRuleRow,
     );
 

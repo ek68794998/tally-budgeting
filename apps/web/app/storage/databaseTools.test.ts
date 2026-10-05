@@ -1,6 +1,6 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DatabaseToolError,

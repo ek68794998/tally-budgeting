@@ -1,6 +1,6 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { useCategoryStore } from "@tally/utilities/state/category";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -74,10 +74,10 @@ describe("useCategories", () => {
 
   it("returns categories, subcategories, and error from store", () => {
     const categories = [
-      mockIncompleteObject<Category>({ id: 1, label: "Food" }),
+      dangerouslyMockPartial<Category>({ id: 1, label: "Food" }),
     ];
     const subcategories = [
-      mockIncompleteObject<Subcategory>({ id: 2, label: "Groceries" }),
+      dangerouslyMockPartial<Subcategory>({ id: 2, label: "Groceries" }),
     ];
     mockUseCategoryStore.mockReturnValue(
       buildStore({

@@ -1,5 +1,5 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type NetWorthSnapshot } from "@tally/data-models/contracts/netWorthSnapshot";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { useNetWorthSnapshotStore } from "@tally/utilities/state/netWorthSnapshot";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -71,7 +71,7 @@ describe("useNetWorthSnapshots", () => {
   });
 
   it("returns snapshots and error from store", () => {
-    const snapshots = [mockIncompleteObject<NetWorthSnapshot>({ id: 1 })];
+    const snapshots = [dangerouslyMockPartial<NetWorthSnapshot>({ id: 1 })];
     mockUseNetWorthSnapshotStore.mockReturnValue(
       buildStore({ error: "oops", isHydrated: true, snapshots }),
     );

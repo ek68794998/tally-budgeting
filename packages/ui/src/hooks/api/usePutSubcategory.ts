@@ -1,3 +1,4 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { ContentType, Put } from "@ekumlin/typescript-toolkit/http";
 import { ApplicationJson } from "@ekumlin/typescript-toolkit/io";
 import {
@@ -5,7 +6,6 @@ import {
   putSubcategoryResponseSchema,
 } from "@tally/data-models/contracts/api/putSubcategory";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
 import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export const usePutSubcategory = () => {
   const { mutateAsync } = useMutation({
     mutationFn: async (subcategory: Subcategory) => {
       const body: PutSubcategoryRequest = {
-        subcategory: withoutId(subcategory),
+        subcategory: omitKeys(subcategory, "id"),
       };
 
       const response = await apiFetch(

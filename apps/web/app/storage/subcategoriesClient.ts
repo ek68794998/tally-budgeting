@@ -1,3 +1,4 @@
+import { toArray } from "@ekumlin/typescript-toolkit/collections";
 import {
   type Subcategory,
   type SubcategoryFields,
@@ -10,7 +11,6 @@ import {
 import { subcategoryRowSchema } from "@tally/data-models/database/subcategoryRow";
 import { type Database } from "./database";
 import { DatabaseClient } from "./databaseClient";
-import { rowOrRowsAsRows } from "./helpers";
 
 export const TableName = "subcategory" as const satisfies keyof Database;
 
@@ -43,7 +43,7 @@ export class SubcategoriesClient extends DatabaseClient {
   ): Promise<void> {
     const database = await this.getAuthorizedDatabaseAsync();
 
-    const subcategories = rowOrRowsAsRows(values).map(
+    const subcategories = toArray(values).map(
       convertSubcategoryFieldsToSubcategoryRow,
     );
 
