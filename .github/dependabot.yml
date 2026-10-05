@@ -16,6 +16,10 @@ updates:
         dependency-type: development
         update-types: [minor, patch]
     open-pull-requests-limit: 5
+    # Pinned: newer versions implement Web Animations, which makes framer-motion
+    # raise unhandled AbortErrors in tests.
+    ignore:
+      - dependency-name: happy-dom
 
   - package-ecosystem: github-actions
     directory: /
