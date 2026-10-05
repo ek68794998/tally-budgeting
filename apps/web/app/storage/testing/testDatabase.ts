@@ -1,6 +1,6 @@
 import { openAsBlob } from "node:fs";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { PGlite, types } from "@electric-sql/pglite";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { Kysely, Migrator, PostgresDialect, sql } from "kysely";
 import { type Pool } from "pg";
 import { inject } from "vitest";

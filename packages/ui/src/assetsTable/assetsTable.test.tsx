@@ -1,6 +1,6 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { buildAsset } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../common/confirmationModal";
@@ -50,7 +50,7 @@ describe("AssetsTable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useAssets).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useAssets>>({ refetch }),
+      dangerouslyMockPartial<ReturnType<typeof useAssets>>({ refetch }),
     );
     vi.mocked(useDeleteAsset).mockReturnValue({ deleteAssetAsync });
     vi.mocked(usePostAsset).mockReturnValue({ postAssetAsync });
@@ -79,7 +79,7 @@ describe("AssetsTable", () => {
       expectedAsset: ModalDefaultAsset,
       expectedSave: () =>
         expect(postAssetAsync).toHaveBeenCalledExactlyOnceWith(
-          withoutId(ModalDefaultAsset),
+          omitKeys(ModalDefaultAsset, "id"),
         ),
       isNew: true,
       name: "creates a new",

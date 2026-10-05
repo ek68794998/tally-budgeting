@@ -1,7 +1,7 @@
 import { BadRequest, Ok } from "@ekumlin/typescript-toolkit/http";
+import { isValidDate } from "@ekumlin/typescript-toolkit/time";
 import { Lazy } from "@ekumlin/typescript-toolkit/values";
 import { postNetWorthSnapshotRequestSchema } from "@tally/data-models/contracts/api/postNetWorthSnapshot";
-import { isValidDate } from "@tally/utilities/date/isValidDate";
 import z from "zod";
 import { NetWorthSnapshotsClient } from "../../../storage/netWorthSnapshotsClient";
 import { createApiHandler } from "../../handlers/createApiHandler";

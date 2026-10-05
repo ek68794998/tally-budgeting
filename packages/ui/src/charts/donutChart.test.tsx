@@ -1,6 +1,8 @@
+import {
+  dangerouslyCoerceType,
+  dangerouslyMockPartial,
+} from "@ekumlin/typescript-toolkit/testing";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { render, screen } from "@testing-library/react";
 import {
   type TooltipProps as ExtendedTooltipProps,
@@ -112,7 +114,7 @@ describe("DonutChart", () => {
       render(<DonutChart data={defaultData} />);
       const TooltipContent = getTooltipContent();
       const { container } = render(
-        <TooltipContent active={true} payload={[mockIncompleteObject({})]} />,
+        <TooltipContent active={true} payload={[dangerouslyMockPartial({})]} />,
       );
       expect(container).toBeEmptyDOMElement();
     });

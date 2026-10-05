@@ -1,5 +1,5 @@
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { type Locale, Locales } from "@tally/i18n/locales";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
 import { render, screen } from "@testing-library/react";
 import { getLocale } from "next-intl/server";
 import { describe, expect, it, vi } from "vitest";

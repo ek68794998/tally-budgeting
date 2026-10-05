@@ -1,9 +1,9 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast, type useDisclosure } from "@heroui/react";
 import {
   buildSubcategory,
   buildTransactionRule,
 } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SelectSubcategory } from "../common/selectSubcategory";
@@ -25,7 +25,7 @@ vi.mock("./ruleEditMerchantMatchAlert", () => ({
   RuleEditMerchantMatchAlert: vi.fn(() => <div data-testid="match-alert" />),
 }));
 
-const modalState = mockIncompleteObject<ReturnType<typeof useDisclosure>>({
+const modalState = dangerouslyMockPartial<ReturnType<typeof useDisclosure>>({
   isOpen: true,
   onOpenChange: vi.fn(),
 });

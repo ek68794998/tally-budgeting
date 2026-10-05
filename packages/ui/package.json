@@ -14,7 +14,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@ekumlin/typescript-toolkit": "1.0.1",
+    "@ekumlin/typescript-toolkit": "1.1.0",
     "@heroui/react": "^2.8.9",
     "@internationalized/date": "3.11.0",
     "@tabler/icons-react": "3.36.1",
@@ -39,7 +39,6 @@
   },
   "devDependencies": {
     "@tally/eslint-config": "workspace:*",
-    "@tally/testing": "workspace:*",
     "@tally/typescript-config": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",

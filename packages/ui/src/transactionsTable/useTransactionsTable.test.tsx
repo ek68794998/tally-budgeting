@@ -1,9 +1,9 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import {
   buildAsset,
   buildSubcategory,
   buildTransaction,
 } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   afterEach,
@@ -188,7 +188,7 @@ describe("useTransactionsTable", () => {
     {
       expectedCall: () =>
         expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
-          withoutId(coffee),
+          omitKeys(coffee, "id"),
         ),
       name: "creates a duplicated",
       open: (table: ReturnType<typeof useTransactionsTable>) =>
@@ -198,7 +198,7 @@ describe("useTransactionsTable", () => {
     {
       expectedCall: () =>
         expect(postTransactionAsync).toHaveBeenCalledExactlyOnceWith(
-          withoutId(coffee),
+          omitKeys(coffee, "id"),
         ),
       name: "creates a new",
       open: (table: ReturnType<typeof useTransactionsTable>) =>

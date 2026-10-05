@@ -1,16 +1,18 @@
+import {
+  type MovePosition,
+  moveItem,
+} from "@ekumlin/typescript-toolkit/collections";
+import { includesIgnoreCase } from "@ekumlin/typescript-toolkit/string";
 import { type Selection, useDisclosure } from "@heroui/react";
 import { type TransactionRule } from "@tally/data-models/contracts/transactionRule";
 import { getTransactionRuleFields } from "@tally/data-models/converters/transactionRule";
 import { useCallback, useMemo, useState } from "react";
 import { ModalDefaultTransactionRule } from "../../common/modalDefault";
-import { filterMatches } from "../../filter";
 import { useDeleteTransactionRule } from "../../hooks/api/useDeleteTransactionRule";
 import { usePatchTransactionRulesReorder } from "../../hooks/api/usePatchTransactionRulesReorder";
 import { usePostTransactionRule } from "../../hooks/api/usePostTransactionRule";
 import { usePutTransactionRule } from "../../hooks/api/usePutTransactionRule";
 import { useTransactionRules } from "../../hooks/store/useTransactionRules";
-import { reorderRows } from "../../table/helpers";
-import { type ReorderPosition } from "../../table/types";
 
 export const getRuleRowKey = ({ id, merchantName }: TransactionRule) =>
   `${id}-${merchantName}`;
@@ -42,7 +44,10 @@ export const useRulesTable = () => {
   );
 
   const displayedRules = useMemo(
-    () => sortedRules.filter((a) => filterMatches(filterValue, a.merchantName)),
+    () =>
+      sortedRules.filter((a) =>
+        includesIgnoreCase(a.merchantName, filterValue),
+      ),
     [filterValue, sortedRules],
   );
 
@@ -100,9 +105,9 @@ export const useRulesTable = () => {
   );
 
   const handleReorderAsync = useCallback(
-    async (rule: TransactionRule, position: ReorderPosition) => {
-      const ruleId = rule.id;
-      const reorderedRows = reorderRows(sortedRules, ruleId, position);
+    async (rule: TransactionRule, position: MovePosition) => {
+      const ruleIndex = sortedRules.findIndex((r) => r.id === rule.id);
+      const reorderedRows = moveItem(sortedRules, ruleIndex, position);
       const reorderedIds = reorderedRows.map((row) => row.id);
 
       await patchTransactionRulesReorderAsync(reorderedIds);

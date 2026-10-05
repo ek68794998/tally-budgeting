@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { usePathname, useRouter } from "next/navigation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -27,7 +27,7 @@ describe("Sidebar", () => {
     vi.clearAllMocks();
     vi.mocked(usePathname).mockReturnValue("/transactions");
     vi.mocked(useRouter).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useRouter>>(router),
+      dangerouslyMockPartial<ReturnType<typeof useRouter>>(router),
     );
     vi.mocked(useAuth).mockReturnValue({ isAuthEnabled: true });
   });

@@ -1,4 +1,4 @@
-import { scaleToFit } from "@tally/utilities/graphics/scaleToFit";
+import { scaleToFit } from "@ekumlin/typescript-toolkit/number";
 
 export const getScaledLogoSize = (
   originalWidth: number,

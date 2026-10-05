@@ -1,5 +1,7 @@
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import {
+  dangerouslyCoerceType,
+  dangerouslyMockPartial,
+} from "@ekumlin/typescript-toolkit/testing";
 import { render } from "@testing-library/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -42,10 +44,10 @@ describe("SpendingView", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useRouter).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useRouter>>({ push }),
+      dangerouslyMockPartial<ReturnType<typeof useRouter>>({ push }),
     );
     vi.mocked(useSpendingData).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useSpendingData>>({
+      dangerouslyMockPartial<ReturnType<typeof useSpendingData>>({
         data: undefined,
         error: null,
         isFetching: true,

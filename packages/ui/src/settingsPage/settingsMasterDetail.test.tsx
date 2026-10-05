@@ -1,4 +1,4 @@
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useSearchParams } from "next/navigation";
 import { beforeEach, describe, expect, it, vi } from "vitest";

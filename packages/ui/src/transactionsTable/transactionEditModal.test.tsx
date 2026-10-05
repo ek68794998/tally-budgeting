@@ -1,6 +1,6 @@
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast, type useDisclosure } from "@heroui/react";
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
 import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { EditModalFooter } from "../modal/editModalFooter";
@@ -28,7 +28,7 @@ vi.mock("./transactionHappinessSelect", () => ({
 
 const coffee = buildTransaction({ accountId: 1, amountCents: 4_50 });
 
-const modalState = mockIncompleteObject<ReturnType<typeof useDisclosure>>({
+const modalState = dangerouslyMockPartial<ReturnType<typeof useDisclosure>>({
   isOpen: true,
   onOpenChange: vi.fn(),
 });

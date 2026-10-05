@@ -59,8 +59,5 @@ export const parseInValues = (
     .map(converter)
     .filter((v) => !isNullOrUndefined(v));
 
-export const rowOrRowsAsRows = <T>(values: T | T[]): T[] =>
-  Array.isArray(values) ? values : [values];
-
 const calculateOffset = (page: number, limit: number): number =>
   (page - 1) * limit;

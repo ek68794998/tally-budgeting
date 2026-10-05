@@ -1,4 +1,4 @@
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import { AuthProvider } from "@tally/ui/auth/authContext";
 import { useSetting } from "@tally/ui/hooks/useSetting";
 import { useDatabaseStatusStore } from "@tally/utilities/state/databaseStatus";

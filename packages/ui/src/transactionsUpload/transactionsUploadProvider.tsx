@@ -3,6 +3,7 @@
 import {
   isSuccessHttpStatusCode,
   Post,
+  toFormData,
 } from "@ekumlin/typescript-toolkit/http";
 import {
   type PostTransactionsUploadRequest,
@@ -16,7 +17,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { buildFormData } from "../forms/helpers";
 
 interface TransactionsUploadCallbacks {
   onSelectNone: () => void;
@@ -71,7 +71,7 @@ const uploadFile = (
     isValidationOnly: isValidationOnly ? "true" : "false",
   };
 
-  const formData = buildFormData(formBody);
+  const formData = toFormData(formBody);
 
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();

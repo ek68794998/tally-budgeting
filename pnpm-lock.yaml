@@ -42,8 +42,8 @@ importers:
   apps/web:
     dependencies:
       '@ekumlin/typescript-toolkit':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.1.0
+        version: 1.1.0
       '@heroui/react':
         specifier: ^2.8.9
         version: 2.8.9(@types/react@19.1.0)(framer-motion@12.26.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.18)
@@ -135,9 +135,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -175,8 +172,8 @@ importers:
   packages/data-models:
     dependencies:
       '@ekumlin/typescript-toolkit':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.1.0
+        version: 1.1.0
       zod:
         specifier: ^4.1.11
         version: 4.3.5
@@ -184,9 +181,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -259,12 +253,12 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@ekumlin/typescript-toolkit':
+        specifier: 1.1.0
+        version: 1.1.0
       '@formatjs/intl-localematcher':
         specifier: ^0.6.1
         version: 0.6.2
-      '@tally/data-models':
-        specifier: workspace:*
-        version: link:../data-models
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -297,31 +291,13 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
-  packages/testing:
-    devDependencies:
-      '@tally/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@tally/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/node':
-        specifier: ^22.15.3
-        version: 22.19.7
-      eslint:
-        specifier: ^9.39.5
-        version: 9.39.5(jiti@2.7.0)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
   packages/typescript-config: {}
 
   packages/ui:
     dependencies:
       '@ekumlin/typescript-toolkit':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.1.0
+        version: 1.1.0
       '@heroui/react':
         specifier: ^2.8.9
         version: 2.8.9(@types/react@19.1.0)(framer-motion@12.26.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.18)
@@ -389,9 +365,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -423,8 +396,8 @@ importers:
   packages/utilities:
     dependencies:
       '@ekumlin/typescript-toolkit':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.1.0
+        version: 1.1.0
       '@tally/data-models':
         specifier: workspace:*
         version: link:../data-models
@@ -444,9 +417,6 @@ importers:
       '@tally/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@tally/testing':
-        specifier: workspace:*
-        version: link:../testing
       '@tally/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -603,8 +573,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ekumlin/typescript-toolkit@1.0.1':
-    resolution: {integrity: sha512-0DPxlAFUHPKbTmfunC8q8kU8+Sd0s4n1GkHFdYc5A1lNtTIorLrPNhUy1z9Wen7SFWdUkjHLVqBX0+xPQtMc5Q==}
+  '@ekumlin/typescript-toolkit@1.1.0':
+    resolution: {integrity: sha512-BibQo2tJiqpneU/bgPJoIbnQ7bRwBs+qTzdxDwd9dKF/+7vJ1QmzZLXKmSPMDx8+NyuQJKpCO5SS0VnyJnYaxA==}
 
   '@electric-sql/pglite@0.5.8':
     resolution: {integrity: sha512-n9tsbUOhwx2epK1V0ZG9Ar4SHWUju04dhmzZXiSBXwBoleOvIfals33NAaWgagQVAL4Rbvx/Ptsu3P+pA09f6Q==}
@@ -5494,7 +5464,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.3.11':
     optional: true
 
-  '@ekumlin/typescript-toolkit@1.0.1':
+  '@ekumlin/typescript-toolkit@1.1.0':
     dependencies:
       zod: 4.3.5
 

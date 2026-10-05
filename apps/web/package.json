@@ -15,7 +15,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@ekumlin/typescript-toolkit": "1.0.1",
+    "@ekumlin/typescript-toolkit": "1.1.0",
     "@heroui/react": "^2.8.9",
     "@heroui/theme": "^2.4.22",
     "@mdx-js/loader": "^3.1.1",
@@ -48,7 +48,6 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
     "@tally/eslint-config": "workspace:*",
-    "@tally/testing": "workspace:*",
     "@tally/typescript-config": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",

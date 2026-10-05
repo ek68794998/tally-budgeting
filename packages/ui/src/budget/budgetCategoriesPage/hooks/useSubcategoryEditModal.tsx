@@ -1,9 +1,9 @@
 "use client";
 
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { useDisclosure } from "@heroui/react";
 import { type Category } from "@tally/data-models/contracts/category";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { useMemo, useState } from "react";
 import { ModalDefaultSubcategory } from "../../../common/modalDefault";
 import { usePostSubcategory } from "../../../hooks/api/usePostSubcategory";
@@ -37,7 +37,7 @@ export const useSubcategoryEditModal = () => {
           modalState={subcategoryEditModalState}
           onSaveAsync={async (subcategory) => {
             await (isNewSubcategory
-              ? postSubcategoryAsync(withoutId(subcategory))
+              ? postSubcategoryAsync(omitKeys(subcategory, "id"))
               : putSubcategoryAsync(subcategory));
             await refetch();
           }}

@@ -1,5 +1,5 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { buildAsset } from "@tally/data-models/testing/fixtures";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callRouteAsync, storageMocks } from "../testing/routeTesting";
 import { DeleteAssetsIdRouteAsync } from "./[id]/delete";
@@ -39,7 +39,7 @@ describe("assets routes", () => {
   });
 
   it("POST creates an asset from its fields", async () => {
-    const asset = withoutId(buildAsset());
+    const asset = omitKeys(buildAsset(), "id");
 
     const { status } = await callRouteAsync(PostAssetsRouteAsync, {
       body: { asset },
@@ -71,7 +71,7 @@ describe("assets routes", () => {
     wasUpdated,
   }) => {
     client.updateAssetAsync.mockResolvedValue(wasUpdated);
-    const asset = withoutId(buildAsset());
+    const asset = omitKeys(buildAsset(), "id");
 
     const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
       body: { asset },
@@ -88,7 +88,7 @@ describe("assets routes", () => {
 
   it("PUT rejects a non-numeric route id", async () => {
     const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
-      body: { asset: withoutId(buildAsset()) },
+      body: { asset: omitKeys(buildAsset(), "id") },
       method: "PUT",
       params: { id: "abc" },
     });

@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DataCard } from "../common/dataCard";
@@ -90,7 +90,7 @@ describe("retirement components", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useRetirementContext).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useRetirementContext>>({
+      dangerouslyMockPartial<ReturnType<typeof useRetirementContext>>({
         calculatedData: { dataByYear: [buildYear(65, 1_500_000)] },
         inputs,
         setInputs,

@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import {
   type NameType,
   type Payload,
@@ -18,7 +18,7 @@ describe("getTooltipText", () => {
       getTooltipText(
         42,
         [
-          mockIncompleteObject<TooltipPayload>({
+          dangerouslyMockPartial<TooltipPayload>({
             payload: { label: "Rent", value: 42 },
           }),
         ],

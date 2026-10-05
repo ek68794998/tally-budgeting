@@ -1,14 +1,14 @@
 "use client";
 
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
+import { includesIgnoreCase } from "@ekumlin/typescript-toolkit/string";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import { useDisclosure } from "@heroui/react";
 import { type Asset } from "@tally/data-models/contracts/asset";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
 import { ModalDefaultAsset } from "../common/modalDefault";
-import { filterMatches } from "../filter";
 import { useDeleteAsset } from "../hooks/api/useDeleteAsset";
 import { usePostAsset } from "../hooks/api/usePostAsset";
 import { usePutAsset } from "../hooks/api/usePutAsset";
@@ -36,7 +36,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
   const [filterValue, setFilterValue] = useState("");
 
   const displayedAssets = assets
-    .filter((a) => filterMatches(filterValue, a.name))
+    .filter((a) => includesIgnoreCase(a.name, filterValue))
     .sort((a, b) => {
       if (a.active && !b.active) {
         return -1;
@@ -58,7 +58,7 @@ export const AssetsTable: React.FC<Props> = ({ assets }) => {
 
   const handleSaveAsync = async (asset: Asset) => {
     await (isNewAsset
-      ? postAssetAsync(withoutId(asset))
+      ? postAssetAsync(omitKeys(asset, "id"))
       : putAssetAsync(asset));
     editModalState.onClose();
     setAssetToEdit(null);

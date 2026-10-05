@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { type DeepPartial } from "@ekumlin/typescript-toolkit/types";
 import { match } from "@formatjs/intl-localematcher";
-import { type DeepPartial } from "@tally/data-models/utility/deepPartial";
 import deepmerge from "deepmerge";
 import Negotiator from "negotiator";
 import { headers } from "next/headers";

@@ -1,8 +1,8 @@
 "use client";
 
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { useDisclosure } from "@heroui/react";
 import { type Category } from "@tally/data-models/contracts/category";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { useMemo, useState } from "react";
 import { ModalDefaultCategory } from "../../../common/modalDefault";
 import { usePostCategory } from "../../../hooks/api/usePostCategory";
@@ -35,7 +35,7 @@ export const useCategoryEditModal = () => {
           modalState={categoryEditModalState}
           onSaveAsync={async (category) => {
             await (isNewCategory
-              ? postCategoryAsync(withoutId(category))
+              ? postCategoryAsync(omitKeys(category, "id"))
               : putCategoryAsync(category));
             await refetch();
           }}

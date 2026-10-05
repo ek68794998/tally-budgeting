@@ -1,9 +1,9 @@
+import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
+import { dangerouslyCoerceType } from "@ekumlin/typescript-toolkit/testing";
 import {
   buildCategory,
   buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
-import { dangerouslyCoerceType } from "@tally/testing/dangerouslyCoerceType";
-import { withoutId } from "@tally/utilities/object/withoutId";
 import { act, render, renderHook, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../../../common/confirmationModal";
@@ -190,7 +190,7 @@ describe("category page modal hooks", () => {
 
   it.each([
     {
-      expectedCall: [postCategoryAsync, withoutId(ModalDefaultCategory)],
+      expectedCall: [postCategoryAsync, omitKeys(ModalDefaultCategory, "id")],
       expectedItem: ModalDefaultCategory,
       name: "creates a new category",
       renderOpened: () => openCategoryModal((hook) => hook.openNew()),
@@ -204,10 +204,13 @@ describe("category page modal hooks", () => {
     {
       expectedCall: [
         postSubcategoryAsync,
-        withoutId({
-          ...ModalDefaultSubcategory,
-          categoryId: category.id,
-        }),
+        omitKeys(
+          {
+            ...ModalDefaultSubcategory,
+            categoryId: category.id,
+          },
+          "id",
+        ),
       ],
       expectedItem: {
         ...ModalDefaultSubcategory,

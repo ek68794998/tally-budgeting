@@ -1,3 +1,4 @@
+import { type MovePosition } from "@ekumlin/typescript-toolkit/collections";
 import {
   IconArrowBarToDown,
   IconArrowBarToUp,
@@ -8,12 +9,11 @@ import {
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { MoreDropdown } from "../moreDropdown/moreDropdown";
-import { type ReorderPosition } from "../table/types";
 
 interface Props {
   onDelete: () => void;
   onEdit: () => void;
-  onReorder: (position: ReorderPosition) => void;
+  onReorder: (position: MovePosition) => void;
 }
 
 export const RuleRowDropdown: React.FC<Props> = ({

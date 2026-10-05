@@ -1,4 +1,4 @@
-import { mockIncompleteObject } from "@tally/testing/mockIncompleteObject";
+import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { LoginForm } from "@tally/ui/auth/loginForm";
 import { render, screen } from "@testing-library/react";
 import { useRouter } from "next/navigation";
@@ -24,7 +24,7 @@ describe("LoginCard", () => {
   }) => {
     const router = { refresh: vi.fn(), replace: vi.fn() };
     vi.mocked(useRouter).mockReturnValue(
-      mockIncompleteObject<ReturnType<typeof useRouter>>(router),
+      dangerouslyMockPartial<ReturnType<typeof useRouter>>(router),
     );
 
     render(<LoginCard next={next} />);
