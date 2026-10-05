@@ -164,20 +164,20 @@ The schema is managed by Kysely migrations in `apps/web/app/storage/migrations/`
 
 ## CSV Import
 
-Tally supports importing transactions from CSV files. The format requirements vary by institution.
+Tally imports transactions from the CSV files that each institution exports. Upload the file as downloaded, without editing it; Tally recognizes each institution's columns and skips extra rows such as notes or summaries.
 
-Supported institutions:
+Sample files showing the expected format for each institution are in [`packages/utilities/src/dataProviders/__mocks__`](packages/utilities/src/dataProviders/__mocks__). The samples contain made-up data.
 
-- Apple Wallet
-- Chase Bank
-- Fidelity Investments
-- First Tech FCU
-- Guideline
-- Rippling
-- Robinhood
-- Vestwell
-
-_Detailed CSV format documentation coming soon._
+| Institution | Sample file(s) |
+| --- | --- |
+| Apple Wallet | `appleCardStatementMock.csv` |
+| Chase Bank | `chaseStatementMock.csv` |
+| Fidelity Investments | `fidelityInvestmentsStatementMock.csv` (brokerage), `fidelityHsaStatementMock.csv` (HSA), `fidelityRetirementStatementMock.csv` (retirement) |
+| First Tech Federal Credit Union | `firstTechStatementMock.csv` |
+| Guideline | `guidelineStatementMock.csv` |
+| Rippling | `ripplingStatementMock.csv` |
+| Robinhood | `robinhoodCardStatementMock.csv` (credit card), `robinhoodInvestmentsStatementMock.csv` (investments) |
+| Vestwell | None yet. Expected columns: `Trade Date`, `Settlement Date`, `Transaction Type`, `Dollars`, `Funding Source`, `Contribution Year` |
 
 ## Tech Stack
 
