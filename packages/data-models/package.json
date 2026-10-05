@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ekumlin/typescript-toolkit": "1.1.0",
-    "zod": "^4.1.11"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tally/eslint-config": "workspace:*",
