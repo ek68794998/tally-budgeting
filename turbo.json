@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "agentGuidance": false,
   "globalEnv": [
     "LOG_LEVEL",
     "NEXT_RUNTIME",
