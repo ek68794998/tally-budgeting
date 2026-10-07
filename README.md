@@ -6,7 +6,7 @@
 
 **A self-hosted budgeting app for privacy-conscious people who want to manage their finances manually, with a beautiful, comprehensive dashboard.**
 
-[![Build](https://github.com/ek68794998/tally-budgeting/actions/workflows/pull-request.yml/badge.svg?event=pull_request)](https://github.com/ek68794998/tally-budgeting/actions/workflows/pull-request.yml)
+[![Last commit](https://img.shields.io/github/last-commit/ek68794998/tally-budgeting)](https://github.com/ek68794998/tally-budgeting/commits/main)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
