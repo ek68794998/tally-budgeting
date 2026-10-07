@@ -4,7 +4,7 @@ import { resetAuthConfigForTesting } from "./app/auth/config";
 import { SessionCookieName } from "./app/auth/cookie";
 import { createSessionToken, SessionTtlSeconds } from "./app/auth/session";
 import { getOrCreateSessionSecretAsync } from "./app/storage/appSettingsClient";
-import { proxy } from "./proxy";
+import { config, proxy } from "./proxy";
 
 const secret = "test-secret";
 
@@ -97,5 +97,32 @@ describe("proxy", () => {
     const response = await proxy(buildRequest());
 
     expect(response.headers.get("location")).toBeNull();
+  });
+
+  describe("matcher", () => {
+    const matcherRegex = new RegExp(`^${config.matcher[0]}$`);
+
+    it.each([
+      "/favicon.ico",
+      "/favicon.svg",
+      "/favicon-16x16.png",
+      "/apple-touch-icon.png",
+      "/android-chrome-192x192.png",
+      "/site.webmanifest",
+      "/login",
+      "/api/health",
+    ])("exempts %s from auth", (path) => {
+      expect(matcherRegex.test(path)).toBe(false);
+    });
+
+    it.each([
+      "/",
+      "/assets",
+      "/favicon-x/anything.png",
+      "/site.webmanifest-anything",
+      "/nested/favicon.ico",
+    ])("protects %s", (path) => {
+      expect(matcherRegex.test(path)).toBe(true);
+    });
   });
 });

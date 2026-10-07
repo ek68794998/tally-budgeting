@@ -73,7 +73,9 @@ const proxyAsync = async (request: NextRequest): Promise<NextResponse> => {
 };
 
 export const config = {
-  matcher: ["/((?!api|login|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|login|_next/static|_next/image|[^/]+\\.(?:png|ico|svg|webmanifest)$).*)",
+  ],
 };
 
 export { proxyAsync as proxy };

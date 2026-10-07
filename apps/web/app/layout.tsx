@@ -23,6 +23,16 @@ const geistSans = localFont({
 
 export const metadata: Metadata = {
   description: "tally – Budgeting App",
+  icons: {
+    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { type: "image/svg+xml", url: "/favicon.svg" },
+      { sizes: "16x16", type: "image/png", url: "/favicon-16x16.png" },
+      { sizes: "32x32", type: "image/png", url: "/favicon-32x32.png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
   title: "tally",
 };
 

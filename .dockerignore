@@ -3,3 +3,7 @@
 **/.turbo
 **/coverage
 .git
+_local/*
+docs/*
+tmp/*
+*.tar
