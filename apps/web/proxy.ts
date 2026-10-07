@@ -74,7 +74,7 @@ const proxyAsync = async (request: NextRequest): Promise<NextResponse> => {
 
 export const config = {
   matcher: [
-    "/((?!api|login|_next/static|_next/image|favicon\\.ico|favicon-.*\\.png|android-chrome-.*\\.png|apple-touch-icon\\.png|site\\.webmanifest).*)",
+    "/((?!api|login|_next/static|_next/image|[^/]+\\.(?:png|ico|svg|webmanifest)$).*)",
   ],
 };
 

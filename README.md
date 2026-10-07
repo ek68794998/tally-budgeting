@@ -38,7 +38,7 @@
     <td width="50%" align="center">
       <img src="docs/screenshots/budget.png" alt="Budget page with spending pulse, overview alerts, and category breakdown" />
       <br />
-      <em>Categories: organize spending into categories and subcategories with monthly budgets</em>
+      <em>Budget: view historic trends, and see categories where you're under- or overspending</em>
     </td>
     <td width="50%" align="center">
       <img src="docs/screenshots/categories.png" alt="Categories page listing budget categories and their subcategories" />
