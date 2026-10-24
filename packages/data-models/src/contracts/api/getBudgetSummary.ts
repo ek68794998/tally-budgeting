@@ -2,10 +2,26 @@ import { z } from "zod";
 import { budgetTypeSchema } from "../budgetType";
 import { createApiResponseSchema } from "./types";
 
+const oneTimeExpensesSchema = z.object({
+  totalSpent: z.number(),
+  transactions: z.array(
+    z.object({
+      amount: z.number(),
+      date: z.iso.datetime({ offset: true }),
+      id: z.int(),
+      merchant: z.string(),
+      subcategoryId: z.int(),
+    }),
+  ),
+});
+
+export type OneTimeExpenses = z.infer<typeof oneTimeExpensesSchema>;
+
 const quickPulsePeriodSchema = z.object({
   budgeted: z.number(),
   duration: z.enum(["last12Months", "lastMonth"]),
   income: z.number(),
+  oneTime: oneTimeExpensesSchema,
   spent: z.number(),
 });
 
@@ -66,6 +82,7 @@ const budgetBreakdownItemSchema = z.object({
   budgetFrequency: z.int().min(1).max(12),
   budgetType: budgetTypeSchema,
   currentPeriodSpent: z.number(),
+  oneTime: oneTimeExpensesSchema,
   previousPeriodSpent: z.number(),
   subcategoryId: z.int(),
 });

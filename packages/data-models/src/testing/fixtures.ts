@@ -1,3 +1,4 @@
+import { type OneTimeExpenses } from "../contracts/api/getBudgetSummary";
 import { type Asset } from "../contracts/asset";
 import { type Category } from "../contracts/category";
 import { type NetWorthSnapshot } from "../contracts/netWorthSnapshot";
@@ -18,6 +19,14 @@ export const buildAsset = (overrides: Partial<Asset> = {}): Asset => ({
 export const buildCategory = (overrides: Partial<Category> = {}): Category => ({
   id: 1,
   label: "Housing",
+  ...overrides,
+});
+
+export const buildOneTimeExpenses = (
+  overrides: Partial<OneTimeExpenses> = {},
+): OneTimeExpenses => ({
+  totalSpent: 0,
+  transactions: [],
   ...overrides,
 });
 

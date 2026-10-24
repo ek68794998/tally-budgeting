@@ -1,5 +1,6 @@
 import {
   buildCategory,
+  buildOneTimeExpenses,
   buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
 import { render, screen } from "@testing-library/react";
@@ -17,6 +18,7 @@ const breakdown = (subcategoryId: number, currentPeriodSpent: number) => ({
   budgetFrequency: 1,
   budgetType: "expense" as const,
   currentPeriodSpent,
+  oneTime: buildOneTimeExpenses(),
   previousPeriodSpent: 0,
   subcategoryId,
 });

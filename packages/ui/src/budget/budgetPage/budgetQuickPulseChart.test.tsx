@@ -1,3 +1,4 @@
+import { buildOneTimeExpenses } from "@tally/data-models/testing/fixtures";
 import { render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BudgetQuickPulseChart } from "./budgetQuickPulseChart";
@@ -36,7 +37,13 @@ describe("BudgetQuickPulseChart", () => {
   }) => {
     const { container } = render(
       <BudgetQuickPulseChart
-        data={{ budgeted: 100, duration, income: 200, spent }}
+        data={{
+          budgeted: 100,
+          duration,
+          income: 200,
+          oneTime: buildOneTimeExpenses(),
+          spent,
+        }}
         title="Pulse"
       />,
     );
@@ -52,7 +59,12 @@ describe("BudgetQuickPulseChart", () => {
   });
 
   it("renders charts for the last month and year", () => {
-    const period = { budgeted: 1, income: 1, spent: 1 };
+    const period = {
+      budgeted: 1,
+      income: 1,
+      oneTime: buildOneTimeExpenses(),
+      spent: 1,
+    };
 
     render(
       <BudgetQuickPulseCharts

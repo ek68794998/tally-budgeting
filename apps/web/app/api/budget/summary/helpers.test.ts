@@ -58,6 +58,13 @@ describe("Budget API helpers", () => {
       type,
     });
 
+    const createOneTimeTransaction = (
+      ...args: Parameters<typeof createTestTransaction>
+    ): Transaction => ({
+      ...createTestTransaction(...args),
+      isOneTime: true,
+    });
+
     it("should calculate quick pulse for single monthly budget", () => {
       const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
 
@@ -490,6 +497,7 @@ describe("Budget API helpers", () => {
         budgetFrequency: 1,
         budgetType: "expense",
         currentPeriodSpent: 450,
+        oneTime: { totalSpent: 0, transactions: [] },
         previousPeriodSpent: 480,
         subcategoryId: 1,
       });
@@ -646,6 +654,147 @@ describe("Budget API helpers", () => {
 
       expect(result.actionItems.improved).toHaveLength(0);
       expect(result.actionItems.worsened).toHaveLength(0);
+    });
+    describe("one-time expenses", () => {
+      const endDate = createValidDateTime("2025-02-10T00:00:00.000Z");
+
+      it("should exclude one-time expenses from quick pulse spending and list them per window", () => {
+        const result = createBudgetSummaryData({
+          endDate,
+          subcategories: [
+            createTestSubcategory(1, "Groceries", 50000, 1),
+            createTestSubcategory(2, "Vehicles", 100000, 12),
+          ],
+          transactions: [
+            createTestTransaction(1, 1, "2025-02-05", 45000),
+            createOneTimeTransaction(2, 2, "2025-02-03", 2500000),
+            createOneTimeTransaction(3, 2, "2024-08-10", 1000000),
+            createOneTimeTransaction(4, 2, "2023-12-10", 700000),
+          ],
+        });
+
+        expect(result.quickPulse.lastMonth.spent).toBe(450);
+        expect(result.quickPulse.lastMonth.oneTime).toEqual({
+          totalSpent: 25000,
+          transactions: [
+            {
+              amount: 25000,
+              date: "2025-02-03",
+              id: 2,
+              merchant: "Test Merchant",
+              subcategoryId: 2,
+            },
+          ],
+        });
+        expect(result.quickPulse.last12Months.spent).toBe(450);
+        expect(result.quickPulse.last12Months.oneTime.totalSpent).toBe(35000);
+        expect(
+          result.quickPulse.last12Months.oneTime.transactions.map(
+            ({ id }) => id,
+          ),
+        ).toEqual([2, 3]);
+      });
+
+      it("should not create action items from one-time expenses", () => {
+        const result = createBudgetSummaryData({
+          endDate,
+          subcategories: [
+            createTestSubcategory(1, "Dining Out", 50000, 1),
+            createTestSubcategory(2, "Insurance", 30000, 3),
+            createTestSubcategory(3, "Travel", 40000, 1),
+          ],
+          transactions: [
+            createOneTimeTransaction(1, 1, "2025-02-05", 2500000),
+            createOneTimeTransaction(2, 2, "2025-02-05", 20000),
+            createOneTimeTransaction(3, 3, "2025-01-05", 900000),
+          ],
+        });
+
+        expect(result.actionItems).toEqual({
+          aboveAverage: [],
+          improved: [],
+          overBudget: [],
+          worsened: [],
+        });
+      });
+
+      it("should exclude one-time expenses from budget breakdown totals and list them per budget period", () => {
+        const result = createBudgetSummaryData({
+          endDate,
+          subcategories: [
+            createTestSubcategory(1, "Groceries", 50000, 1),
+            createTestSubcategory(2, "Home", 300000, 3),
+          ],
+          transactions: [
+            createTestTransaction(1, 2, "2025-01-20", 10000),
+            createOneTimeTransaction(2, 2, "2024-12-15", 5000000),
+            createOneTimeTransaction(3, 2, "2024-11-15", 800000),
+          ],
+        });
+
+        const [groceries, home] = result.budgetBreakdown;
+
+        expect(groceries?.oneTime).toEqual({ totalSpent: 0, transactions: [] });
+        expect(home).toMatchObject({
+          currentPeriodSpent: 100,
+          previousPeriodSpent: 0,
+        });
+        expect(home?.oneTime.totalSpent).toBe(50000);
+        expect(home?.oneTime.transactions.map(({ id }) => id)).toEqual([2]);
+      });
+
+      it.each([
+        {
+          expectedAmounts: [1000, -400],
+          expectedTotal: 600,
+          name: "nets credits against debits",
+          transactions: [
+            createOneTimeTransaction(1, 1, "2025-02-05", 100000),
+            createOneTimeTransaction(2, 1, "2025-02-06", 40000, "credit"),
+          ],
+        },
+        {
+          expectedAmounts: [-400],
+          expectedTotal: 0,
+          name: "floors the total at zero",
+          transactions: [
+            createOneTimeTransaction(1, 1, "2025-02-06", 40000, "credit"),
+          ],
+        },
+      ])("$name", ({ expectedAmounts, expectedTotal, transactions }) => {
+        const result = createBudgetSummaryData({
+          endDate,
+          subcategories: [createTestSubcategory(1, "Vehicles", 0, 1)],
+          transactions,
+        });
+
+        const { oneTime } = result.quickPulse.lastMonth;
+
+        expect(oneTime.totalSpent).toBe(expectedTotal);
+        expect(oneTime.transactions.map(({ amount }) => amount)).toEqual(
+          expectedAmounts,
+        );
+      });
+
+      it("should ignore the one-time flag on income and neutral subcategories", () => {
+        const result = createBudgetSummaryData({
+          endDate,
+          subcategories: [
+            createTestSubcategory(1, "Salary", 0, 1, "income"),
+            createTestSubcategory(2, "Transfers", 0, 1, "neutral"),
+          ],
+          transactions: [
+            createOneTimeTransaction(1, 1, "2025-02-05", 900000, "credit"),
+            createOneTimeTransaction(2, 2, "2025-02-05", 500000),
+          ],
+        });
+
+        expect(result.quickPulse.lastMonth.income).toBe(9000);
+        expect(result.quickPulse.lastMonth.oneTime).toEqual({
+          totalSpent: 0,
+          transactions: [],
+        });
+      });
     });
   });
 });
