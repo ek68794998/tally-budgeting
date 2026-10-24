@@ -103,6 +103,11 @@
       "perPeriod": "{period}ごとに<bold>{amount}</bold>"
     },
     "editCategories": "カテゴリー",
+    "oneTime": {
+      "count": "{count}件",
+      "iconLabel": "一時的な支出",
+      "summary": "ほかに一時的な支出<amountFmt>{amount}</amountFmt>"
+    },
     "overBudget": "予算を{amount}超過",
     "overBudgetCount": "{count}件が予算超過",
     "overview": {

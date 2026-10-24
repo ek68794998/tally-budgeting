@@ -103,6 +103,11 @@
       "perPeriod": "<bold>{amount}</bold> every {period}"
     },
     "editCategories": "Categories",
+    "oneTime": {
+      "count": "{count, plural, one {# purchase} other {# purchases}}",
+      "iconLabel": "One-time expenses",
+      "summary": "Plus <amountFmt>{amount}</amountFmt> in one-time expenses"
+    },
     "overBudget": "{amount} over budget",
     "overBudgetCount": "{count} over budget",
     "overview": {

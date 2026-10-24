@@ -28,9 +28,11 @@ export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
 
   const items = sortAndFlattenCategories(categories, subcategories);
 
+  const getBreakdownItem = (subcategoryId: number) =>
+    data.find((s) => s.subcategoryId === subcategoryId);
+
   const getAmountPaid = (subcategoryId: number) =>
-    data.find((s) => s.subcategoryId === subcategoryId)?.currentPeriodSpent ??
-    0;
+    getBreakdownItem(subcategoryId)?.currentPeriodSpent ?? 0;
 
   const iconFgClassName = "text-success-900 dark:text-green-100";
   const iconBgClassName = "bg-success-200 dark:bg-green-900";
@@ -103,6 +105,7 @@ export const BudgetCategoriesList: React.FC<Props> = ({ data, periodEnd }) => {
                 <BudgetSubcategorySpend
                   amountPaid={getAmountPaid(subcat.id)}
                   key={subcat.id}
+                  oneTime={getBreakdownItem(subcat.id)?.oneTime}
                   periodEnd={periodEnd}
                   subcategory={subcat}
                 />

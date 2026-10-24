@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { DataCard } from "../../common/dataCard";
 import { formatCurrency } from "../../format";
+import { OneTimeExpensesPopover } from "../oneTime/oneTimeExpensesPopover";
 
 interface Props {
   data: QuickPulsePeriod;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export const BudgetQuickPulseChart: React.FC<Props> = ({
-  data: { budgeted, duration, income, spent },
+  data: { budgeted, duration, income, oneTime, spent },
   title,
 }) => {
   const t = useTranslations("budget.quickPulse");
@@ -75,6 +76,11 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
                 bold: (chunks) => <b>{chunks}</b>,
               })}
             </h3>
+            {oneTime.transactions.length > 0 && (
+              <div className="border-divider w-full border-t pt-2">
+                <OneTimeExpensesPopover oneTime={oneTime} />
+              </div>
+            )}
             <h3 className="text-sm font-bold opacity-80">
               <Link
                 as={NextLink}

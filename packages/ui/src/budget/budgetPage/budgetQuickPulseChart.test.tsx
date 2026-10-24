@@ -1,8 +1,13 @@
 import { buildOneTimeExpenses } from "@tally/data-models/testing/fixtures";
 import { render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { OneTimeExpensesPopover } from "../oneTime/oneTimeExpensesPopover";
 import { BudgetQuickPulseChart } from "./budgetQuickPulseChart";
 import { BudgetQuickPulseCharts } from "./budgetQuickPulseCharts";
+
+vi.mock("../oneTime/oneTimeExpensesPopover", () => ({
+  OneTimeExpensesPopover: vi.fn(() => <div data-testid="oneTimePopover" />),
+}));
 
 describe("BudgetQuickPulseChart", () => {
   beforeEach(() => {
@@ -56,6 +61,49 @@ describe("BudgetQuickPulseChart", () => {
       screen.getByText("View Spending").closest("a")?.getAttribute("href"),
     ).toContain(expectedQuery);
     expect(container.querySelector(`.${expectedBar}`)).not.toBeNull();
+  });
+
+  it.each([
+    { expectedCount: 0, transactionCount: 0 },
+    { expectedCount: 1, transactionCount: 1 },
+  ])("renders $expectedCount one-time popover(s) for $transactionCount one-time transaction(s)", ({
+    expectedCount,
+    transactionCount,
+  }) => {
+    const oneTime = buildOneTimeExpenses({
+      totalSpent: 25000,
+      transactions: Array.from({ length: transactionCount }, (_, index) => ({
+        amount: 25000,
+        date: "2025-03-03T12:00:00.000Z",
+        id: index + 1,
+        merchant: "Dealership",
+        subcategoryId: 1,
+      })),
+    });
+
+    render(
+      <BudgetQuickPulseChart
+        data={{
+          budgeted: 100,
+          duration: "lastMonth",
+          income: 200,
+          oneTime,
+          spent: 50,
+        }}
+        title="Pulse"
+      />,
+    );
+
+    expect(screen.queryAllByTestId("oneTimePopover")).toHaveLength(
+      expectedCount,
+    );
+
+    if (expectedCount > 0) {
+      expect(OneTimeExpensesPopover).toHaveBeenCalledWith(
+        { oneTime },
+        undefined,
+      );
+    }
   });
 
   it("renders charts for the last month and year", () => {
