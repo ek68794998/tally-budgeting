@@ -430,53 +430,56 @@ describe("ConsoleLogger", () => {
       ["debug", "info", true],
       ["debug", "http", true],
       ["debug", "debug", true],
-    ])("with min level %s, level %s is logged: %s", (minLevel, eventLevel, shouldLog) => {
-      const logger = new ConsoleLogger(minLevel);
+    ])(
+      "with min level %s, level %s is logged: %s",
+      (minLevel, eventLevel, shouldLog) => {
+        const logger = new ConsoleLogger(minLevel);
 
-      if (eventLevel === "error") {
-        logger.error("test-event");
+        if (eventLevel === "error") {
+          logger.error("test-event");
 
-        if (shouldLog) {
-          expect(consoleErrorSpy).toHaveBeenCalled();
+          if (shouldLog) {
+            expect(consoleErrorSpy).toHaveBeenCalled();
+          } else {
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+          }
+        } else if (eventLevel === "warn") {
+          logger.warn("test-event");
+
+          if (shouldLog) {
+            expect(consoleWarnSpy).toHaveBeenCalled();
+          } else {
+            expect(consoleWarnSpy).not.toHaveBeenCalled();
+          }
+        } else if (eventLevel === "info") {
+          logger.info("test-event");
+
+          if (shouldLog) {
+            expect(consoleInfoSpy).toHaveBeenCalled();
+          } else {
+            expect(consoleInfoSpy).not.toHaveBeenCalled();
+          }
+        } else if (eventLevel === "http") {
+          logger.httpIncoming("test-event", {
+            method: Get,
+            path: "/test",
+          });
+
+          if (shouldLog) {
+            expect(consoleInfoSpy).toHaveBeenCalled();
+          } else {
+            expect(consoleInfoSpy).not.toHaveBeenCalled();
+          }
         } else {
-          expect(consoleErrorSpy).not.toHaveBeenCalled();
-        }
-      } else if (eventLevel === "warn") {
-        logger.warn("test-event");
+          logger.debug("test-event");
 
-        if (shouldLog) {
-          expect(consoleWarnSpy).toHaveBeenCalled();
-        } else {
-          expect(consoleWarnSpy).not.toHaveBeenCalled();
+          if (shouldLog) {
+            expect(consoleInfoSpy).toHaveBeenCalled();
+          } else {
+            expect(consoleInfoSpy).not.toHaveBeenCalled();
+          }
         }
-      } else if (eventLevel === "info") {
-        logger.info("test-event");
-
-        if (shouldLog) {
-          expect(consoleInfoSpy).toHaveBeenCalled();
-        } else {
-          expect(consoleInfoSpy).not.toHaveBeenCalled();
-        }
-      } else if (eventLevel === "http") {
-        logger.httpIncoming("test-event", {
-          method: Get,
-          path: "/test",
-        });
-
-        if (shouldLog) {
-          expect(consoleInfoSpy).toHaveBeenCalled();
-        } else {
-          expect(consoleInfoSpy).not.toHaveBeenCalled();
-        }
-      } else {
-        logger.debug("test-event");
-
-        if (shouldLog) {
-          expect(consoleInfoSpy).toHaveBeenCalled();
-        } else {
-          expect(consoleInfoSpy).not.toHaveBeenCalled();
-        }
-      }
-    });
+      },
+    );
   });
 });

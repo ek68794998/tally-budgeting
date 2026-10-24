@@ -73,25 +73,18 @@ describe("Dollars", () => {
   });
 
   describe("round-trip conversions", () => {
-    it.each([
-      [100],
-      [0],
-      [1],
-      [1234],
-      [99],
-      [-100],
-    ])("should maintain value through fromCents -> toCents (%i)", (cents) => {
-      expect(Dollars.toCents(Dollars.fromCents(cents))).toBe(cents);
-    });
+    it.each([[100], [0], [1], [1234], [99], [-100]])(
+      "should maintain value through fromCents -> toCents (%i)",
+      (cents) => {
+        expect(Dollars.toCents(Dollars.fromCents(cents))).toBe(cents);
+      },
+    );
 
-    it.each([
-      [1.0],
-      [0.0],
-      [0.01],
-      [12.34],
-      [-1.0],
-    ])("should maintain value through toCents -> fromCents ($%f)", (dollars) => {
-      expect(Dollars.fromCents(Dollars.toCents(dollars))).toBe(dollars);
-    });
+    it.each([[1.0], [0.0], [0.01], [12.34], [-1.0]])(
+      "should maintain value through toCents -> fromCents ($%f)",
+      (dollars) => {
+        expect(Dollars.fromCents(Dollars.toCents(dollars))).toBe(dollars);
+      },
+    );
   });
 });

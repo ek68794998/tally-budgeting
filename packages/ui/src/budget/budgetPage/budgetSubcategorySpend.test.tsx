@@ -15,28 +15,27 @@ describe("BudgetSubcategorySpend", () => {
     { amountCents: 100_00, amountPaid: 150, overBudgetChips: 1 },
     { amountCents: 100_00, amountPaid: 50, overBudgetChips: 0 },
     { amountCents: 0, amountPaid: 50, overBudgetChips: 0 },
-  ])("shows $overBudgetChips over-budget chip(s) for $amountPaid of $amountCents cents", ({
-    amountCents,
-    amountPaid,
-    overBudgetChips,
-  }) => {
-    render(
-      <BudgetSubcategorySpend
-        amountPaid={amountPaid}
-        periodEnd={{ month: 3, year: 2025 }}
-        subcategory={buildSubcategory({
-          budget: { amountCents, frequency: 1, type: "expense" },
-          description: "Clothes and shoes",
-          label: "Apparel",
-        })}
-      />,
-    );
+  ])(
+    "shows $overBudgetChips over-budget chip(s) for $amountPaid of $amountCents cents",
+    ({ amountCents, amountPaid, overBudgetChips }) => {
+      render(
+        <BudgetSubcategorySpend
+          amountPaid={amountPaid}
+          periodEnd={{ month: 3, year: 2025 }}
+          subcategory={buildSubcategory({
+            budget: { amountCents, frequency: 1, type: "expense" },
+            description: "Clothes and shoes",
+            label: "Apparel",
+          })}
+        />,
+      );
 
-    expect(screen.getByText("Apparel")).toBeInTheDocument();
-    expect(screen.queryAllByText(/over budget/iu)).toHaveLength(
-      overBudgetChips,
-    );
-  });
+      expect(screen.getByText("Apparel")).toBeInTheDocument();
+      expect(screen.queryAllByText(/over budget/iu)).toHaveLength(
+        overBudgetChips,
+      );
+    },
+  );
 
   it.each([
     { expectedIcons: 0, name: "no breakdown data", oneTime: undefined },
@@ -61,21 +60,21 @@ describe("BudgetSubcategorySpend", () => {
         ],
       }),
     },
-  ])("shows $expectedIcons one-time icon(s) for $name", ({
-    expectedIcons,
-    oneTime,
-  }) => {
-    render(
-      <BudgetSubcategorySpend
-        amountPaid={0}
-        oneTime={oneTime}
-        periodEnd={{ month: 3, year: 2025 }}
-        subcategory={buildSubcategory()}
-      />,
-    );
+  ])(
+    "shows $expectedIcons one-time icon(s) for $name",
+    ({ expectedIcons, oneTime }) => {
+      render(
+        <BudgetSubcategorySpend
+          amountPaid={0}
+          oneTime={oneTime}
+          periodEnd={{ month: 3, year: 2025 }}
+          subcategory={buildSubcategory()}
+        />,
+      );
 
-    expect(screen.queryAllByLabelText("One-time expenses")).toHaveLength(
-      expectedIcons,
-    );
-  });
+      expect(screen.queryAllByLabelText("One-time expenses")).toHaveLength(
+        expectedIcons,
+      );
+    },
+  );
 });

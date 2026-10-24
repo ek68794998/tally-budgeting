@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resetAuthConfigForTesting } from "../../../auth/config";
 import { SessionCookieName } from "../../../auth/cookie";
 import { PostLoginRouteAsync } from "./post";
@@ -22,25 +22,47 @@ vi.mock("../../../telemetry/telemetry", () => ({
   }),
 }));
 
+const settleAsync = async <T>(promise: Promise<T>): Promise<T> => {
+  let isSettled = false;
+  const tracked = promise.finally(() => {
+    isSettled = true;
+  });
+
+  // ESLint has no visibility into the `promise.finally()` scope.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  while (!isSettled) {
+    await vi.advanceTimersByTimeAsync(300);
+  }
+
+  return tracked;
+};
+
 const loginAsync = (password: string, ip: string) =>
-  PostLoginRouteAsync(
-    new NextRequest("http://localhost/api/auth/login", {
-      body: JSON.stringify({ password }),
-      headers: new Headers([
-        ["host", "localhost"],
-        ["x-forwarded-for", ip],
-      ]),
-      method: "POST",
-    }),
-    { params: Promise.resolve({}) },
+  settleAsync(
+    PostLoginRouteAsync(
+      new NextRequest("http://localhost/api/auth/login", {
+        body: JSON.stringify({ password }),
+        headers: new Headers([
+          ["host", "localhost"],
+          ["x-forwarded-for", ip],
+        ]),
+        method: "POST",
+      }),
+      { params: Promise.resolve({}) },
+    ),
   );
 
 describe("POST /api/auth/login", () => {
   beforeEach(() => {
+    vi.useFakeTimers();
     vi.clearAllMocks();
     vi.stubEnv("APP_PASSWORD", "correct");
     vi.stubEnv("DANGEROUSLY_DISABLE_AUTH", "");
     resetAuthConfigForTesting();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("sets the session cookie and responds 204 for the right password", async () => {

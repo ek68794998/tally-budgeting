@@ -52,13 +52,16 @@ describe("logo SVGs", () => {
     ).toBeCloseTo(20);
   });
 
-  it.each(
-    logos,
-  )("%s honors explicit dimensions without a container", (_name, logo) => {
-    const { container } = render(createElement(logo, { height: 7, width: 9 }));
-    const svg = getSvg(container);
+  it.each(logos)(
+    "%s honors explicit dimensions without a container",
+    (_name, logo) => {
+      const { container } = render(
+        createElement(logo, { height: 7, width: 9 }),
+      );
+      const svg = getSvg(container);
 
-    expect(svg.getAttribute("height")).toBe("7");
-    expect(svg.getAttribute("width")).toBe("9");
-  });
+      expect(svg.getAttribute("height")).toBe("7");
+      expect(svg.getAttribute("width")).toBe("9");
+    },
+  );
 });

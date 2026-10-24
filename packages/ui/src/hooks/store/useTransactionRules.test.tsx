@@ -38,37 +38,36 @@ describe("useTransactionRules", () => {
     { isFetching: false, isHydrated: true },
     { isFetching: true, isHydrated: false },
     { isFetching: true, isHydrated: true },
-  ])("does not call fetchTransactionRules when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    isFetching,
-    isHydrated,
-  }) => {
-    mockFetchTransactionRules.mockClear();
-    mockUseTransactionRuleStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "does not call fetchTransactionRules when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ isFetching, isHydrated }) => {
+      mockFetchTransactionRules.mockClear();
+      mockUseTransactionRuleStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    renderHook(() => useTransactionRules());
+      renderHook(() => useTransactionRules());
 
-    expect(mockFetchTransactionRules).not.toHaveBeenCalled();
-  });
+      expect(mockFetchTransactionRules).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expected: true, isFetching: false, isHydrated: false },
     { expected: true, isFetching: true, isHydrated: true },
     { expected: false, isFetching: false, isHydrated: true },
-  ])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    expected,
-    isFetching,
-    isHydrated,
-  }) => {
-    mockUseTransactionRuleStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ expected, isFetching, isHydrated }) => {
+      mockUseTransactionRuleStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    const { result } = renderHook(() => useTransactionRules());
+      const { result } = renderHook(() => useTransactionRules());
 
-    expect(result.current.isLoading).toBe(expected);
-  });
+      expect(result.current.isLoading).toBe(expected);
+    },
+  );
 
   it("returns transactionRules and error from store", () => {
     const transactionRules = [dangerouslyMockPartial<Transaction>({ id: 1 })];

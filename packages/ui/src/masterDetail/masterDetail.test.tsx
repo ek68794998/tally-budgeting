@@ -65,14 +65,14 @@ describe("MasterDetail", () => {
   it.each([
     { defaultSelectedKey: 2, expected: items[1] },
     { defaultSelectedKey: 99, expected: null },
-  ])("honors defaultSelectedKey $defaultSelectedKey", ({
-    defaultSelectedKey,
-    expected,
-  }) => {
-    renderMasterDetail({ defaultSelectedKey });
+  ])(
+    "honors defaultSelectedKey $defaultSelectedKey",
+    ({ defaultSelectedKey, expected }) => {
+      renderMasterDetail({ defaultSelectedKey });
 
-    expect(lastDetailProps()?.selectedItem).toEqual(expected);
-  });
+      expect(lastDetailProps()?.selectedItem).toEqual(expected);
+    },
+  );
 
   it("selects nothing when there are no items", () => {
     renderMasterDetail({

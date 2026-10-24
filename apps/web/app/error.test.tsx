@@ -52,20 +52,19 @@ describe("ErrorPage", () => {
       status: 503,
     },
     { body: null, expected: false, status: 204 },
-  ])("marks the database unavailable when the health check returns $status: $expected", async ({
-    body,
-    expected,
-    status,
-  }) => {
-    stubHealthResponse(status, body);
+  ])(
+    "marks the database unavailable when the health check returns $status: $expected",
+    async ({ body, expected, status }) => {
+      stubHealthResponse(status, body);
 
-    render(<ErrorPage error={new Error("boom")} reset={vi.fn()} />);
+      render(<ErrorPage error={new Error("boom")} reset={vi.fn()} />);
 
-    await waitFor(() =>
-      expect(fetch).toHaveBeenCalledWith("/api/health", undefined),
-    );
-    await waitFor(() =>
-      expect(useDatabaseStatusStore.getState().isUnavailable).toBe(expected),
-    );
-  });
+      await waitFor(() =>
+        expect(fetch).toHaveBeenCalledWith("/api/health", undefined),
+      );
+      await waitFor(() =>
+        expect(useDatabaseStatusStore.getState().isUnavailable).toBe(expected),
+      );
+    },
+  );
 });

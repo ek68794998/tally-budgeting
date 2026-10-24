@@ -21,16 +21,15 @@ describe("SettingsSectionContent", () => {
       testId: "providers-section",
     },
     { hasNote: false, id: "data" as const, testId: "data-section" },
-  ])("renders the $id section, with the local-settings note only where needed", ({
-    hasNote,
-    id,
-    testId,
-  }) => {
-    render(<SettingsSectionContent sectionId={id} />);
+  ])(
+    "renders the $id section, with the local-settings note only where needed",
+    ({ hasNote, id, testId }) => {
+      render(<SettingsSectionContent sectionId={id} />);
 
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
-    expect(
-      Boolean(screen.queryByText(/aren't shared with other devices/)),
-    ).toBe(hasNote);
-  });
+      expect(screen.getByTestId(testId)).toBeInTheDocument();
+      expect(
+        Boolean(screen.queryByText(/aren't shared with other devices/)),
+      ).toBe(hasNote);
+    },
+  );
 });

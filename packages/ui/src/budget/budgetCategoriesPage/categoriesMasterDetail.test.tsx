@@ -133,17 +133,17 @@ describe("CategoriesMasterDetail", () => {
       isLoading: false,
       query: () => screen.queryByText(/You have no categories yet/u),
     },
-  ])("shows an empty state while loading=$isLoading", ({
-    isLoading,
-    query,
-  }) => {
-    mockCategories(isLoading);
+  ])(
+    "shows an empty state while loading=$isLoading",
+    ({ isLoading, query }) => {
+      mockCategories(isLoading);
 
-    render(<CategoriesMasterDetail />);
-    render(getMasterDetailProps().master.emptyState);
+      render(<CategoriesMasterDetail />);
+      render(getMasterDetailProps().master.emptyState);
 
-    expect(query()).toBeInTheDocument();
-  });
+      expect(query()).toBeInTheDocument();
+    },
+  );
 
   it("wires detail actions and content to the modals", () => {
     render(<CategoriesMasterDetail />);

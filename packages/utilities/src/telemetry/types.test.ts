@@ -15,10 +15,10 @@ describe("telemetry data schemas", () => {
     expect(schema.parse(data)).toEqual(data);
   });
 
-  it.each([
-    httpIncomingDataSchema,
-    httpOutgoingDataSchema,
-  ])("rejects data without a method", (schema) => {
-    expect(schema.safeParse({}).success).toBe(false);
-  });
+  it.each([httpIncomingDataSchema, httpOutgoingDataSchema])(
+    "rejects data without a method",
+    (schema) => {
+      expect(schema.safeParse({}).success).toBe(false);
+    },
+  );
 });

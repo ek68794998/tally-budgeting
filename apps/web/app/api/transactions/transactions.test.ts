@@ -90,40 +90,41 @@ describe("transactions routes", () => {
     ]);
   });
 
-  it.each([
-    { transaction: buildTransaction() },
-  ])("POST rejects %o", async (body) => {
-    const { status } = await callRouteAsync(PostTransactionsRouteAsync, {
-      body,
-      method: "POST",
-    });
+  it.each([{ transaction: buildTransaction() }])(
+    "POST rejects %o",
+    async (body) => {
+      const { status } = await callRouteAsync(PostTransactionsRouteAsync, {
+        body,
+        method: "POST",
+      });
 
-    expect(status).toBe(400);
-    expect(client.insertTransactionsAsync).not.toHaveBeenCalled();
-  });
+      expect(status).toBe(400);
+      expect(client.insertTransactionsAsync).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expectedStatus: 200, wasUpdated: true },
     { expectedStatus: 404, wasUpdated: false },
-  ])("PUT updates a transaction by route id with status $expectedStatus", async ({
-    expectedStatus,
-    wasUpdated,
-  }) => {
-    client.updateTransactionAsync.mockResolvedValue(wasUpdated);
-    const transaction = omitKeys(buildTransaction(), "id");
+  ])(
+    "PUT updates a transaction by route id with status $expectedStatus",
+    async ({ expectedStatus, wasUpdated }) => {
+      client.updateTransactionAsync.mockResolvedValue(wasUpdated);
+      const transaction = omitKeys(buildTransaction(), "id");
 
-    const { status } = await callRouteAsync(PutTransactionsIdRouteAsync, {
-      body: { transaction },
-      method: "PUT",
-      params: { id: "12" },
-    });
+      const { status } = await callRouteAsync(PutTransactionsIdRouteAsync, {
+        body: { transaction },
+        method: "PUT",
+        params: { id: "12" },
+      });
 
-    expect(status).toBe(expectedStatus);
-    expect(client.updateTransactionAsync).toHaveBeenCalledExactlyOnceWith({
-      ...transaction,
-      id: 12,
-    });
-  });
+      expect(status).toBe(expectedStatus);
+      expect(client.updateTransactionAsync).toHaveBeenCalledExactlyOnceWith({
+        ...transaction,
+        id: 12,
+      });
+    },
+  );
 
   it("DELETE removes the transaction with the route id", async () => {
     const { status } = await callRouteAsync(DeleteTransactionsIdRouteAsync, {

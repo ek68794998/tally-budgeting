@@ -59,15 +59,15 @@ describe("useDatabaseActions", () => {
       expected: "http500",
     },
     { body: "not json", expected: "Request failed" },
-  ])("throws '$expected' when the server reports a failure", async ({
-    body,
-    expected,
-  }) => {
-    vi.stubGlobal("fetch", respondWith(body, 500));
-    const { result } = renderHook(() => useDatabaseActions());
+  ])(
+    "throws '$expected' when the server reports a failure",
+    async ({ body, expected }) => {
+      vi.stubGlobal("fetch", respondWith(body, 500));
+      const { result } = renderHook(() => useDatabaseActions());
 
-    await expect(result.current.dropAsync()).rejects.toThrow(expected);
-  });
+      await expect(result.current.dropAsync()).rejects.toThrow(expected);
+    },
+  );
 
   it("downloads the backup under the server's file name", async () => {
     vi.stubGlobal(

@@ -44,25 +44,23 @@ describe("apiFetch", () => {
       expired: false,
       status: 503,
     },
-  ])("a $status response with body $body sets expired=$expired, databaseUnavailable=$databaseUnavailable", async ({
-    body,
-    databaseUnavailable,
-    expired,
-    status,
-  }) => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => Promise.resolve(new Response(body, { status }))),
-    );
+  ])(
+    "a $status response with body $body sets expired=$expired, databaseUnavailable=$databaseUnavailable",
+    async ({ body, databaseUnavailable, expired, status }) => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(() => Promise.resolve(new Response(body, { status }))),
+      );
 
-    const response = await apiFetch("/api/x", { method: "POST" });
+      const response = await apiFetch("/api/x", { method: "POST" });
 
-    expect(response.status).toBe(status);
-    expect(useSessionStore.getState().isExpired).toBe(expired);
-    expect(useDatabaseStatusStore.getState().isUnavailable).toBe(
-      databaseUnavailable,
-    );
-  });
+      expect(response.status).toBe(status);
+      expect(useSessionStore.getState().isExpired).toBe(expired);
+      expect(useDatabaseStatusStore.getState().isUnavailable).toBe(
+        databaseUnavailable,
+      );
+    },
+  );
 
   it("leaves the response body readable after inspecting it", async () => {
     vi.stubGlobal(

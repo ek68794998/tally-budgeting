@@ -88,18 +88,17 @@ describe.each<ChartCase>([
       expected: "There is no spending data for the given period.",
       spending: undefined,
     },
-  ])("shows '$expected' instead of a chart", ({
-    error,
-    expected,
-    spending,
-  }) => {
-    render(
-      <Component error={error} isLoading={false} spendingData={spending} />,
-    );
+  ])(
+    "shows '$expected' instead of a chart",
+    ({ error, expected, spending }) => {
+      render(
+        <Component error={error} isLoading={false} spendingData={spending} />,
+      );
 
-    expect(screen.getByText(expected)).toBeInTheDocument();
-    expect(DonutChart).not.toHaveBeenCalled();
-  });
+      expect(screen.getByText(expected)).toBeInTheDocument();
+      expect(DonutChart).not.toHaveBeenCalled();
+    },
+  );
 
   it("shows a spinner while loading", () => {
     render(

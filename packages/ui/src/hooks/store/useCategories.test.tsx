@@ -40,37 +40,36 @@ describe("useCategories", () => {
     { isFetching: false, isHydrated: true },
     { isFetching: true, isHydrated: false },
     { isFetching: true, isHydrated: true },
-  ])("does not call fetchCategories when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    isFetching,
-    isHydrated,
-  }) => {
-    mockFetchCategories.mockClear();
-    mockUseCategoryStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "does not call fetchCategories when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ isFetching, isHydrated }) => {
+      mockFetchCategories.mockClear();
+      mockUseCategoryStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    renderHook(() => useCategories());
+      renderHook(() => useCategories());
 
-    expect(mockFetchCategories).not.toHaveBeenCalled();
-  });
+      expect(mockFetchCategories).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expected: true, isFetching: false, isHydrated: false },
     { expected: true, isFetching: true, isHydrated: true },
     { expected: false, isFetching: false, isHydrated: true },
-  ])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    expected,
-    isFetching,
-    isHydrated,
-  }) => {
-    mockUseCategoryStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ expected, isFetching, isHydrated }) => {
+      mockUseCategoryStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    const { result } = renderHook(() => useCategories());
+      const { result } = renderHook(() => useCategories());
 
-    expect(result.current.isLoading).toBe(expected);
-  });
+      expect(result.current.isLoading).toBe(expected);
+    },
+  );
 
   it("returns categories, subcategories, and error from store", () => {
     const categories = [

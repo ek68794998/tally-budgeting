@@ -45,20 +45,20 @@ describe("DetailPanel", () => {
       emptyState: <div data-testid="custom-empty" />,
       expectedTestId: "custom-empty",
     },
-  ])("shows an empty state without a selection", ({
-    emptyState,
-    expectedTestId,
-  }) => {
-    render(
-      <DetailPanel
-        {...baseProps}
-        emptyState={emptyState}
-        selectedItem={null}
-        selectedKey={null}
-      />,
-    );
+  ])(
+    "shows an empty state without a selection",
+    ({ emptyState, expectedTestId }) => {
+      render(
+        <DetailPanel
+          {...baseProps}
+          emptyState={emptyState}
+          selectedItem={null}
+          selectedKey={null}
+        />,
+      );
 
-    expect(screen.getByTestId(expectedTestId)).toBeInTheDocument();
-    expect(DetailHeader).not.toHaveBeenCalled();
-  });
+      expect(screen.getByTestId(expectedTestId)).toBeInTheDocument();
+      expect(DetailHeader).not.toHaveBeenCalled();
+    },
+  );
 });

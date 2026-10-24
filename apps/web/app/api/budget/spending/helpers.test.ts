@@ -73,17 +73,17 @@ describe("calculateBudgetSpending", () => {
     });
   });
 
-  it.each<BudgetType>([
-    "neutral",
-    "income",
-  ])("should not include %s transactions in the spending array", (type) => {
-    const result = calculateBudgetSpending({
-      subcategories: [createSubcategory(1, type)],
-      transactions: [createTransaction(1, 1, 10000)],
-    });
+  it.each<BudgetType>(["neutral", "income"])(
+    "should not include %s transactions in the spending array",
+    (type) => {
+      const result = calculateBudgetSpending({
+        subcategories: [createSubcategory(1, type)],
+        transactions: [createTransaction(1, 1, 10000)],
+      });
 
-    expect(result.spending).toHaveLength(0);
-  });
+      expect(result.spending).toHaveLength(0);
+    },
+  );
 
   it("should completely ignore neutral transactions", () => {
     const result = calculateBudgetSpending({
@@ -107,18 +107,21 @@ describe("calculateBudgetSpending", () => {
     [50, 25, 5000, 2500, 2500],
     [0, 0, 0, 0, 10000],
     [33, 33, 3300, 3300, 3400],
-  ])("should split expense amountCents correctly with percentNeeds=%i percentSavings=%i", (percentNeeds, percentSavings, expectedNeeds, expectedSavings, expectedWants) => {
-    const result = calculateBudgetSpending({
-      subcategories: [
-        createSubcategory(1, "expense", percentNeeds, percentSavings),
-      ],
-      transactions: [createTransaction(1, 1, 10000)],
-    });
+  ])(
+    "should split expense amountCents correctly with percentNeeds=%i percentSavings=%i",
+    (percentNeeds, percentSavings, expectedNeeds, expectedSavings, expectedWants) => {
+      const result = calculateBudgetSpending({
+        subcategories: [
+          createSubcategory(1, "expense", percentNeeds, percentSavings),
+        ],
+        transactions: [createTransaction(1, 1, 10000)],
+      });
 
-    expect(result.spentOnNeedsCents).toBe(expectedNeeds);
-    expect(result.spentOnSavingsCents).toBe(expectedSavings);
-    expect(result.spentOnWantsCents).toBe(expectedWants);
-  });
+      expect(result.spentOnNeedsCents).toBe(expectedNeeds);
+      expect(result.spentOnSavingsCents).toBe(expectedSavings);
+      expect(result.spentOnWantsCents).toBe(expectedWants);
+    },
+  );
 
   it.each([
     // [incomeCents, expenseAmountCents, expensePercentNeeds, expensePercentSavings, expectedSavings]
@@ -130,21 +133,24 @@ describe("calculateBudgetSpending", () => {
     [5000, 8000, 0, 0, 0],
     // Income with percentSavings on income subcategory + unspent remainder
     [10000, 0, 0, 20, 10000],
-  ])("should roll unspent income into savings (income=%i expense=%i needsPct=%i savingsPct=%i)", (incomeCents, expenseAmountCents, percentNeeds, percentSavings, expectedSavings) => {
-    const subcategories = [
-      createSubcategory(1, "income", percentNeeds, percentSavings),
-    ];
-    const transactions = [createTransaction(1, 1, incomeCents)];
+  ])(
+    "should roll unspent income into savings (income=%i expense=%i needsPct=%i savingsPct=%i)",
+    (incomeCents, expenseAmountCents, percentNeeds, percentSavings, expectedSavings) => {
+      const subcategories = [
+        createSubcategory(1, "income", percentNeeds, percentSavings),
+      ];
+      const transactions = [createTransaction(1, 1, incomeCents)];
 
-    if (expenseAmountCents > 0) {
-      subcategories.push(createSubcategory(2, "expense", 0, 0));
-      transactions.push(createTransaction(2, 2, expenseAmountCents));
-    }
+      if (expenseAmountCents > 0) {
+        subcategories.push(createSubcategory(2, "expense", 0, 0));
+        transactions.push(createTransaction(2, 2, expenseAmountCents));
+      }
 
-    const result = calculateBudgetSpending({ subcategories, transactions });
+      const result = calculateBudgetSpending({ subcategories, transactions });
 
-    expect(result.spentOnSavingsCents).toBe(expectedSavings);
-  });
+      expect(result.spentOnSavingsCents).toBe(expectedSavings);
+    },
+  );
 
   it("should aggregate multiple transactions for the same subcategory", () => {
     const subcategory = createSubcategory(1, "expense", 0, 0);

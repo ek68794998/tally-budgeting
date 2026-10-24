@@ -150,24 +150,24 @@ describe("useRulesTable", () => {
         ]),
       name: "reorders",
     },
-  ])("$name a rule, refetches, and clears the active rule", async ({
-    act: runAsync,
-    expectCall,
-  }) => {
-    const { result } = renderRulesTable();
+  ])(
+    "$name a rule, refetches, and clears the active rule",
+    async ({ act: runAsync, expectCall }) => {
+      const { result } = renderRulesTable();
 
-    act(() => {
-      result.current.openDeleteModal(coffee);
-    });
+      act(() => {
+        result.current.openDeleteModal(coffee);
+      });
 
-    expect(result.current.deleteModalState.isOpen).toBe(true);
+      expect(result.current.deleteModalState.isOpen).toBe(true);
 
-    await act(() => runAsync(result.current));
+      await act(() => runAsync(result.current));
 
-    expectCall();
-    expect(refetch).toHaveBeenCalledOnce();
-    expect(result.current.activeRule).toBeNull();
-  });
+      expectCall();
+      expect(refetch).toHaveBeenCalledOnce();
+      expect(result.current.activeRule).toBeNull();
+    },
+  );
 
   it("creates a new rule without an id instead of updating one", async () => {
     const { result } = renderRulesTable();
@@ -188,27 +188,27 @@ describe("useRulesTable", () => {
   it.each([
     { expected: [groceries, gas, coffee], selection: "all" as const },
     { expected: [gas], selection: new Set([getRuleRowKey(gas)]) },
-  ])("bulk deletes the selected rules ($selection)", async ({
-    expected,
-    selection,
-  }) => {
-    const { result } = renderRulesTable();
+  ])(
+    "bulk deletes the selected rules ($selection)",
+    async ({ expected, selection }) => {
+      const { result } = renderRulesTable();
 
-    act(() => {
-      result.current.openBulkDeleteModal(selection);
-    });
+      act(() => {
+        result.current.openBulkDeleteModal(selection);
+      });
 
-    expect(result.current.bulkDeleteRules).toEqual(expected);
-    expect(result.current.bulkDeleteModalState.isOpen).toBe(true);
+      expect(result.current.bulkDeleteRules).toEqual(expected);
+      expect(result.current.bulkDeleteModalState.isOpen).toBe(true);
 
-    await act(() => result.current.handleBulkDeleteAsync());
+      await act(() => result.current.handleBulkDeleteAsync());
 
-    expect(deleteTransactionRuleAsync.mock.calls).toEqual(
-      expected.map(({ id }) => [id]),
-    );
-    expect(result.current.bulkDeleteRules).toEqual([]);
-    expect(result.current.selection).toEqual(new Set());
-  });
+      expect(deleteTransactionRuleAsync.mock.calls).toEqual(
+        expected.map(({ id }) => [id]),
+      );
+      expect(result.current.bulkDeleteRules).toEqual([]);
+      expect(result.current.selection).toEqual(new Set());
+    },
+  );
 
   it("keeps failed rules selected and reports the failure after a bulk delete", async () => {
     deleteTransactionRuleAsync.mockImplementation((id) =>

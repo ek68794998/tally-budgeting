@@ -181,16 +181,15 @@ describe("createApiHandler error mapping", () => {
       },
       expectedStatus: 500,
     },
-  ])("maps a thrown $error.constructor.name to $expectedStatus", async ({
-    error,
-    expectedBody,
-    expectedStatus,
-  }) => {
-    handler.mockRejectedValueOnce(error);
+  ])(
+    "maps a thrown $error.constructor.name to $expectedStatus",
+    async ({ error, expectedBody, expectedStatus }) => {
+      handler.mockRejectedValueOnce(error);
 
-    const response = await callAsync(buildRoute(), buildRequest("GET"));
+      const response = await callAsync(buildRoute(), buildRequest("GET"));
 
-    expect(response.status).toBe(expectedStatus);
-    await expect(response.json()).resolves.toEqual(expectedBody);
-  });
+      expect(response.status).toBe(expectedStatus);
+      await expect(response.json()).resolves.toEqual(expectedBody);
+    },
+  );
 });

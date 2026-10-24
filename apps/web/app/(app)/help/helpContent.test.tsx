@@ -30,17 +30,17 @@ const topics: HelpTopic[] = ["assets", "budget", "retirement", "transactions"];
 describe("HelpContent", () => {
   it.each(
     Locales.flatMap((locale) => topics.map((topic) => ({ locale, topic }))),
-  )("renders the $locale help for $topic with the AI disclaimer", async ({
-    locale,
-    topic,
-  }) => {
-    vi.mocked(getLocale).mockResolvedValue(locale);
+  )(
+    "renders the $locale help for $topic with the AI disclaimer",
+    async ({ locale, topic }) => {
+      vi.mocked(getLocale).mockResolvedValue(locale);
 
-    render(await HelpContent({ topic }));
+      render(await HelpContent({ topic }));
 
-    expect(screen.getByText(`${locale} ${topic}`)).toBeInTheDocument();
-    expect(screen.getByText("aiDisclaimer")).toBeInTheDocument();
-  });
+      expect(screen.getByText(`${locale} ${topic}`)).toBeInTheDocument();
+      expect(screen.getByText("aiDisclaimer")).toBeInTheDocument();
+    },
+  );
 
   it("falls back to the default locale", async () => {
     vi.mocked(getLocale).mockResolvedValue(dangerouslyCoerceType<Locale>("fr"));

@@ -266,49 +266,52 @@ describe("API mutation hooks", () => {
     vi.unstubAllGlobals();
   });
 
-  it.each(
-    bodyCases.map((c) => [c.name, c] as const),
-  )("%s sends the request and returns the validated response", async (_name, mutationCase) => {
-    const { fetchMock, mutationResult } = await mutateAsync(
-      mutationCase,
-      new Response(JSON.stringify({ success: true }), { status: 200 }),
-    );
+  it.each(bodyCases.map((c) => [c.name, c] as const))(
+    "%s sends the request and returns the validated response",
+    async (_name, mutationCase) => {
+      const { fetchMock, mutationResult } = await mutateAsync(
+        mutationCase,
+        new Response(JSON.stringify({ success: true }), { status: 200 }),
+      );
 
-    expect(getRequestInit(fetchMock)).toEqual({
-      body: mutationCase.expectedBody,
-      method: mutationCase.expectedMethod,
-      url: mutationCase.expectedUrl,
-    });
-    expect(mutationResult).not.toBe(false);
-    expect(addToast).not.toHaveBeenCalled();
-  });
+      expect(getRequestInit(fetchMock)).toEqual({
+        body: mutationCase.expectedBody,
+        method: mutationCase.expectedMethod,
+        url: mutationCase.expectedUrl,
+      });
+      expect(mutationResult).not.toBe(false);
+      expect(addToast).not.toHaveBeenCalled();
+    },
+  );
 
-  it.each(
-    deleteCases.map((c) => [c.name, c] as const),
-  )("%s accepts the empty 204 the API returns", async (_name, mutationCase) => {
-    const { fetchMock, mutationResult } = await mutateAsync(
-      mutationCase,
-      new Response(null, { status: 204 }),
-    );
+  it.each(deleteCases.map((c) => [c.name, c] as const))(
+    "%s accepts the empty 204 the API returns",
+    async (_name, mutationCase) => {
+      const { fetchMock, mutationResult } = await mutateAsync(
+        mutationCase,
+        new Response(null, { status: 204 }),
+      );
 
-    expect(getRequestInit(fetchMock)).toEqual({
-      body: undefined,
-      method: mutationCase.expectedMethod,
-      url: mutationCase.expectedUrl,
-    });
-    expect(mutationResult).not.toBe(false);
-    expect(addToast).not.toHaveBeenCalled();
-  });
+      expect(getRequestInit(fetchMock)).toEqual({
+        body: undefined,
+        method: mutationCase.expectedMethod,
+        url: mutationCase.expectedUrl,
+      });
+      expect(mutationResult).not.toBe(false);
+      expect(addToast).not.toHaveBeenCalled();
+    },
+  );
 
-  it.each(
-    [...deleteCases, ...bodyCases].map((c) => [c.name, c] as const),
-  )("%s returns false and toasts when the request fails", async (_name, mutationCase) => {
-    const { mutationResult } = await mutateAsync(
-      mutationCase,
-      new Response(null, { status: 500 }),
-    );
+  it.each([...deleteCases, ...bodyCases].map((c) => [c.name, c] as const))(
+    "%s returns false and toasts when the request fails",
+    async (_name, mutationCase) => {
+      const { mutationResult } = await mutateAsync(
+        mutationCase,
+        new Response(null, { status: 500 }),
+      );
 
-    expect(mutationResult).toBe(false);
-    expect(addToast).toHaveBeenCalledOnce();
-  });
+      expect(mutationResult).toBe(false);
+      expect(addToast).toHaveBeenCalledOnce();
+    },
+  );
 });

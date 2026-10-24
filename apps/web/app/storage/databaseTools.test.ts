@@ -99,18 +99,18 @@ describe("database tools", () => {
       outcome: { code: 1, stderr: "bad archive\n" },
     },
     { expected: "exited with code 2", outcome: { code: 2 } },
-  ])("throws a DatabaseToolError with '$expected' on a non-zero exit", async ({
-    expected,
-    outcome,
-  }) => {
-    launchWith(outcome);
+  ])(
+    "throws a DatabaseToolError with '$expected' on a non-zero exit",
+    async ({ expected, outcome }) => {
+      launchWith(outcome);
 
-    await expect(runPgRestoreAsync("/tmp/in.dump")).rejects.toThrow(
-      DatabaseToolError,
-    );
-    launchWith(outcome);
-    await expect(runPgRestoreAsync("/tmp/in.dump")).rejects.toThrow(expected);
-  });
+      await expect(runPgRestoreAsync("/tmp/in.dump")).rejects.toThrow(
+        DatabaseToolError,
+      );
+      launchWith(outcome);
+      await expect(runPgRestoreAsync("/tmp/in.dump")).rejects.toThrow(expected);
+    },
+  );
 
   it("rejects when the tool can't be launched", async () => {
     launchWith({ error: new Error("spawn pg_dump ENOENT") });

@@ -50,41 +50,41 @@ describe("assets routes", () => {
     expect(client.insertAssetsAsync).toHaveBeenCalledExactlyOnceWith([asset]);
   });
 
-  it.each([
-    { asset: { name: "" } },
-    { asset: buildAsset() },
-  ])("POST rejects %o", async (body) => {
-    const { status } = await callRouteAsync(PostAssetsRouteAsync, {
-      body,
-      method: "POST",
-    });
+  it.each([{ asset: { name: "" } }, { asset: buildAsset() }])(
+    "POST rejects %o",
+    async (body) => {
+      const { status } = await callRouteAsync(PostAssetsRouteAsync, {
+        body,
+        method: "POST",
+      });
 
-    expect(status).toBe(400);
-    expect(client.insertAssetsAsync).not.toHaveBeenCalled();
-  });
+      expect(status).toBe(400);
+      expect(client.insertAssetsAsync).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expectedStatus: 200, wasUpdated: true },
     { expectedStatus: 404, wasUpdated: false },
-  ])("PUT updates an asset by route id with status $expectedStatus", async ({
-    expectedStatus,
-    wasUpdated,
-  }) => {
-    client.updateAssetAsync.mockResolvedValue(wasUpdated);
-    const asset = omitKeys(buildAsset(), "id");
+  ])(
+    "PUT updates an asset by route id with status $expectedStatus",
+    async ({ expectedStatus, wasUpdated }) => {
+      client.updateAssetAsync.mockResolvedValue(wasUpdated);
+      const asset = omitKeys(buildAsset(), "id");
 
-    const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
-      body: { asset },
-      method: "PUT",
-      params: { id: "12" },
-    });
+      const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {
+        body: { asset },
+        method: "PUT",
+        params: { id: "12" },
+      });
 
-    expect(status).toBe(expectedStatus);
-    expect(client.updateAssetAsync).toHaveBeenCalledExactlyOnceWith({
-      ...asset,
-      id: 12,
-    });
-  });
+      expect(status).toBe(expectedStatus);
+      expect(client.updateAssetAsync).toHaveBeenCalledExactlyOnceWith({
+        ...asset,
+        id: 12,
+      });
+    },
+  );
 
   it("PUT rejects a non-numeric route id", async () => {
     const { status } = await callRouteAsync(PutAssetsIdRouteAsync, {

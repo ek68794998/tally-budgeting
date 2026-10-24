@@ -38,37 +38,36 @@ describe("useNetWorthSnapshots", () => {
     { isFetching: false, isHydrated: true },
     { isFetching: true, isHydrated: false },
     { isFetching: true, isHydrated: true },
-  ])("does not call fetchSnapshots when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    isFetching,
-    isHydrated,
-  }) => {
-    mockFetchSnapshots.mockClear();
-    mockUseNetWorthSnapshotStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "does not call fetchSnapshots when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ isFetching, isHydrated }) => {
+      mockFetchSnapshots.mockClear();
+      mockUseNetWorthSnapshotStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    renderHook(() => useNetWorthSnapshots());
+      renderHook(() => useNetWorthSnapshots());
 
-    expect(mockFetchSnapshots).not.toHaveBeenCalled();
-  });
+      expect(mockFetchSnapshots).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expected: true, isFetching: false, isHydrated: false },
     { expected: true, isFetching: true, isHydrated: true },
     { expected: false, isFetching: false, isHydrated: true },
-  ])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    expected,
-    isFetching,
-    isHydrated,
-  }) => {
-    mockUseNetWorthSnapshotStore.mockReturnValue(
-      buildStore({ isFetching, isHydrated }),
-    );
+  ])(
+    "returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ expected, isFetching, isHydrated }) => {
+      mockUseNetWorthSnapshotStore.mockReturnValue(
+        buildStore({ isFetching, isHydrated }),
+      );
 
-    const { result } = renderHook(() => useNetWorthSnapshots());
+      const { result } = renderHook(() => useNetWorthSnapshots());
 
-    expect(result.current.isLoading).toBe(expected);
-  });
+      expect(result.current.isLoading).toBe(expected);
+    },
+  );
 
   it("returns snapshots and error from store", () => {
     const snapshots = [dangerouslyMockPartial<NetWorthSnapshot>({ id: 1 })];

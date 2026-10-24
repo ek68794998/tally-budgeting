@@ -99,25 +99,30 @@ describe("transaction rule routes", () => {
   it.each([
     { expectedStatus: 200, wasUpdated: true },
     { expectedStatus: 404, wasUpdated: false },
-  ])("PUT updates a rule by route id with status $expectedStatus", async ({
-    expectedStatus,
-    wasUpdated,
-  }) => {
-    client.updateTransactionRuleAsync.mockResolvedValue(wasUpdated);
-    const rule = getTransactionRuleFields(buildTransactionRule());
+  ])(
+    "PUT updates a rule by route id with status $expectedStatus",
+    async ({ expectedStatus, wasUpdated }) => {
+      client.updateTransactionRuleAsync.mockResolvedValue(wasUpdated);
+      const rule = getTransactionRuleFields(buildTransactionRule());
 
-    const { status } = await callRouteAsync(PutTransactionsRulesIdRouteAsync, {
-      body: { rule },
-      method: "PUT",
-      params: { id: "12" },
-    });
+      const { status } = await callRouteAsync(
+        PutTransactionsRulesIdRouteAsync,
+        {
+          body: { rule },
+          method: "PUT",
+          params: { id: "12" },
+        },
+      );
 
-    expect(status).toBe(expectedStatus);
-    expect(client.updateTransactionRuleAsync).toHaveBeenCalledExactlyOnceWith({
-      ...rule,
-      id: 12,
-    });
-  });
+      expect(status).toBe(expectedStatus);
+      expect(client.updateTransactionRuleAsync).toHaveBeenCalledExactlyOnceWith(
+        {
+          ...rule,
+          id: 12,
+        },
+      );
+    },
+  );
 
   it("DELETE removes the rule with the route id", async () => {
     const { status } = await callRouteAsync(

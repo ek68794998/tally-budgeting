@@ -64,37 +64,37 @@ describe("TransactionRowDropdown", () => {
   it.each([
     { expectedLabel: "Mark as One-Time", isOneTime: false },
     { expectedLabel: "Unmark as One-Time", isOneTime: true },
-  ])("offers edit, duplicate, `$expectedLabel`, and delete", ({
-    expectedLabel,
-    isOneTime,
-  }) => {
-    const handlers = {
-      onDelete: vi.fn(),
-      onDuplicate: vi.fn(),
-      onEdit: vi.fn(),
-      onToggleOneTime: vi.fn(),
-    };
-    render(<TransactionRowDropdown isOneTime={isOneTime} {...handlers} />);
+  ])(
+    "offers edit, duplicate, `$expectedLabel`, and delete",
+    ({ expectedLabel, isOneTime }) => {
+      const handlers = {
+        onDelete: vi.fn(),
+        onDuplicate: vi.fn(),
+        onEdit: vi.fn(),
+        onToggleOneTime: vi.fn(),
+      };
+      render(<TransactionRowDropdown isOneTime={isOneTime} {...handlers} />);
 
-    const entries = vi.mocked(MoreDropdown).mock.lastCall?.[0].entries ?? [];
+      const entries = vi.mocked(MoreDropdown).mock.lastCall?.[0].entries ?? [];
 
-    expect(entries.map(({ key }) => key)).toEqual([
-      "edit",
-      "duplicate",
-      "toggleOneTime",
-      "delete",
-    ]);
-    expect(entries[2]).toMatchObject({ label: expectedLabel });
+      expect(entries.map(({ key }) => key)).toEqual([
+        "edit",
+        "duplicate",
+        "toggleOneTime",
+        "delete",
+      ]);
+      expect(entries[2]).toMatchObject({ label: expectedLabel });
 
-    for (const entry of entries) {
-      if ("action" in entry) {
-        entry.action();
+      for (const entry of entries) {
+        if ("action" in entry) {
+          entry.action();
+        }
       }
-    }
 
-    expect(handlers.onEdit).toHaveBeenCalledOnce();
-    expect(handlers.onDuplicate).toHaveBeenCalledOnce();
-    expect(handlers.onDelete).toHaveBeenCalledOnce();
-    expect(handlers.onToggleOneTime).toHaveBeenCalledOnce();
-  });
+      expect(handlers.onEdit).toHaveBeenCalledOnce();
+      expect(handlers.onDuplicate).toHaveBeenCalledOnce();
+      expect(handlers.onDelete).toHaveBeenCalledOnce();
+      expect(handlers.onToggleOneTime).toHaveBeenCalledOnce();
+    },
+  );
 });

@@ -106,17 +106,20 @@ describe("PageTitle", () => {
     it.each([
       ["/budget/details", "Details"],
       ["/dashboard/settings", "Settings"],
-    ])("renders the correct subpage title for path %s", (path, expectedSubpageTitle) => {
-      mockUsePathname.mockReturnValue(path);
+    ])(
+      "renders the correct subpage title for path %s",
+      (path, expectedSubpageTitle) => {
+        mockUsePathname.mockReturnValue(path);
 
-      render(<PageTitle knownSubpages={knownSubpages} title="Root" />);
+        render(<PageTitle knownSubpages={knownSubpages} title="Root" />);
 
-      const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(1);
-      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-        expectedSubpageTitle,
-      );
-    });
+        const links = screen.getAllByRole("link");
+        expect(links).toHaveLength(1);
+        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+          expectedSubpageTitle,
+        );
+      },
+    );
 
     it("renders multiple breadcrumb links for a deep path", () => {
       const deepSubpages: SubpageMap = {
@@ -144,21 +147,24 @@ describe("PageTitle", () => {
       ["/dashboard", "/dashboard"],
       ["/budget/details", "/budget"],
       ["/settings/profile", "/settings"],
-    ])("links to the correct base href for path %s", (path, expectedBaseHref) => {
-      const subpages: SubpageMap = {
-        details: { href: "/budget/details", title: "Details" },
-        profile: { href: "/settings/profile", title: "Profile" },
-      };
+    ])(
+      "links to the correct base href for path %s",
+      (path, expectedBaseHref) => {
+        const subpages: SubpageMap = {
+          details: { href: "/budget/details", title: "Details" },
+          profile: { href: "/settings/profile", title: "Profile" },
+        };
 
-      mockUsePathname.mockReturnValue(path);
+        mockUsePathname.mockReturnValue(path);
 
-      render(<PageTitle knownSubpages={subpages} title="Root" />);
+        render(<PageTitle knownSubpages={subpages} title="Root" />);
 
-      const links = screen.queryAllByRole("link");
+        const links = screen.queryAllByRole("link");
 
-      if (links.length > 0) {
-        expect(links[0]).toHaveAttribute("href", expectedBaseHref);
-      }
-    });
+        if (links.length > 0) {
+          expect(links[0]).toHaveAttribute("href", expectedBaseHref);
+        }
+      },
+    );
   });
 });

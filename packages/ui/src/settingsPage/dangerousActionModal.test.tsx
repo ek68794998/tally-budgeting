@@ -60,21 +60,21 @@ describe("DangerousActionModal", () => {
       action: "drop" as const,
       text: /database will be reset to an empty state/,
     },
-  ])("explains what $action does, plus the sign-out and backup advice", ({
-    action,
-    text,
-  }) => {
-    const { onDownloadBackup } = renderModal(action);
+  ])(
+    "explains what $action does, plus the sign-out and backup advice",
+    ({ action, text }) => {
+      const { onDownloadBackup } = renderModal(action);
 
-    expect(screen.getByText(text)).toBeInTheDocument();
-    expect(screen.getByText("You will be signed out.")).toBeInTheDocument();
+      expect(screen.getByText(text)).toBeInTheDocument();
+      expect(screen.getByText("You will be signed out.")).toBeInTheDocument();
 
-    fireEvent.click(
-      screen.getByRole("link", { name: "Click here to create one." }),
-    );
+      fireEvent.click(
+        screen.getByRole("link", { name: "Click here to create one." }),
+      );
 
-    expect(onDownloadBackup).toHaveBeenCalledOnce();
-  });
+      expect(onDownloadBackup).toHaveBeenCalledOnce();
+    },
+  );
 
   it("asks for a file only when restoring", () => {
     renderModal("drop");

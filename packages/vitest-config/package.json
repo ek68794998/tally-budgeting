@@ -18,7 +18,7 @@
     "@tally/eslint-config": "workspace:*",
     "@tally/typescript-config": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.15.3",
     "eslint": "^9.39.5",
     "typescript": "5.9.2",

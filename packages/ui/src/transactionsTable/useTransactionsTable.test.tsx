@@ -214,28 +214,28 @@ describe("useTransactionsTable", () => {
     { column: "subcategoryId", expected: "category" },
     { column: "amountCents", expected: "amount" },
     { column: "type", expected: "date" },
-  ])("requests sortBy=$expected when sorting by $column", async ({
-    column,
-    expected,
-  }) => {
-    const { result } = await renderTableAsync();
+  ])(
+    "requests sortBy=$expected when sorting by $column",
+    async ({ column, expected }) => {
+      const { result } = await renderTableAsync();
 
-    act(() => {
-      result.current.setSortDescriptor({
-        column,
-        direction: "ascending",
+      act(() => {
+        result.current.setSortDescriptor({
+          column,
+          direction: "ascending",
+        });
+        result.current.setFilterValue("  coffee  ");
+        result.current.setPage(2);
       });
-      result.current.setFilterValue("  coffee  ");
-      result.current.setPage(2);
-    });
 
-    await waitFor(() => {
-      expect(getRequestedParams().get("sortBy")).toBe(expected);
-    });
-    expect(getRequestedParams().get("direction")).toBe("ascending");
-    expect(getRequestedParams().get("filter")).toBe("coffee");
-    expect(getRequestedParams().get("page")).toBe("2");
-  });
+      await waitFor(() => {
+        expect(getRequestedParams().get("sortBy")).toBe(expected);
+      });
+      expect(getRequestedParams().get("direction")).toBe("ascending");
+      expect(getRequestedParams().get("filter")).toBe("coffee");
+      expect(getRequestedParams().get("page")).toBe("2");
+    },
+  );
 
   it("opens the editor for a new, existing, or duplicated transaction without changing the original", async () => {
     const { result } = await renderTableAsync();
@@ -298,25 +298,24 @@ describe("useTransactionsTable", () => {
         table.editTransaction(7),
       unusedMock: postTransactionAsync,
     },
-  ])("$name transaction and reloads the page", async ({
-    expectedCall,
-    open,
-    unusedMock,
-  }) => {
-    const { result } = await renderTableAsync();
-    const requestsBefore = fetchMock.mock.calls.length;
+  ])(
+    "$name transaction and reloads the page",
+    async ({ expectedCall, open, unusedMock }) => {
+      const { result } = await renderTableAsync();
+      const requestsBefore = fetchMock.mock.calls.length;
 
-    act(() => {
-      open(result.current);
-    });
-    await act(() => result.current.saveTransactionAsync(coffee));
+      act(() => {
+        open(result.current);
+      });
+      await act(() => result.current.saveTransactionAsync(coffee));
 
-    expectedCall();
-    expect(unusedMock).not.toHaveBeenCalled();
-    await waitFor(() => {
-      expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
-    });
-  });
+      expectedCall();
+      expect(unusedMock).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
+      });
+    },
+  );
 
   it("confirms deletion of the requested row and reloads the page", async () => {
     const { result } = await renderTableAsync();

@@ -82,15 +82,18 @@ describe("DataProviderIcon", () => {
       ["sm", 16, 20],
       ["md", 24, 30],
       ["lg", 32, 40],
-    ] as const)("passes correct sizePx and containerSizePx for size '%s'", (size, expectedSizePx, expectedContainerSizePx) => {
-      render(<DataProviderIcon provider="chase" size={size} />);
-      const icon = screen.getByTestId("chase-icon");
-      expect(icon).toHaveAttribute("data-size", String(expectedSizePx));
-      expect(icon).toHaveAttribute(
-        "data-container-size",
-        String(expectedContainerSizePx),
-      );
-    });
+    ] as const)(
+      "passes correct sizePx and containerSizePx for size '%s'",
+      (size, expectedSizePx, expectedContainerSizePx) => {
+        render(<DataProviderIcon provider="chase" size={size} />);
+        const icon = screen.getByTestId("chase-icon");
+        expect(icon).toHaveAttribute("data-size", String(expectedSizePx));
+        expect(icon).toHaveAttribute(
+          "data-container-size",
+          String(expectedContainerSizePx),
+        );
+      },
+    );
 
     it("defaults to md size when size is not provided", () => {
       render(<DataProviderIcon provider="chase" />);

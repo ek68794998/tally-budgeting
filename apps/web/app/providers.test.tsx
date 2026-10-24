@@ -56,36 +56,40 @@ describe("providers", () => {
   it.each([
     { isAuthEnabled: true, mode: "password" as const },
     { isAuthEnabled: false, mode: "disabled" as const },
-  ])("provides messages and auth mode $mode on the server", async ({
-    isAuthEnabled,
-    mode,
-  }) => {
-    const messages = { hello: "Hello" };
-    vi.mocked(getMessages).mockResolvedValue(
-      dangerouslyCoerceType<Awaited<ReturnType<typeof getMessages>>>(messages),
-    );
-    vi.mocked(getAuthConfig).mockReturnValue(
-      mode === "password" ? { mode, password: "secret" } : { mode },
-    );
+  ])(
+    "provides messages and auth mode $mode on the server",
+    async ({ isAuthEnabled, mode }) => {
+      const messages = { hello: "Hello" };
+      vi.mocked(getMessages).mockResolvedValue(
+        dangerouslyCoerceType<Awaited<ReturnType<typeof getMessages>>>(
+          messages,
+        ),
+      );
+      vi.mocked(getAuthConfig).mockReturnValue(
+        mode === "password" ? { mode, password: "secret" } : { mode },
+      );
 
-    render(
-      await ServerProviders({
-        children: <div data-testid="child" />,
+      render(
+        await ServerProviders({
+          children: <div data-testid="child" />,
+          locale: "en",
+        }),
+      );
+
+      expect(screen.getByTestId("auth")).toContainElement(
+        screen.getByTestId("child"),
+      );
+      expect(
+        vi.mocked(NextIntlClientProvider).mock.lastCall?.[0],
+      ).toMatchObject({
         locale: "en",
-      }),
-    );
-
-    expect(screen.getByTestId("auth")).toContainElement(
-      screen.getByTestId("child"),
-    );
-    expect(vi.mocked(NextIntlClientProvider).mock.lastCall?.[0]).toMatchObject({
-      locale: "en",
-      messages,
-    });
-    expect(vi.mocked(AuthProvider).mock.lastCall?.[0]).toMatchObject({
-      isAuthEnabled,
-    });
-  });
+        messages,
+      });
+      expect(vi.mocked(AuthProvider).mock.lastCall?.[0]).toMatchObject({
+        isAuthEnabled,
+      });
+    },
+  );
 
   it("wraps the client app with styles, queries, and the session-expired modal", () => {
     render(
@@ -103,15 +107,14 @@ describe("providers", () => {
     { databaseUnavailable: false, expected: true, failureCount: 2 },
     { databaseUnavailable: false, expected: false, failureCount: 3 },
     { databaseUnavailable: true, expected: false, failureCount: 0 },
-  ])("retries a query after $failureCount failures (database unavailable: $databaseUnavailable): $expected", ({
-    databaseUnavailable,
-    expected,
-    failureCount,
-  }) => {
-    useDatabaseStatusStore.setState({ isUnavailable: databaseUnavailable });
+  ])(
+    "retries a query after $failureCount failures (database unavailable: $databaseUnavailable): $expected",
+    ({ databaseUnavailable, expected, failureCount }) => {
+      useDatabaseStatusStore.setState({ isUnavailable: databaseUnavailable });
 
-    expect(shouldRetryQuery(failureCount)).toBe(expected);
-  });
+      expect(shouldRetryQuery(failureCount)).toBe(expected);
+    },
+  );
 
   it("applies the dark theme class to the root element", () => {
     mockTheme("dark");

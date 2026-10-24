@@ -37,14 +37,14 @@ describe("getLocaleAsync", () => {
     { acceptLanguage: undefined, expected: "en" },
     { acceptLanguage: "ja-JP,ja;q=0.9", expected: "ja" },
     { acceptLanguage: "fr-FR", expected: "en" },
-  ])("resolves $acceptLanguage to $expected", async ({
-    acceptLanguage,
-    expected,
-  }) => {
-    mockHeaders(acceptLanguage);
+  ])(
+    "resolves $acceptLanguage to $expected",
+    async ({ acceptLanguage, expected }) => {
+      mockHeaders(acceptLanguage);
 
-    await expect(getLocaleAsync()).resolves.toBe(expected);
-  });
+      await expect(getLocaleAsync()).resolves.toBe(expected);
+    },
+  );
 });
 
 describe("requestConfig", () => {
@@ -89,17 +89,17 @@ describe("requestConfig", () => {
   it.each([
     { expected: "ja", requestLocale: undefined },
     { expected: "en", requestLocale: "xx" },
-  ])("falls back when the requested locale is $requestLocale", async ({
-    expected,
-    requestLocale,
-  }) => {
-    vi.stubEnv("NODE_ENV", "development");
-    mockHeaders("ja");
+  ])(
+    "falls back when the requested locale is $requestLocale",
+    async ({ expected, requestLocale }) => {
+      vi.stubEnv("NODE_ENV", "development");
+      mockHeaders("ja");
 
-    const config = await invokeRequestConfig({
-      requestLocale: Promise.resolve(requestLocale),
-    });
+      const config = await invokeRequestConfig({
+        requestLocale: Promise.resolve(requestLocale),
+      });
 
-    expect(config.locale).toBe(expected);
-  });
+      expect(config.locale).toBe(expected);
+    },
+  );
 });

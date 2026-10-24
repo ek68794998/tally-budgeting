@@ -96,36 +96,33 @@ describe("AssetsTable", () => {
       open: () => getCardProps()[0]?.onEdit(),
       unusedMock: postAssetAsync,
     },
-  ])("opens the editor and $name asset", async ({
-    expectedAsset,
-    expectedSave,
-    isNew,
-    open,
-    unusedMock,
-  }) => {
-    render(<AssetsTable assets={[checking]} />);
+  ])(
+    "opens the editor and $name asset",
+    async ({ expectedAsset, expectedSave, isNew, open, unusedMock }) => {
+      render(<AssetsTable assets={[checking]} />);
 
-    act(() => {
-      open();
-    });
+      act(() => {
+        open();
+      });
 
-    expect(lastEditModalProps()).toMatchObject({
-      asset: expectedAsset,
-      isNew,
-      modalState: { isOpen: true },
-    });
+      expect(lastEditModalProps()).toMatchObject({
+        asset: expectedAsset,
+        isNew,
+        modalState: { isOpen: true },
+      });
 
-    await act(
-      () =>
-        lastEditModalProps()?.onSaveAsync(expectedAsset) ?? Promise.resolve(),
-    );
+      await act(
+        () =>
+          lastEditModalProps()?.onSaveAsync(expectedAsset) ?? Promise.resolve(),
+      );
 
-    expectedSave();
-    expect(unusedMock).not.toHaveBeenCalled();
-    expect(refetch).toHaveBeenCalledOnce();
-    expect(lastEditModalProps()?.asset).toBeNull();
-    expect(lastEditModalProps()?.modalState.isOpen).toBe(false);
-  });
+      expectedSave();
+      expect(unusedMock).not.toHaveBeenCalled();
+      expect(refetch).toHaveBeenCalledOnce();
+      expect(lastEditModalProps()?.asset).toBeNull();
+      expect(lastEditModalProps()?.modalState.isOpen).toBe(false);
+    },
+  );
 
   it("doesn't open the editor when deleting after creating an asset", async () => {
     render(<AssetsTable assets={[checking]} />);
