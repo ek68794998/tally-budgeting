@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "4.1.12",
     "happy-dom": "20.8.9",
     "turbo": "2.11.8",
     "typescript": "5.9.2",
-    "vitest": "^4.1.11"
+    "vitest": "4.1.12"
   },
   "packageManager": "pnpm@11.1.2",
   "engines": {
