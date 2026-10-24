@@ -104,7 +104,7 @@
     },
     "editCategories": "Categories",
     "oneTime": {
-      "count": "{count, plural, one {# purchase} other {# purchases}}",
+      "cardSummary": "{count, plural, =1 {Plus <amountFmt>{amount}</amountFmt> as a <link>one-time expense</link>} other {Plus <amountFmt>{amount}</amountFmt> across <link>{count} one-time expenses</link>}}",
       "iconLabel": "One-time expenses",
       "summary": "Plus <amountFmt>{amount}</amountFmt> in one-time expenses"
     },

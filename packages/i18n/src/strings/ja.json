@@ -104,7 +104,7 @@
     },
     "editCategories": "カテゴリー",
     "oneTime": {
-      "count": "{count}件",
+      "cardSummary": "{count, plural, =1 {ほかに<link>一時的な支出</link>として<amountFmt>{amount}</amountFmt>} other {ほかに<link>{count}件の一時的な支出</link>で計<amountFmt>{amount}</amountFmt>}}",
       "iconLabel": "一時的な支出",
       "summary": "ほかに一時的な支出<amountFmt>{amount}</amountFmt>"
     },

@@ -9,6 +9,6 @@ describe("OneTimeExpensesSummary", () => {
     );
 
     expect(container).toHaveTextContent("Plus $25,001 in one-time expenses");
-    expect(screen.getByText("$25,001")).toHaveClass("font-bold");
+    expect(screen.getByText("$25,001").tagName).toBe("B");
   });
 });
