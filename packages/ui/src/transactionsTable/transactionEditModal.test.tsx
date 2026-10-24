@@ -107,7 +107,7 @@ describe("TransactionEditModal", () => {
       ),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("switch", { name: /One-time purchase/u }));
+    fireEvent.click(screen.getByRole("switch", { name: /One-time Purchase/u }));
 
     await act(() => lastFooterProps()?.onSave(false) ?? Promise.resolve());
 

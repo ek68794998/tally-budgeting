@@ -110,7 +110,7 @@ describe("TransactionsTable", () => {
     expect(screen.getByText("Employer")).toBeInTheDocument();
     expect(screen.getByText("Expense")).toBeInTheDocument();
     expect(screen.getByText("Income")).toBeInTheDocument();
-    expect(screen.getAllByLabelText("One-time purchase")).toHaveLength(1);
+    expect(screen.getAllByLabelText("One-time Purchase")).toHaveLength(1);
     expect(screen.queryByText("Showing linked transactions")).toBeNull();
     expect(screen.getByRole("navigation")).toBeInTheDocument();
     expect(vi.mocked(TransactionsTableControls).mock.lastCall?.[0]).toEqual({

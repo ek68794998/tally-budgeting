@@ -62,8 +62,8 @@ describe("TransactionHappinessSelect", () => {
 
 describe("TransactionRowDropdown", () => {
   it.each([
-    { expectedLabel: "Mark as one-time", isOneTime: false },
-    { expectedLabel: "Unmark as one-time", isOneTime: true },
+    { expectedLabel: "Mark as One-Time", isOneTime: false },
+    { expectedLabel: "Unmark as One-Time", isOneTime: true },
   ])("offers edit, duplicate, `$expectedLabel`, and delete", ({
     expectedLabel,
     isOneTime,
