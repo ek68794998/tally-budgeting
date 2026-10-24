@@ -8,6 +8,7 @@ import {
   Select,
   SelectItem,
   type SharedSelection,
+  Switch,
 } from "@heroui/react";
 import {
   IconFilter,
@@ -55,6 +56,7 @@ export const TransactionsTableControls: React.FC<Props> = ({
   const [subcategoryIds, setSubcategoryIds] = useState<SharedSelection>(
     new Set(),
   );
+  const [oneTimeOnly, setOneTimeOnly] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
@@ -68,12 +70,13 @@ export const TransactionsTableControls: React.FC<Props> = ({
       onFilterChange(
         buildTransactionsFilter({
           accountIds,
+          oneTimeOnly,
           searchValue,
           subcategoryIds,
         }),
       );
     },
-    [accountIds, onFilterChange, searchValue, subcategoryIds],
+    [accountIds, oneTimeOnly, onFilterChange, searchValue, subcategoryIds],
     { wait: debounceMilliseconds },
   );
 
@@ -146,7 +149,15 @@ export const TransactionsTableControls: React.FC<Props> = ({
         <TransactionsMenuDropdown />
       </div>
       {showFilters ? (
-        <div className="flex flex-row justify-end gap-4">
+        <div className="flex flex-row items-center justify-end gap-4">
+          <Switch
+            className="shrink-0"
+            isSelected={oneTimeOnly}
+            onValueChange={setOneTimeOnly}
+            size="sm"
+          >
+            {t("table.oneTimeOnly")}
+          </Switch>
           <Select
             {...getTableFilterProps(
               t("columns.account"),

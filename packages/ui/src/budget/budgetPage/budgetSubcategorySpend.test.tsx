@@ -1,7 +1,14 @@
-import { buildSubcategory } from "@tally/data-models/testing/fixtures";
+import {
+  buildOneTimeExpenses,
+  buildSubcategory,
+} from "@tally/data-models/testing/fixtures";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BudgetSubcategorySpend } from "./budgetSubcategorySpend";
+
+vi.mock("../oneTime/oneTimeExpensesDetails", () => ({
+  OneTimeExpensesDetails: vi.fn(() => <div data-testid="oneTimeDetails" />),
+}));
 
 describe("BudgetSubcategorySpend", () => {
   it.each([
@@ -28,6 +35,47 @@ describe("BudgetSubcategorySpend", () => {
     expect(screen.getByText("Apparel")).toBeInTheDocument();
     expect(screen.queryAllByText(/over budget/iu)).toHaveLength(
       overBudgetChips,
+    );
+  });
+
+  it.each([
+    { expectedIcons: 0, name: "no breakdown data", oneTime: undefined },
+    {
+      expectedIcons: 0,
+      name: "no one-time transactions",
+      oneTime: buildOneTimeExpenses(),
+    },
+    {
+      expectedIcons: 1,
+      name: "one-time transactions",
+      oneTime: buildOneTimeExpenses({
+        totalSpent: 25000,
+        transactions: [
+          {
+            amount: 25000,
+            date: "2025-03-03T12:00:00.000Z",
+            id: 1,
+            merchant: "Dealership",
+            subcategoryId: 1,
+          },
+        ],
+      }),
+    },
+  ])("shows $expectedIcons one-time icon(s) for $name", ({
+    expectedIcons,
+    oneTime,
+  }) => {
+    render(
+      <BudgetSubcategorySpend
+        amountPaid={0}
+        oneTime={oneTime}
+        periodEnd={{ month: 3, year: 2025 }}
+        subcategory={buildSubcategory()}
+      />,
+    );
+
+    expect(screen.queryAllByLabelText("One-time expenses")).toHaveLength(
+      expectedIcons,
     );
   });
 });

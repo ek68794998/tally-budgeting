@@ -116,6 +116,23 @@ describe("TransactionsTableControls", () => {
     );
   });
 
+  it("filters to one-time transactions from the filter panel", () => {
+    const { onFilterChange } = renderControls();
+
+    const filterToggle = document
+      .querySelector(".tabler-icon-filter")
+      ?.closest("button");
+
+    if (filterToggle) {
+      fireEvent.click(filterToggle);
+    }
+
+    fireEvent.click(screen.getByRole("switch", { name: "One-time only" }));
+    flushDebounce();
+
+    expect(onFilterChange).toHaveBeenLastCalledWith("oneTime eq true");
+  });
+
   it("offers adding a transaction or importing a file", () => {
     const { onNewTransaction } = renderControls();
 

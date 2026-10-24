@@ -19,6 +19,7 @@ export const txnRowSchema = z.object({
   id: z.int(),
   merchant: z.string().min(1).max(100),
   notes: z.string().nullable(),
+  one_time: z.boolean(), // eslint-disable-line @typescript-eslint/naming-convention
   subcategory: z.int(),
 });
 

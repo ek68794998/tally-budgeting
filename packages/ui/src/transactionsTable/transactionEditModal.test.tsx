@@ -1,7 +1,7 @@
 import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { addToast, type useDisclosure } from "@heroui/react";
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { EditModalFooter } from "../modal/editModalFooter";
 import { TransactionEditModal } from "./transactionEditModal";
@@ -87,6 +87,32 @@ describe("TransactionEditModal", () => {
 
     expect(addToast).toHaveBeenCalledWith(
       expect.objectContaining({ color: "success" }),
+    );
+  });
+
+  it("saves the one-time flag from its switch", async () => {
+    const onSaveAsync = vi.fn(() => Promise.resolve());
+
+    render(
+      <TransactionEditModal
+        modalState={modalState}
+        onSaveAsync={onSaveAsync}
+        transaction={coffee}
+      />,
+    );
+
+    expect(
+      screen.getByText(
+        "Excluded from budget totals; shown separately in Quick Pulse and the budget breakdown.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("switch", { name: /One-time Purchase/u }));
+
+    await act(() => lastFooterProps()?.onSave(false) ?? Promise.resolve());
+
+    expect(onSaveAsync).toHaveBeenCalledWith(
+      expect.objectContaining({ isOneTime: true }),
     );
   });
 

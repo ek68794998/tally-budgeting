@@ -1,6 +1,7 @@
 import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import { invariant } from "@ekumlin/typescript-toolkit/values";
 import {
+  addToast,
   type Selection,
   type SortDescriptor,
   useDisclosure,
@@ -9,9 +10,10 @@ import { getTransactionsResponseSchema } from "@tally/data-models/contracts/api/
 import { type Transaction } from "@tally/data-models/contracts/transaction";
 import { isAccount } from "@tally/data-models/data/accountHelpers";
 import { apiFetch } from "@tally/utilities/routing/apiFetch";
-import { api, buildApiRoute } from "@tally/utilities/routing/routeBuilder";
+import { api, buildApiRoute, web } from "@tally/utilities/routing/routeBuilder";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useLocale } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ZodError } from "zod";
 import { ModalDefaultTransaction } from "../common/modalDefault";
@@ -46,6 +48,12 @@ export const useTransactionsTable = () => {
   const locale = useLocale();
   const { postTransactionAsync } = usePostTransaction();
   const { putTransactionAsync } = usePutTransaction();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const t = useTranslations("transactions");
+
+  const linkedFilter = searchParams.get("filter")?.trim() ?? "";
+  const isLinkedFilterActive = linkedFilter.length > 0;
 
   const [activeTransaction, setActiveTransaction] =
     useState<Transaction | null>(null);
@@ -65,9 +73,15 @@ export const useTransactionsTable = () => {
 
   const accounts = assets.filter(isAccount);
 
-  const searchParams = {
+  const clearLinkedFilter = () => router.replace(web.transactions.base);
+
+  const effectiveFilterValue = isLinkedFilterActive
+    ? linkedFilter
+    : String(filterValue).trim();
+
+  const requestParams = {
     direction: String(sortDescriptor.direction),
-    filter: String(filterValue).trim(),
+    filter: effectiveFilterValue,
     limit: String(transactionsPerPage),
     page: String(page),
     sortBy: String(
@@ -80,7 +94,7 @@ export const useTransactionsTable = () => {
   const { data, error, isFetching } = useQuery({
     placeholderData: keepPreviousData,
     queryFn: async ({ signal }) => {
-      const urlSearchParams = new URLSearchParams(searchParams);
+      const urlSearchParams = new URLSearchParams(requestParams);
 
       const response = await apiFetch(
         buildApiRoute(api.transactions.base, {
@@ -95,7 +109,7 @@ export const useTransactionsTable = () => {
 
       return result;
     },
-    queryKey: ["transactions", searchParams, editsMade],
+    queryKey: ["transactions", requestParams, editsMade],
     retry: (failureCount, attemptError) => {
       if (failureCount >= maxQueryAttempts) {
         return false;
@@ -132,6 +146,7 @@ export const useTransactionsTable = () => {
 
   return {
     activeTransaction,
+    clearLinkedFilter,
     confirmDeleteAsync: async () => {
       invariant(transactionToDelete, "Transaction to delete must be defined");
       await deleteTransactionAsync(transactionToDelete.id);
@@ -158,7 +173,8 @@ export const useTransactionsTable = () => {
       openEditModal(transactionFromData, false);
     },
     error,
-    filterValue,
+    filterValue: effectiveFilterValue,
+    isLinkedFilterActive,
     isLoading: isFetching || categoriesLoading || assetsLoading,
     pageCount,
     requestDelete: (item: TransactionTableData) => {
@@ -173,13 +189,40 @@ export const useTransactionsTable = () => {
     },
     selectedPage: Math.min(page, pageCount),
     selection,
-    setFilterValue,
+    setFilterValue: (value: string) => {
+      if (isLinkedFilterActive && value !== filterValue) {
+        clearLinkedFilter();
+      }
+
+      setFilterValue(value);
+    },
     setPage,
     setSelection,
     setSortDescriptor,
     sortDescriptor,
     startNewTransaction: () => {
       openEditModal(ModalDefaultTransaction, true);
+    },
+    toggleOneTimeAsync: async (id: number) => {
+      const transactionFromData = findTransaction(id);
+
+      if (!transactionFromData) {
+        return;
+      }
+
+      try {
+        await putTransactionAsync({
+          ...transactionFromData,
+          isOneTime: !transactionFromData.isOneTime,
+        });
+        incrementEditsMade();
+      } catch {
+        addToast({
+          color: "danger",
+          description: t("edit.failureBody"),
+          title: t("edit.failureTitle"),
+        });
+      }
     },
     transactionsData,
     transactionToDelete,

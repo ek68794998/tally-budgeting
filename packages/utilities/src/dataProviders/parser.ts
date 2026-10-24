@@ -45,6 +45,7 @@ export const parseRowAsTransaction = (
     transaction = {
       ...t,
       happiness: HappinessLevelDefault,
+      isOneTime: false,
       notes: "",
     };
   };

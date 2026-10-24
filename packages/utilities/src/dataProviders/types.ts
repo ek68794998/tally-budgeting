@@ -9,7 +9,10 @@ export interface TransactionCustomizations {
   subcategories: Subcategory[];
 }
 
-export type CsvTransaction = Omit<Transaction, "id" | "happiness" | "notes">;
+export type CsvTransaction = Omit<
+  Transaction,
+  "id" | "happiness" | "isOneTime" | "notes"
+>;
 
 export type CsvRowToTransactionFn<TInputRow extends object> = (
   inputRow: TInputRow,

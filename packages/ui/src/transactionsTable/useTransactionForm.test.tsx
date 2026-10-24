@@ -14,6 +14,7 @@ const coffee = buildTransaction({
   amountCents: 4_50,
   date: "2025-01-15T12:00:00.000Z",
   happiness: 3,
+  isOneTime: true,
   notes: "latte",
 });
 
@@ -26,6 +27,7 @@ describe("useTransactionForm", () => {
       amount: 4.5,
       canSave: true,
       happiness: 3,
+      isOneTime: true,
       merchantName: "Coffee Shop",
       notes: "latte",
       subcategoryId: 1,
@@ -90,7 +92,17 @@ describe("useTransactionForm", () => {
     expect(result.current.buildTransaction().happiness).toBe(1);
   });
 
-  it("resets amount, happiness, and notes for the next transaction", () => {
+  it("saves an edited one-time flag", () => {
+    const { result } = renderHook(() => useTransactionForm(coffee, true));
+
+    act(() => {
+      result.current.setIsOneTime(false);
+    });
+
+    expect(result.current.buildTransaction().isOneTime).toBe(false);
+  });
+
+  it("resets amount, happiness, one-time flag, and notes for the next transaction", () => {
     const { result } = renderHook(() => useTransactionForm(coffee, true));
 
     act(() => {
@@ -100,6 +112,7 @@ describe("useTransactionForm", () => {
     expect(result.current).toMatchObject({
       amount: 0,
       happiness: 2,
+      isOneTime: false,
       merchantName: "Coffee Shop",
       notes: "",
     });

@@ -13,6 +13,7 @@ export const convertTransactionFieldsToTxnRow = (
     amountCents,
     date,
     happiness,
+    isOneTime,
     merchant,
     notes,
     subcategoryId,
@@ -30,6 +31,7 @@ export const convertTransactionFieldsToTxnRow = (
     happiness,
     merchant,
     notes: notes || null,
+    one_time: isOneTime, // eslint-disable-line @typescript-eslint/naming-convention
     subcategory: subcategoryId,
   };
 };
@@ -54,6 +56,7 @@ export const convertTxnRowToTransaction = (
     id,
     merchant,
     notes,
+    one_time: isOneTime,
     subcategory,
   } = row;
 
@@ -64,6 +67,7 @@ export const convertTxnRowToTransaction = (
     date: date.toISOString(),
     happiness,
     id,
+    isOneTime,
     merchant,
     notes: notes || "",
     subcategoryId: subcategory,

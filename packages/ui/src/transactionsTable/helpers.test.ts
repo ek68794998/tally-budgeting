@@ -27,6 +27,7 @@ describe("getTransactionsTableData", () => {
           amountCents: 1234_56,
           date: "2025-01-15T12:00:00.000Z",
           id: 9,
+          isOneTime: true,
           notes: "latte",
           subcategoryId: 5,
         }),
@@ -40,6 +41,7 @@ describe("getTransactionsTableData", () => {
         amount: "$1,234.56",
         date: "January 15, 2025",
         id: 9,
+        isOneTime: true,
         merchant: "Coffee Shop",
         notes: "latte",
         subcategory: "Coffee",
@@ -72,6 +74,7 @@ describe("buildTransactionsFilter", () => {
       expected: "",
       input: {
         accountIds: new Set(),
+        oneTimeOnly: false,
         searchValue: "  ",
         subcategoryIds: "all",
       },
@@ -80,6 +83,7 @@ describe("buildTransactionsFilter", () => {
       expected: "merchant like 'Joe''s'",
       input: {
         accountIds: "all",
+        oneTimeOnly: false,
         searchValue: " Joe's ",
         subcategoryIds: new Set(),
       },
@@ -88,8 +92,18 @@ describe("buildTransactionsFilter", () => {
       expected: "account in '1,2' and subcategory in '5'",
       input: {
         accountIds: new Set([1, 2]),
+        oneTimeOnly: false,
         searchValue: "",
         subcategoryIds: new Set([5]),
+      },
+    },
+    {
+      expected: "oneTime eq true",
+      input: {
+        accountIds: new Set(),
+        oneTimeOnly: true,
+        searchValue: "",
+        subcategoryIds: new Set(),
       },
     },
   ])("builds `$expected`", ({ expected, input }) => {
