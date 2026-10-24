@@ -1,4 +1,4 @@
-import { Link } from "@heroui/react";
+import { Divider, Link } from "@heroui/react";
 import { IconChevronsRight } from "@tabler/icons-react";
 import { type QuickPulsePeriod } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { buildWebRoute, web } from "@tally/utilities/routing/routeBuilder";
@@ -76,10 +76,9 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
                 bold: (chunks) => <b>{chunks}</b>,
               })}
             </h3>
+            <Divider />
             {oneTime.transactions.length > 0 && (
-              <div className="border-divider w-full border-t pt-2">
-                <OneTimeExpensesPopover oneTime={oneTime} />
-              </div>
+              <OneTimeExpensesPopover oneTime={oneTime} />
             )}
             <h3 className="text-sm font-bold opacity-80">
               <Link
