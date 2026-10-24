@@ -1,11 +1,13 @@
 import {
   buildCategory,
+  buildOneTimeExpenses,
   buildSubcategory,
 } from "@tally/data-models/testing/fixtures";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useCategories } from "../../hooks/store/useCategories";
 import { BudgetCategoriesList } from "./budgetCategoriesList";
+import { BudgetSubcategorySpend } from "./budgetSubcategorySpend";
 
 vi.mock("../../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
 vi.mock("./budgetSubcategorySpend", () => ({
@@ -17,6 +19,7 @@ const breakdown = (subcategoryId: number, currentPeriodSpent: number) => ({
   budgetFrequency: 1,
   budgetType: "expense" as const,
   currentPeriodSpent,
+  oneTime: buildOneTimeExpenses(),
   previousPeriodSpent: 0,
   subcategoryId,
 });
@@ -67,5 +70,23 @@ describe("BudgetCategoriesList", () => {
     expect(screen.getByText("Food")).toBeInTheDocument();
     expect(screen.getByText("1 over budget")).toBeInTheDocument();
     expect(screen.queryByText("Unused")).toBeNull();
+  });
+
+  it("passes each subcategory's spending and one-time expenses through", () => {
+    const oneTime = buildOneTimeExpenses({ totalSpent: 25000 });
+
+    render(
+      <BudgetCategoriesList
+        data={[{ ...breakdown(2, 150), oneTime }]}
+        periodEnd={{ month: 3, year: 2025 }}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Food"));
+
+    expect(BudgetSubcategorySpend).toHaveBeenCalledWith(
+      expect.objectContaining({ amountPaid: 150, oneTime }),
+      undefined,
+    );
   });
 });

@@ -1,20 +1,24 @@
 import { Chip, Progress, Tooltip } from "@heroui/react";
-import { IconHelpCircle } from "@tabler/icons-react";
+import { IconBusinessplan, IconHelpCircle } from "@tabler/icons-react";
+import { type OneTimeExpenses } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { type Subcategory } from "@tally/data-models/contracts/subcategory";
 import { Dollars } from "@tally/utilities/financial/dollars";
 import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "../../format";
 import { getSpentText } from "../helpers";
+import { OneTimeExpensesDetails } from "../oneTime/oneTimeExpensesDetails";
 import { type BudgetDate } from "../types";
 
 interface Props {
   amountPaid: number;
+  oneTime?: OneTimeExpenses;
   periodEnd: BudgetDate;
   subcategory: Subcategory;
 }
 
 export const BudgetSubcategorySpend: React.FC<Props> = ({
   amountPaid,
+  oneTime,
   periodEnd,
   subcategory,
 }) => {
@@ -39,6 +43,14 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
             {description && (
               <Tooltip content={description}>
                 <IconHelpCircle size={16} />
+              </Tooltip>
+            )}
+            {oneTime?.transactions.length && (
+              <Tooltip content={<OneTimeExpensesDetails oneTime={oneTime} />}>
+                <IconBusinessplan
+                  aria-label={t("oneTime.iconLabel")}
+                  size={16}
+                />
               </Tooltip>
             )}
           </span>

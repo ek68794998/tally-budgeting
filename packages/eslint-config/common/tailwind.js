@@ -22,7 +22,7 @@ export const eslintConfigTailwind = [
           // Unlike eslint-plugin-tailwindcss, class names are matched including their variants (e.g., `hover:`)
           ignore: [
             // Hero UI
-            "^(?:[^:\\s]+:)*(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|background|divider)(-[0-9]+)?(/[0-9]+)?$",
+            "^(?:[^:\\s]+:)*(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(default|background|foreground|divider)(-[0-9]+)?(/[0-9]+)?$",
             "^(?:[^:\\s]+:)*(text|bg|border|ring|shadow|outline|divide|placeholder|caret|accent)-(primary|secondary|danger|warning|success)(-[0-9]+)?(/[0-9]+)?$",
           ],
         },

@@ -103,6 +103,11 @@
       "perPeriod": "<bold>{amount}</bold> every {period}"
     },
     "editCategories": "Categories",
+    "oneTime": {
+      "cardSummary": "{count, plural, =1 {Plus <amountFmt>{amount}</amountFmt> as a <link>one-time expense</link>} other {Plus <amountFmt>{amount}</amountFmt> across <link>{count} one-time expenses</link>}}",
+      "iconLabel": "One-time expenses",
+      "summary": "Plus <amountFmt>{amount}</amountFmt> in one-time expenses"
+    },
     "overBudget": "{amount} over budget",
     "overBudgetCount": "{count} over budget",
     "overview": {
@@ -420,6 +425,12 @@
       "level2": "Neutral",
       "level3": "Worth It"
     },
+    "oneTime": {
+      "description": "Excluded from budget totals; shown separately in Quick Pulse and the budget breakdown.",
+      "label": "One-time Purchase",
+      "mark": "Mark as One-Time",
+      "unmark": "Unmark as One-Time"
+    },
     "rules": {
       "edit": "Known Merchants"
     },
@@ -431,8 +442,10 @@
       "categoriesAll": "All Categories",
       "categoriesSome": "{count} {count, plural, =1 {category} other {categories}}",
       "filterPlaceholder": "Search merchants…",
+      "linkedFilter": "Showing linked transactions",
       "noneFound": "No transactions found.",
-      "noneMatched": "No transactions matched your search."
+      "noneMatched": "No transactions matched your search.",
+      "oneTimeOnly": "One-time only"
     },
     "title": "Transactions",
     "types": {

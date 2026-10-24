@@ -3,6 +3,7 @@ import {
   type ActionItems,
   type BudgetBreakdownItem,
   type BudgetChangeItem,
+  type OneTimeExpenses,
   type OverBudgetItem,
   type QuickPulseData,
 } from "@tally/data-models/contracts/api/getBudgetSummary";
@@ -77,6 +78,56 @@ const isTransactionInWindow = (
   return txnDate >= window.start && txnDate <= window.end;
 };
 
+const isOneTimeExpense = (
+  transaction: Transaction,
+  subcategoryMap: Map<number, Subcategory>,
+): boolean =>
+  transaction.isOneTime &&
+  subcategoryMap.get(transaction.subcategoryId)?.budget.type === "expense";
+
+const collectOneTimeExpenses = (
+  oneTimeTransactions: Transaction[],
+  subcategoryMap: Map<number, Subcategory>,
+  window: DateWindow,
+  subcategoryId?: number,
+): OneTimeExpenses => {
+  const expenses: OneTimeExpenses = { totalSpent: 0, transactions: [] };
+
+  for (const transaction of oneTimeTransactions) {
+    if (
+      subcategoryId !== undefined &&
+      transaction.subcategoryId !== subcategoryId
+    ) {
+      continue;
+    }
+
+    if (!isTransactionInWindow(transaction, window)) {
+      continue;
+    }
+
+    const subcategory = subcategoryMap.get(transaction.subcategoryId);
+
+    if (!subcategory) {
+      continue;
+    }
+
+    const amount = getTransactionSpentValue(transaction, subcategory);
+
+    expenses.totalSpent += amount;
+    expenses.transactions.push({
+      amount,
+      date: transaction.date,
+      id: transaction.id,
+      merchant: transaction.merchant,
+      subcategoryId: transaction.subcategoryId,
+    });
+  }
+
+  expenses.totalSpent = Math.max(0, expenses.totalSpent);
+
+  return expenses;
+};
+
 const sumTotalMap = (totals: Map<number, number>) =>
   Array.from(totals.values()).reduce((sum, val) => sum + val, 0);
 
@@ -131,7 +182,7 @@ interface BudgetSummaryData {
 export const createBudgetSummaryData = (
   input: BudgetSummaryInput,
 ): BudgetSummaryData => {
-  const { endDate, subcategories, transactions } = input;
+  const { endDate, subcategories, transactions: allTransactions } = input;
 
   const expenseSubcategories = subcategories.filter(
     (s) => s.budget.type === "expense",
@@ -140,6 +191,17 @@ export const createBudgetSummaryData = (
   const subcategoryMap = new Map<number, Subcategory>(
     subcategories.map((s) => [s.id, s]),
   );
+
+  const transactions: Transaction[] = [];
+  const oneTimeTransactions: Transaction[] = [];
+
+  for (const transaction of allTransactions) {
+    if (isOneTimeExpense(transaction, subcategoryMap)) {
+      oneTimeTransactions.push(transaction);
+    } else {
+      transactions.push(transaction);
+    }
+  }
 
   const currentMonthWindow = getCurrentMonthWindow(endDate);
   const current12MonthWindow = getCurrent12MonthWindow(endDate);
@@ -203,6 +265,12 @@ export const createBudgetSummaryData = (
       budgetFrequency: subcategory.budget.frequency,
       budgetType: subcategory.budget.type,
       currentPeriodSpent: currentSpent,
+      oneTime: collectOneTimeExpenses(
+        oneTimeTransactions,
+        subcategoryMap,
+        budgetPeriodWindow,
+        subcategory.id,
+      ),
       previousPeriodSpent: previousSpent,
       subcategoryId: subcategory.id,
     });
@@ -276,12 +344,22 @@ export const createBudgetSummaryData = (
         budgeted: last12MonthsBudgeted,
         duration: "last12Months",
         income: last12MonthsIncome,
+        oneTime: collectOneTimeExpenses(
+          oneTimeTransactions,
+          subcategoryMap,
+          current12MonthWindow,
+        ),
         spent: last12MonthsSpent,
       },
       lastMonth: {
         budgeted: lastMonthBudgeted,
         duration: "lastMonth",
         income: lastMonthIncome,
+        oneTime: collectOneTimeExpenses(
+          oneTimeTransactions,
+          subcategoryMap,
+          currentMonthWindow,
+        ),
         spent: lastMonthSpent,
       },
     },

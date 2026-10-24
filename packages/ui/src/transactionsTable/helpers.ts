@@ -31,6 +31,7 @@ const convertTransactionToTableData = (
     locale,
   }),
   id: transaction.id,
+  isOneTime: transaction.isOneTime,
   merchant: transaction.merchant,
   notes: transaction.notes,
   subcategory: subcategories.find(
@@ -49,6 +50,7 @@ export const getTransactionsTableData = (
 
 interface TransactionsFilterInput {
   accountIds: SharedSelection;
+  oneTimeOnly: boolean;
   searchValue: string;
   subcategoryIds: SharedSelection;
 }
@@ -58,6 +60,7 @@ export const isSelectionFilterActive = (filter: SharedSelection) =>
 
 export const buildTransactionsFilter = ({
   accountIds,
+  oneTimeOnly,
   searchValue,
   subcategoryIds,
 }: TransactionsFilterInput): string => {
@@ -85,6 +88,14 @@ export const buildTransactionsFilter = ({
       field: "subcategory",
       operator: "in",
       value: Array.from(subcategoryIds).join(","),
+    });
+  }
+
+  if (oneTimeOnly) {
+    filterExpressions.push({
+      field: "oneTime",
+      operator: "eq",
+      value: true,
     });
   }
 

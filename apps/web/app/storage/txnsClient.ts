@@ -221,6 +221,8 @@ const mapFilterFieldToColumn = (
       return `${TableName}.date`;
     case "merchant":
       return `${TableName}.merchant`;
+    case "oneTime":
+      return `${TableName}.one_time`;
     default:
       return `${TableName}.id`;
   }

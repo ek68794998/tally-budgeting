@@ -1,4 +1,5 @@
 import { type GetBudgetSummaryResponse } from "@tally/data-models/contracts/api/getBudgetSummary";
+import { buildOneTimeExpenses } from "@tally/data-models/testing/fixtures";
 import { render, screen, waitFor } from "@testing-library/react";
 import {
   afterEach,
@@ -30,7 +31,12 @@ vi.mock("./budgetQuickPulseCharts", () => ({
   BudgetQuickPulseCharts: vi.fn(() => <div data-testid="quickPulse" />),
 }));
 
-const period = { budgeted: 1, income: 1, spent: 1 };
+const period = {
+  budgeted: 1,
+  income: 1,
+  oneTime: buildOneTimeExpenses(),
+  spent: 1,
+};
 
 const summary: GetBudgetSummaryResponse = {
   actionItems: {

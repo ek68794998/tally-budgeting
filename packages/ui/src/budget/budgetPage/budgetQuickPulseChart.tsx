@@ -1,4 +1,4 @@
-import { Link } from "@heroui/react";
+import { Divider, Link } from "@heroui/react";
 import { IconChevronsRight } from "@tabler/icons-react";
 import { type QuickPulsePeriod } from "@tally/data-models/contracts/api/getBudgetSummary";
 import { buildWebRoute, web } from "@tally/utilities/routing/routeBuilder";
@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { DataCard } from "../../common/dataCard";
 import { formatCurrency } from "../../format";
+import { OneTimeExpensesPopover } from "../oneTime/oneTimeExpensesPopover";
 
 interface Props {
   data: QuickPulsePeriod;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export const BudgetQuickPulseChart: React.FC<Props> = ({
-  data: { budgeted, duration, income, spent },
+  data: { budgeted, duration, income, oneTime, spent },
   title,
 }) => {
   const t = useTranslations("budget.quickPulse");
@@ -75,6 +76,10 @@ export const BudgetQuickPulseChart: React.FC<Props> = ({
                 bold: (chunks) => <b>{chunks}</b>,
               })}
             </h3>
+            <Divider />
+            {oneTime.transactions.length > 0 && (
+              <OneTimeExpensesPopover oneTime={oneTime} />
+            )}
             <h3 className="text-sm font-bold opacity-80">
               <Link
                 as={NextLink}

@@ -5,6 +5,7 @@ export interface TransactionTableData {
   amount: string;
   date: string;
   id: number;
+  isOneTime: boolean;
   merchant: string;
   notes: string | undefined;
   subcategory: string | undefined;
