@@ -9,10 +9,10 @@ export const OneTimeExpensesSummary: React.FC<Props> = ({ totalSpent }) => {
   const t = useTranslations("budget.oneTime");
 
   return (
-    <span className="italic opacity-80">
+    <span className="opacity-80">
       {t.rich("summary", {
         amount: formatCurrency(totalSpent, { showCents: false }),
-        amountFmt: (chunks) => <span className="font-bold">{chunks}</span>,
+        amountFmt: (chunks) => <b>{chunks}</b>,
       })}
     </span>
   );

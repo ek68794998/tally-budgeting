@@ -117,20 +117,6 @@ export const TransactionEditModal: React.FC<Props> = ({
                 onValueChange={setAmount}
                 value={amount}
               />
-              <Switch
-                isSelected={isOneTime}
-                onValueChange={setIsOneTime}
-                size="sm"
-              >
-                <div className="flex flex-col">
-                  <span className="text-sm">
-                    {t("transactions.oneTime.label")}
-                  </span>
-                  <span className="text-default-500 text-xs">
-                    {t("transactions.oneTime.description")}
-                  </span>
-                </div>
-              </Switch>
               <DatePicker
                 granularity="day"
                 label={t("transactions.columns.date")}
@@ -147,6 +133,20 @@ export const TransactionEditModal: React.FC<Props> = ({
                 rows={3}
                 value={notes}
               />
+              <Switch
+                isSelected={isOneTime}
+                onValueChange={setIsOneTime}
+                size="sm"
+              >
+                <div className="flex flex-col">
+                  <span className="text-sm">
+                    {t("transactions.oneTime.label")}
+                  </span>
+                  <span className="text-default-500 text-xs">
+                    {t("transactions.oneTime.description")}
+                  </span>
+                </div>
+              </Switch>
             </ModalBody>
             <EditModalFooter
               isSaveDisabled={!canSave}

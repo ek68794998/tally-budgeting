@@ -12,7 +12,7 @@ export const OneTimeExpensesPopover: React.FC<Props> = ({ oneTime }) => {
   const t = useTranslations("budget.oneTime");
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-1 text-sm">
+    <div className="flex flex-wrap items-baseline gap-x-1 font-numeric text-sm">
       <OneTimeExpensesSummary totalSpent={oneTime.totalSpent} />
       <span aria-hidden="true">{"·"}</span>
       <Popover placement="bottom">

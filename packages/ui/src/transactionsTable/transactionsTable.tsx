@@ -2,6 +2,7 @@
 
 import {
   Chip,
+  cn,
   Pagination,
   Spinner,
   Table,
@@ -62,6 +63,43 @@ export const TransactionsTable: React.FC = () => {
     transactionToDelete,
   } = useTransactionsTable();
 
+  const getItemMerchantField = ({
+    isOneTime,
+    merchant,
+    notes,
+  }: TransactionTableData): ReactNode => {
+    const actions: ReactNode[] = [<span key="merchant">{merchant}</span>];
+
+    const iconClassName = cn(
+      "bg-primary/20 text-primary inline rounded-full p-1 leading-0",
+    );
+    const iconSize = 22;
+
+    if (notes) {
+      actions.push(
+        <Tooltip content={notes} key="notes">
+          <IconNote className={iconClassName} size={iconSize} />
+        </Tooltip>,
+      );
+    }
+
+    if (isOneTime) {
+      actions.push(
+        <Tooltip content={t("oneTime.label")} key="isOneTime">
+          <IconBusinessplan
+            aria-label={t("oneTime.label")}
+            className={iconClassName}
+            size={iconSize}
+          />
+        </Tooltip>,
+      );
+    }
+
+    return (
+      <div className="flex flex-wrap items-center gap-x-1.5">{actions}</div>
+    );
+  };
+
   const columns: {
     getValue: (item: TransactionTableData) => ReactNode;
     key: TransactionKey;
@@ -75,29 +113,7 @@ export const TransactionsTable: React.FC = () => {
       sortField: transactionSortFields.date,
     },
     {
-      getValue: (item) => (
-        <span>
-          {item.notes ? (
-            <Tooltip content={item.notes}>
-              <span>
-                {item.merchant}
-                <IconNote className="m-1 mt-0 inline leading-0" size={14} />
-              </span>
-            </Tooltip>
-          ) : (
-            item.merchant
-          )}
-          {item.isOneTime && (
-            <Tooltip content={t("oneTime.label")}>
-              <IconBusinessplan
-                aria-label={t("oneTime.label")}
-                className="m-1 mt-0 inline leading-0"
-                size={14}
-              />
-            </Tooltip>
-          )}
-        </span>
-      ),
+      getValue: (item) => getItemMerchantField(item),
       key: "merchant",
       label: t("columns.merchant"),
       sortField: transactionSortFields.merchant,
