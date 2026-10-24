@@ -46,6 +46,7 @@ export const buildTransaction = (
   date: "2025-01-15T12:00:00.000Z",
   happiness: 2,
   id: 1,
+  isOneTime: false,
   merchant: "Coffee Shop",
   notes: "",
   subcategoryId: 1,

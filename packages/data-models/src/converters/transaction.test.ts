@@ -16,6 +16,7 @@ describe("transaction converters", () => {
         date: "2024-03-15T10:00:00.000Z",
         happiness: 2,
         id: 42,
+        isOneTime: true,
         merchant: "Starbucks",
         notes: "morning coffee",
         subcategoryId: 3,
@@ -29,6 +30,7 @@ describe("transaction converters", () => {
       expect(result.id).toBe(42);
       expect(result.merchant).toBe("Starbucks");
       expect(result.notes).toBe("morning coffee");
+      expect(result.one_time).toBe(true);
       expect(result.subcategory).toBe(3);
     });
 
@@ -40,6 +42,7 @@ describe("transaction converters", () => {
         date: "2024-06-20T22:30:00.000Z",
         happiness: 2,
         id: 1,
+        isOneTime: false,
         merchant: "Test",
         notes: "",
         subcategoryId: 1,
@@ -59,6 +62,7 @@ describe("transaction converters", () => {
         date: "2024-01-01T00:00:00.000Z",
         happiness: 1,
         id: 1,
+        isOneTime: false,
         merchant: "Shop",
         notes: "",
         subcategoryId: 2,
@@ -76,6 +80,7 @@ describe("transaction converters", () => {
         date: "2024-01-01T00:00:00.000Z",
         happiness: 1,
         id: 1,
+        isOneTime: false,
         merchant: "Shop",
         notes: "",
         subcategoryId: 2,
@@ -93,6 +98,7 @@ describe("transaction converters", () => {
         date: "2024-01-01T00:00:00.000Z",
         happiness: 2,
         id: 1,
+        isOneTime: false,
         merchant: "Test",
         notes: "",
         subcategoryId: 1,
@@ -127,6 +133,7 @@ describe("transaction converters", () => {
       id: 42,
       merchant: "Starbucks",
       notes: "morning coffee",
+      one_time: true, // eslint-disable-line @typescript-eslint/naming-convention
       subcategory: 3,
     };
 
@@ -144,6 +151,7 @@ describe("transaction converters", () => {
       expect(result.date).toBe("2024-03-15T12:00:00.000Z");
       expect(result.happiness).toBe(2);
       expect(result.id).toBe(42);
+      expect(result.isOneTime).toBe(true);
       expect(result.merchant).toBe("Starbucks");
       expect(result.notes).toBe("morning coffee");
       expect(result.subcategoryId).toBe(3);

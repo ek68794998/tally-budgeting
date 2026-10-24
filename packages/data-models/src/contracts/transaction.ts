@@ -9,6 +9,7 @@ export const transactionSchema = z.object({
   date: z.iso.datetime({ offset: true }),
   happiness: happinessLevelSchema,
   id: z.int(),
+  isOneTime: z.boolean().default(false),
   merchant: z.string().min(1).max(100),
   notes: z.string(),
   subcategoryId: z.number(),

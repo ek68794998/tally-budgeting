@@ -40,6 +40,7 @@ const gas = buildTransaction({
   categoryId: -1,
   date: "2025-02-01T12:00:00.000Z",
   id: 3,
+  isOneTime: true,
   merchant: "Gamma Gas",
   subcategoryId: -1,
 });
@@ -95,6 +96,8 @@ describe("TxnsClient", () => {
       { expected: [1, 3], filter: "account eq 1" },
       { expected: [1, 2], filter: "subcategory in 1,2" },
       { expected: [1, 3], filter: "date ge 2025-01-08T00:00:00Z" },
+      { expected: [3], filter: "oneTime eq true" },
+      { expected: [1, 2], filter: "oneTime eq false" },
       { expected: [2], filter: "unknownField eq 2" },
       { expected: [], filter: "merchant eq true" },
       // Expressions joined with `and` are currently combined with OR.
@@ -178,6 +181,7 @@ describe("TxnsClient", () => {
       client.updateTransactionAsync({
         ...coffee,
         amountCents: 999,
+        isOneTime: true,
         notes: "",
       }),
     ).resolves.toBe(true);
@@ -188,6 +192,9 @@ describe("TxnsClient", () => {
 
     const { data } = await client.getTransactionsAsync();
 
-    expect(data).toEqual([{ ...coffee, amountCents: 999, notes: "" }, gas]);
+    expect(data).toEqual([
+      { ...coffee, amountCents: 999, isOneTime: true, notes: "" },
+      gas,
+    ]);
   });
 });

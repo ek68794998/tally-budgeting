@@ -45,6 +45,7 @@ export const ModalDefaultTransaction: Readonly<Transaction> = {
   date: new Date().toISOString(),
   happiness: HappinessLevelDefault,
   id: 0,
+  isOneTime: false,
   merchant: "",
   notes: "",
   subcategoryId: DefaultSubcategoryId,

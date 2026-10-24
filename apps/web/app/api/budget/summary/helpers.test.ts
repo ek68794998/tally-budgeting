@@ -51,6 +51,7 @@ describe("Budget API helpers", () => {
       date,
       happiness: 2,
       id,
+      isOneTime: false,
       merchant: "Test Merchant",
       notes: "",
       subcategoryId,

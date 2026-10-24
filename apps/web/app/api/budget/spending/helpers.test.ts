@@ -38,6 +38,7 @@ describe("calculateBudgetSpending", () => {
     date: "2025-01-15T00:00:00.000Z",
     happiness: 2,
     id,
+    isOneTime: false,
     merchant: "Test Merchant",
     notes: "",
     subcategoryId,
