@@ -6,18 +6,18 @@ describe("table helpers", () => {
     it.each([
       { color: "primary", isFilterActive: true },
       { color: undefined, isFilterActive: false },
-    ])("highlights the filter only when active ($isFilterActive)", ({
-      color,
-      isFilterActive,
-    }) => {
-      const props = getTableFilterProps("Account", isFilterActive);
+    ])(
+      "highlights the filter only when active ($isFilterActive)",
+      ({ color, isFilterActive }) => {
+        const props = getTableFilterProps("Account", isFilterActive);
 
-      expect(props).toHaveProperty("aria-label", "Account");
-      expect(props).toMatchObject({
-        color,
-        placeholder: "Account",
-        selectionMode: "multiple",
-      });
-    });
+        expect(props).toHaveProperty("aria-label", "Account");
+        expect(props).toMatchObject({
+          color,
+          placeholder: "Account",
+          selectionMode: "multiple",
+        });
+      },
+    );
   });
 });

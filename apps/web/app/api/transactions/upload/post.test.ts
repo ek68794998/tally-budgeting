@@ -90,34 +90,34 @@ describe("PostTransactionsUploadRouteAsync", () => {
   it.each([
     { isValidationOnly: "false", savedCount: 1 },
     { isValidationOnly: "true", savedCount: 0 },
-  ])("sorts rows into processed, ignored, and failed (validation only: $isValidationOnly)", async ({
-    isValidationOnly,
-    savedCount,
-  }) => {
-    const { json, status } = await uploadAsync({
-      accountId: "1",
-      file: new File([chaseCsv], "chase.csv"),
-      isValidationOnly,
-    });
+  ])(
+    "sorts rows into processed, ignored, and failed (validation only: $isValidationOnly)",
+    async ({ isValidationOnly, savedCount }) => {
+      const { json, status } = await uploadAsync({
+        accountId: "1",
+        file: new File([chaseCsv], "chase.csv"),
+        isValidationOnly,
+      });
 
-    expect(status).toBe(200);
-    expect(json).toMatchObject({
-      rowsFailed: [[expect.any(String), csvRows[2]]],
-      rowsIgnored: [csvRows[1]],
-      rowsProcessed: [
-        {
-          accountId: 1,
-          amountCents: 550,
-          merchant: "Starbucks",
-          subcategoryId: 7,
-        },
-      ],
-      success: true,
-    });
-    expect(storageMocks.txns.insertTransactionsAsync).toHaveBeenCalledTimes(
-      savedCount,
-    );
-  });
+      expect(status).toBe(200);
+      expect(json).toMatchObject({
+        rowsFailed: [[expect.any(String), csvRows[2]]],
+        rowsIgnored: [csvRows[1]],
+        rowsProcessed: [
+          {
+            accountId: 1,
+            amountCents: 550,
+            merchant: "Starbucks",
+            subcategoryId: 7,
+          },
+        ],
+        success: true,
+      });
+      expect(storageMocks.txns.insertTransactionsAsync).toHaveBeenCalledTimes(
+        savedCount,
+      );
+    },
+  );
 
   it.each([
     { accountId: "99", case: "an unknown account" },

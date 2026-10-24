@@ -124,16 +124,16 @@ describe("RulesTable", () => {
   it.each([
     { expectedTitle: "Delete All (1)", selection: "all" as const },
     { expectedTitle: "Delete Selected (1)", selection: new Set([1]) },
-  ])("titles bulk deletion as '$expectedTitle'", ({
-    expectedTitle,
-    selection,
-  }) => {
-    vi.mocked(useRulesTable).mockReturnValue(buildState({ selection }));
+  ])(
+    "titles bulk deletion as '$expectedTitle'",
+    ({ expectedTitle, selection }) => {
+      vi.mocked(useRulesTable).mockReturnValue(buildState({ selection }));
 
-    render(<RulesTable />);
+      render(<RulesTable />);
 
-    expect(getConfirmationProps()[0]?.title).toBe(expectedTitle);
-  });
+      expect(getConfirmationProps()[0]?.title).toBe(expectedTitle);
+    },
+  );
 
   it("deletes the active rule on confirmation and requires one", async () => {
     const state = buildState();

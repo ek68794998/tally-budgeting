@@ -15,13 +15,13 @@ describe("data.accountHelpers", () => {
       expect(isAccount(asset)).toBe(true);
     });
 
-    it.each([
-      { type: "fixed_asset" },
-      { type: "personal_asset" },
-    ])("returns false for %o", (input) => {
-      const asset = dangerouslyCoerceType<Asset>(input);
-      expect(isAccount(asset)).toBe(false);
-    });
+    it.each([{ type: "fixed_asset" }, { type: "personal_asset" }])(
+      "returns false for %o",
+      (input) => {
+        const asset = dangerouslyCoerceType<Asset>(input);
+        expect(isAccount(asset)).toBe(false);
+      },
+    );
   });
 
   describe("isAsset", () => {

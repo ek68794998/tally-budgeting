@@ -44,64 +44,64 @@ describe("useSubcategoryForm", () => {
   it.each([
     { expected: { pctNeeds: 90, pctSavings: 0, pctWants: 10 }, needs: 90 },
     { expected: { pctNeeds: 20, pctSavings: 50, pctWants: 30 }, needs: 20 },
-  ])("keeps needs + wants within 100% when needs become $needs", ({
-    expected,
-    needs,
-  }) => {
-    const { result } = renderForm();
+  ])(
+    "keeps needs + wants within 100% when needs become $needs",
+    ({ expected, needs }) => {
+      const { result } = renderForm();
 
-    act(() => {
-      result.current.updatePctNeeds(needs);
-    });
+      act(() => {
+        result.current.updatePctNeeds(needs);
+      });
 
-    expect(result.current).toMatchObject(expected);
-  });
+      expect(result.current).toMatchObject(expected);
+    },
+  );
 
   it.each([
     { expected: { pctNeeds: 15, pctSavings: 0, pctWants: 85 }, wants: 85 },
     { expected: { pctNeeds: 60, pctSavings: 30, pctWants: 10 }, wants: 10 },
-  ])("keeps needs + wants within 100% when wants become $wants", ({
-    expected,
-    wants,
-  }) => {
-    const { result } = renderForm();
+  ])(
+    "keeps needs + wants within 100% when wants become $wants",
+    ({ expected, wants }) => {
+      const { result } = renderForm();
 
-    act(() => {
-      result.current.updatePctWants(wants);
-    });
+      act(() => {
+        result.current.updatePctWants(wants);
+      });
 
-    expect(result.current).toMatchObject(expected);
-  });
+      expect(result.current).toMatchObject(expected);
+    },
+  );
 
   it.each([
     { expectedSavings: 100, isPreTaxSavings: true },
     { expectedSavings: 0, isPreTaxSavings: false },
-  ])("saves income with $expectedSavings% savings when pre-tax is $isPreTaxSavings", ({
-    expectedSavings,
-    isPreTaxSavings,
-  }) => {
-    const { result } = renderForm();
+  ])(
+    "saves income with $expectedSavings% savings when pre-tax is $isPreTaxSavings",
+    ({ expectedSavings, isPreTaxSavings }) => {
+      const { result } = renderForm();
 
-    act(() => {
-      result.current.setBudgetType("income");
-      result.current.setIsPreTaxSavings(isPreTaxSavings);
-      result.current.setBudgetAmount(50);
-      result.current.setBudgetFrequency(1);
-      result.current.setCategoryId(4);
-      result.current.setDescription("Paycheck");
-      result.current.setLabel("Salary");
-    });
+      act(() => {
+        result.current.setBudgetType("income");
+        result.current.setIsPreTaxSavings(isPreTaxSavings);
+        result.current.setBudgetAmount(50);
+        result.current.setBudgetFrequency(1);
+        result.current.setCategoryId(4);
+        result.current.setDescription("Paycheck");
+        result.current.setLabel("Salary");
+      });
 
-    expect(result.current.buildSubcategory()).toEqual({
-      ...rent,
-      budget: { amountCents: 50_00, frequency: 1, type: "income" },
-      categoryId: 4,
-      description: "Paycheck",
-      label: "Salary",
-      percentNeeds: 0,
-      percentSavings: expectedSavings,
-    });
-  });
+      expect(result.current.buildSubcategory()).toEqual({
+        ...rent,
+        budget: { amountCents: 50_00, frequency: 1, type: "income" },
+        categoryId: 4,
+        description: "Paycheck",
+        label: "Salary",
+        percentNeeds: 0,
+        percentSavings: expectedSavings,
+      });
+    },
+  );
 
   it("recognizes existing pre-tax income savings", () => {
     const { result } = renderForm(

@@ -10,21 +10,21 @@ describe("BudgetActionItemCell", () => {
   it.each([
     { expectedCount: 1, subcontent: "Details" },
     { expectedCount: 0, subcontent: undefined },
-  ])("renders the subcategory and content with subcontent=$subcontent", ({
-    expectedCount,
-    subcontent,
-  }) => {
-    render(
-      <BudgetActionItemCell
-        category={buildCategory()}
-        content={"Spent a lot"}
-        subcategory={buildSubcategory({ label: "Gifts" })}
-        subcontent={subcontent}
-      />,
-    );
+  ])(
+    "renders the subcategory and content with subcontent=$subcontent",
+    ({ expectedCount, subcontent }) => {
+      render(
+        <BudgetActionItemCell
+          category={buildCategory()}
+          content={"Spent a lot"}
+          subcategory={buildSubcategory({ label: "Gifts" })}
+          subcontent={subcontent}
+        />,
+      );
 
-    expect(screen.getByText("Gifts")).toBeInTheDocument();
-    expect(screen.getByText("Spent a lot")).toBeInTheDocument();
-    expect(screen.queryAllByText("Details")).toHaveLength(expectedCount);
-  });
+      expect(screen.getByText("Gifts")).toBeInTheDocument();
+      expect(screen.getByText("Spent a lot")).toBeInTheDocument();
+      expect(screen.queryAllByText("Details")).toHaveLength(expectedCount);
+    },
+  );
 });

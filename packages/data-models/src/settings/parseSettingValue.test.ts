@@ -31,15 +31,13 @@ describe("parseSettingValue", () => {
       key: "providersHidden",
       raw: undefined,
     },
-  ] as const)("returns $expected for $key given $raw", ({
-    expected,
-    failed,
-    key,
-    raw,
-  }) => {
-    const onParseFailed = vi.fn();
+  ] as const)(
+    "returns $expected for $key given $raw",
+    ({ expected, failed, key, raw }) => {
+      const onParseFailed = vi.fn();
 
-    expect(parseSettingValue(key, raw, onParseFailed)).toEqual(expected);
-    expect(onParseFailed).toHaveBeenCalledTimes(failed ? 1 : 0);
-  });
+      expect(parseSettingValue(key, raw, onParseFailed)).toEqual(expected);
+      expect(onParseFailed).toHaveBeenCalledTimes(failed ? 1 : 0);
+    },
+  );
 });

@@ -34,77 +34,75 @@ describe("BudgetQuickPulseChart", () => {
       expectedQuery: "end=2025-03-31&start=2024-04-01",
       spent: 150,
     },
-  ])("links to spending for $duration and colors the bar", ({
-    duration,
-    expectedBar,
-    expectedQuery,
-    spent,
-  }) => {
-    const { container } = render(
-      <BudgetQuickPulseChart
-        data={{
-          budgeted: 100,
-          duration,
-          income: 200,
-          oneTime: buildOneTimeExpenses(),
-          spent,
-        }}
-        title="Pulse"
-      />,
-    );
+  ])(
+    "links to spending for $duration and colors the bar",
+    ({ duration, expectedBar, expectedQuery, spent }) => {
+      const { container } = render(
+        <BudgetQuickPulseChart
+          data={{
+            budgeted: 100,
+            duration,
+            income: 200,
+            oneTime: buildOneTimeExpenses(),
+            spent,
+          }}
+          title="Pulse"
+        />,
+      );
 
-    expect(screen.getByText("Pulse")).toBeInTheDocument();
-    expect(screen.getByText(`$${spent}`)).toHaveClass(
-      expectedBar.replace("bg-", "text-"),
-    );
-    expect(
-      screen.getByText("View Spending").closest("a")?.getAttribute("href"),
-    ).toContain(expectedQuery);
-    expect(container.querySelector(`.${expectedBar}`)).not.toBeNull();
-  });
+      expect(screen.getByText("Pulse")).toBeInTheDocument();
+      expect(screen.getByText(`$${spent}`)).toHaveClass(
+        expectedBar.replace("bg-", "text-"),
+      );
+      expect(
+        screen.getByText("View Spending").closest("a")?.getAttribute("href"),
+      ).toContain(expectedQuery);
+      expect(container.querySelector(`.${expectedBar}`)).not.toBeNull();
+    },
+  );
 
   it.each([
     { expectedCount: 0, transactionCount: 0 },
     { expectedCount: 1, transactionCount: 1 },
-  ])("renders $expectedCount one-time popover(s) for $transactionCount one-time transaction(s)", ({
-    expectedCount,
-    transactionCount,
-  }) => {
-    const oneTime = buildOneTimeExpenses({
-      totalSpent: 25000,
-      transactions: Array.from({ length: transactionCount }, (_, index) => ({
-        amount: 25000,
-        date: "2025-03-03T12:00:00.000Z",
-        id: index + 1,
-        merchant: "Dealership",
-        subcategoryId: 1,
-      })),
-    });
+  ])(
+    "renders $expectedCount one-time popover(s) for $transactionCount one-time transaction(s)",
+    ({ expectedCount, transactionCount }) => {
+      const oneTime = buildOneTimeExpenses({
+        totalSpent: 25000,
+        transactions: Array.from({ length: transactionCount }, (_, index) => ({
+          amount: 25000,
+          date: "2025-03-03T12:00:00.000Z",
+          id: index + 1,
+          merchant: "Dealership",
+          subcategoryId: 1,
+        })),
+      });
 
-    render(
-      <BudgetQuickPulseChart
-        data={{
-          budgeted: 100,
-          duration: "lastMonth",
-          income: 200,
-          oneTime,
-          spent: 50,
-        }}
-        title="Pulse"
-      />,
-    );
-
-    expect(screen.queryAllByTestId("oneTimePopover")).toHaveLength(
-      expectedCount,
-    );
-
-    if (expectedCount > 0) {
-      expect(OneTimeExpensesPopover).toHaveBeenCalledWith(
-        { oneTime },
-        undefined,
+      render(
+        <BudgetQuickPulseChart
+          data={{
+            budgeted: 100,
+            duration: "lastMonth",
+            income: 200,
+            oneTime,
+            spent: 50,
+          }}
+          title="Pulse"
+        />,
       );
-    }
-  });
+
+      expect(screen.queryAllByTestId("oneTimePopover")).toHaveLength(
+        expectedCount,
+      );
+
+      if (expectedCount > 0) {
+        expect(OneTimeExpensesPopover).toHaveBeenCalledWith(
+          { oneTime },
+          undefined,
+        );
+      }
+    },
+  );
 
   it("renders charts for the last month and year", () => {
     const period = {

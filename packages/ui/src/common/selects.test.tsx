@@ -108,22 +108,21 @@ describe("select inputs", () => {
       { key: "2", shouldChange: true, value: 1 },
       { key: "1", shouldChange: false, value: checking },
       { key: "99", shouldChange: false, value: 1 },
-    ])("reports a change to account $key only when it differs", ({
-      key,
-      shouldChange,
-      value,
-    }) => {
-      const onChange = vi.fn();
-      render(
-        <SelectAccount label="Account" onChange={onChange} value={value} />,
-      );
+    ])(
+      "reports a change to account $key only when it differs",
+      ({ key, shouldChange, value }) => {
+        const onChange = vi.fn();
+        render(
+          <SelectAccount label="Account" onChange={onChange} value={value} />,
+        );
 
-      expect(lastSelectProps()?.selectedKeys).toEqual(["1"]);
+        expect(lastSelectProps()?.selectedKeys).toEqual(["1"]);
 
-      lastSelectProps()?.onSelectionChange?.(buildSelection(key));
+        lastSelectProps()?.onSelectionChange?.(buildSelection(key));
 
-      expect(onChange).toHaveBeenCalledTimes(shouldChange ? 1 : 0);
-    });
+        expect(onChange).toHaveBeenCalledTimes(shouldChange ? 1 : 0);
+      },
+    );
   });
 
   describe("hidden providers", () => {
@@ -150,17 +149,17 @@ describe("select inputs", () => {
     it.each([
       { expected: [], selected: "fidelity" as const },
       { expected: ["Hidden"], selected: "chase" as const },
-    ])("shows the Hidden provider section only when the current value is hidden (selected: $selected)", ({
-      expected,
-      selected,
-    }) => {
-      mockHiddenProviders(["chase"]);
+    ])(
+      "shows the Hidden provider section only when the current value is hidden (selected: $selected)",
+      ({ expected, selected }) => {
+        mockHiddenProviders(["chase"]);
 
-      render(<SelectProvider onChange={vi.fn()} value={selected} />);
+        render(<SelectProvider onChange={vi.fn()} value={selected} />);
 
-      expect(sectionTitles()).toEqual(expected);
-      expect(lastSelectProps()?.selectedKeys).toEqual([selected]);
-    });
+        expect(sectionTitles()).toEqual(expected);
+        expect(lastSelectProps()?.selectedKeys).toEqual([selected]);
+      },
+    );
   });
 
   describe("SelectProvider", () => {
@@ -195,26 +194,28 @@ describe("select inputs", () => {
         expected: buildCategory({ id: -1, label: "Uncategorized" }),
         key: null,
       },
-    ])("sorts categories and reports selection of $key", ({
-      expected,
-      key,
-    }) => {
-      const onChange = vi.fn();
-      render(<SelectCategory label="Category" onChange={onChange} value={2} />);
+    ])(
+      "sorts categories and reports selection of $key",
+      ({ expected, key }) => {
+        const onChange = vi.fn();
+        render(
+          <SelectCategory label="Category" onChange={onChange} value={2} />,
+        );
 
-      const props = lastAutocompleteProps();
+        const props = lastAutocompleteProps();
 
-      expect(props?.placeholder).toBe("Housing");
-      expect(props?.items).toEqual([
-        food,
-        housing,
-        buildCategory({ id: -1, label: "Uncategorized" }),
-      ]);
+        expect(props?.placeholder).toBe("Housing");
+        expect(props?.items).toEqual([
+          food,
+          housing,
+          buildCategory({ id: -1, label: "Uncategorized" }),
+        ]);
 
-      props?.onSelectionChange?.(key);
+        props?.onSelectionChange?.(key);
 
-      expect(onChange).toHaveBeenCalledWith(expected);
-    });
+        expect(onChange).toHaveBeenCalledWith(expected);
+      },
+    );
 
     it("accepts a category object as the value and rejects unknown ids", () => {
       render(<SelectCategory onChange={vi.fn()} value={food} />);

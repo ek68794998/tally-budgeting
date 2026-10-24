@@ -62,20 +62,20 @@ describe("TransactionsUploadResult", () => {
   it.each([
     { clearCalls: 1, succeeded: true },
     { clearCalls: 0, succeeded: false },
-  ])("confirms the upload and clears the file when it succeeded=$succeeded", async ({
-    clearCalls,
-    succeeded,
-  }) => {
-    uploadSelectedFile.mockResolvedValue(succeeded);
-    renderResult(true);
+  ])(
+    "confirms the upload and clears the file when it succeeded=$succeeded",
+    async ({ clearCalls, succeeded }) => {
+      uploadSelectedFile.mockResolvedValue(succeeded);
+      renderResult(true);
 
-    fireEvent.click(screen.getByText("Confirm & Save"));
+      fireEvent.click(screen.getByText("Confirm & Save"));
 
-    await waitFor(() => {
-      expect(uploadSelectedFile).toHaveBeenCalledWith(false);
-    });
-    await waitFor(() => {
-      expect(setSelectedFile).toHaveBeenCalledTimes(clearCalls);
-    });
-  });
+      await waitFor(() => {
+        expect(uploadSelectedFile).toHaveBeenCalledWith(false);
+      });
+      await waitFor(() => {
+        expect(setSelectedFile).toHaveBeenCalledTimes(clearCalls);
+      });
+    },
+  );
 });

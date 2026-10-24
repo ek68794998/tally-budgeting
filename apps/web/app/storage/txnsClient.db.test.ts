@@ -126,15 +126,14 @@ describe("TxnsClient", () => {
         sortBy: "subcategory",
       },
       { direction: "descending", expected: [3, 2, 1], sortBy: "unknown" },
-    ] as const)("sorts by $sortBy $direction", async ({
-      direction,
-      expected,
-      sortBy,
-    }) => {
-      await expect(
-        getIdsAsync(createClient(), { direction, sortBy }),
-      ).resolves.toEqual(expected);
-    });
+    ] as const)(
+      "sorts by $sortBy $direction",
+      async ({ direction, expected, sortBy }) => {
+        await expect(
+          getIdsAsync(createClient(), { direction, sortBy }),
+        ).resolves.toEqual(expected);
+      },
+    );
 
     it("paginates while reporting the unpaginated total", async () => {
       const result = await createClient().getTransactionsAsync({

@@ -163,19 +163,17 @@ const testCases: TestCase[] = [
 
 describe("Budget page helpers", () => {
   describe("calculateBudgetScore", () => {
-    it.each<TestCase>(testCases)("should calculate budget score for $name", ({
-      budgeted,
-      expectedScore,
-      income,
-      spent,
-    }) => {
-      const score = calculateBudgetScore(spent, income, budgeted);
+    it.each<TestCase>(testCases)(
+      "should calculate budget score for $name",
+      ({ budgeted, expectedScore, income, spent }) => {
+        const score = calculateBudgetScore(spent, income, budgeted);
 
-      const scoreToOneDecimal = score?.toFixed(1) ?? "null";
-      const expectedScoreToOneDecimal = expectedScore?.toFixed(1) ?? "null";
+        const scoreToOneDecimal = score?.toFixed(1) ?? "null";
+        const expectedScoreToOneDecimal = expectedScore?.toFixed(1) ?? "null";
 
-      expect(scoreToOneDecimal).toBe(expectedScoreToOneDecimal);
-    });
+        expect(scoreToOneDecimal).toBe(expectedScoreToOneDecimal);
+      },
+    );
   });
 
   describe("getBudgetScoreColor", () => {
@@ -323,30 +321,27 @@ describe("Budget page helpers", () => {
         expectedPeriod: "durations.multipleMonths(Dec 2024)",
         frequency: 3,
       },
-    ])("describes $frequency month(s) ending $endDate.month/$endDate.year as $expectedPeriod", ({
-      amountCents,
-      endDate,
-      expectedKey,
-      expectedPeriod,
-      frequency,
-    }) => {
-      const spentText = getSpentText(
-        5.5,
-        { amountCents, frequency, type: "expense" },
-        endDate,
-        t,
-        "en-US",
-      );
+    ])(
+      "describes $frequency month(s) ending $endDate.month/$endDate.year as $expectedPeriod",
+      ({ amountCents, endDate, expectedKey, expectedPeriod, frequency }) => {
+        const spentText = getSpentText(
+          5.5,
+          { amountCents, frequency, type: "expense" },
+          endDate,
+          t,
+          "en-US",
+        );
 
-      expect(spentText).toMatchObject({ key: expectedKey });
-      expect(rich.mock.lastCall?.[1]).toMatchObject({
-        budget: formatCurrency(amountCents / 100, {
-          showCentsIfLessThanDigits: 2,
-        }),
-        period: expectedPeriod,
-        spent: "$5.50",
-      });
-    });
+        expect(spentText).toMatchObject({ key: expectedKey });
+        expect(rich.mock.lastCall?.[1]).toMatchObject({
+          budget: formatCurrency(amountCents / 100, {
+            showCentsIfLessThanDigits: 2,
+          }),
+          period: expectedPeriod,
+          spent: "$5.50",
+        });
+      },
+    );
 
     it("renders bold chunks", () => {
       const spentText = getSpentText(

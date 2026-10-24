@@ -31,20 +31,20 @@ describe("LoginPage", () => {
   it.each([
     { expected: "/budget", next: ["/budget", "/assets"] },
     { expected: undefined, next: undefined },
-  ])("shows the login card with next=$expected when signed out", async ({
-    expected,
-    next,
-  }) => {
-    vi.mocked(isAuthenticatedAsync).mockResolvedValue(false);
+  ])(
+    "shows the login card with next=$expected when signed out",
+    async ({ expected, next }) => {
+      vi.mocked(isAuthenticatedAsync).mockResolvedValue(false);
 
-    await renderPageAsync(next);
+      await renderPageAsync(next);
 
-    expect(isAuthenticatedAsync).toHaveBeenCalledWith("token");
-    expect(vi.mocked(LoginCard).mock.lastCall?.[0]).toEqual({
-      next: expected,
-    });
-    expect(redirect).not.toHaveBeenCalled();
-  });
+      expect(isAuthenticatedAsync).toHaveBeenCalledWith("token");
+      expect(vi.mocked(LoginCard).mock.lastCall?.[0]).toEqual({
+        next: expected,
+      });
+      expect(redirect).not.toHaveBeenCalled();
+    },
+  );
 
   it("redirects signed-in users to a safe path", async () => {
     vi.mocked(isAuthenticatedAsync).mockResolvedValue(true);

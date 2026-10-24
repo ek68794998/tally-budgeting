@@ -38,33 +38,32 @@ describe("useAssets", () => {
     { isFetching: false, isHydrated: true },
     { isFetching: true, isHydrated: false },
     { isFetching: true, isHydrated: true },
-  ])("does not call fetchAssets when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    isFetching,
-    isHydrated,
-  }) => {
-    mockFetchAssets.mockClear();
-    mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
+  ])(
+    "does not call fetchAssets when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ isFetching, isHydrated }) => {
+      mockFetchAssets.mockClear();
+      mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
 
-    renderHook(() => useAssets());
+      renderHook(() => useAssets());
 
-    expect(mockFetchAssets).not.toHaveBeenCalled();
-  });
+      expect(mockFetchAssets).not.toHaveBeenCalled();
+    },
+  );
 
   it.each([
     { expected: true, isFetching: false, isHydrated: false },
     { expected: true, isFetching: true, isHydrated: true },
     { expected: false, isFetching: false, isHydrated: true },
-  ])("returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching", ({
-    expected,
-    isFetching,
-    isHydrated,
-  }) => {
-    mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
+  ])(
+    "returns isLoading=$expected when isHydrated=$isHydrated, isFetching=$isFetching",
+    ({ expected, isFetching, isHydrated }) => {
+      mockUseAssetStore.mockReturnValue(buildStore({ isFetching, isHydrated }));
 
-    const { result } = renderHook(() => useAssets());
+      const { result } = renderHook(() => useAssets());
 
-    expect(result.current.isLoading).toBe(expected);
-  });
+      expect(result.current.isLoading).toBe(expected);
+    },
+  );
 
   it("returns assets and error from store", () => {
     const assets = [dangerouslyMockPartial<Asset>({ id: 1, name: "Checking" })];

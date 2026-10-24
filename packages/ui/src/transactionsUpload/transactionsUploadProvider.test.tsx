@@ -75,42 +75,42 @@ describe("TransactionsUploadProvider", () => {
   it.each([
     { expected: true, status: 200 },
     { expected: false, status: 400 },
-  ])("uploads the selected file and resolves $expected for status $status", async ({
-    expected,
-    status,
-  }) => {
-    const { result } = renderUploadContext();
+  ])(
+    "uploads the selected file and resolves $expected for status $status",
+    async ({ expected, status }) => {
+      const { result } = renderUploadContext();
 
-    act(() => {
-      result.current.setAccount(buildAsset({ id: 4 }));
-      result.current.setSelectedFile(file);
-      result.current.setUploadCallbacks(callbacks);
-    });
+      act(() => {
+        result.current.setAccount(buildAsset({ id: 4 }));
+        result.current.setSelectedFile(file);
+        result.current.setUploadCallbacks(callbacks);
+      });
 
-    let uploadPromise: Promise<boolean> | undefined;
-    act(() => {
-      uploadPromise = result.current.uploadSelectedFile(true);
-    });
+      let uploadPromise: Promise<boolean> | undefined;
+      act(() => {
+        uploadPromise = result.current.uploadSelectedFile(true);
+      });
 
-    const xhr = FakeXmlHttpRequest.latest;
-    xhr?.upload.onprogress?.({ loaded: 1, total: 4 });
-    xhr?.finish(status);
+      const xhr = FakeXmlHttpRequest.latest;
+      xhr?.upload.onprogress?.({ loaded: 1, total: 4 });
+      xhr?.finish(status);
 
-    await expect(uploadPromise).resolves.toBe(expected);
-    expect(xhr?.method).toBe("POST");
-    expect(xhr?.url).toBe("/api/transactions/upload");
-    expect(Object.fromEntries(xhr?.body ?? new FormData())).toMatchObject({
-      accountId: "4",
-      isValidationOnly: "true",
-    });
-    expect(callbacks.onUploadStart).toHaveBeenCalledWith(file);
-    expect(callbacks.onUploadProgress).toHaveBeenCalledWith(25);
-    expect(callbacks.onUploadFinish).toHaveBeenCalledExactlyOnceWith(
-      "{}",
-      status,
-      String(status),
-    );
-  });
+      await expect(uploadPromise).resolves.toBe(expected);
+      expect(xhr?.method).toBe("POST");
+      expect(xhr?.url).toBe("/api/transactions/upload");
+      expect(Object.fromEntries(xhr?.body ?? new FormData())).toMatchObject({
+        accountId: "4",
+        isValidationOnly: "true",
+      });
+      expect(callbacks.onUploadStart).toHaveBeenCalledWith(file);
+      expect(callbacks.onUploadProgress).toHaveBeenCalledWith(25);
+      expect(callbacks.onUploadFinish).toHaveBeenCalledExactlyOnceWith(
+        "{}",
+        status,
+        String(status),
+      );
+    },
+  );
 
   it("clears the previous response and skips the upload without a file", async () => {
     const { result } = renderUploadContext();

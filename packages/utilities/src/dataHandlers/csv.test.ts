@@ -48,22 +48,26 @@ describe("processCsvFile", () => {
   it.each([
     ["a single blank line", [""]],
     ["multiple blank lines", ["", "", ""]],
-  ])("should not stop if there's %s after the headers", (_description, blankLines) => {
-    const input = [
-      "Date,Description,Amount",
-      ...blankLines,
-      "2024-01-01,Coffee,5.00",
-      "",
-      "Footer information",
-      "More footer data",
-    ].join("\n");
+  ])(
+    "should not stop if there's %s after the headers",
+    (_description, blankLines) => {
+      const input = [
+        "Date,Description,Amount",
+        ...blankLines,
+        "2024-01-01,Coffee,5.00",
+        "",
+        "Footer information",
+        "More footer data",
+      ].join("\n");
 
-    const expected = ["Date,Description,Amount", "2024-01-01,Coffee,5.00"].join(
-      "\n",
-    );
+      const expected = [
+        "Date,Description,Amount",
+        "2024-01-01,Coffee,5.00",
+      ].join("\n");
 
-    expect(processCsvFile(input)).toBe(expected);
-  });
+      expect(processCsvFile(input)).toBe(expected);
+    },
+  );
 
   it("should trim whitespace from each line", () => {
     const input = [

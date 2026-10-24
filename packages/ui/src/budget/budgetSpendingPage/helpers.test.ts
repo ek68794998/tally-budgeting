@@ -12,9 +12,14 @@ describe("budgetSpendingPage helpers", () => {
     it.each([
       [[makeItem("A", 10), makeItem("B", 20)], 5],
       [[makeItem("A", 10), makeItem("B", 20), makeItem("C", 30)], 3],
-    ] as const)("returns items unchanged when count is at or below maxItems", (items, maxItems) => {
-      expect(buildChartData([...items], maxItems, "Other")).toEqual([...items]);
-    });
+    ] as const)(
+      "returns items unchanged when count is at or below maxItems",
+      (items, maxItems) => {
+        expect(buildChartData([...items], maxItems, "Other")).toEqual([
+          ...items,
+        ]);
+      },
+    );
 
     it("groups items beyond maxItems into Other bucket", () => {
       const items = [
@@ -246,14 +251,17 @@ describe("budgetSpendingPage helpers", () => {
           "2024-01-15",
           "2024-02-29",
         ],
-      ])("should handle Feb 29 %s", (_label, startIn, endIn, expectedStart, expectedEnd) => {
-        const [start, end] = getDateWindow(startIn, endIn);
+      ])(
+        "should handle Feb 29 %s",
+        (_label, startIn, endIn, expectedStart, expectedEnd) => {
+          const [start, end] = getDateWindow(startIn, endIn);
 
-        expect(start.toISODate()).toBe(expectedStart);
-        expect(end.toISODate()).toBe(expectedEnd);
-        expect(start.isValid).toBe(true);
-        expect(end.isValid).toBe(true);
-      });
+          expect(start.toISODate()).toBe(expectedStart);
+          expect(end.toISODate()).toBe(expectedEnd);
+          expect(start.isValid).toBe(true);
+          expect(end.isValid).toBe(true);
+        },
+      );
 
       it("should derive endDate one month after Feb 29 (leap year)", () => {
         // Feb 29 + 1 month = Mar 29

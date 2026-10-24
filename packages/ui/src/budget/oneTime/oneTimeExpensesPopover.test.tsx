@@ -29,25 +29,29 @@ describe("OneTimeExpensesPopover", () => {
       expectedLink: "3 one-time expenses",
       expectedText: "Plus $300 across 3 one-time expenses",
     },
-  ])("shows `$expectedText` and opens the details from its link", async ({
-    count,
-    expectedLink,
-    expectedText,
-  }) => {
-    const oneTime = buildOneTimeExpenses({
-      totalSpent: 299.6,
-      transactions: buildTransactions(count),
-    });
+  ])(
+    "shows `$expectedText` and opens the details from its link",
+    async ({ count, expectedLink, expectedText }) => {
+      const oneTime = buildOneTimeExpenses({
+        totalSpent: 299.6,
+        transactions: buildTransactions(count),
+      });
 
-    const { container } = render(<OneTimeExpensesPopover oneTime={oneTime} />);
+      const { container } = render(
+        <OneTimeExpensesPopover oneTime={oneTime} />,
+      );
 
-    expect(container).toHaveTextContent(expectedText);
-    expect(screen.getByText("$300").tagName).toBe("B");
-    expect(screen.queryByTestId("details")).toBeNull();
+      expect(container).toHaveTextContent(expectedText);
+      expect(screen.getByText("$300").tagName).toBe("B");
+      expect(screen.queryByTestId("details")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: expectedLink }));
+      fireEvent.click(screen.getByRole("button", { name: expectedLink }));
 
-    expect(await screen.findByTestId("details")).toBeInTheDocument();
-    expect(OneTimeExpensesDetails).toHaveBeenCalledWith({ oneTime }, undefined);
-  });
+      expect(await screen.findByTestId("details")).toBeInTheDocument();
+      expect(OneTimeExpensesDetails).toHaveBeenCalledWith(
+        { oneTime },
+        undefined,
+      );
+    },
+  );
 });

@@ -39,13 +39,12 @@ describe("verifyRequest", () => {
       expect(await isAuthenticatedAsync(token)).toBe(true);
     });
 
-    it.each([
-      [undefined],
-      [""],
-      ["garbage"],
-    ])("rejects the cookie %j", async (cookie) => {
-      expect(await isAuthenticatedAsync(cookie)).toBe(false);
-    });
+    it.each([[undefined], [""], ["garbage"]])(
+      "rejects the cookie %j",
+      async (cookie) => {
+        expect(await isAuthenticatedAsync(cookie)).toBe(false);
+      },
+    );
 
     it("rejects a cookie issued for another password", async () => {
       const token = createSessionToken({

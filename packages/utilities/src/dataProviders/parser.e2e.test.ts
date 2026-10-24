@@ -75,10 +75,13 @@ describe("parser e2e", () => {
       [8, 579, "debit"],
       // Lincoln Memorial Gift Shop purchase → debit $88.99
       [9, 8899, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("chase", () => {
@@ -105,10 +108,13 @@ describe("parser e2e", () => {
       [0, 500, "debit"],
       [1, 500, "debit"],
       [2, 50000, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("fidelity HSA", () => {
@@ -135,10 +141,13 @@ describe("parser e2e", () => {
       [1, 1000, "debit"],
       // NORMAL DISTR PARTIAL DEBIT BUSINESSOLVER → debit $12.34
       [2, 1234, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("fidelity investments", () => {
@@ -163,10 +172,13 @@ describe("parser e2e", () => {
       [0, 700, "credit"],
       // DIVIDEND RECEIVED CONTOSO LTD → credit $123.00
       [1, 12300, "credit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("fidelity retirement", () => {
@@ -219,10 +231,13 @@ describe("parser e2e", () => {
       [1, 500000, "debit"],
       // POS Transaction ContosoShops.biz → debit $100.00
       [2, 10000, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("guideline", () => {
@@ -248,10 +263,13 @@ describe("parser e2e", () => {
       [2, 83333, "credit"],
       // Dividend → credit $2.00
       [3, 200, "credit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("robinhood card", () => {
@@ -284,10 +302,13 @@ describe("parser e2e", () => {
       [1, 50000, "credit"],
       // Sal's Pizzeria purchase → debit $13.99
       [2, 1399, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("rippling", () => {
@@ -319,10 +340,13 @@ describe("parser e2e", () => {
       [5, 69000, "debit"],
       // Interest accrual for Dec 2025 → debit $0.01
       [6, 1, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 
   describe("robinhood investments", () => {
@@ -360,9 +384,12 @@ describe("parser e2e", () => {
       [4, 10000, "credit"],
       // Cash Adjustment (JNLC) → debit $5.00 — exercises the ($X.XX) amount branch
       [5, 500, "debit"],
-    ])("success[%i] has amountCents=%i and type=%s", (index, amountCents, type) => {
-      expect(successes[index]?.amountCents).toBe(amountCents);
-      expect(successes[index]?.type).toBe(type);
-    });
+    ])(
+      "success[%i] has amountCents=%i and type=%s",
+      (index, amountCents, type) => {
+        expect(successes[index]?.amountCents).toBe(amountCents);
+        expect(successes[index]?.type).toBe(type);
+      },
+    );
   });
 });

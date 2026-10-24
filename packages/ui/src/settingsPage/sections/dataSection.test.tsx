@@ -71,25 +71,24 @@ describe("DataSection", () => {
   it.each([
     { button: "Restore…", called: "restoreAsync", modal: "restore" },
     { button: "Delete all data…", called: "dropAsync", modal: "drop" },
-  ] as const)("$button opens the $modal modal and, once confirmed, runs it, then goes to the login page", async ({
-    button,
-    called,
-    modal,
-  }) => {
-    render(<DataSection />);
+  ] as const)(
+    "$button opens the $modal modal and, once confirmed, runs it, then goes to the login page",
+    async ({ button, called, modal }) => {
+      render(<DataSection />);
 
-    fireEvent.click(screen.getByRole("button", { name: button }));
+      fireEvent.click(screen.getByRole("button", { name: button }));
 
-    expect(screen.getByTestId("modal")).toHaveTextContent(modal);
+      expect(screen.getByTestId("modal")).toHaveTextContent(modal);
 
-    fireEvent.click(screen.getByRole("button", { name: "run" }));
+      fireEvent.click(screen.getByRole("button", { name: "run" }));
 
-    await waitFor(() => {
-      expect(assign).toHaveBeenCalledWith("/login");
-    });
-    expect(actions[called]).toHaveBeenCalledOnce();
-    expect(addToast).toHaveBeenCalledWith(
-      expect.objectContaining({ color: "success" }),
-    );
-  });
+      await waitFor(() => {
+        expect(assign).toHaveBeenCalledWith("/login");
+      });
+      expect(actions[called]).toHaveBeenCalledOnce();
+      expect(addToast).toHaveBeenCalledWith(
+        expect.objectContaining({ color: "success" }),
+      );
+    },
+  );
 });

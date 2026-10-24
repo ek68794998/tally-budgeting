@@ -91,22 +91,21 @@ describe("SubcategoryEditModal", () => {
     { budgetType: "income", needs: 0, preTax: 1 },
     { budgetType: "neutral", needs: 0, preTax: 0 },
     { budgetType: "expense", needs: 1, preTax: 0 },
-  ])("shows type-specific fields for $budgetType", ({
-    budgetType,
-    needs,
-    preTax,
-  }) => {
-    renderModal(buildSubcategory({ label: "" }));
+  ])(
+    "shows type-specific fields for $budgetType",
+    ({ budgetType, needs, preTax }) => {
+      renderModal(buildSubcategory({ label: "" }));
 
-    expect(screen.getByText("New Subcategory")).toBeInTheDocument();
+      expect(screen.getByText("New Subcategory")).toBeInTheDocument();
 
-    selectBudgetType(budgetType);
+      selectBudgetType(budgetType);
 
-    expect(screen.queryAllByLabelText("Needs")).toHaveLength(needs);
-    expect(screen.queryAllByText("Used for Pre-Tax Savings?")).toHaveLength(
-      preTax,
-    );
-  });
+      expect(screen.queryAllByLabelText("Needs")).toHaveLength(needs);
+      expect(screen.queryAllByText("Used for Pre-Tax Savings?")).toHaveLength(
+        preTax,
+      );
+    },
+  );
 
   it("stays closed without a subcategory", () => {
     render(

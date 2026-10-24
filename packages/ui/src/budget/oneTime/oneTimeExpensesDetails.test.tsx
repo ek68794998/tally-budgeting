@@ -63,18 +63,18 @@ describe("OneTimeExpensesDetails", () => {
       merchant: "A Very Long Dealership Name That Should Truncate",
     },
     { expectedHref: "/transactions?filter=id+eq+5", merchant: "Refund" },
-  ])("links $merchant to its transaction in a new tab", ({
-    expectedHref,
-    merchant,
-  }) => {
-    render(<OneTimeExpensesDetails oneTime={oneTime} />);
+  ])(
+    "links $merchant to its transaction in a new tab",
+    ({ expectedHref, merchant }) => {
+      render(<OneTimeExpensesDetails oneTime={oneTime} />);
 
-    const link = screen.getByText(merchant).closest("a");
+      const link = screen.getByText(merchant).closest("a");
 
-    expect(link).toHaveAttribute("href", expectedHref);
-    expect(link).toHaveAttribute("target", "_blank");
-    expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
-    expect(link).toHaveAttribute("title", merchant);
-    expect(link).toHaveClass("truncate");
-  });
+      expect(link).toHaveAttribute("href", expectedHref);
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+      expect(link).toHaveAttribute("title", merchant);
+      expect(link).toHaveClass("truncate");
+    },
+  );
 });

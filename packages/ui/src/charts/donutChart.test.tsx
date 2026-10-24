@@ -175,39 +175,42 @@ describe("DonutChart", () => {
       ["value" as const, ["Gamma", "Alpha", "Beta"]],
       ["name" as const, ["Alpha", "Beta", "Gamma"]],
       [undefined, ["Gamma", "Alpha", "Beta"]], // original order preserved
-    ])("orders legend entries correctly with sortBy=%s", (sortBy, expectedOrder) => {
-      render(
-        <DonutChart data={defaultData} legend={{ enabled: true, sortBy }} />,
-      );
-      const LegendContent = getLegendContent();
+    ])(
+      "orders legend entries correctly with sortBy=%s",
+      (sortBy, expectedOrder) => {
+        render(
+          <DonutChart data={defaultData} legend={{ enabled: true, sortBy }} />,
+        );
+        const LegendContent = getLegendContent();
 
-      const { getAllByRole } = render(
-        <LegendContent
-          payload={[
-            {
-              color: "#0000ff",
-              payload: { value: 200 },
-              value: "Gamma",
-            },
-            {
-              color: "#ff0000",
-              payload: { value: 100 },
-              value: "Alpha",
-            },
-            {
-              color: "#00ff00",
-              payload: { value: 50 },
-              value: "Beta",
-            },
-          ]}
-        />,
-      );
+        const { getAllByRole } = render(
+          <LegendContent
+            payload={[
+              {
+                color: "#0000ff",
+                payload: { value: 200 },
+                value: "Gamma",
+              },
+              {
+                color: "#ff0000",
+                payload: { value: 100 },
+                value: "Alpha",
+              },
+              {
+                color: "#00ff00",
+                payload: { value: 50 },
+                value: "Beta",
+              },
+            ]}
+          />,
+        );
 
-      const items = getAllByRole("listitem");
-      expectedOrder.forEach((name, i) => {
-        expect(items[i]).toHaveTextContent(name);
-      });
-    });
+        const items = getAllByRole("listitem");
+        expectedOrder.forEach((name, i) => {
+          expect(items[i]).toHaveTextContent(name);
+        });
+      },
+    );
 
     it("limits legend entries to maxItems", () => {
       render(

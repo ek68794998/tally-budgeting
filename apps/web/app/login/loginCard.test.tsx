@@ -18,20 +18,20 @@ describe("LoginCard", () => {
     { expected: "/budget", next: "/budget" },
     { expected: "/", next: "https://evil.example" },
     { expected: "/", next: undefined },
-  ])("redirects to $expected after logging in with next=$next", ({
-    expected,
-    next,
-  }) => {
-    const router = { refresh: vi.fn(), replace: vi.fn() };
-    vi.mocked(useRouter).mockReturnValue(
-      dangerouslyMockPartial<ReturnType<typeof useRouter>>(router),
-    );
+  ])(
+    "redirects to $expected after logging in with next=$next",
+    ({ expected, next }) => {
+      const router = { refresh: vi.fn(), replace: vi.fn() };
+      vi.mocked(useRouter).mockReturnValue(
+        dangerouslyMockPartial<ReturnType<typeof useRouter>>(router),
+      );
 
-    render(<LoginCard next={next} />);
-    vi.mocked(LoginForm).mock.lastCall?.[0].onSuccess();
+      render(<LoginCard next={next} />);
+      vi.mocked(LoginForm).mock.lastCall?.[0].onSuccess();
 
-    expect(screen.getByTestId("logo")).toBeInTheDocument();
-    expect(router.replace).toHaveBeenCalledWith(expected);
-    expect(router.refresh).toHaveBeenCalledOnce();
-  });
+      expect(screen.getByTestId("logo")).toBeInTheDocument();
+      expect(router.replace).toHaveBeenCalledWith(expected);
+      expect(router.refresh).toHaveBeenCalledOnce();
+    },
+  );
 });

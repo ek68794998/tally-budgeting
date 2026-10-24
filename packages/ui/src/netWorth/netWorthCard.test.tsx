@@ -87,21 +87,23 @@ describe("NetWorthCard", () => {
       color: "danger",
       postResult: () => Promise.reject(new Error("nope")),
     },
-  ])("adds a snapshot of today's net worth ($color)", async ({
-    color,
-    postResult,
-  }) => {
-    postSnapshotAsync.mockImplementation(postResult);
-    render(<NetWorthCard netWorth={1000} snapshots={[]} />);
+  ])(
+    "adds a snapshot of today's net worth ($color)",
+    async ({ color, postResult }) => {
+      postSnapshotAsync.mockImplementation(postResult);
+      render(<NetWorthCard netWorth={1000} snapshots={[]} />);
 
-    fireEvent.click(screen.getByText("New Snapshot"));
+      fireEvent.click(screen.getByText("New Snapshot"));
 
-    await waitFor(() => {
-      expect(addToast).toHaveBeenCalledWith(expect.objectContaining({ color }));
-    });
-    expect(postSnapshotAsync).toHaveBeenCalledWith({
-      date: now,
-      valueCents: 1000_00,
-    });
-  });
+      await waitFor(() => {
+        expect(addToast).toHaveBeenCalledWith(
+          expect.objectContaining({ color }),
+        );
+      });
+      expect(postSnapshotAsync).toHaveBeenCalledWith({
+        date: now,
+        valueCents: 1000_00,
+      });
+    },
+  );
 });

@@ -49,18 +49,17 @@ describe("app layouts", () => {
       title: "Transactions",
       topic: "transactions",
     },
-  ])("titles the $topic section and links to its help", ({
-    layout,
-    title,
-    topic,
-  }) => {
-    render(createElement(layout, null, <div data-testid="child" />));
+  ])(
+    "titles the $topic section and links to its help",
+    ({ layout, title, topic }) => {
+      render(createElement(layout, null, <div data-testid="child" />));
 
-    expect(vi.mocked(PageLayout).mock.lastCall?.[0].title).toBe(title);
-    expect(vi.mocked(HelpLink).mock.lastCall?.[0].subject).toBe(title);
-    expect(vi.mocked(HelpContent).mock.lastCall?.[0]).toEqual({ topic });
-    expect(screen.getByTestId("child")).toBeInTheDocument();
-  });
+      expect(vi.mocked(PageLayout).mock.lastCall?.[0].title).toBe(title);
+      expect(vi.mocked(HelpLink).mock.lastCall?.[0].subject).toBe(title);
+      expect(vi.mocked(HelpContent).mock.lastCall?.[0]).toEqual({ topic });
+      expect(screen.getByTestId("child")).toBeInTheDocument();
+    },
+  );
 
   it.each([
     {

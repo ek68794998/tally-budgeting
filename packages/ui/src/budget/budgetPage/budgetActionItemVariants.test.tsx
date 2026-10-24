@@ -111,28 +111,27 @@ describe("budget action item variants", () => {
       frequency: 6,
       periodEnd: { month: 2, year: 2025 },
     },
-  ])("describes an overage spanning $frequency month(s) as '$expected'", ({
-    expected,
-    frequency,
-    periodEnd,
-  }) => {
-    render(
-      <BudgetActionItemOverBudget
-        {...commonProps}
-        data={{
-          budgeted: 100,
-          frequency,
-          spent: 150,
-          subcategoryId: 1,
-          type: "overBudget",
-        }}
-        periodEnd={periodEnd}
-      />,
-    );
+  ])(
+    "describes an overage spanning $frequency month(s) as '$expected'",
+    ({ expected, frequency, periodEnd }) => {
+      render(
+        <BudgetActionItemOverBudget
+          {...commonProps}
+          data={{
+            budgeted: 100,
+            frequency,
+            spent: 150,
+            subcategoryId: 1,
+            type: "overBudget",
+          }}
+          periodEnd={periodEnd}
+        />,
+      );
 
-    expect(getText()).toEqual(["$150 of $100", expected]);
-    expect(
-      vi.mocked(BudgetActionItemCell).mock.lastCall?.[0],
-    ).not.toHaveProperty("periodEnd");
-  });
+      expect(getText()).toEqual(["$150 of $100", expected]);
+      expect(
+        vi.mocked(BudgetActionItemCell).mock.lastCall?.[0],
+      ).not.toHaveProperty("periodEnd");
+    },
+  );
 });

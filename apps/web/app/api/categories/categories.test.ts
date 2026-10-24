@@ -74,63 +74,55 @@ describe("categories routes", () => {
     },
   ];
 
-  it.each(resources)("POST creates a $key from its fields", async ({
-    build,
-    insert,
-    key,
-    post,
-  }) => {
-    const fields = omitKeys(build(), "id");
+  it.each(resources)(
+    "POST creates a $key from its fields",
+    async ({ build, insert, key, post }) => {
+      const fields = omitKeys(build(), "id");
 
-    const { status } = await callRouteAsync(post, {
-      body: Object.fromEntries([[key, fields]]),
-      method: "POST",
-    });
+      const { status } = await callRouteAsync(post, {
+        body: Object.fromEntries([[key, fields]]),
+        method: "POST",
+      });
 
-    expect(status).toBe(201);
-    expect(insert).toHaveBeenCalledExactlyOnceWith([fields]);
-  });
+      expect(status).toBe(201);
+      expect(insert).toHaveBeenCalledExactlyOnceWith([fields]);
+    },
+  );
 
-  it.each(resources)("POST rejects a $key that already has an id", async ({
-    build,
-    insert,
-    key,
-    post,
-  }) => {
-    const { status } = await callRouteAsync(post, {
-      body: Object.fromEntries([[key, build()]]),
-      method: "POST",
-    });
+  it.each(resources)(
+    "POST rejects a $key that already has an id",
+    async ({ build, insert, key, post }) => {
+      const { status } = await callRouteAsync(post, {
+        body: Object.fromEntries([[key, build()]]),
+        method: "POST",
+      });
 
-    expect(status).toBe(400);
-    expect(insert).not.toHaveBeenCalled();
-  });
+      expect(status).toBe(400);
+      expect(insert).not.toHaveBeenCalled();
+    },
+  );
 
   it.each(
     resources.flatMap((resource) => [
       { ...resource, expectedStatus: 200, wasUpdated: true },
       { ...resource, expectedStatus: 404, wasUpdated: false },
     ]),
-  )("PUT updates a $key by route id with status $expectedStatus", async ({
-    build,
-    expectedStatus,
-    key,
-    put,
-    update,
-    wasUpdated,
-  }) => {
-    update.mockResolvedValue(wasUpdated);
-    const fields = omitKeys(build(), "id");
+  )(
+    "PUT updates a $key by route id with status $expectedStatus",
+    async ({ build, expectedStatus, key, put, update, wasUpdated }) => {
+      update.mockResolvedValue(wasUpdated);
+      const fields = omitKeys(build(), "id");
 
-    const { status } = await callRouteAsync(put, {
-      body: Object.fromEntries([[key, fields]]),
-      method: "PUT",
-      params: { id: "12" },
-    });
+      const { status } = await callRouteAsync(put, {
+        body: Object.fromEntries([[key, fields]]),
+        method: "PUT",
+        params: { id: "12" },
+      });
 
-    expect(status).toBe(expectedStatus);
-    expect(update).toHaveBeenCalledExactlyOnceWith({ ...fields, id: 12 });
-  });
+      expect(status).toBe(expectedStatus);
+      expect(update).toHaveBeenCalledExactlyOnceWith({ ...fields, id: 12 });
+    },
+  );
 
   it.each([
     {
@@ -200,23 +192,20 @@ describe("categories routes", () => {
       route: DeleteCategoriesSubIdRouteAsync,
       update: subcategories.deleteSubcategoryAsync,
     },
-  ])("$method rejects the default record with 409 ($route.name)", async ({
-    build,
-    key,
-    method,
-    route,
-    update,
-  }) => {
-    const { json, status } = await callRouteAsync(route, {
-      body: isUndefined(build)
-        ? undefined
-        : Object.fromEntries([[key, omitKeys(build(), "id")]]),
-      method,
-      params: { id: "-1" },
-    });
+  ])(
+    "$method rejects the default record with 409 ($route.name)",
+    async ({ build, key, method, route, update }) => {
+      const { json, status } = await callRouteAsync(route, {
+        body: isUndefined(build)
+          ? undefined
+          : Object.fromEntries([[key, omitKeys(build(), "id")]]),
+        method,
+        params: { id: "-1" },
+      });
 
-    expect(status).toBe(409);
-    expect(json).toMatchObject({ error: { code: "protectedRecord" } });
-    expect(update).not.toHaveBeenCalled();
-  });
+      expect(status).toBe(409);
+      expect(json).toMatchObject({ error: { code: "protectedRecord" } });
+      expect(update).not.toHaveBeenCalled();
+    },
+  );
 });

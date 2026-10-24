@@ -36,17 +36,16 @@ describe("asset and liability distributions", () => {
       expectedTitle: "Liability Distribution",
       expectedValues: [200_000, 1_000],
     },
-  ])("charts totals per type for $expectedTitle", ({
-    Component,
-    expectedTitle,
-    expectedValues,
-  }) => {
-    render(<Component assets={assets} />);
+  ])(
+    "charts totals per type for $expectedTitle",
+    ({ Component, expectedTitle, expectedValues }) => {
+      render(<Component assets={assets} />);
 
-    expect(getChartProps()?.title).toBe(expectedTitle);
-    expect(getChartProps()?.data.map(({ value }) => value)).toEqual(
-      expectedValues,
-    );
-    expect(getChartProps()?.formatValue?.(1234.5)).toBe("$1,235");
-  });
+      expect(getChartProps()?.title).toBe(expectedTitle);
+      expect(getChartProps()?.data.map(({ value }) => value)).toEqual(
+        expectedValues,
+      );
+      expect(getChartProps()?.formatValue?.(1234.5)).toBe("$1,235");
+    },
+  );
 });

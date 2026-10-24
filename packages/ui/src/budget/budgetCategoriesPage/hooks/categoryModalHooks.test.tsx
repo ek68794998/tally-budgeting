@@ -122,35 +122,35 @@ describe("category page modal hooks", () => {
         render(result.current.render());
       },
     },
-  ])("$name confirms deletion of the opened item, then refetches", async ({
-    apiCall,
-    renderOpened,
-  }) => {
-    renderOpened();
+  ])(
+    "$name confirms deletion of the opened item, then refetches",
+    async ({ apiCall, renderOpened }) => {
+      renderOpened();
 
-    const props = lastProps(ConfirmationModal);
+      const props = lastProps(ConfirmationModal);
 
-    expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-    expect(props.isDestructive).toBe(true);
-    expect(props.modalState.isOpen).toBe(true);
+      expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+      expect(props.isDestructive).toBe(true);
+      expect(props.modalState.isOpen).toBe(true);
 
-    await act(() => props.onConfirmAsync());
+      await act(() => props.onConfirmAsync());
 
-    expect(apiCall).toHaveBeenCalledWith(1);
-    expect(refetch).toHaveBeenCalledOnce();
-  });
+      expect(apiCall).toHaveBeenCalledWith(1);
+      expect(refetch).toHaveBeenCalledOnce();
+    },
+  );
 
-  it.each([
-    useCategoryDeleteModal,
-    useSubcategoryDeleteModal,
-  ])("%o refuses to confirm before an item is opened", async (useHook) => {
-    const { result } = renderHook(useHook);
-    render(result.current.render());
+  it.each([useCategoryDeleteModal, useSubcategoryDeleteModal])(
+    "%o refuses to confirm before an item is opened",
+    async (useHook) => {
+      const { result } = renderHook(useHook);
+      render(result.current.render());
 
-    await expect(lastProps(ConfirmationModal).onConfirmAsync()).rejects.toThrow(
-      /must be defined/,
-    );
-  });
+      await expect(
+        lastProps(ConfirmationModal).onConfirmAsync(),
+      ).rejects.toThrow(/must be defined/);
+    },
+  );
 
   const openCategoryModal = (
     open: (hook: ReturnType<typeof useCategoryEditModal>) => void,
@@ -227,28 +227,31 @@ describe("category page modal hooks", () => {
       renderOpened: () =>
         openSubcategoryModal((hook) => hook.openEdit(subcategory)),
     },
-  ] as const)("the edit modal $name, then refetches", async ({
-    expectedCall: [apiCall, expectedArgument],
-    expectedItem,
-    renderOpened,
-  }) => {
-    const { item, modalState, onSaveAsync } = renderOpened();
+  ] as const)(
+    "the edit modal $name, then refetches",
+    async ({
+      expectedCall: [apiCall, expectedArgument],
+      expectedItem,
+      renderOpened,
+    }) => {
+      const { item, modalState, onSaveAsync } = renderOpened();
 
-    expect(item).toEqual(expectedItem);
-    expect(modalState.isOpen).toBe(true);
+      expect(item).toEqual(expectedItem);
+      expect(modalState.isOpen).toBe(true);
 
-    await act(() => onSaveAsync(dangerouslyCoerceType(item)));
+      await act(() => onSaveAsync(dangerouslyCoerceType(item)));
 
-    expect(apiCall).toHaveBeenCalledExactlyOnceWith(expectedArgument);
-    expect(refetch).toHaveBeenCalledOnce();
+      expect(apiCall).toHaveBeenCalledExactlyOnceWith(expectedArgument);
+      expect(refetch).toHaveBeenCalledOnce();
 
-    for (const otherCall of [
-      postCategoryAsync,
-      postSubcategoryAsync,
-      putCategoryAsync,
-      putSubcategoryAsync,
-    ].filter((call) => call !== apiCall)) {
-      expect(otherCall).not.toHaveBeenCalled();
-    }
-  });
+      for (const otherCall of [
+        postCategoryAsync,
+        postSubcategoryAsync,
+        putCategoryAsync,
+        putSubcategoryAsync,
+      ].filter((call) => call !== apiCall)) {
+        expect(otherCall).not.toHaveBeenCalled();
+      }
+    },
+  );
 });

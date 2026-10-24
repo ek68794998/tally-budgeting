@@ -15,30 +15,28 @@ describe("getDatabase", () => {
     vi.unstubAllEnvs();
   });
 
-  it.each([
-    undefined,
-    "",
-  ])("throws when the connection string is %j", async (connectionString) => {
-    vi.stubEnv("POSTGRES_CONNECTION_STRING", connectionString);
-    const getDatabase = await importGetDatabaseAsync();
+  it.each([undefined, ""])(
+    "throws when the connection string is %j",
+    async (connectionString) => {
+      vi.stubEnv("POSTGRES_CONNECTION_STRING", connectionString);
+      const getDatabase = await importGetDatabaseAsync();
 
-    expect(() => getDatabase()).toThrow(/POSTGRES_CONNECTION_STRING/);
-  });
+      expect(() => getDatabase()).toThrow(/POSTGRES_CONNECTION_STRING/);
+    },
+  );
 
-  it.each([
-    { poolMax: undefined },
-    { poolMax: "3" },
-  ])("creates a single shared instance (pool max $poolMax)", async ({
-    poolMax,
-  }) => {
-    vi.stubEnv("POSTGRES_CONNECTION_STRING", "postgres://u:p@localhost/db");
-    vi.stubEnv("POSTGRES_POOL_MAXIMUM", poolMax);
-    const getDatabase = await importGetDatabaseAsync();
+  it.each([{ poolMax: undefined }, { poolMax: "3" }])(
+    "creates a single shared instance (pool max $poolMax)",
+    async ({ poolMax }) => {
+      vi.stubEnv("POSTGRES_CONNECTION_STRING", "postgres://u:p@localhost/db");
+      vi.stubEnv("POSTGRES_POOL_MAXIMUM", poolMax);
+      const getDatabase = await importGetDatabaseAsync();
 
-    const first = getDatabase();
-    const second = getDatabase();
+      const first = getDatabase();
+      const second = getDatabase();
 
-    expect(first).toBeInstanceOf(Kysely);
-    expect(second).toBe(first);
-  });
+      expect(first).toBeInstanceOf(Kysely);
+      expect(second).toBe(first);
+    },
+  );
 });

@@ -156,21 +156,23 @@ describe("TransactionsTable", () => {
       expectedText: "No transactions matched your search.",
       filterValue: "x",
     },
-  ])("explains an empty table (filter: '$filterValue')", ({
-    expectedText,
-    filterValue,
-  }) => {
-    vi.mocked(useTransactionsTable).mockReturnValue(
-      buildState({ filterValue, pageCount: 0, transactionsData: [] }),
-    );
+  ])(
+    "explains an empty table (filter: '$filterValue')",
+    ({ expectedText, filterValue }) => {
+      vi.mocked(useTransactionsTable).mockReturnValue(
+        buildState({ filterValue, pageCount: 0, transactionsData: [] }),
+      );
 
-    render(<TransactionsTable />);
+      render(<TransactionsTable />);
 
-    expect(vi.mocked(ContentUnavailableView).mock.lastCall?.[0]).toMatchObject({
-      primaryText: expectedText,
-    });
-    expect(screen.queryByRole("navigation")).toBeNull();
-  });
+      expect(
+        vi.mocked(ContentUnavailableView).mock.lastCall?.[0],
+      ).toMatchObject({
+        primaryText: expectedText,
+      });
+      expect(screen.queryByRole("navigation")).toBeNull();
+    },
+  );
 
   it("shows a dismissible chip while a linked filter is active", () => {
     const state = buildState({ isLinkedFilterActive: true });

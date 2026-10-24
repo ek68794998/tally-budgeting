@@ -161,32 +161,35 @@ describe("data stores", () => {
     });
   });
 
-  it.each(
-    cases,
-  )("%s records an error when the response is invalid", async (_name, storeCase) => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => Promise.resolve(new Response(JSON.stringify({})))),
-    );
+  it.each(cases)(
+    "%s records an error when the response is invalid",
+    async (_name, storeCase) => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(() => Promise.resolve(new Response(JSON.stringify({})))),
+      );
 
-    await storeCase.getState().fetch();
+      await storeCase.getState().fetch();
 
-    expect(storeCase.getState()).toMatchObject({
-      error: storeCase.expectedError,
-      isFetching: false,
-      isHydrated: true,
-    });
-    const [eventName, data] = vi.mocked(telemetry().error).mock.lastCall ?? [];
+      expect(storeCase.getState()).toMatchObject({
+        error: storeCase.expectedError,
+        isFetching: false,
+        isHydrated: true,
+      });
+      const [eventName, data] =
+        vi.mocked(telemetry().error).mock.lastCall ?? [];
 
-    expect(eventName).toBe("STORE_FETCH_FAILED");
-    expect(data).toMatchObject({ store: storeCase.storeName });
-  });
+      expect(eventName).toBe("STORE_FETCH_FAILED");
+      expect(data).toMatchObject({ store: storeCase.storeName });
+    },
+  );
 
-  it.each(
-    cases,
-  )("%s exposes a setter for local updates", (_name, storeCase) => {
-    storeCase.setValues();
+  it.each(cases)(
+    "%s exposes a setter for local updates",
+    (_name, storeCase) => {
+      storeCase.setValues();
 
-    expect(storeCase.getValues()).toEqual(storeCase.responseBody);
-  });
+      expect(storeCase.getValues()).toEqual(storeCase.responseBody);
+    },
+  );
 });

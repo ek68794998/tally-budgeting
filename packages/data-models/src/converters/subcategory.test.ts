@@ -76,24 +76,27 @@ describe("subcategory converters", () => {
       ["expense", 1],
       ["income", 6],
       ["neutral", 12],
-    ] as const)("handles budget_type=%s with frequency=%d", (budgetType, frequency) => {
-      const result = convertSubcategoryRowToSubcategory({
-        /* eslint-disable @typescript-eslint/naming-convention */
-        budget_amount_cents: "5000",
-        budget_frequency_months: frequency,
-        budget_type: budgetType,
-        category: 1,
-        description: "test",
-        id: 1,
-        label: "Test",
-        pct_needs: 50,
-        pct_savings: 20,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      });
+    ] as const)(
+      "handles budget_type=%s with frequency=%d",
+      (budgetType, frequency) => {
+        const result = convertSubcategoryRowToSubcategory({
+          /* eslint-disable @typescript-eslint/naming-convention */
+          budget_amount_cents: "5000",
+          budget_frequency_months: frequency,
+          budget_type: budgetType,
+          category: 1,
+          description: "test",
+          id: 1,
+          label: "Test",
+          pct_needs: 50,
+          pct_savings: 20,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        });
 
-      expect(result.budget.type).toBe(budgetType);
-      expect(result.budget.frequency).toBe(frequency);
-    });
+        expect(result.budget.type).toBe(budgetType);
+        expect(result.budget.frequency).toBe(frequency);
+      },
+    );
   });
 
   describe("convertSubcategoryToSubcategoryRow", () => {
