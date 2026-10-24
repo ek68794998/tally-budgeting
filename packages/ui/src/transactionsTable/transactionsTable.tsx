@@ -12,7 +12,11 @@ import {
   TableRow,
   Tooltip,
 } from "@heroui/react";
-import { IconNote, IconZoomQuestion } from "@tabler/icons-react";
+import {
+  IconBusinessplan,
+  IconNote,
+  IconZoomQuestion,
+} from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { type ReactNode } from "react";
 import { ConfirmationModal } from "../common/confirmationModal";
@@ -32,6 +36,7 @@ export const TransactionsTable: React.FC = () => {
   const t = useTranslations("transactions");
   const {
     activeTransaction,
+    clearLinkedFilter,
     confirmDeleteAsync,
     deleteModalState,
     duplicateTransaction,
@@ -39,6 +44,7 @@ export const TransactionsTable: React.FC = () => {
     editTransaction,
     error,
     filterValue,
+    isLinkedFilterActive,
     isLoading,
     pageCount,
     requestDelete,
@@ -51,6 +57,7 @@ export const TransactionsTable: React.FC = () => {
     setSortDescriptor,
     sortDescriptor,
     startNewTransaction,
+    toggleOneTimeAsync,
     transactionsData,
     transactionToDelete,
   } = useTransactionsTable();
@@ -68,20 +75,29 @@ export const TransactionsTable: React.FC = () => {
       sortField: transactionSortFields.date,
     },
     {
-      getValue: (item) => {
-        if (item.notes) {
-          return (
+      getValue: (item) => (
+        <span>
+          {item.notes ? (
             <Tooltip content={item.notes}>
               <span>
                 {item.merchant}
                 <IconNote className="m-1 mt-0 inline leading-0" size={14} />
               </span>
             </Tooltip>
-          );
-        }
-
-        return item.merchant;
-      },
+          ) : (
+            item.merchant
+          )}
+          {item.isOneTime && (
+            <Tooltip content={t("oneTime.label")}>
+              <IconBusinessplan
+                aria-label={t("oneTime.label")}
+                className="m-1 mt-0 inline leading-0"
+                size={14}
+              />
+            </Tooltip>
+          )}
+        </span>
+      ),
       key: "merchant",
       label: t("columns.merchant"),
       sortField: transactionSortFields.merchant,
@@ -116,9 +132,11 @@ export const TransactionsTable: React.FC = () => {
     {
       getValue: (item) => (
         <TransactionRowDropdown
+          isOneTime={item.isOneTime}
           onDelete={() => requestDelete(item)}
           onDuplicate={() => duplicateTransaction(item.id)}
           onEdit={() => editTransaction(item.id)}
+          onToggleOneTime={() => void toggleOneTimeAsync(item.id)}
         />
       ),
       key: "actions",
@@ -132,6 +150,13 @@ export const TransactionsTable: React.FC = () => {
         onFilterChange={setFilterValue}
         onNewTransaction={startNewTransaction}
       />
+      {isLinkedFilterActive && (
+        <div>
+          <Chip onClose={clearLinkedFilter} variant="flat">
+            {t("table.linkedFilter")}
+          </Chip>
+        </div>
+      )}
       <Table
         aria-label={t("title")}
         bottomContent={
@@ -185,10 +210,12 @@ export const TransactionsTable: React.FC = () => {
           loadingContent={<Spinner />}
         >
           {(item) => {
-            const { amount, date, id, merchant, type } = item;
+            const { amount, date, id, isOneTime, merchant, type } = item;
 
             return (
-              <TableRow key={`${id}-${amount}-${date}-${merchant}-${type}`}>
+              <TableRow
+                key={`${id}-${amount}-${date}-${merchant}-${type}-${isOneTime}`}
+              >
                 {(columnKey) => {
                   const column = columns.find((c) => c.key === columnKey);
 

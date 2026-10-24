@@ -26,6 +26,7 @@ export const useTransactionForm = (
   const [happiness, setHappiness] = useState<HappinessLevel>(
     HappinessLevelDefault,
   );
+  const [isOneTime, setIsOneTime] = useState(false);
   const [merchantName, setMerchantName] = useState("");
   const [notes, setNotes] = useState("");
   const [subcategoryId, setSubcategoryId] = useState(DefaultSubcategoryId);
@@ -41,6 +42,7 @@ export const useTransactionForm = (
     setAmount(Dollars.fromCents(transaction.amountCents));
     setDate(toCalendarDate(parseAbsoluteToLocal(transaction.date)));
     setHappiness(transaction.happiness);
+    setIsOneTime(transaction.isOneTime);
     setMerchantName(transaction.merchant);
     setNotes(transaction.notes);
     setSubcategoryId(transaction.subcategoryId);
@@ -59,6 +61,7 @@ export const useTransactionForm = (
         amountCents: Dollars.toCents(amount),
         date: date ? `${date.toString()}T12:00:00Z` : transaction.date,
         happiness,
+        isOneTime,
         merchant: merchantName,
         notes,
         subcategoryId,
@@ -73,17 +76,20 @@ export const useTransactionForm = (
       amount !== 0,
     date,
     happiness,
+    isOneTime,
     merchantName,
     notes,
     resetForNextTransaction: () => {
       setAmount(0);
       setHappiness(HappinessLevelDefault);
+      setIsOneTime(false);
       setNotes("");
     },
     setAccountId,
     setAmount,
     setDate,
     setHappiness,
+    setIsOneTime,
     setMerchantName,
     setNotes,
     setSubcategoryId,

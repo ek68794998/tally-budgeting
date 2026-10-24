@@ -1,10 +1,16 @@
 import { omitKeys } from "@ekumlin/typescript-toolkit/collections";
 import {
+  dangerouslyCoerceType,
+  dangerouslyMockPartial,
+} from "@ekumlin/typescript-toolkit/testing";
+import { addToast } from "@heroui/react";
+import {
   buildAsset,
   buildSubcategory,
   buildTransaction,
 } from "@tally/data-models/testing/fixtures";
 import { act, renderHook, waitFor } from "@testing-library/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   afterEach,
   beforeEach,
@@ -23,6 +29,14 @@ import { useCategories } from "../hooks/store/useCategories";
 import { createQueryClientWrapper } from "../testing/queryClient";
 import { useTransactionsTable } from "./useTransactionsTable";
 
+vi.mock("@heroui/react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@heroui/react")>()),
+  addToast: vi.fn(),
+}));
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+}));
 vi.mock("../hooks/api/useDeleteTransaction", () => ({
   useDeleteTransaction: vi.fn(),
 }));
@@ -38,6 +52,16 @@ vi.mock("../hooks/store/useCategories", () => ({ useCategories: vi.fn() }));
 const deleteTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
 const postTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
 const putTransactionAsync = vi.fn(() => Promise.resolve({ success: true }));
+const replace = vi.fn();
+
+const mockSearchParams = (query: string) =>
+  vi
+    .mocked(useSearchParams)
+    .mockReturnValue(
+      dangerouslyCoerceType<ReturnType<typeof useSearchParams>>(
+        new URLSearchParams(query),
+      ),
+    );
 
 const coffee = buildTransaction({ accountId: 1, id: 7, subcategoryId: 2 });
 const rent = buildTransaction({
@@ -98,6 +122,10 @@ describe("useTransactionsTable", () => {
     });
     vi.mocked(usePostTransaction).mockReturnValue({ postTransactionAsync });
     vi.mocked(usePutTransaction).mockReturnValue({ putTransactionAsync });
+    vi.mocked(useRouter).mockReturnValue(
+      dangerouslyMockPartial<ReturnType<typeof useRouter>>({ replace }),
+    );
+    mockSearchParams("");
   });
 
   afterEach(() => {
@@ -122,6 +150,63 @@ describe("useTransactionsTable", () => {
     expect(result.current.pageCount).toBe(3);
     expect(result.current.selectedPage).toBe(1);
     expect(result.current.isLoading).toBe(false);
+    expect(result.current.isLinkedFilterActive).toBe(false);
+  });
+
+  it("uses a linked filter from the URL until the user changes the filter", async () => {
+    mockSearchParams("filter=id%20eq%207");
+
+    const { result } = await renderTableAsync();
+
+    expect(getRequestedParams().get("filter")).toBe("id eq 7");
+    expect(result.current.isLinkedFilterActive).toBe(true);
+    expect(result.current.filterValue).toBe("id eq 7");
+
+    act(() => {
+      result.current.setFilterValue("");
+    });
+
+    expect(replace).not.toHaveBeenCalled();
+
+    act(() => {
+      result.current.setFilterValue("merchant like 'coffee'");
+    });
+
+    expect(replace).toHaveBeenCalledExactlyOnceWith("/transactions");
+  });
+
+  it("toggles a transaction's one-time flag and reloads the page", async () => {
+    const { result } = await renderTableAsync();
+    const requestsBefore = fetchMock.mock.calls.length;
+
+    await act(() => result.current.toggleOneTimeAsync(999));
+
+    expect(putTransactionAsync).not.toHaveBeenCalled();
+
+    await act(() => result.current.toggleOneTimeAsync(7));
+
+    expect(putTransactionAsync).toHaveBeenCalledExactlyOnceWith({
+      ...coffee,
+      isOneTime: true,
+    });
+    expect(addToast).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(fetchMock.mock.calls.length).toBeGreaterThan(requestsBefore);
+    });
+  });
+
+  it("toasts when toggling the one-time flag fails", async () => {
+    putTransactionAsync.mockRejectedValueOnce(new Error("boom"));
+    const { result } = await renderTableAsync();
+
+    await act(() => result.current.toggleOneTimeAsync(7));
+
+    expect(addToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "danger",
+        title: "Saving Transaction Failed",
+      }),
+    );
   });
 
   it.each([

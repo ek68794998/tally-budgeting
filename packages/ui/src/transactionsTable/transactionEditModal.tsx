@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalHeader,
   NumberInput,
+  Switch,
   Textarea,
   type useDisclosure,
 } from "@heroui/react";
@@ -43,6 +44,7 @@ export const TransactionEditModal: React.FC<Props> = ({
     canSave,
     date,
     happiness,
+    isOneTime,
     merchantName,
     notes,
     resetForNextTransaction,
@@ -50,6 +52,7 @@ export const TransactionEditModal: React.FC<Props> = ({
     setAmount,
     setDate,
     setHappiness,
+    setIsOneTime,
     setMerchantName,
     setNotes,
     setSubcategoryId,
@@ -114,6 +117,20 @@ export const TransactionEditModal: React.FC<Props> = ({
                 onValueChange={setAmount}
                 value={amount}
               />
+              <Switch
+                isSelected={isOneTime}
+                onValueChange={setIsOneTime}
+                size="sm"
+              >
+                <div className="flex flex-col">
+                  <span className="text-sm">
+                    {t("transactions.oneTime.label")}
+                  </span>
+                  <span className="text-default-500 text-xs">
+                    {t("transactions.oneTime.description")}
+                  </span>
+                </div>
+              </Switch>
               <DatePicker
                 granularity="day"
                 label={t("transactions.columns.date")}

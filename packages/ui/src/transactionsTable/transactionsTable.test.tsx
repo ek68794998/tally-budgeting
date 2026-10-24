@@ -1,7 +1,7 @@
 import { dangerouslyMockPartial } from "@ekumlin/typescript-toolkit/testing";
 import { type useDisclosure } from "@heroui/react";
 import { buildTransaction } from "@tally/data-models/testing/fixtures";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfirmationModal } from "../common/confirmationModal";
 import { ContentUnavailableView } from "../contentUnavailableView/contentUnavailableView";
@@ -44,6 +44,7 @@ const coffeeRow: TransactionTableData = {
   amount: "$4.50",
   date: "January 15, 2025",
   id: 7,
+  isOneTime: false,
   merchant: "Coffee Shop",
   notes: "latte",
   subcategory: "Coffee",
@@ -53,6 +54,7 @@ const salaryRow: TransactionTableData = {
   ...coffeeRow,
   amount: "$100.00",
   id: 8,
+  isOneTime: true,
   merchant: "Employer",
   notes: "",
   type: "credit",
@@ -66,6 +68,7 @@ const modalState = dangerouslyMockPartial<ReturnType<typeof useDisclosure>>({
 
 const buildState = (overrides: Partial<TableState> = {}): TableState => ({
   activeTransaction: buildTransaction(),
+  clearLinkedFilter: vi.fn(),
   confirmDeleteAsync: vi.fn(),
   deleteModalState: modalState,
   duplicateTransaction: vi.fn(),
@@ -73,6 +76,7 @@ const buildState = (overrides: Partial<TableState> = {}): TableState => ({
   editTransaction: vi.fn(),
   error: null,
   filterValue: "",
+  isLinkedFilterActive: false,
   isLoading: false,
   pageCount: 2,
   requestDelete: vi.fn(),
@@ -85,6 +89,7 @@ const buildState = (overrides: Partial<TableState> = {}): TableState => ({
   setSortDescriptor: vi.fn(),
   sortDescriptor: { column: "date", direction: "descending" },
   startNewTransaction: vi.fn(),
+  toggleOneTimeAsync: vi.fn(),
   transactionsData: [coffeeRow, salaryRow],
   transactionToDelete: coffeeRow,
   ...overrides,
@@ -105,6 +110,8 @@ describe("TransactionsTable", () => {
     expect(screen.getByText("Employer")).toBeInTheDocument();
     expect(screen.getByText("Expense")).toBeInTheDocument();
     expect(screen.getByText("Income")).toBeInTheDocument();
+    expect(screen.getAllByLabelText("One-time purchase")).toHaveLength(1);
+    expect(screen.queryByText("Showing linked transactions")).toBeNull();
     expect(screen.getByRole("navigation")).toBeInTheDocument();
     expect(vi.mocked(TransactionsTableControls).mock.lastCall?.[0]).toEqual({
       onFilterChange: state.setFilterValue,
@@ -134,10 +141,13 @@ describe("TransactionsTable", () => {
     firstRowActions?.onDelete();
     firstRowActions?.onDuplicate();
     firstRowActions?.onEdit();
+    firstRowActions?.onToggleOneTime();
 
     expect(state.requestDelete).toHaveBeenCalledWith(coffeeRow);
     expect(state.duplicateTransaction).toHaveBeenCalledWith(7);
     expect(state.editTransaction).toHaveBeenCalledWith(7);
+    expect(state.toggleOneTimeAsync).toHaveBeenCalledWith(7);
+    expect(firstRowActions?.isOneTime).toBe(false);
   });
 
   it.each([
@@ -160,6 +170,22 @@ describe("TransactionsTable", () => {
       primaryText: expectedText,
     });
     expect(screen.queryByRole("navigation")).toBeNull();
+  });
+
+  it("shows a dismissible chip while a linked filter is active", () => {
+    const state = buildState({ isLinkedFilterActive: true });
+    vi.mocked(useTransactionsTable).mockReturnValue(state);
+
+    render(<TransactionsTable />);
+
+    const chip = screen.getByText("Showing linked transactions");
+    const closeButton = chip.parentElement?.querySelector("[role=button]");
+
+    if (closeButton) {
+      fireEvent.click(closeButton);
+    }
+
+    expect(state.clearLinkedFilter).toHaveBeenCalledOnce();
   });
 
   it("shows the load error instead of the empty state", () => {

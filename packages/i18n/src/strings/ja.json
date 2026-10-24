@@ -425,6 +425,12 @@
       "level2": "普通",
       "level3": "価値あり"
     },
+    "oneTime": {
+      "description": "予算の集計から除外され、クイックパルスと予算の内訳に別途表示されます。",
+      "label": "一時的な購入",
+      "mark": "一時的な購入にする",
+      "unmark": "一時的な購入を解除"
+    },
     "rules": {
       "edit": "ルールを編集"
     },
@@ -436,8 +442,10 @@
       "categoriesAll": "すべてのカテゴリー",
       "categoriesSome": "{count}件のカテゴリー",
       "filterPlaceholder": "店舗を検索…",
+      "linkedFilter": "リンクされた取引を表示中",
       "noneFound": "取引が見つかりません。",
-      "noneMatched": "検索に一致する取引はありません。"
+      "noneMatched": "検索に一致する取引はありません。",
+      "oneTimeOnly": "一時的な購入のみ"
     },
     "title": "取引履歴",
     "types": {

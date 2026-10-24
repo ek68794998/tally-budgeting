@@ -61,21 +61,30 @@ describe("TransactionHappinessSelect", () => {
 });
 
 describe("TransactionRowDropdown", () => {
-  it("offers edit, duplicate, and delete", () => {
+  it.each([
+    { expectedLabel: "Mark as one-time", isOneTime: false },
+    { expectedLabel: "Unmark as one-time", isOneTime: true },
+  ])("offers edit, duplicate, `$expectedLabel`, and delete", ({
+    expectedLabel,
+    isOneTime,
+  }) => {
     const handlers = {
       onDelete: vi.fn(),
       onDuplicate: vi.fn(),
       onEdit: vi.fn(),
+      onToggleOneTime: vi.fn(),
     };
-    render(<TransactionRowDropdown {...handlers} />);
+    render(<TransactionRowDropdown isOneTime={isOneTime} {...handlers} />);
 
     const entries = vi.mocked(MoreDropdown).mock.lastCall?.[0].entries ?? [];
 
     expect(entries.map(({ key }) => key)).toEqual([
       "edit",
       "duplicate",
+      "toggleOneTime",
       "delete",
     ]);
+    expect(entries[2]).toMatchObject({ label: expectedLabel });
 
     for (const entry of entries) {
       if ("action" in entry) {
@@ -86,5 +95,6 @@ describe("TransactionRowDropdown", () => {
     expect(handlers.onEdit).toHaveBeenCalledOnce();
     expect(handlers.onDuplicate).toHaveBeenCalledOnce();
     expect(handlers.onDelete).toHaveBeenCalledOnce();
+    expect(handlers.onToggleOneTime).toHaveBeenCalledOnce();
   });
 });

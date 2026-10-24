@@ -425,6 +425,12 @@
       "level2": "Neutral",
       "level3": "Worth It"
     },
+    "oneTime": {
+      "description": "Excluded from budget totals; shown separately in Quick Pulse and the budget breakdown.",
+      "label": "One-time Purchase",
+      "mark": "Mark as One-Time",
+      "unmark": "Unmark as One-Time"
+    },
     "rules": {
       "edit": "Known Merchants"
     },
@@ -436,8 +442,10 @@
       "categoriesAll": "All Categories",
       "categoriesSome": "{count} {count, plural, =1 {category} other {categories}}",
       "filterPlaceholder": "Search merchants…",
+      "linkedFilter": "Showing linked transactions",
       "noneFound": "No transactions found.",
-      "noneMatched": "No transactions matched your search."
+      "noneMatched": "No transactions matched your search.",
+      "oneTimeOnly": "One-time only"
     },
     "title": "Transactions",
     "types": {
