@@ -13,7 +13,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-[Features](#features) · [Installation](#installation) · [Deployment](#deployment) · [Configuration](#configuration) · [CSV Import](#csv-import)
+[Features](#features) · [Installation](#installation) · [Configuration](#configuration) · [CSV Import](#csv-import) · [Development](#development)
 
 </div>
 
@@ -60,14 +60,181 @@
   </tr>
 </table>
 
-## Prerequisites
+## Installation
+
+Tally runs as two Docker containers, the app and its PostgreSQL database, managed by Docker Compose. Once started, they run in the background and restart automatically after a crash or reboot.
+
+### Requirements
+
+- [Docker](https://docs.docker.com/get-docker/) with the Compose plugin (`docker compose version` should work)
+- Git
+
+Node.js and PNPM are not needed; the image is built inside Docker.
+
+### Quick Start
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/ek68794998/tally-budgeting.git
+   cd tally-budgeting/deployment
+   ```
+
+2. Create `deployment/.env` with a database password and an app password (the password you'll use to log in). Compose refuses to start if either is missing.
+
+   ```bash
+   cat > .env <<'ENV'
+   DB_PASSWORD=<choose-a-strong-database-password>
+   APP_PASSWORD=<choose-a-strong-app-password>
+   ENV
+   ```
+
+3. Build the image and start Tally in the background:
+
+   ```bash
+   docker compose up -d
+   ```
+
+   The first run builds the image from source, which takes a few minutes.
+
+4. Open [http://localhost:7856](http://localhost:7856) and log in with your `APP_PASSWORD`.
+
+> [!WARNING]
+> If you access Tally from other devices, put it behind an HTTPS reverse proxy. Over plain HTTP, the password and session cookie travel in cleartext (see [Authentication](#authentication)).
+
+### Running in the Background
+
+Both containers use `restart: unless-stopped`, so they come back up automatically after a crash or a reboot, as long as Docker itself starts on boot:
+
+- **Linux:** `sudo systemctl enable docker`
+- **macOS/Windows:** enable **Start Docker Desktop when you sign in** in Docker Desktop's settings
+
+To change the port, edit the `7856:3000` mapping under the `web` service in `deployment/docker-compose.yml`.
+
+### Managing Tally
+
+Run these from the `deployment` directory:
+
+| Command | Description |
+| --- | --- |
+| `docker compose ps` | Show whether the containers are running |
+| `docker compose logs -f` | Follow the logs |
+| `docker compose down` | Stop Tally (your data is kept) |
+| `docker compose up -d` | Start Tally again |
+
+### Updating
+
+Pull the latest code and rebuild the image. Database migrations are applied automatically when the app starts.
+
+```bash
+git pull
+docker compose up -d --build
+```
+
+### Your Data
+
+Your data lives in the `postgres_data` Docker volume, so it survives stopping, rebuilding, and updating the containers.
+
+> [!CAUTION]
+> `docker compose down -v` deletes the volume and **all of your data**. Don't use `-v` unless you mean to start over.
+
+To back up and restore your data, use the **Data** section of the Settings page.
+
+### Running on Another Machine
+
+To run Tally on a machine without the source code (for example, a home server), build the image on a machine that has the repository, then copy it over.
+
+1. From the repository root, build the image and save it to an archive:
+
+   ```bash
+   pnpm docker:build                # builds for linux/amd64 (most servers)
+   pnpm docker:build linux/arm64    # builds for Apple Silicon Macs and ARM servers
+   ```
+
+   The archive is saved to `tally-budgeting.tar`. Pass the platform of the machine that will run Tally; `docker info --format '{{.Architecture}}'` on that machine shows it (`x86_64` is `linux/amd64`, `aarch64` is `linux/arm64`).
+
+2. Copy `tally-budgeting.tar` and `deployment/docker-compose.yml` to a folder on the other machine, and create a `.env` next to them as in the [Quick Start](#quick-start).
+
+3. In the copied `docker-compose.yml`, replace the entire `build` block of the `web` service with `image: tally-budgeting`. Without the source code, a leftover `build` block makes Compose fail with an error like `lstat .../apps: no such file or directory`.
+
+   ```yaml
+   services:
+     web:
+       image: tally-budgeting
+       environment:
+         # ...unchanged
+   ```
+
+4. Load the image and start Tally:
+
+   ```bash
+   docker load -i tally-budgeting.tar
+   docker compose up -d
+   ```
+
+## Configuration
+
+### Environment Variables
+
+The web app reads the following variables. With Docker Compose, `deployment/docker-compose.yml` sets the app's variables. It builds `POSTGRES_CONNECTION_STRING` from `DB_PASSWORD` and passes `APP_PASSWORD` through; every other variable uses its default. To change one, such as `LOG_LEVEL`, add it to the `web` service's `environment` in the compose file. For local development, set these variables in `apps/web/.env.development.local` (copied from `apps/web/.env.default`).
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `POSTGRES_CONNECTION_STRING` | Yes | — | PostgreSQL connection string. For the development database, use `postgresql://tally:tally_dev_password@localhost:5432/tally`. |
+| `POSTGRES_POOL_MAXIMUM` | No | `10` | Maximum number of pooled database connections. |
+| `LOG_LEVEL` | No | `info` | Backend log level: `error`, `warn`, `info`, `http`, or `debug`. |
+| `APP_PASSWORD` | Yes (unless `APP_PASSWORD_FILE` or `DANGEROUSLY_DISABLE_AUTH` is set) | — | Shared password required to use the app. |
+| `APP_PASSWORD_FILE` | No | — | Path to a file containing the password (whitespace is trimmed). Set this instead of `APP_PASSWORD`, not both. |
+| `DANGEROUSLY_DISABLE_AUTH` | No | — | Set to `1` to disable authentication entirely. |
+
+Docker Compose itself reads these variables from `deployment/.env`:
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. Compose refuses to start if it is unset. |
+| `APP_PASSWORD` | Yes (production) | — | Shared app password, passed through to the web container. Compose refuses to start if it is unset. |
+
+### Authentication
+
+Tally is protected by a single shared password, and the app refuses to start without one.
+
+- **Set the password:** put `APP_PASSWORD=...` in `deployment/.env` (or `apps/web/.env.development.local` for development). To keep it out of the environment, set `APP_PASSWORD_FILE` to a file (for example a Docker secret) containing the password. Set only one of the two. The bundled compose file requires `APP_PASSWORD`, so to use `APP_PASSWORD_FILE` (or `DANGEROUSLY_DISABLE_AUTH`) with Docker Compose, replace the `APP_PASSWORD` line in the `web` service's `environment`.
+- **It is a single shared credential:** there are no per-user accounts and no per-user audit trail.
+- **Changing the password logs out all sessions.**
+- **Using your own auth proxy:** set `DANGEROUSLY_DISABLE_AUTH=1` to turn off Tally's login. Anyone who can reach the app can then read and modify all data, so only do this when something else in front of it enforces authentication.
+
+> [!WARNING]
+> **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
+
+## CSV Import
+
+Tally imports transactions from the CSV files that each institution exports. Upload the file as downloaded, without editing it; Tally recognizes each institution's columns and skips extra rows such as notes or summaries.
+
+Sample files showing the expected format for each institution are in [`packages/utilities/src/dataProviders/__mocks__`](packages/utilities/src/dataProviders/__mocks__). The samples contain made-up data.
+
+| Institution | Sample file(s) |
+| --- | --- |
+| Apple Wallet | `appleCardStatementMock.csv` |
+| Chase Bank | `chaseStatementMock.csv` |
+| Fidelity Investments | `fidelityInvestmentsStatementMock.csv` (brokerage), `fidelityHsaStatementMock.csv` (HSA), `fidelityRetirementStatementMock.csv` (retirement) |
+| First Tech Federal Credit Union | `firstTechStatementMock.csv` |
+| Guideline | `guidelineStatementMock.csv` |
+| Rippling | `ripplingStatementMock.csv` |
+| Robinhood | `robinhoodCardStatementMock.csv` (credit card), `robinhoodInvestmentsStatementMock.csv` (investments) |
+| Vestwell | None yet. Expected columns: `Trade Date`, `Settlement Date`, `Transaction Type`, `Dollars`, `Funding Source`, `Contribution Year` |
+
+## Development
+
+This section is for working on Tally itself. To just run it, see [Installation](#installation).
+
+### Prerequisites
 
 - Node.js 22 or higher
 - PNPM 11 (the exact version is pinned in `packageManager` in `package.json`; run `corepack enable` to use it automatically)
-- Docker (for database and deployment)
+- Docker (for the development database)
 - PostgreSQL 16 client tools (`pg_dump` and `pg_restore`), only for using database backup and restore during local development (see [Backup and Restore Tools](#backup-and-restore-tools))
 
-## Installation
+### Setup
 
 1. Clone the repository:
 
@@ -100,8 +267,6 @@
    pnpm dev
    ```
 
-## Development
-
 ### Database
 
 The development database runs in Docker. Use these commands to manage it:
@@ -118,7 +283,7 @@ The development database uses `deployment/docker-compose.dev.yml`, which is sepa
 
 The **Data** section of the Settings page downloads backups with `pg_dump` and restores them with `pg_restore`. The Docker image includes these, but in local development the app runs them from your `PATH`, so you need to install them yourself. Use the PostgreSQL 16 client tools to match the development database: an older `pg_dump` refuses to back up a newer server.
 
-- **macOS (Homebrew):** `brew install libpq`, then add it to your `PATH` (`brew info libpq` shows the path), since it isn't linked automatically
+- **macOS (Homebrew):** `brew install libpq@16`, then add it to your `PATH` (`brew info libpq` shows the path), since it isn't linked automatically
 - **Debian/Ubuntu:** `sudo apt install postgresql-client-16` (you may need to add the [PostgreSQL apt repository](https://www.postgresql.org/download/linux/ubuntu/) first)
 - **Windows:** install the command line tools from the [PostgreSQL installer](https://www.postgresql.org/download/windows/) and add its `bin` folder to your `PATH`
 
@@ -136,100 +301,20 @@ Check your installation with `pg_dump --version` and `pg_restore --version`. The
 | `pnpm fix:biome` | Auto-fix Biome formatting issues |
 | `pnpm check-types` | Type check all packages |
 
-## Deployment
+### Docker Shortcuts
 
-Docker Compose is the recommended way to deploy both the application and its PostgreSQL database. `deployment/docker-compose.yml` defines the deployment.
+From the repository root, these scripts wrap Docker Compose for the production setup in `deployment/docker-compose.yml`:
 
-### Running with Docker Compose
+| Command | Description |
+| --- | --- |
+| `pnpm docker:up` | Build (on first run) and start all services in the background |
+| `pnpm docker:logs` | Follow the logs |
+| `pnpm docker:down` | Stop all services |
+| `pnpm docker:build [platform]` | Build the standalone image archive, for `linux/amd64` unless a platform is given (see [Running on Another Machine](#running-on-another-machine)) |
 
-Before starting, create `deployment/.env` with a database password and an app password. Compose refuses to start if either is missing.
-
-```bash
-cat > deployment/.env <<'EOF'
-DB_PASSWORD=<choose-a-strong-database-password>
-APP_PASSWORD=<choose-a-strong-app-password>
-EOF
-```
-
-Then:
-
-```bash
-# Build the image (on first run) and start all services
-pnpm docker:up
-
-# View logs
-pnpm docker:logs
-
-# Stop all services
-pnpm docker:down
-```
-
-The Docker Compose configuration includes both the application and PostgreSQL database. The app is served on port `7856`. Compose builds the image from source the first time; after pulling new code, run `docker compose -f deployment/docker-compose.yml up -d --build` to rebuild it.
-
-### Building a Standalone Image
-
-```bash
-pnpm docker:build
-```
-
-This builds the application image for `linux/amd64`, tags it `tally-budgeting`, and saves it to `tally-budgeting.tar`. It is mainly used to check that the image builds, and is not needed to deploy with Docker Compose. You can also use it to build on one machine and run on another: copy the archive over and load it with `docker load -i tally-budgeting.tar`.
-
-## Configuration
-
-### Environment Variables
-
-The web app reads the following variables. For local development, set them in `apps/web/.env.development.local` (copied from `apps/web/.env.default`).
-
-With Docker Compose, `deployment/docker-compose.yml` sets the app's variables. It builds `POSTGRES_CONNECTION_STRING` from `DB_PASSWORD` and passes `APP_PASSWORD` through; every other variable uses its default. To change one, such as `LOG_LEVEL`, add it to the `web` service's `environment` in the compose file.
-
-| Variable | Required | Default | Description |
-| --- | --- | --- | --- |
-| `POSTGRES_CONNECTION_STRING` | Yes | — | PostgreSQL connection string. For the development database, use `postgresql://tally:tally_dev_password@localhost:5432/tally`. |
-| `POSTGRES_POOL_MAXIMUM` | No | `10` | Maximum number of pooled database connections. |
-| `LOG_LEVEL` | No | `info` | Backend log level: `error`, `warn`, `info`, `http`, or `debug`. |
-| `APP_PASSWORD` | Yes (unless `APP_PASSWORD_FILE` or `DANGEROUSLY_DISABLE_AUTH` is set) | — | Shared password required to use the app. |
-| `APP_PASSWORD_FILE` | No | — | Path to a file containing the password (whitespace is trimmed). Set this instead of `APP_PASSWORD`, not both. |
-| `DANGEROUSLY_DISABLE_AUTH` | No | — | Set to `1` to disable authentication entirely. |
-
-Docker Compose itself reads these variables from `deployment/.env`:
-
-| Variable | Required | Default | Description |
-| --- | --- | --- | --- |
-| `DB_PASSWORD` | Yes (production) | `tally_dev_password` (development database only) | Password for the `tally` PostgreSQL user. `pnpm docker:up` fails if it is unset. |
-| `APP_PASSWORD` | Yes (production) | — | Shared app password, passed through to the web container. `pnpm docker:up` fails if it is unset. |
-
-### Authentication
-
-Tally is protected by a single shared password, and the app refuses to start without one.
-
-- **Set the password:** put `APP_PASSWORD=...` in `deployment/.env` (or `apps/web/.env.development.local` for development). To keep it out of the environment, set `APP_PASSWORD_FILE` to a file (for example a Docker secret) containing the password. Set only one of the two. The bundled compose file requires `APP_PASSWORD`, so to use `APP_PASSWORD_FILE` (or `DANGEROUSLY_DISABLE_AUTH`) with Docker Compose, replace the `APP_PASSWORD` line in the `web` service's `environment`.
-- **It is a single shared credential:** there are no per-user accounts and no per-user audit trail.
-- **Changing the password logs out all sessions.**
-- **Using your own auth proxy:** set `DANGEROUSLY_DISABLE_AUTH=1` to turn off Tally's login. Anyone who can reach the app can then read and modify all data, so only do this when something else in front of it enforces authentication.
-
-> [!WARNING]
-> **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
-
-## Database Migrations
+### Database Migrations
 
 The schema is managed by Kysely migrations in `apps/web/app/storage/migrations/`, applied automatically when the app starts. To add one, create `000N_<name>.ts` exporting a `Migration` (typed against `Kysely<unknown>`) and append it to `migrationEntries` in `migrationProvider.ts`.
-
-## CSV Import
-
-Tally imports transactions from the CSV files that each institution exports. Upload the file as downloaded, without editing it; Tally recognizes each institution's columns and skips extra rows such as notes or summaries.
-
-Sample files showing the expected format for each institution are in [`packages/utilities/src/dataProviders/__mocks__`](packages/utilities/src/dataProviders/__mocks__). The samples contain made-up data.
-
-| Institution | Sample file(s) |
-| --- | --- |
-| Apple Wallet | `appleCardStatementMock.csv` |
-| Chase Bank | `chaseStatementMock.csv` |
-| Fidelity Investments | `fidelityInvestmentsStatementMock.csv` (brokerage), `fidelityHsaStatementMock.csv` (HSA), `fidelityRetirementStatementMock.csv` (retirement) |
-| First Tech Federal Credit Union | `firstTechStatementMock.csv` |
-| Guideline | `guidelineStatementMock.csv` |
-| Rippling | `ripplingStatementMock.csv` |
-| Robinhood | `robinhoodCardStatementMock.csv` (credit card), `robinhoodInvestmentsStatementMock.csv` (investments) |
-| Vestwell | None yet. Expected columns: `Trade Date`, `Settlement Date`, `Transaction Type`, `Dollars`, `Funding Source`, `Contribution Year` |
 
 ## Tech Stack
 
