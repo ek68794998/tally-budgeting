@@ -57,7 +57,7 @@ COPY --from=builder --chown=nextjs:nodejs /app${APP_PATH}/.next/static ./.next/s
 COPY --from=builder /app${APP_PATH}/public* ./public
 COPY --from=builder /app${APP_PATH}/postcss.config.mjs ./postcss.config.mjs
 
-COPY --from=builder /app/packages/i18n/src/strings ../../packages/i18n/src/strings
+COPY --from=builder /app/packages/i18n/src/strings ./strings
 
 USER nextjs
 

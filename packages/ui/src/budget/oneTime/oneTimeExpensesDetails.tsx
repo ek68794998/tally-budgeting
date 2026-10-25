@@ -30,7 +30,7 @@ export const OneTimeExpensesDetails: React.FC<Props> = ({
   return (
     <div className="flex w-72 max-w-full flex-col gap-3 p-2 text-sm">
       <OneTimeExpensesSummary totalSpent={totalSpent} />
-      <ul className="flex flex-col gap-2">
+      <ul className="flex max-h-100 flex-col gap-2 overflow-y-auto">
         {transactions.map(({ amount, date, id, merchant, subcategoryId }) => {
           const subcategoryLabel = subcategories.find(
             (subcategory) => subcategory.id === subcategoryId,

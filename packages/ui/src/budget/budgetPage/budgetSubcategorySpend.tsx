@@ -45,14 +45,14 @@ export const BudgetSubcategorySpend: React.FC<Props> = ({
                 <IconHelpCircle size={16} />
               </Tooltip>
             )}
-            {oneTime?.transactions.length && (
+            {oneTime?.transactions.length ? (
               <Tooltip content={<OneTimeExpensesDetails oneTime={oneTime} />}>
                 <IconBusinessplan
                   aria-label={t("oneTime.iconLabel")}
                   size={16}
                 />
               </Tooltip>
-            )}
+            ) : null}
           </span>
           {isUnderBudget || !hasBudget ? null : (
             <Chip aria-hidden="true" color="danger" size="sm">
