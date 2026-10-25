@@ -8,6 +8,7 @@
     "dev": "turbo run dev",
     "dev:db": "docker compose -f deployment/docker-compose.dev.yml up db",
     "dev:db:down": "docker compose -f deployment/docker-compose.dev.yml down",
+    "dev:db:seed": "docker compose -f deployment/docker-compose.dev.yml exec -T db psql -U tally -d tally -v ON_ERROR_STOP=1 -q < deployment/seed.dev.sql",
     "dev:db:up": "pnpm dev:db -d",
     "diagnostic": "echo \"Turbo $(turbo --version); Node $(node -v); NPM $(npm -v); PNPM $(pnpm -v); TS(C) $(tsc -v)\"",
     "docker:build": "sh -c 'docker build --platform \"${1:-linux/amd64}\" -f apps/web/Dockerfile -t tally-budgeting . && docker save -o tally-budgeting.tar tally-budgeting' --",
