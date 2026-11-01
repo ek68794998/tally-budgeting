@@ -49,7 +49,15 @@ export const SelectCategory: React.FC<Props> = ({
       label={label}
       onInputChange={setInputValue}
       onSelectionChange={(key) => {
-        let newValue = isNullOrUndefined(key) ? NaN : Number(key);
+        // React Aria re-fires this with `null` when the menu closes while both
+        // `selectedKey` and `inputValue` are controlled; ignore it so the
+        // current selection isn't reset.
+        if (isNullOrUndefined(key)) {
+          setInputValue("");
+          return;
+        }
+
+        let newValue = Number(key);
 
         if (Number.isNaN(newValue)) {
           newValue = DefaultCategoryId;
@@ -62,7 +70,9 @@ export const SelectCategory: React.FC<Props> = ({
         setInputValue("");
       }}
       placeholder={displayValue}
-      selectedKey={selectedCategory?.id}
+      selectedKey={
+        isNullOrUndefined(selectedCategory) ? null : String(selectedCategory.id)
+      }
     >
       {(c) => <AutocompleteItem key={c.id}>{c.label}</AutocompleteItem>}
     </Autocomplete>

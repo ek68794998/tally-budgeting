@@ -188,15 +188,9 @@ describe("select inputs", () => {
   });
 
   describe("SelectCategory", () => {
-    it.each([
-      { expected: food, key: 1 },
-      {
-        expected: buildCategory({ id: -1, label: "Uncategorized" }),
-        key: null,
-      },
-    ])(
+    it.each([{ key: 1 }, { key: "1" }])(
       "sorts categories and reports selection of $key",
-      ({ expected, key }) => {
+      ({ key }) => {
         const onChange = vi.fn();
         render(
           <SelectCategory label="Category" onChange={onChange} value={2} />,
@@ -213,16 +207,28 @@ describe("select inputs", () => {
 
         props?.onSelectionChange?.(key);
 
-        expect(onChange).toHaveBeenCalledWith(expected);
+        expect(onChange).toHaveBeenCalledWith(food);
       },
     );
+
+    it("ignores a null selection so the current value is kept", () => {
+      const onChange = vi.fn();
+      render(<SelectCategory onChange={onChange} value={2} />);
+
+      act(() => {
+        lastAutocompleteProps()?.onSelectionChange?.(null);
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(lastAutocompleteProps()?.selectedKey).toBe("2");
+    });
 
     it("accepts a category object as the value and rejects unknown ids", () => {
       render(<SelectCategory onChange={vi.fn()} value={food} />);
 
       const props = lastAutocompleteProps();
 
-      expect(props?.selectedKey).toBe(1);
+      expect(props?.selectedKey).toBe("1");
       expect(() => props?.onSelectionChange?.(99)).toThrow(
         "Category must be present within the data set",
       );

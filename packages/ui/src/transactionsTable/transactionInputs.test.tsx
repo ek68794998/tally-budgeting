@@ -34,21 +34,30 @@ describe("TransactionEditDirectionButtons", () => {
 });
 
 describe("TransactionHappinessSelect", () => {
-  it.each([
-    { expected: 3, key: "3" },
-    { expected: 2, key: "" },
-  ])("reports happiness $expected for key '$key'", ({ expected, key }) => {
+  it("reports the chosen happiness and disallows an empty selection", () => {
     const onChange = vi.fn();
     render(<TransactionHappinessSelect onChange={onChange} value={1} />);
 
     const props = vi.mocked(Select).mock.lastCall?.[0];
 
     expect(props?.selectedKeys).toEqual(["1"]);
+    expect(props?.disallowEmptySelection).toBe(true);
     expect(screen.getByText("Not Worth It")).toBeInTheDocument();
 
-    props?.onSelectionChange?.(buildSelection(key));
+    props?.onSelectionChange?.(buildSelection("3"));
 
-    expect(onChange).toHaveBeenCalledWith(expected);
+    expect(onChange).toHaveBeenCalledWith(3);
+  });
+
+  it("ignores an empty selection", () => {
+    const onChange = vi.fn();
+    render(<TransactionHappinessSelect onChange={onChange} value={1} />);
+
+    vi.mocked(Select).mock.lastCall?.[0].onSelectionChange?.(
+      buildSelection(""),
+    );
+
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it("renders the selected label, defaulting to neutral", () => {
