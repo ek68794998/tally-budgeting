@@ -71,7 +71,7 @@ export const TransactionHappinessSelect: React.FC<Props> = ({
       selectedKeys={[value.toString()]}
     >
       {({ color, IconComponent, key, label }) => (
-        <SelectItem color={color} key={key.toString()}>
+        <SelectItem color={color} key={key.toString()} textValue={label}>
           <div className="flex items-center gap-2">
             <IconComponent />
             {label}
