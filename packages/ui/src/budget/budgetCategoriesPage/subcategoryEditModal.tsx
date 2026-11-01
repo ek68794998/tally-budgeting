@@ -96,6 +96,7 @@ export const SubcategoryEditModal: React.FC<Props> = ({
                 value={categoryId}
               />
               <Select
+                disallowEmptySelection={true}
                 label={t("categoriesEdit.subcategoryColumns.budgetType")}
                 onSelectionChange={(keys) => {
                   const { currentKey } = keys;
