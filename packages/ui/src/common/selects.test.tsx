@@ -257,7 +257,7 @@ describe("select inputs", () => {
 
     it.each([
       { expected: rent, key: 20 },
-      { expected: uncategorized, key: null },
+      { expected: rent, key: "20" },
     ])("reports selection of $key", ({ expected, key }) => {
       const onChange = vi.fn();
       render(<SelectSubcategory onChange={onChange} value={coffee} />);
@@ -265,6 +265,18 @@ describe("select inputs", () => {
       lastAutocompleteProps()?.onSelectionChange?.(key);
 
       expect(onChange).toHaveBeenCalledWith(expected);
+    });
+
+    it("ignores a null selection so the current value is kept", () => {
+      const onChange = vi.fn();
+      render(<SelectSubcategory onChange={onChange} value={coffee} />);
+
+      act(() => {
+        lastAutocompleteProps()?.onSelectionChange?.(null);
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(lastAutocompleteProps()?.selectedKey).toBe("10");
     });
 
     it("rejects an unknown subcategory", () => {
