@@ -1,4 +1,4 @@
-import { invariant } from "@ekumlin/typescript-toolkit/values";
+import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
 import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import { DateTime, type DateTimeMaybeValid } from "luxon";
@@ -11,6 +11,16 @@ import {
   type DataProvider,
   type ValidationErrorFn,
 } from "./types";
+
+const goldBankingStatementRowSchema = z.object({
+  /* eslint-disable @typescript-eslint/naming-convention */
+  Amount: z.string(),
+  Date: z.string(),
+  Description: z.string(),
+  /* eslint-enable @typescript-eslint/naming-convention */
+});
+
+type GoldBankingStatementRow = z.infer<typeof goldBankingStatementRowSchema>;
 
 const goldCardStatementRowSchema = z.object({
   /* eslint-disable @typescript-eslint/naming-convention */
@@ -45,53 +55,103 @@ const investmentStatementRowSchema = z.object({
 
 type InvestmentStatementRow = z.infer<typeof investmentStatementRowSchema>;
 
-type StatementRow = GoldCardStatementRow | InvestmentStatementRow;
+type StatementRow =
+  | GoldBankingStatementRow
+  | GoldCardStatementRow
+  | InvestmentStatementRow;
+type TypedStatementRow =
+  | { row: GoldBankingStatementRow; type: "banking" }
+  | { row: GoldCardStatementRow; type: "creditCard" }
+  | { row: InvestmentStatementRow; type: "investment" };
 
 export class RobinhoodDataProvider implements DataProvider<StatementRow> {
+  private static getTypedInputRow(inputRow: StatementRow): TypedStatementRow {
+    const asCreditCard = goldCardStatementRowSchema.safeParse(inputRow);
+
+    if (asCreditCard.success) {
+      return { row: asCreditCard.data, type: "creditCard" };
+    }
+
+    const asInvestment = investmentStatementRowSchema.safeParse(inputRow);
+
+    if (asInvestment.success) {
+      return { row: asInvestment.data, type: "investment" };
+    }
+
+    const asBanking = goldBankingStatementRowSchema.safeParse(inputRow);
+
+    if (asBanking.success) {
+      return { row: asBanking.data, type: "banking" };
+    }
+
+    throw new Error("Invalid input row.");
+  }
+
   public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
     (inputRow, accountName, customizations) => {
       const { accounts, subcategories } = customizations;
 
       let amountDollarsString: string;
       let description: string;
-      let inputRowDate: DateTimeMaybeValid;
+      let date: DateTimeMaybeValid;
       let type: TransactionDirection;
 
-      if ("Merchant" in inputRow) {
-        // Gold Card statement row
+      const { row: typedInputRow, type: inputRowType } =
+        RobinhoodDataProvider.getTypedInputRow(inputRow);
 
-        amountDollarsString = inputRow.Amount;
+      switch (inputRowType) {
+        case "creditCard": {
+          amountDollarsString = typedInputRow.Amount;
 
-        description =
-          trimBoilerplateFromDescription(inputRow.Description) ||
-          trimBoilerplateFromDescription(inputRow.Merchant);
+          description =
+            trimBoilerplateFromDescription(typedInputRow.Description) ||
+            trimBoilerplateFromDescription(typedInputRow.Merchant);
 
-        inputRowDate = DateTime.fromFormat(
-          `${inputRow.Date} ${inputRow.Time}`,
-          "yyyy-MM-dd h:mm a",
-        );
+          date = DateTime.fromFormat(
+            `${typedInputRow.Date} ${typedInputRow.Time}`,
+            "yyyy-MM-dd h:mm a",
+          );
 
-        type = inputRow.Type === "Purchase" ? "debit" : "credit";
-      } else {
-        // Investment statement row
+          type = typedInputRow.Type === "Purchase" ? "debit" : "credit";
 
-        amountDollarsString = inputRow.Amount.replace(/[$,]/g, "");
-
-        if (amountDollarsString.startsWith("(")) {
-          amountDollarsString = amountDollarsString.slice(1, -1);
-          type = "debit";
-        } else {
-          type = "credit";
+          break;
         }
 
-        description = inputRow.Instrument
-          ? `(${inputRow.Instrument}) ${inputRow.Description}`
-          : inputRow.Description;
+        case "banking": {
+          amountDollarsString = typedInputRow.Amount;
 
-        inputRowDate = DateTime.fromFormat(
-          inputRow["Process Date"],
-          "M/d/yyyy",
-        );
+          description = trimBoilerplateFromDescription(
+            typedInputRow.Description,
+          );
+
+          date = DateTime.fromISO(`${typedInputRow.Date}T12:00:00Z`);
+
+          type = amountDollarsString.startsWith("-") ? "debit" : "credit";
+
+          break;
+        }
+
+        case "investment": {
+          amountDollarsString = typedInputRow.Amount.replace(/[$,]/g, "");
+
+          if (amountDollarsString.startsWith("(")) {
+            amountDollarsString = amountDollarsString.slice(1, -1);
+            type = "debit";
+          } else {
+            type = "credit";
+          }
+
+          description = typedInputRow.Instrument
+            ? `(${typedInputRow.Instrument}) ${typedInputRow.Description}`
+            : typedInputRow.Description;
+
+          date = DateTime.fromFormat(typedInputRow["Process Date"], "M/d/yyyy");
+
+          break;
+        }
+
+        default:
+          return unreachable(inputRowType);
       }
 
       const { merchant, subcategoryId } = parseDescription(
@@ -110,9 +170,7 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
       const subcategory =
         subcategories.find((s) => s.id === subcategoryId) ?? DefaultSubcategory;
 
-      const transactionDate = inputRowDate.isValid
-        ? inputRowDate
-        : DateTime.now();
+      const transactionDate = date.isValid ? date : DateTime.now();
 
       return {
         accountId: account.id,
@@ -126,22 +184,32 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
     };
 
   public isStatementRowIgnored = (inputRow: StatementRow) => {
-    if ("Merchant" in inputRow) {
-      const { Merchant: description, Status: status } = inputRow;
+    const { row: typedInputRow, type: inputRowType } =
+      RobinhoodDataProvider.getTypedInputRow(inputRow);
 
-      return description === "Payment" || status !== "Posted";
-    } else {
-      const { "Trans Code": transCode } = inputRow;
+    if (inputRowType === "creditCard") {
+      const { Merchant: merchant, Status: status } = typedInputRow;
+
+      return merchant === "Payment" || status !== "Posted";
+    }
+
+    if (inputRowType === "investment") {
+      const { "Trans Code": transCode } = typedInputRow;
 
       return (
         transCode === "Buy" ||
         transCode === "Sell" ||
         !!(
-          /Dividend\s*Reinvestment/i.exec(inputRow.Description) ||
-          /balance\s*payment/.exec(inputRow.Description)
+          /Dividend\s*Reinvestment/i.exec(typedInputRow.Description) ||
+          /balance\s*payment/.exec(typedInputRow.Description)
         )
       );
     }
+
+    // Banking (checking/savings) row.
+    const { Description: description } = typedInputRow;
+
+    return !!/Inter-Entity Transfer/i.exec(description);
   };
 
   public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
@@ -150,20 +218,23 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
   ): obj is StatementRow => {
     const errors1: string[] = [];
     const errors2: string[] = [];
+    const errors3: string[] = [];
 
     if (validateIsStatementRow(obj, goldCardStatementRowSchema, errors1)) {
       return true;
     }
 
-    if (validateIsStatementRow(obj, investmentStatementRowSchema, errors2)) {
+    if (validateIsStatementRow(obj, goldBankingStatementRowSchema, errors2)) {
       return true;
     }
 
-    if (errors1.length) {
-      validationErrors.push(...errors1);
-    } else if (errors2.length) {
-      validationErrors.push(...errors2);
+    if (validateIsStatementRow(obj, investmentStatementRowSchema, errors3)) {
+      return true;
     }
+
+    validationErrors.push(...errors1);
+    validationErrors.push(...errors2);
+    validationErrors.push(...errors3);
 
     return false;
   };
