@@ -41,7 +41,7 @@ pnpm fix:biome    # Auto-fix Biome formatting
 All generated code must past type checks and linting.
 
 - Prefer `interface` over `type`; never use `enum` (use string literal unions instead).
-- Prefer `const` lambda variables to `function` declarations (as both locals and members).
+- Prefer `const` lambda variables to `function` declarations (in local declarations).
 - Use descriptive variable names.
 - Keep functions small and focused.
 - Write tests for new functionality.
