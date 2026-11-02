@@ -548,6 +548,8 @@ describe("RobinhoodDataProvider", () => {
       it.each([
         ["credit", "12.34", "credit", 1234],
         ["debit", "-1500.00", "debit", 150000],
+        ["formatted credit", "$1,234.56", "credit", 123456],
+        ["formatted debit", "-$1,234.56", "debit", 123456],
       ])(
         "should convert a %s banking row",
         (_label, amount, expectedType, expectedCents) => {
@@ -598,21 +600,6 @@ describe("RobinhoodDataProvider", () => {
 
         expect(diffInSeconds).toBeLessThan(5);
       });
-    });
-
-    it("should throw when the row matches no known statement shape", () => {
-      const malformedRow = { someField: "value" };
-
-      expect(() => {
-        Reflect.apply(provider.isStatementRowIgnored, provider, [malformedRow]);
-      }).toThrow("Invalid input row.");
-      expect(() => {
-        Reflect.apply(provider.convertStatementRowToTransaction, provider, [
-          malformedRow,
-          "Robinhood Gold Card",
-          customizations,
-        ]);
-      }).toThrow("Invalid input row.");
     });
   });
 
@@ -837,22 +824,74 @@ describe("RobinhoodDataProvider", () => {
     });
 
     it.each([
-      ["a wrong-shape row", { someField: "value" }, 22],
       [
-        "a row missing fields",
+        "a credit card row with an empty merchant",
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "10.00",
+          Balance: "990.00",
+          Cardholder: "John Doe",
+          Date: "2024-01-15",
+          Description: "TEST",
+          Merchant: "",
+          Points: "10",
+          Status: "Pending",
+          Time: "9:30 AM",
+          Type: "Purchase",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+        ["Merchant: Too small: expected string to have >=1 characters"],
+      ],
+      [
+        "a credit card row missing fields",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         { Amount: "10.00", Merchant: "TEST" },
-        18,
+        [
+          "Balance: Invalid input: expected string, received undefined",
+          "Cardholder: Invalid input: expected string, received undefined",
+          "Date: Invalid input: expected string, received undefined",
+          "Description: Invalid input: expected string, received undefined",
+          "Points: Invalid input: expected string, received undefined",
+          "Status: Invalid input: expected string, received undefined",
+          "Time: Invalid input: expected string, received undefined",
+          "Type: Invalid input: expected string, received undefined",
+        ],
       ],
-      ["null", null, 3],
-      ["undefined", undefined, 3],
+      [
+        "an investment row missing fields",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { Amount: "$10.00", Description: "Cash Interest", "Trans Code": "INT" },
+        [
+          "Activity Date: Invalid input: expected string, received undefined",
+          "Instrument: Invalid input: expected string, received undefined",
+          "Price: Invalid input: expected string, received undefined",
+          "Process Date: Invalid input: expected string, received undefined",
+          "Quantity: Invalid input: expected string, received undefined",
+          "Settle Date: Invalid input: expected string, received undefined",
+        ],
+      ],
+      [
+        "a row with no identifying columns",
+        { someField: "value" },
+        [
+          "Amount: Invalid input: expected string, received undefined",
+          "Date: Invalid input: expected string, received undefined",
+          "Description: Invalid input: expected string, received undefined",
+        ],
+      ],
+      ["null", null, ["Invalid input: expected object, received null"]],
+      [
+        "undefined",
+        undefined,
+        ["Invalid input: expected object, received undefined"],
+      ],
     ])(
-      "should reject %s with errors from every schema",
-      (_label, invalidRow, expectedErrorCount) => {
+      "should reject %s with errors from only the matching schema",
+      (_label, invalidRow, expectedErrors) => {
         const errors: string[] = [];
 
         expect(provider.validateIsStatementRow(invalidRow, errors)).toBe(false);
-        expect(errors).toHaveLength(expectedErrorCount);
+        expect(errors).toEqual(expectedErrors);
       },
     );
 

@@ -1,3 +1,4 @@
+import { isNull } from "@ekumlin/typescript-toolkit/types";
 import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
 import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
@@ -12,11 +13,16 @@ import {
   type ValidationErrorFn,
 } from "./types";
 
+// Each schema requires the other schemas' identifying columns to be absent, so a row can only match one.
+const absentColumn = z.undefined().optional();
+
 const goldBankingStatementRowSchema = z.object({
   /* eslint-disable @typescript-eslint/naming-convention */
   Amount: z.string(),
   Date: z.string(),
   Description: z.string(),
+  Merchant: absentColumn,
+  "Trans Code": absentColumn,
   /* eslint-enable @typescript-eslint/naming-convention */
 });
 
@@ -33,6 +39,7 @@ const goldCardStatementRowSchema = z.object({
   Points: z.string(),
   Status: z.string(),
   Time: z.string(),
+  "Trans Code": absentColumn,
   Type: z.string(),
   /* eslint-enable @typescript-eslint/naming-convention */
 });
@@ -45,6 +52,7 @@ const investmentStatementRowSchema = z.object({
   Amount: z.string(),
   Description: z.string().min(1),
   Instrument: z.string(),
+  Merchant: absentColumn,
   Price: z.string(),
   "Process Date": z.string(),
   Quantity: z.string(),
@@ -59,34 +67,41 @@ type StatementRow =
   | GoldBankingStatementRow
   | GoldCardStatementRow
   | InvestmentStatementRow;
+
 type TypedStatementRow =
   | { row: GoldBankingStatementRow; type: "banking" }
   | { row: GoldCardStatementRow; type: "creditCard" }
   | { row: InvestmentStatementRow; type: "investment" };
 
-export class RobinhoodDataProvider implements DataProvider<StatementRow> {
-  private static getTypedInputRow(inputRow: StatementRow): TypedStatementRow {
-    const asCreditCard = goldCardStatementRowSchema.safeParse(inputRow);
-
-    if (asCreditCard.success) {
-      return { row: asCreditCard.data, type: "creditCard" };
-    }
-
-    const asInvestment = investmentStatementRowSchema.safeParse(inputRow);
-
-    if (asInvestment.success) {
-      return { row: asInvestment.data, type: "investment" };
-    }
-
-    const asBanking = goldBankingStatementRowSchema.safeParse(inputRow);
-
-    if (asBanking.success) {
-      return { row: asBanking.data, type: "banking" };
-    }
-
-    throw new Error("Invalid input row.");
+const getTypedInputRow = (inputRow: StatementRow): TypedStatementRow => {
+  if (inputRow.Merchant !== undefined) {
+    return { row: inputRow, type: "creditCard" };
   }
 
+  if (inputRow["Trans Code"] !== undefined) {
+    return { row: inputRow, type: "investment" };
+  }
+
+  return { row: inputRow, type: "banking" };
+};
+
+const getIntendedStatementRowSchema = (
+  obj: unknown,
+): z.ZodType<StatementRow> => {
+  if (typeof obj === "object" && !isNull(obj)) {
+    if ("Merchant" in obj) {
+      return goldCardStatementRowSchema;
+    }
+
+    if ("Trans Code" in obj) {
+      return investmentStatementRowSchema;
+    }
+  }
+
+  return goldBankingStatementRowSchema;
+};
+
+export class RobinhoodDataProvider implements DataProvider<StatementRow> {
   public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
     (inputRow, accountName, customizations) => {
       const { accounts, subcategories } = customizations;
@@ -97,7 +112,7 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
       let type: TransactionDirection;
 
       const { row: typedInputRow, type: inputRowType } =
-        RobinhoodDataProvider.getTypedInputRow(inputRow);
+        getTypedInputRow(inputRow);
 
       switch (inputRowType) {
         case "creditCard": {
@@ -118,7 +133,7 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
         }
 
         case "banking": {
-          amountDollarsString = typedInputRow.Amount;
+          amountDollarsString = typedInputRow.Amount.replace(/[$,]/g, "");
 
           description = trimBoilerplateFromDescription(
             typedInputRow.Description,
@@ -185,7 +200,7 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 
   public isStatementRowIgnored = (inputRow: StatementRow) => {
     const { row: typedInputRow, type: inputRowType } =
-      RobinhoodDataProvider.getTypedInputRow(inputRow);
+      getTypedInputRow(inputRow);
 
     if (inputRowType === "creditCard") {
       const { Merchant: merchant, Status: status } = typedInputRow;
@@ -216,25 +231,21 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
     obj,
     validationErrors,
   ): obj is StatementRow => {
-    const errors1: string[] = [];
-    const errors2: string[] = [];
-    const errors3: string[] = [];
+    const statementRowSchemas = [
+      goldCardStatementRowSchema,
+      goldBankingStatementRowSchema,
+      investmentStatementRowSchema,
+    ];
 
-    if (validateIsStatementRow(obj, goldCardStatementRowSchema, errors1)) {
+    if (statementRowSchemas.some((schema) => schema.safeParse(obj).success)) {
       return true;
     }
 
-    if (validateIsStatementRow(obj, goldBankingStatementRowSchema, errors2)) {
-      return true;
-    }
-
-    if (validateIsStatementRow(obj, investmentStatementRowSchema, errors3)) {
-      return true;
-    }
-
-    validationErrors.push(...errors1);
-    validationErrors.push(...errors2);
-    validationErrors.push(...errors3);
+    validateIsStatementRow(
+      obj,
+      getIntendedStatementRowSchema(obj),
+      validationErrors,
+    );
 
     return false;
   };
