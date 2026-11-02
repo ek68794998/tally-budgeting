@@ -71,12 +71,14 @@ class FtfcuDataProvider implements DataProvider<StatementRow> {
   public isStatementRowIgnored = (inputRow: StatementRow) => {
     const { Description: description } = inputRow;
 
-    return !!(
-      /-\s*AUTOPAY/.exec(description) ||
-      /-\s*PAYMENT/.exec(description) ||
-      /(Withdrawal|Deposit)\s*(Xfer|Transfer).*\*/.exec(description) ||
-      /(Withdrawal|Deposit):\s*(Xfer|Transfer).*\*/.exec(description)
-    );
+    const ignoredRegexMatchers = [
+      /-\s*AUTOPAY/,
+      /-\s*PAYMENT/,
+      /(Withdrawal|Deposit)\s*.*(Xfer|Transfer|MoneyLine).*/i,
+      /(Withdrawal|Deposit):\s*.*(Xfer|Transfer|MoneyLine).*/i,
+    ];
+
+    return ignoredRegexMatchers.some((regex) => !!regex.exec(description));
   };
 
   public validateIsStatementRow: ValidationErrorFn<StatementRow> = (

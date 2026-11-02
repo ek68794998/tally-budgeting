@@ -1,4 +1,5 @@
-import { invariant } from "@ekumlin/typescript-toolkit/values";
+import { isNull } from "@ekumlin/typescript-toolkit/types";
+import { invariant, unreachable } from "@ekumlin/typescript-toolkit/values";
 import { DefaultSubcategory } from "@tally/data-models/contracts/subcategory";
 import { type TransactionDirection } from "@tally/data-models/contracts/transactionDirection";
 import { DateTime, type DateTimeMaybeValid } from "luxon";
@@ -12,6 +13,21 @@ import {
   type ValidationErrorFn,
 } from "./types";
 
+// Each schema requires the other schemas' identifying columns to be absent, so a row can only match one.
+const absentColumn = z.undefined().optional();
+
+const goldBankingStatementRowSchema = z.object({
+  /* eslint-disable @typescript-eslint/naming-convention */
+  Amount: z.string(),
+  Date: z.string(),
+  Description: z.string(),
+  Merchant: absentColumn,
+  "Trans Code": absentColumn,
+  /* eslint-enable @typescript-eslint/naming-convention */
+});
+
+type GoldBankingStatementRow = z.infer<typeof goldBankingStatementRowSchema>;
+
 const goldCardStatementRowSchema = z.object({
   /* eslint-disable @typescript-eslint/naming-convention */
   Amount: z.string(),
@@ -23,6 +39,7 @@ const goldCardStatementRowSchema = z.object({
   Points: z.string(),
   Status: z.string(),
   Time: z.string(),
+  "Trans Code": absentColumn,
   Type: z.string(),
   /* eslint-enable @typescript-eslint/naming-convention */
 });
@@ -35,6 +52,7 @@ const investmentStatementRowSchema = z.object({
   Amount: z.string(),
   Description: z.string().min(1),
   Instrument: z.string(),
+  Merchant: absentColumn,
   Price: z.string(),
   "Process Date": z.string(),
   Quantity: z.string(),
@@ -45,7 +63,43 @@ const investmentStatementRowSchema = z.object({
 
 type InvestmentStatementRow = z.infer<typeof investmentStatementRowSchema>;
 
-type StatementRow = GoldCardStatementRow | InvestmentStatementRow;
+type StatementRow =
+  | GoldBankingStatementRow
+  | GoldCardStatementRow
+  | InvestmentStatementRow;
+
+type TypedStatementRow =
+  | { row: GoldBankingStatementRow; type: "banking" }
+  | { row: GoldCardStatementRow; type: "creditCard" }
+  | { row: InvestmentStatementRow; type: "investment" };
+
+const getTypedInputRow = (inputRow: StatementRow): TypedStatementRow => {
+  if (inputRow.Merchant !== undefined) {
+    return { row: inputRow, type: "creditCard" };
+  }
+
+  if (inputRow["Trans Code"] !== undefined) {
+    return { row: inputRow, type: "investment" };
+  }
+
+  return { row: inputRow, type: "banking" };
+};
+
+const getIntendedStatementRowSchema = (
+  obj: unknown,
+): z.ZodType<StatementRow> => {
+  if (typeof obj === "object" && !isNull(obj)) {
+    if ("Merchant" in obj) {
+      return goldCardStatementRowSchema;
+    }
+
+    if ("Trans Code" in obj) {
+      return investmentStatementRowSchema;
+    }
+  }
+
+  return goldBankingStatementRowSchema;
+};
 
 export class RobinhoodDataProvider implements DataProvider<StatementRow> {
   public convertStatementRowToTransaction: CsvRowToTransactionFn<StatementRow> =
@@ -54,44 +108,65 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
 
       let amountDollarsString: string;
       let description: string;
-      let inputRowDate: DateTimeMaybeValid;
+      let date: DateTimeMaybeValid;
       let type: TransactionDirection;
 
-      if ("Merchant" in inputRow) {
-        // Gold Card statement row
+      const { row: typedInputRow, type: inputRowType } =
+        getTypedInputRow(inputRow);
 
-        amountDollarsString = inputRow.Amount;
+      switch (inputRowType) {
+        case "creditCard": {
+          amountDollarsString = typedInputRow.Amount;
 
-        description =
-          trimBoilerplateFromDescription(inputRow.Description) ||
-          trimBoilerplateFromDescription(inputRow.Merchant);
+          description =
+            trimBoilerplateFromDescription(typedInputRow.Description) ||
+            trimBoilerplateFromDescription(typedInputRow.Merchant);
 
-        inputRowDate = DateTime.fromFormat(
-          `${inputRow.Date} ${inputRow.Time}`,
-          "yyyy-MM-dd h:mm a",
-        );
+          date = DateTime.fromFormat(
+            `${typedInputRow.Date} ${typedInputRow.Time}`,
+            "yyyy-MM-dd h:mm a",
+          );
 
-        type = inputRow.Type === "Purchase" ? "debit" : "credit";
-      } else {
-        // Investment statement row
+          type = typedInputRow.Type === "Purchase" ? "debit" : "credit";
 
-        amountDollarsString = inputRow.Amount.replace(/[$,]/g, "");
-
-        if (amountDollarsString.startsWith("(")) {
-          amountDollarsString = amountDollarsString.slice(1, -1);
-          type = "debit";
-        } else {
-          type = "credit";
+          break;
         }
 
-        description = inputRow.Instrument
-          ? `(${inputRow.Instrument}) ${inputRow.Description}`
-          : inputRow.Description;
+        case "banking": {
+          amountDollarsString = typedInputRow.Amount.replace(/[$,]/g, "");
 
-        inputRowDate = DateTime.fromFormat(
-          inputRow["Process Date"],
-          "M/d/yyyy",
-        );
+          description = trimBoilerplateFromDescription(
+            typedInputRow.Description,
+          );
+
+          date = DateTime.fromISO(`${typedInputRow.Date}T12:00:00Z`);
+
+          type = amountDollarsString.startsWith("-") ? "debit" : "credit";
+
+          break;
+        }
+
+        case "investment": {
+          amountDollarsString = typedInputRow.Amount.replace(/[$,]/g, "");
+
+          if (amountDollarsString.startsWith("(")) {
+            amountDollarsString = amountDollarsString.slice(1, -1);
+            type = "debit";
+          } else {
+            type = "credit";
+          }
+
+          description = typedInputRow.Instrument
+            ? `(${typedInputRow.Instrument}) ${typedInputRow.Description}`
+            : typedInputRow.Description;
+
+          date = DateTime.fromFormat(typedInputRow["Process Date"], "M/d/yyyy");
+
+          break;
+        }
+
+        default:
+          return unreachable(inputRowType);
       }
 
       const { merchant, subcategoryId } = parseDescription(
@@ -110,9 +185,7 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
       const subcategory =
         subcategories.find((s) => s.id === subcategoryId) ?? DefaultSubcategory;
 
-      const transactionDate = inputRowDate.isValid
-        ? inputRowDate
-        : DateTime.now();
+      const transactionDate = date.isValid ? date : DateTime.now();
 
       return {
         accountId: account.id,
@@ -126,44 +199,53 @@ export class RobinhoodDataProvider implements DataProvider<StatementRow> {
     };
 
   public isStatementRowIgnored = (inputRow: StatementRow) => {
-    if ("Merchant" in inputRow) {
-      const { Merchant: description, Status: status } = inputRow;
+    const { row: typedInputRow, type: inputRowType } =
+      getTypedInputRow(inputRow);
 
-      return description === "Payment" || status !== "Posted";
-    } else {
-      const { "Trans Code": transCode } = inputRow;
+    if (inputRowType === "creditCard") {
+      const { Merchant: merchant, Status: status } = typedInputRow;
+
+      return merchant === "Payment" || status !== "Posted";
+    }
+
+    if (inputRowType === "investment") {
+      const { "Trans Code": transCode } = typedInputRow;
 
       return (
         transCode === "Buy" ||
         transCode === "Sell" ||
         !!(
-          /Dividend\s*Reinvestment/i.exec(inputRow.Description) ||
-          /balance\s*payment/.exec(inputRow.Description)
+          /Dividend\s*Reinvestment/i.exec(typedInputRow.Description) ||
+          /balance\s*payment/.exec(typedInputRow.Description)
         )
       );
     }
+
+    // Banking (checking/savings) row.
+    const { Description: description } = typedInputRow;
+
+    return !!/Inter-Entity Transfer/i.exec(description);
   };
 
   public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
     obj,
     validationErrors,
   ): obj is StatementRow => {
-    const errors1: string[] = [];
-    const errors2: string[] = [];
+    const statementRowSchemas = [
+      goldCardStatementRowSchema,
+      goldBankingStatementRowSchema,
+      investmentStatementRowSchema,
+    ];
 
-    if (validateIsStatementRow(obj, goldCardStatementRowSchema, errors1)) {
+    if (statementRowSchemas.some((schema) => schema.safeParse(obj).success)) {
       return true;
     }
 
-    if (validateIsStatementRow(obj, investmentStatementRowSchema, errors2)) {
-      return true;
-    }
-
-    if (errors1.length) {
-      validationErrors.push(...errors1);
-    } else if (errors2.length) {
-      validationErrors.push(...errors2);
-    }
+    validateIsStatementRow(
+      obj,
+      getIntendedStatementRowSchema(obj),
+      validationErrors,
+    );
 
     return false;
   };

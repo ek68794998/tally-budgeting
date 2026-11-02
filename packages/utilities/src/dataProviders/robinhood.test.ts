@@ -543,6 +543,64 @@ describe("RobinhoodDataProvider", () => {
         );
       });
     });
+
+    describe("banking statement rows", () => {
+      it.each([
+        ["credit", "12.34", "credit", 1234],
+        ["debit", "-1500.00", "debit", 150000],
+        ["formatted credit", "$1,234.56", "credit", 123456],
+        ["formatted debit", "-$1,234.56", "debit", 123456],
+      ])(
+        "should convert a %s banking row",
+        (_label, amount, expectedType, expectedCents) => {
+          const row = {
+            /* eslint-disable @typescript-eslint/naming-convention */
+            Amount: amount,
+            Date: "2024-01-15",
+            Description: "  STARBUCKS COFFEE  ",
+            /* eslint-enable @typescript-eslint/naming-convention */
+          };
+
+          const result = provider.convertStatementRowToTransaction(
+            row,
+            "Robinhood Gold Card",
+            customizations,
+          );
+
+          expect(result).toEqual({
+            accountId: 1,
+            amountCents: expectedCents,
+            categoryId: 5,
+            date: DateTime.fromISO("2024-01-15T12:00:00Z").toISO(),
+            merchant: "Starbucks",
+            subcategoryId: 101,
+            type: expectedType,
+          });
+        },
+      );
+
+      it("should use current time when banking date is invalid", () => {
+        const row = {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "10.00",
+          Date: "not-a-date",
+          Description: "TEST",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        };
+
+        const result = provider.convertStatementRowToTransaction(
+          row,
+          "Robinhood Gold Card",
+          customizations,
+        );
+
+        const diffInSeconds = Math.abs(
+          DateTime.fromISO(result.date).diff(DateTime.now(), "seconds").seconds,
+        );
+
+        expect(diffInSeconds).toBeLessThan(5);
+      });
+    });
   });
 
   describe("isStatementRowIgnored", () => {
@@ -686,9 +744,62 @@ describe("RobinhoodDataProvider", () => {
 
       expect(provider.isStatementRowIgnored(row)).toBe(false);
     });
+
+    describe("banking statement rows", () => {
+      it.each([
+        ["Inter-Entity Transfer to Brokerage", true],
+        ["inter-entity transfer", true],
+        ["Direct Deposit from Employer", false],
+        ["Transfer to savings", false],
+      ])("should return %s → %s", (description, expected) => {
+        const row = {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "100.00",
+          Date: "2024-01-15",
+          Description: description,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        };
+
+        expect(provider.isStatementRowIgnored(row)).toBe(expected);
+      });
+    });
   });
 
   describe("validateIsStatementRow", () => {
+    it.each([
+      [
+        "banking",
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "10.00",
+          Date: "2024-01-15",
+          Description: "TEST",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      ],
+      [
+        "investment",
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          "Activity Date": "1/15/2024",
+          Amount: "$10.00",
+          Description: "Cash Interest",
+          Instrument: "",
+          Price: "",
+          "Process Date": "1/15/2024",
+          Quantity: "0",
+          "Settle Date": "1/17/2024",
+          "Trans Code": "INT",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      ],
+    ])("should validate a correct %s statement row", (_label, validRow) => {
+      const errors: string[] = [];
+
+      expect(provider.validateIsStatementRow(validRow, errors)).toBe(true);
+      expect(errors).toHaveLength(0);
+    });
+
     it("should validate a correct statement row", () => {
       const validRow = {
         /* eslint-disable @typescript-eslint/naming-convention */
@@ -712,59 +823,77 @@ describe("RobinhoodDataProvider", () => {
       expect(errors).toHaveLength(0);
     });
 
-    it("should reject invalid rows with appropriate errors", () => {
-      const emptyMerchantRow = {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        Amount: "10.00",
-        Balance: "990.00",
-        Cardholder: "John Doe",
-        Date: "2024-01-15",
-        Description: "Purchase",
-        Merchant: "",
-        Points: "10",
-        Status: "Posted",
-        Time: "9:30 AM",
-        Type: "Purchase",
-        /* eslint-enable @typescript-eslint/naming-convention */
-      };
+    it.each([
+      [
+        "a credit card row with an empty merchant",
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "10.00",
+          Balance: "990.00",
+          Cardholder: "John Doe",
+          Date: "2024-01-15",
+          Description: "TEST",
+          Merchant: "",
+          Points: "10",
+          Status: "Pending",
+          Time: "9:30 AM",
+          Type: "Purchase",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+        ["Merchant: Too small: expected string to have >=1 characters"],
+      ],
+      [
+        "a credit card row missing fields",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { Amount: "10.00", Merchant: "TEST" },
+        [
+          "Balance: Invalid input: expected string, received undefined",
+          "Cardholder: Invalid input: expected string, received undefined",
+          "Date: Invalid input: expected string, received undefined",
+          "Description: Invalid input: expected string, received undefined",
+          "Points: Invalid input: expected string, received undefined",
+          "Status: Invalid input: expected string, received undefined",
+          "Time: Invalid input: expected string, received undefined",
+          "Type: Invalid input: expected string, received undefined",
+        ],
+      ],
+      [
+        "an investment row missing fields",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { Amount: "$10.00", Description: "Cash Interest", "Trans Code": "INT" },
+        [
+          "Activity Date: Invalid input: expected string, received undefined",
+          "Instrument: Invalid input: expected string, received undefined",
+          "Price: Invalid input: expected string, received undefined",
+          "Process Date: Invalid input: expected string, received undefined",
+          "Quantity: Invalid input: expected string, received undefined",
+          "Settle Date: Invalid input: expected string, received undefined",
+        ],
+      ],
+      [
+        "a row with no identifying columns",
+        { someField: "value" },
+        [
+          "Amount: Invalid input: expected string, received undefined",
+          "Date: Invalid input: expected string, received undefined",
+          "Description: Invalid input: expected string, received undefined",
+        ],
+      ],
+      ["null", null, ["Invalid input: expected object, received null"]],
+      [
+        "undefined",
+        undefined,
+        ["Invalid input: expected object, received undefined"],
+      ],
+    ])(
+      "should reject %s with errors from only the matching schema",
+      (_label, invalidRow, expectedErrors) => {
+        const errors: string[] = [];
 
-      const wrongShapeRow = {
-        someField: "value",
-      };
-
-      const missingFieldsRow = {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        Amount: "10.00",
-        Merchant: "TEST",
-        /* eslint-enable @typescript-eslint/naming-convention */
-      };
-
-      const errors1: string[] = [];
-      expect(provider.validateIsStatementRow(emptyMerchantRow, errors1)).toBe(
-        false,
-      );
-      expect(errors1).toHaveLength(1);
-
-      const errors2: string[] = [];
-      expect(provider.validateIsStatementRow(wrongShapeRow, errors2)).toBe(
-        false,
-      );
-      expect(errors2).toHaveLength(10);
-
-      const errors3: string[] = [];
-      expect(provider.validateIsStatementRow(missingFieldsRow, errors3)).toBe(
-        false,
-      );
-      expect(errors3).toHaveLength(8);
-
-      const errors4: string[] = [];
-      expect(provider.validateIsStatementRow(null, errors4)).toBe(false);
-      expect(errors4).toHaveLength(1);
-
-      const errors5: string[] = [];
-      expect(provider.validateIsStatementRow(undefined, errors5)).toBe(false);
-      expect(errors5).toHaveLength(1);
-    });
+        expect(provider.validateIsStatementRow(invalidRow, errors)).toBe(false);
+        expect(errors).toEqual(expectedErrors);
+      },
+    );
 
     it("should not clear validation errors array before validation", () => {
       const validRow = {

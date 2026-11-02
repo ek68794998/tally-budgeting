@@ -362,6 +362,29 @@ describe("ChaseDataProvider", () => {
       ).toBe(true);
     });
 
+    it.each([
+      "automatic payment",
+      "Automatic Payment - Thank You",
+      "Payment Thank You",
+      "PAYMENT THANK YOU-WEB",
+      "payment thank you",
+      "Payment  ThankYou",
+    ])("should ignore payment transaction: %s", (description) => {
+      const row = {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        Amount: "100.00",
+        Category: "Payment",
+        Description: description,
+        Memo: "",
+        "Post Date": "01/15/2024",
+        "Transaction Date": "01/15/2024",
+        Type: "Payment",
+        /* eslint-enable @typescript-eslint/naming-convention */
+      };
+
+      expect(provider.isStatementRowIgnored(row)).toBe(true);
+    });
+
     it("should not ignore regular transactions", () => {
       const saleRow = {
         /* eslint-disable @typescript-eslint/naming-convention */

@@ -439,7 +439,15 @@ describe("FirstTechFederalDataProvider", () => {
       "Deposit: Transfer from Checking *5678",
       "Withdrawal: Xfer to Savings *1234",
       "Deposit: Xfer from Checking *5678",
-    ])("should ignore internal transfer transaction: %s", (description) => {
+      "WITHDRAWAL TRANSFER TO SAVINGS *1234",
+      "deposit xfer from checking *5678",
+      "WITHDRAWAL: XFER TO SAVINGS *1234",
+      "deposit: transfer from checking *5678",
+      "Withdrawal Transfer to External Account",
+      "Deposit Online Banking Transfer from Savings",
+      "Withdrawal MoneyLine to Brokerage",
+      "deposit: moneyline from brokerage",
+    ])("should ignore transfer transaction: %s", (description) => {
       const row = {
         /* eslint-disable @typescript-eslint/naming-convention */
         Amount: "-100.00",
@@ -502,27 +510,34 @@ describe("FirstTechFederalDataProvider", () => {
       expect(provider.isStatementRowIgnored(checkRow)).toBe(false);
     });
 
-    it("should not ignore transfers without asterisk", () => {
-      const transferRow = {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        Amount: "-100.00",
-        Balance: "900.00",
-        "Check Number": "",
-        Description: "Withdrawal Transfer to External Account",
-        "Effective Date": "01/15/2024",
-        "Extended Description": "",
-        Memo: "",
-        "Posting Date": "01/15/2024",
-        "Reference Number": "123456",
-        "Transaction Category": "",
-        "Transaction ID": "789",
-        "Transaction Type": "debit",
-        Type: "",
-        /* eslint-enable @typescript-eslint/naming-convention */
-      };
+    it.each([
+      "ATM Withdrawal",
+      "Deposit at Branch",
+      "Wire Transfer from Employer",
+    ])(
+      "should not ignore a non-transfer withdrawal or deposit: %s",
+      (description) => {
+        const row = {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          Amount: "-100.00",
+          Balance: "900.00",
+          "Check Number": "",
+          Description: description,
+          "Effective Date": "01/15/2024",
+          "Extended Description": "",
+          Memo: "",
+          "Posting Date": "01/15/2024",
+          "Reference Number": "123456",
+          "Transaction Category": "",
+          "Transaction ID": "789",
+          "Transaction Type": "debit",
+          Type: "",
+          /* eslint-enable @typescript-eslint/naming-convention */
+        };
 
-      expect(provider.isStatementRowIgnored(transferRow)).toBe(false);
-    });
+        expect(provider.isStatementRowIgnored(row)).toBe(false);
+      },
+    );
   });
 
   describe("validateIsStatementRow", () => {

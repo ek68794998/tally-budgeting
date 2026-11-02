@@ -9,8 +9,9 @@ import {
   type Category,
   DefaultCategoryId,
 } from "@tally/data-models/contracts/category";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useCategories } from "../hooks/store/useCategories";
+import { useSelectionInputValue } from "../hooks/useSelectionInputValue";
 
 interface Props {
   autocompleteProps?: Partial<Omit<AutocompleteProps<Category>, "children">>;
@@ -27,8 +28,6 @@ export const SelectCategory: React.FC<Props> = ({
 }) => {
   const { categories } = useCategories();
 
-  const [inputValue, setInputValue] = useState("");
-
   const items: Category[] = useMemo(
     () => categories.slice().sort((a, b) => a.label.localeCompare(b.label)),
     [categories],
@@ -37,19 +36,29 @@ export const SelectCategory: React.FC<Props> = ({
   const selectedCategory = isNumber(value)
     ? categories.find((s) => s.id === value)
     : value;
-  const displayValue = selectedCategory?.label;
+
+  const { inputValue, resetInputValue, setInputValue } = useSelectionInputValue(
+    selectedCategory?.label ?? "",
+  );
 
   return (
     <Autocomplete
       {...autocompleteProps}
-      inputProps={{ classNames: { input: "placeholder-current" } }}
       inputValue={inputValue}
       isClearable={false}
       items={items}
       label={label}
       onInputChange={setInputValue}
       onSelectionChange={(key) => {
-        let newValue = isNullOrUndefined(key) ? NaN : Number(key);
+        // React Aria re-fires this with `null` when the menu closes while both
+        // `selectedKey` and `inputValue` are controlled; ignore it so the
+        // current selection isn't reset.
+        if (isNullOrUndefined(key)) {
+          resetInputValue();
+          return;
+        }
+
+        let newValue = Number(key);
 
         if (Number.isNaN(newValue)) {
           newValue = DefaultCategoryId;
@@ -59,10 +68,11 @@ export const SelectCategory: React.FC<Props> = ({
         invariant(newCategory, "Category must be present within the data set");
 
         onChange(newCategory);
-        setInputValue("");
+        resetInputValue(newCategory.label);
       }}
-      placeholder={displayValue}
-      selectedKey={selectedCategory?.id}
+      selectedKey={
+        isNullOrUndefined(selectedCategory) ? null : String(selectedCategory.id)
+      }
     >
       {(c) => <AutocompleteItem key={c.id}>{c.label}</AutocompleteItem>}
     </Autocomplete>

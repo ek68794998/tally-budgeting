@@ -83,6 +83,7 @@ export const AssetEditModal: React.FC<Props> = ({
                 value={name}
               />
               <Select
+                disallowEmptySelection={true}
                 label={t("assets.columns.type")}
                 onSelectionChange={(keys) => {
                   const { currentKey } = keys;

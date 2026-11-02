@@ -22,6 +22,7 @@ export const TransactionsUploadAccount: React.FC = () => {
   return (
     <div>
       <SelectAccount
+        label={t("columns.account")}
         onChange={setAccount}
         selectProps={{
           description: descriptionText,

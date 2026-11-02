@@ -39,6 +39,7 @@ describe("TransactionsUploadAccount", () => {
     const props = renderWithAccount(null);
 
     expect(props).toMatchObject({
+      label: "Account",
       onChange: setAccount,
       showOnlyWithProvider: true,
       value: undefined,

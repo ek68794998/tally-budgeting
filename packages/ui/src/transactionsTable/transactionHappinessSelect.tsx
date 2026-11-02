@@ -6,7 +6,6 @@ import {
 } from "@tabler/icons-react";
 import {
   type HappinessLevel,
-  HappinessLevelDefault,
   happinessLevelSchema,
 } from "@tally/data-models/contracts/happinessLevel";
 import { useTranslations } from "next-intl";
@@ -56,14 +55,13 @@ export const TransactionHappinessSelect: React.FC<Props> = ({
 
   return (
     <Select
+      disallowEmptySelection={true}
       items={happinessOptions}
       label={t("columns.happiness")}
-      onSelectionChange={(keys) => {
-        const { currentKey } = keys;
-        const numericKey = currentKey
-          ? Number.parseInt(currentKey, 10)
-          : HappinessLevelDefault;
-        onChange(happinessLevelSchema.parse(numericKey));
+      onSelectionChange={({ currentKey }) => {
+        if (currentKey) {
+          onChange(happinessLevelSchema.parse(Number.parseInt(currentKey, 10)));
+        }
       }}
       renderValue={(selected) =>
         selected[0]?.data?.label || t("happiness.level2")
@@ -71,7 +69,7 @@ export const TransactionHappinessSelect: React.FC<Props> = ({
       selectedKeys={[value.toString()]}
     >
       {({ color, IconComponent, key, label }) => (
-        <SelectItem color={color} key={key.toString()}>
+        <SelectItem color={color} key={key.toString()} textValue={label}>
           <div className="flex items-center gap-2">
             <IconComponent />
             {label}

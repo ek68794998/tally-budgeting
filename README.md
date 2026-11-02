@@ -100,7 +100,7 @@ Node.js and PNPM are not needed; the image is built inside Docker.
 4. Open [http://localhost:7856](http://localhost:7856) and log in with your `APP_PASSWORD`.
 
 > [!WARNING]
-> If you access Tally from other devices, put it behind an HTTPS reverse proxy. Over plain HTTP, the password and session cookie travel in cleartext (see [Authentication](#authentication)).
+> If you access Tally from other devices, put it behind an HTTPS reverse proxy (see [HTTPS on Your Local Network](#https-on-your-local-network)). Over plain HTTP, the password and session cookie travel in cleartext (see [Authentication](#authentication)).
 
 ### Running in the Background
 
@@ -172,6 +172,90 @@ To run Tally on a machine without the source code (for example, a home server), 
    docker compose up -d
    ```
 
+### HTTPS on Your Local Network
+
+To let other devices on your network open Tally securely, run [Caddy](https://caddyserver.com/) next to it as an HTTPS reverse proxy. Caddy acts as its own certificate authority, so this works without a public domain or opening anything to the internet. You install Caddy's root certificate once on each device that uses Tally.
+
+These steps run on the machine that hosts Tally, in the folder with `docker-compose.yml`.
+
+1. Find the addresses devices will use to reach the server:
+
+   - **Hostname:** on macOS, `scutil --get LocalHostName` prints a name such as `mac-mini`, reachable as `mac-mini.local`. On Linux, `hostname` gives the name, which is reachable as `<name>.local` if running a tool like Avahi.
+   - **IP address:** `ipconfig getifaddr en0` on macOS, or `hostname -I` on Linux. Reserve this address for the server in your router's DHCP settings so it doesn't change. (This example assumes `192.168.1.50`.)
+
+   Using both lets devices that can't resolve `.local` names, such as many Android phones, fall back to the IP address.
+
+2. Create a `Caddyfile` next to `docker-compose.yml`, using your hostname and IP address:
+
+   ```caddyfile
+   {
+   	skip_install_trust
+   }
+
+   mac-mini.local, 192.168.1.50 {
+   	tls internal
+   	reverse_proxy web:3000
+   }
+   ```
+
+   `tls internal` makes Caddy issue certificates from its own certificate authority, and `skip_install_trust` stops it from trying to trust that authority inside its container. Caddy sends `X-Forwarded-Proto: https`, so Tally marks its session cookie `Secure`, and it redirects plain HTTP requests to HTTPS.
+
+   **Note:** If you wish to pin the service to a specific port (e.g., `https://mac-mini.local:5000`), replace the addresses used in `Caddyfile` with `mac-mini.local:5000, 192.168.1.50:5000`. You will also have to update the two `ports:` bindings in the next step with a single `- "5000:5000"`.
+
+3. In `docker-compose.yml`, add a `caddy` service and its volumes, and bind the `web` port to `127.0.0.1` so that only the server itself can reach Tally over plain HTTP:
+
+   ```yaml
+   services:
+     web:
+       # ...unchanged, except:
+       ports:
+         - "127.0.0.1:7856:3000"
+
+     caddy:
+       image: caddy:2
+       depends_on:
+         - web
+       ports:
+         - "80:80"
+         - "443:443"
+       volumes:
+         - ./Caddyfile:/etc/caddy/Caddyfile:ro
+         - caddy_data:/data
+         - caddy_config:/config
+       restart: unless-stopped
+
+     # ...db unchanged
+
+   volumes:
+     postgres_data:
+     caddy_data:
+     caddy_config:
+   ```
+
+4. Start everything, then copy Caddy's root certificate out of the container:
+
+   ```bash
+   docker compose up -d
+   docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt ./tally-root.crt
+   ```
+
+5. Install `tally-root.crt` as a trusted root certificate **on each device that will open Tally** (not the server itself), then restart its browser:
+
+   | Device | How to trust the certificate |
+   | --- | --- |
+   | macOS | `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain tally-root.crt` |
+   | Windows | In an administrator terminal: `certutil -addstore -f Root tally-root.crt` |
+   | Debian/Ubuntu | `sudo cp tally-root.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates`. Firefox and Chrome on Linux keep their own certificate list, so also import it in the browser's certificate settings, under **Authorities**. |
+   | iOS/iPadOS | Send the file to the device (for example with AirDrop) and install it in **Settings > General > VPN & Device Management**. Then turn it on in **Settings > General > About > Certificate Trust Settings**. |
+   | Android | Copy the file to the device, then install it under **Settings > Security > Encryption & credentials > Install a certificate > CA certificate**. The menu names vary by manufacturer. |
+
+6. Open `https://mac-mini.local` (or `https://192.168.1.50`) from any device on your network.
+
+If other devices can't connect, check that the server's firewall allows incoming connections on ports 80 and 443. On macOS, open **System Settings > Network > Firewall > Options** and allow Docker.
+
+> [!IMPORTANT]
+> Caddy keeps its root certificate in the `caddy_data` volume, and it stays valid for 10 years. If you delete that volume, Caddy creates a new root certificate, and you have to repeat steps 4 and 5 on every device. The volume also holds the certificate authority's private key, so keep it private: anyone with that key could impersonate any website to devices that trust it. `tally-root.crt` contains only the public certificate and is safe to copy to devices.
+
 ## Configuration
 
 ### Environment Variables
@@ -204,7 +288,7 @@ Tally is protected by a single shared password, and the app refuses to start wit
 - **Using your own auth proxy:** set `DANGEROUSLY_DISABLE_AUTH=1` to turn off Tally's login. Anyone who can reach the app can then read and modify all data, so only do this when something else in front of it enforces authentication.
 
 > [!WARNING]
-> **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
+> **Over plain HTTP, the password and session cookie travel in cleartext.** Put Tally behind an HTTPS reverse proxy such as Caddy (see [HTTPS on Your Local Network](#https-on-your-local-network)) or Traefik; the cookie's `Secure` flag is set automatically when the proxy sends `X-Forwarded-Proto: https`.
 
 ## CSV Import
 
