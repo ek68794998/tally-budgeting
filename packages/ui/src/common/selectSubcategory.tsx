@@ -12,8 +12,9 @@ import {
   DefaultSubcategoryId,
   type Subcategory,
 } from "@tally/data-models/contracts/subcategory";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useCategories } from "../hooks/store/useCategories";
+import { useSelectionInputValue } from "../hooks/useSelectionInputValue";
 
 interface Props {
   autocompleteProps?: Partial<
@@ -43,7 +44,15 @@ export const SelectSubcategory: React.FC<Props> = ({
 }) => {
   const { categories, subcategories } = useCategories();
 
-  const [inputValue, setInputValue] = useState("");
+  const selectedSubcategory = isNumber(value)
+    ? subcategories.find((s) => s.id === value)
+    : value;
+  const selectedLabel = selectedSubcategory?.label ?? "";
+
+  const { inputValue, isShowingSelection, resetInputValue, setInputValue } =
+    useSelectionInputValue(selectedLabel);
+
+  const filterText = isShowingSelection ? "" : inputValue;
 
   const getSubcategories = useCallback(
     (c: Category): SubcategoryItem[] =>
@@ -51,11 +60,11 @@ export const SelectSubcategory: React.FC<Props> = ({
         .filter(
           (s) =>
             s.categoryId === c.id &&
-            (includesIgnoreCase(s.label, inputValue) ||
-              includesIgnoreCase(c.label, inputValue)),
+            (includesIgnoreCase(s.label, filterText) ||
+              includesIgnoreCase(c.label, filterText)),
         )
         .sort((a, b) => a.label.localeCompare(b.label)),
-    [inputValue, subcategories],
+    [filterText, subcategories],
   );
 
   const items: CategoryItem[] = useMemo(
@@ -71,15 +80,9 @@ export const SelectSubcategory: React.FC<Props> = ({
     [categories, getSubcategories],
   );
 
-  const selectedCategory = isNumber(value)
-    ? subcategories.find((s) => s.id === value)
-    : value;
-  const displayValue = selectedCategory?.label;
-
   return (
     <Autocomplete
       {...autocompleteProps}
-      inputProps={{ classNames: { input: "placeholder-current" } }}
       inputValue={inputValue}
       isClearable={false}
       items={items}
@@ -90,7 +93,7 @@ export const SelectSubcategory: React.FC<Props> = ({
         // `selectedKey` and `inputValue` are controlled; ignore it so the
         // current selection isn't reset.
         if (isNullOrUndefined(key)) {
-          setInputValue("");
+          resetInputValue();
           return;
         }
 
@@ -107,11 +110,12 @@ export const SelectSubcategory: React.FC<Props> = ({
         );
 
         onChange(newSubcategory);
-        setInputValue("");
+        resetInputValue(newSubcategory.label);
       }}
-      placeholder={displayValue}
       selectedKey={
-        isNullOrUndefined(selectedCategory) ? null : String(selectedCategory.id)
+        isNullOrUndefined(selectedSubcategory)
+          ? null
+          : String(selectedSubcategory.id)
       }
     >
       {(c) => (

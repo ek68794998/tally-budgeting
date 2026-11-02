@@ -198,16 +198,19 @@ describe("select inputs", () => {
 
         const props = lastAutocompleteProps();
 
-        expect(props?.placeholder).toBe("Housing");
+        expect(props?.inputValue).toBe("Housing");
         expect(props?.items).toEqual([
           food,
           housing,
           buildCategory({ id: -1, label: "Uncategorized" }),
         ]);
 
-        props?.onSelectionChange?.(key);
+        act(() => {
+          props?.onSelectionChange?.(key);
+        });
 
         expect(onChange).toHaveBeenCalledWith(food);
+        expect(lastAutocompleteProps()?.inputValue).toBe("Food");
       },
     );
 
@@ -216,11 +219,15 @@ describe("select inputs", () => {
       render(<SelectCategory onChange={onChange} value={2} />);
 
       act(() => {
+        lastAutocompleteProps()?.onInputChange?.("fo");
+      });
+      act(() => {
         lastAutocompleteProps()?.onSelectionChange?.(null);
       });
 
       expect(onChange).not.toHaveBeenCalled();
       expect(lastAutocompleteProps()?.selectedKey).toBe("2");
+      expect(lastAutocompleteProps()?.inputValue).toBe("Housing");
     });
 
     it("accepts a category object as the value and rejects unknown ids", () => {
@@ -241,7 +248,7 @@ describe("select inputs", () => {
         <SelectSubcategory label="Category" onChange={vi.fn()} value={10} />,
       );
 
-      expect(lastAutocompleteProps()?.placeholder).toBe("Coffee");
+      expect(lastAutocompleteProps()?.inputValue).toBe("Coffee");
       expect(lastAutocompleteProps()?.items).toEqual([
         { id: 1, label: "Food", subcategories: [coffee, groceries] },
         { id: 2, label: "Housing", subcategories: [rent] },
@@ -264,25 +271,46 @@ describe("select inputs", () => {
     it.each([
       { expected: rent, key: 20 },
       { expected: rent, key: "20" },
-    ])("reports selection of $key", ({ expected, key }) => {
+    ])("reports selection of $key and shows its label", ({ expected, key }) => {
       const onChange = vi.fn();
       render(<SelectSubcategory onChange={onChange} value={coffee} />);
 
-      lastAutocompleteProps()?.onSelectionChange?.(key);
+      act(() => {
+        lastAutocompleteProps()?.onInputChange?.("re");
+      });
+      act(() => {
+        lastAutocompleteProps()?.onSelectionChange?.(key);
+      });
 
       expect(onChange).toHaveBeenCalledWith(expected);
+      expect(lastAutocompleteProps()?.inputValue).toBe("Rent");
     });
 
-    it("ignores a null selection so the current value is kept", () => {
+    it("ignores a null selection and restores the current label", () => {
       const onChange = vi.fn();
       render(<SelectSubcategory onChange={onChange} value={coffee} />);
 
+      act(() => {
+        lastAutocompleteProps()?.onInputChange?.("gro");
+      });
       act(() => {
         lastAutocompleteProps()?.onSelectionChange?.(null);
       });
 
       expect(onChange).not.toHaveBeenCalled();
       expect(lastAutocompleteProps()?.selectedKey).toBe("10");
+      expect(lastAutocompleteProps()?.inputValue).toBe("Coffee");
+    });
+
+    it("syncs the input to a value changed by the parent", () => {
+      const { rerender } = render(
+        <SelectSubcategory onChange={vi.fn()} value={coffee} />,
+      );
+
+      rerender(<SelectSubcategory onChange={vi.fn()} value={rent} />);
+
+      expect(lastAutocompleteProps()?.inputValue).toBe("Rent");
+      expect(lastAutocompleteProps()?.items).toHaveLength(3);
     });
 
     it("rejects an unknown subcategory", () => {
