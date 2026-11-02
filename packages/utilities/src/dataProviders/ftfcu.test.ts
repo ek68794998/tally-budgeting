@@ -439,6 +439,10 @@ describe("FirstTechFederalDataProvider", () => {
       "Deposit: Transfer from Checking *5678",
       "Withdrawal: Xfer to Savings *1234",
       "Deposit: Xfer from Checking *5678",
+      "WITHDRAWAL TRANSFER TO SAVINGS *1234",
+      "deposit xfer from checking *5678",
+      "WITHDRAWAL: XFER TO SAVINGS *1234",
+      "deposit: transfer from checking *5678",
     ])("should ignore internal transfer transaction: %s", (description) => {
       const row = {
         /* eslint-disable @typescript-eslint/naming-convention */
