@@ -67,7 +67,10 @@ export class ChaseDataProvider implements DataProvider<StatementRow> {
   public isStatementRowIgnored = (inputRow: StatementRow) => {
     const { Description: description } = inputRow;
 
-    return !!/AUTOMATIC\s*PAYMENT/.exec(description);
+    return (
+      !!/AUTOMATIC\s*PAYMENT/i.exec(description) ||
+      !!/Payment\s*Thank\s*You/i.exec(description)
+    );
   };
 
   public validateIsStatementRow: ValidationErrorFn<StatementRow> = (
